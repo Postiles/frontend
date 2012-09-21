@@ -1,0 +1,164 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
+<script type="text/javascript">
+/**
+
+Some notice for the current demo:
+
+The minimum unit of the grid is set to 75*50px, plus a margin of 15px and padding of 8px
+
+TODO: implement realclick event which will not be triggered if dragging is activated
+
+**/
+
+var canvas_viewport;
+var canvas;
+
+var canvas_mouse_event = {
+	mousedownCoord: null, //record the mouse position when mousedown triggered
+	canvasCoord: null, //current canvas position relative to the canvas viewport
+	shadowCoord: [0, 0], //current shadow (the boundary-out(boundout) effect)
+	canvasAnimationCounter: null,
+	canvasOutBoundAnimation: function(){ //index 0 for x and 1 for y
+		canvas.css({'box-shadow': canvas_mouse_event.shadowCoord[0]/10+'px '+canvas_mouse_event.shadowCoord[1]/10+'px '+Math.sqrt(Math.pow(canvas_mouse_event.shadowCoord[0], 2)+Math.pow(canvas_mouse_event.shadowCoord[1], 2))/10+'px 0 rgba(255, 255, 255, 0.75) inset'});
+	}
+};
+
+var post_board = {
+	lengthConvert: { //convent length from "unit length" of the grid to pixel
+		widthTo: function(u) { return u*106 - 8*2 - 15; },
+		xPosTo: function(u) { return u*106 + canvas.innerWidth()/2; },
+		heightTo: function(u) { return u*81 - 8*2 - 15; },
+		yPosTo: function(u) { return u*81 + canvas.innerHeight()/2; }
+	},
+	renderArray: function(array, start, end) { //add post objects to the screen //NOTICE: just add, no not care the duplicate
+		var i;
+		if (typeof start === "undefined") { start = 0; }
+		if (typeof end === "undefined") { end = array.length; }
+		for (i = start; i < end; i++) {
+			array[i].jqDivElement = $('<div/>').appendTo(canvas);
+			array[i].jqDivElement.data({parent: array[i]});
+			array[i].jqDivElement.css({
+				'display': 'none',
+				'position': 'absolute',
+				'padding': '8px',
+				'left': post_board.lengthConvert.xPosTo(array[i].x_pos) + 'px',
+				'top': post_board.lengthConvert.yPosTo(array[i].y_pos) + 'px',
+				'width': post_board.lengthConvert.widthTo(array[i].width) + 'px',
+				'height': post_board.lengthConvert.heightTo(array[i].height) + 'px',
+				'background': 'rgba(255, 255, 255, 0.8)',
+				'border-radius': '4px'
+			});
+			array[i].jqDivElement.html(array[i].content);
+			array[i].jqDivElement.delay(80*i).show(200);
+		}
+	},
+	clearCanvas: function() { //clear the entire canvas
+		canvas.empty();
+	}
+};
+
+$(document).ready(function() { //initialize the canvas
+
+	$(window).resize(function() { window.location.reload(); }); //prevent from resizing //later on, we still need to fix for chrome Issue 55793
+	
+	canvas_viewport = ($('<div/>').appendTo('#wrapper')).css({'overflow': 'hidden', 'position': 'relative'});
+	canvas = $('<div/>').appendTo(canvas_viewport);
+	
+	canvas_viewport.width(window.innerWidth);
+	canvas_viewport.height(window.innerHeight);
+	
+	canvas.css({'width': 3872, 'height': 2592, 'background-image': 'url(http://fc03.deviantart.net/fs70/f/2010/033/c/c/Dove_Coloured_Sky_by_TaNgeriNegreeN1986.jpg)', 'position': 'absolute'});
+	
+	canvas_mouse_event.canvasCoord = [(canvas.parent().innerWidth() - canvas.outerWidth())/2, (canvas.parent().innerHeight() - canvas.outerHeight())/2]; //To be replaced
+	
+	canvas.css({'left': canvas_mouse_event.canvasCoord[0] + 'px', 'top': canvas_mouse_event.canvasCoord[1] + 'px'});
+	
+	canvas.mousedown(function(e) {
+		canvas_mouse_event.mousedownCoord = [e.pageX, e.pageY];
+		if (canvas_mouse_event.canvasAnimationCounter) {
+			canvas_mouse_event.canvasAnimationCounter.stop(); //stop current animation
+		}
+	});
+	
+	canvas.mouseup(function(e) { 
+		canvas_mouse_event.mousedownCoord = null;
+		canvas_mouse_event.canvasCoord = [parseFloat(canvas.css('left')),parseFloat(canvas.css('top'))];
+		if (canvas_mouse_event.shadowCoord[0] || canvas_mouse_event.shadowCoord[1]) {
+			canvas_mouse_event.canvasAnimationCounter = $({'counter': 0, 'init': $.extend(true, [], canvas_mouse_event.shadowCoord)});
+			canvas_mouse_event.canvasAnimationCounter.animate({'counter': Math.max(Math.abs(canvas_mouse_event.shadowCoord[0]),Math.abs(canvas_mouse_event.shadowCoord[1]))}, {'step': function(now){ //remove the white boundout effect little by little with jqery.animate
+				if (this.init[0] < 0) { canvas_mouse_event.shadowCoord[0] = now > -this.init[0] ? 0 : this.init[0] + now; }
+				else if (this.init[0] > 0) { canvas_mouse_event.shadowCoord[0] = now > this.init[0] ? 0 : this.init[0] - now; }
+				if (this.init[1] < 0) { canvas_mouse_event.shadowCoord[1] = now > -this.init[1] ? 0 : this.init[1] + now; }
+				else if (this.init[1] > 0) { canvas_mouse_event.shadowCoord[1] = now > this.init[1] ? 0 : this.init[1] - now; }
+				canvas_mouse_event.canvasOutBoundAnimation();
+			}});
+		}
+	});
+	
+	canvas.mousemove(function(e) {
+		if (!canvas_mouse_event.mousedownCoord) { return; }
+		var leftTarget = e.pageX - canvas_mouse_event.mousedownCoord[0] + canvas_mouse_event.canvasCoord[0];
+		var topTarget = e.pageY - canvas_mouse_event.mousedownCoord[1] + canvas_mouse_event.canvasCoord[1];
+		var rightTarget = leftTarget - canvas.parent().innerWidth() + canvas.outerWidth();
+		var bottomTarget = topTarget - canvas.parent().innerHeight() + canvas.outerHeight();
+		canvas_mouse_event.shadowCoord[0] = 0;
+		canvas_mouse_event.shadowCoord[1] = 0;
+		if (leftTarget > 0) { //test left boundout(attempt to drag out of the boundary)
+			canvas_mouse_event.shadowCoord[0] = leftTarget;
+			leftTarget = 0;
+		} else if (rightTarget < 0) { //test right boundout
+			canvas_mouse_event.shadowCoord[0] = rightTarget;
+			leftTarget -= rightTarget;
+		}
+		if (topTarget > 0) { //test top boundout
+			canvas_mouse_event.shadowCoord[1] = topTarget;
+			topTarget = 0;
+		} else if (bottomTarget < 0) { //test bottom boundout
+			canvas_mouse_event.shadowCoord[1] = bottomTarget;
+			topTarget -= bottomTarget;
+		}
+		canvas.css({'left': leftTarget + 'px', 'top': topTarget + 'px'}); //apply the shadow boundout effect
+		canvas_mouse_event.canvasOutBoundAnimation();
+	});
+	
+});
+
+/****
+Sections below are just for testing
+****/
+
+var post_board_demo = { //this is demo JSON demonstrating some data fetched from the server
+	posts: [
+		{ id: 128, x_pos: -1, y_pos: -3, width: 2, height: 2, content: '<b style="font-size: 20px">You can drag the canvas till you reach the boundary</b>' }, //each one stand for a post
+		{ id: 111, x_pos: -1, y_pos: -1, width: 2, height: 1, content: '<font color="#990000">All code is in this HTML</font>' },
+		{ id: 198, x_pos: -2, y_pos: -2, width: 1, height: 2, content: "dummy content for block 3" },
+		{ id: 256, x_pos: 1, y_pos: -4, width: 2, height: 2, content: "dummy content for block 4" },
+		{ id: 280, x_pos: 0, y_pos: 0, width: 1, height: 3, content: "dummy content for block 5" },
+		{ id: 310, x_pos: -2, y_pos: 2, width: 2, height: 2, content: "dummy content for block 6" },
+		{ id: 317, x_pos: 1, y_pos: 0, width: 3, height: 3, content: "dummy content for block 7" },
+		{ id: 319, x_pos: -5, y_pos: -3, width: 3, height: 2, content: "dummy content for block 8" }
+	]
+}
+
+$(window).load(function(){  
+	setTimeout(function(){post_board.renderArray(post_board_demo.posts);},600)
+});  
+
+</script>
+<style type="text/css">
+html, body, wrapper {
+	padding: 0;
+	margin: 0;
+	border: 0 none;
+}
+</style>
+</head>
+<body>
+	<div id="wrapper">
+	</div>
+</body>
+</html>
