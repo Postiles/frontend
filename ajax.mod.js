@@ -1,3 +1,7 @@
+/*
+library for ajax-related activities
+*/
+
 var ajax = function(url, data, callback, notifier_text){
 	var xhr, formData, i;
 	ajax.notifier.show(notifier_text);
