@@ -12,16 +12,18 @@ goog.provide('postile.view.post_board');
 goog.provide('postile.view.post_board.handlers');
 
 goog.require('postile.view');
+goog.require('postile.fx.effects');
 goog.require('goog.dom');
 
 postile.view.post_board.PostBoard = function() { //constructor
+    postile.view.View.call();
     this.mousedownCoord = null; //record the mouse position when mousedown triggered
 	this.canvasCoord = null; //current canvas position relative to the canvas viewport
 	this.shadowCoord = [0, 0]; //current shadow (the boundary-out(boundout) effect)
 	this.canvasAnimationCounter = null;
     this.currentArray = null; //an array containing all posts shown //TODO: is this really needed? anyway it is required at this moment
     this.newPostStartCoord = null; //hold the starting point of a new post in an array with the unit of "grid unit"
-    this.canvas_viewport = goog.dom.createDom('div', {'class': 'canvas_viewport', 'unselectable': 'on', 'user-select', 'none'}); //disable text selecting
+    this.canvas_viewport = goog.dom.createDom('div', {'class': 'canvas_viewport', 'unselectable': 'on', 'user-select': 'none'}); //disable text selecting
     goog.events.listen(this.canvas_viewport, goog.events.EventType.SELECTSTART, function(){ return false; }); //disable text selecting
     goog.dom.appendChild(this.canvas_viewport, goog.dom.getElement('wrapper'));
 	this.canvas = goog.dom.createDom('div', {'class': 'canvas'});
@@ -97,14 +99,14 @@ postile.view.post_board.PostBoard.prototype.renderArray = function(array) { //ad
 
 $(window).resize(function() { window.location.reload(); }); //prevent from resizing //later on, we still need to fix for chrome Issue 55793
 
-postile.view.post_board.handlers.canvas_mousedown(function(e) {
+postile.view.post_board.handlers.canvas_mousedown = function(e) {
     this.associateData.mousedownCoord = [e.pageX, e.pageY];
     if (this.associateData.canvasAnimationCounter) {
         this.associateData.canvasAnimationCounter.stop(); //stop current animation
     }
-});
+};
 
-postile.view.post_board.handlers.canvas_mouseup(function(e) { 
+postile.view.post_board.handlers.canvas_mouseup = function(e) { 
     this.associateData.mousedownCoord = null;
    this.associateData.canvasCoord = [parseFloat(canvas.css('left')),parseFloat(canvas.css('top'))];
     if (this.associateData.shadowCoord[0] || this.associateData.shadowCoord[1]) {
@@ -117,9 +119,9 @@ postile.view.post_board.handlers.canvas_mouseup(function(e) {
             this.associateData.canvasOutBoundAnimation();
         }});
     }
-});
+};
 
-postile.view.post_board.handlers.canvas_mousemove(function(e) {
+postile.view.post_board.handlers.canvas_mousemove = function(e) {
     if (!this.associateData.mousedownCoord) { return; } //mouse key not down yet
     var leftTarget = e.pageX - this.associateData.mousedownCoord[0] + this.associateData.canvasCoord[0];
     var topTarget = e.pageY - this.associateData.mousedownCoord[1] + this.associateData.canvasCoord[1];
@@ -143,15 +145,15 @@ postile.view.post_board.handlers.canvas_mousemove(function(e) {
     }
     canvas.css({'left': leftTarget + 'px', 'top': topTarget + 'px'}); //apply the shadow boundout effect
     this.associateData.canvasOutBoundAnimation();
-});
+};
 
 //mouseevents for the mask
-postile.view.post_board.handlers.mask_mousedown(function(e){ //find the closest grid point
+postile.view.post_board.handlers.mask_mousedown = function(e){ //find the closest grid point
     this.associateData.newPostStartCoord = [Math.round(post_board.lengthConvert.xPosFrom(e.pageX - this.associateData.canvasCoord[0])), Math.round(post_board.lengthConvert.yPosFrom(e.pageY - this.associateData.canvasCoord[1]))]; //record current coordinate in the unit of "grid unit" //TODO: detect if the start point is legal (if there is available space around it)
     mask.data('preview_origin_spot').css({'left': post_board.lengthConvert.xPosTo(this.associateData.newPostStartCoord[0])+this.associateData.canvasCoord[0]-17+'px', 'top':  post_board.lengthConvert.yPosTo(this.associateData.newPostStartCoord[1])+this.associateData.canvasCoord[1]-17+'px'}).show();
-});
+};
 
-postile.view.post_board.handlers.mask_mousemove(function(e){ //mouse key not down yet
+postile.view.post_board.handlers.mask_mousemove = function(e){ //mouse key not down yet
     if (!this.associateData.newPostStartCoord) { return; }
     var current = [post_board.lengthConvert.xPosFrom(e.pageX - this.associateData.canvasCoord[0]), post_board.lengthConvert.yPosFrom(e.pageY - this.associateData.canvasCoord[1])];
     var delta = [0, 0];
@@ -190,20 +192,20 @@ postile.view.post_board.handlers.mask_mousemove(function(e){ //mouse key not dow
     });
     preview.show();
     mask.data('legal', !intersect);
-});
+};
 
-postile.view.post_board.handlers.mask_mouseup(function(e){
+postile.view.post_board.handlers.mask_mouseup = function(e){
     this.associateData.newPostStartCoord = null;
     if (!mask.data('legal')) {
         mask.data('preview').hide(); return;
     }
     mask.data('legal', false);
-});
+};
 
 //activated double click event for creating new boxes
-postile.view.post_board.handlers.canvas_dblclick(function(){
+postile.view.post_board.handlers.canvas_dblclick = function(){
     canvas_viewport.data('mask').show();
-});
+};
 
 /****
 Sections below are just for testing

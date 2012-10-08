@@ -1,15 +1,15 @@
 To run the code
 ======
-Copy the "closure/goog" in Google Closure Library to "js/goog".
+Copy the `closure/goog` in [Google Closure Library](https://code.google.com/p/closure-library/downloads/list) to `js/goog`.
 
 
 To update the dependency log of the code
 ======
-First, copy the "closure/bin/build" directory in Google Closure Library to the project directory.
+First, copy the `closure/bin/build` directory in Google Closure Library to the project directory as `build`.
 
 Then, simply run
 
-`build/depswriter.py --root="js/postile" --output_file="js/postile/deps.js"`
+`build/depswriter.py --root_with_prefix="js/postile ../postile" --output_file="js/postile/deps.js"`
 
 at the project directory.
 

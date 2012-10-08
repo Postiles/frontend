@@ -2,15 +2,13 @@
 
 goog.provide('postile.view');
 
-goog.require('goog.dom.domHelper');
+goog.require('goog.dom');
 
-/*
-this function should be called when using a view. it loads all the stylesheets needed
-*/
-postile.view.View.prototype.load = function() {
+
+postile.view.View = function() {
     var i;
     for (i in this.unloadedStylesheets) {
-        goog.dom.DomHelper.appendChild(document.getElementsByTagName('head')[0], goog.dom.DomHelper.createDom('link', { type: 'text/css', rel: 'stylesheet', href: 'css/'+this.unloadedStylesheets[i] }));
+        goog.dom.appendChild(document.getElementsByTagName('head')[0], goog.dom.createDom('link', { type: 'text/css', rel: 'stylesheet', href: 'css/'+this.unloadedStylesheets[i] }));
     }
     this.unloadedStylesheets = [];
 }
