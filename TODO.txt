@@ -1,3 +1,0 @@
-have a "view" class and put "post_board", "platform"...etc to be child classes of it
-
-//use addCssText
