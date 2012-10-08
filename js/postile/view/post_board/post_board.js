@@ -14,6 +14,8 @@ goog.provide('postile.view.post_board.handlers');
 goog.require('postile.view');
 goog.require('postile.fx.effects');
 goog.require('goog.dom');
+goog.require('goog.math.Size');
+goog.require('goog.events');
 
 postile.view.post_board.PostBoard = function() { //constructor
     postile.view.View.call();
@@ -36,9 +38,9 @@ postile.view.post_board.PostBoard = function() { //constructor
     this.canvas.associateData = this;
     this.mask.associateData = this;
     this.mask.preview = goog.dom.createDom('div', {'class': 'post_preview'});
-    goog.dom.createDom.appendChild(this.mask.preview, this.mask);
+    goog.dom.appendChild(this.mask.preview, this.mask);
     this.mask.post_preview_origin_spot = goog.dom.createDom('div', {'class': 'post_preview_origin_spot'});
-    goog.dom.createDom.appendChild(this.mask.post_preview_origin_spot, this.mask);
+    goog.dom.appendChild(this.mask.post_preview_origin_spot, this.mask);
     goog.events.listen(this.canvas, goog.events.EventType.MOUSEDOWN, postile.view.post_board.handlers.canvas_mousedown);
     goog.events.listen(this.canvas, goog.events.EventType.MOUSEMOVE, postile.view.post_board.handlers.canvas_mousemove);
     goog.events.listen(this.canvas, goog.events.EventType.MOUSEUP, postile.view.post_board.handlers.canvas_mouseup);
@@ -55,10 +57,10 @@ goog.inherits(postile.view.post_board.PostBoard, postile.view.View);
 postile.view.post_board.PostBoard.prototype.unloadedStylesheets = ['post_board.css'];
 
 postile.view.post_board.PostBoard.prototype.resize = function(){
-    this.canvas_viewport.width(window.innerWidth);
-	this.canvas_viewport.height(window.innerHeight);
-	this.canvasCoord = [(canvas.parent().innerWidth() - canvas.outerWidth())/2, (canvas.parent().innerHeight() - canvas.outerHeight())/2]; //To be replaced
-	this.canvas.css({'left': this.canvasCoord[0] + 'px', 'top': this.canvasCoord[1] + 'px'});   
+    this.canvas_viewport.style.width = window.innerWidth + 'px';
+	this.canvas_viewport.style.height = window.innerHeight + 'px';
+	this.canvasCoord = [(this.canvas_viewport.offsetWidth - this.canvas.offsetWidth)/2, (this.canvas_viewport.offsetHeight - this.canvas.offsetHeight)/2]; //To be replaced
+	this.canvas.style.left = this.canvasCoord[0] + 'px'; this.canvas.style.top = this.canvasCoord[1] + 'px';   
 }
 
 postile.view.post_board.PostBoard.prototype.canvasOutBoundAnimation = function(){ //index 0 for x and 1 for y
@@ -94,10 +96,6 @@ postile.view.post_board.PostBoard.prototype.renderArray = function(array) { //ad
         postile.fx.effects.resizeIn(array[i]);
     }
 };
-
-//HUGE TODO: fix this
-
-$(window).resize(function() { window.location.reload(); }); //prevent from resizing //later on, we still need to fix for chrome Issue 55793
 
 postile.view.post_board.handlers.canvas_mousedown = function(e) {
     this.associateData.mousedownCoord = [e.pageX, e.pageY];
