@@ -2,7 +2,7 @@ goog.provide('postile.fx');
 
 postile.fx.period = 36; //in the unit of millisec
 
-postile.fx.animate = function(iter_func, duration, ease, callback) {
+postile.fx.Animate = function(iter_func, duration, ease, callback) {
 	if (!ease) { ease = postile.fx.ease.linear; }
 	if (!callback) { callback = function(){} }
 	var iter_status = 0;
@@ -14,10 +14,14 @@ postile.fx.animate = function(iter_func, duration, ease, callback) {
 	}, postile.fx.period);
 };
 
+postile.fx.Animate.prototype.stop = function() {
+    clearInterval(this.interval);
+}
+
 /*
-USE: for elements to change smoothly after hover/mouseout. this is registeration function only
-DESC: after registration, use element.f() or element.b() to trigger
-EX: postile.fx.hover_animate(input, function(i) { input.innerHTML = i; } ,1000); input.onmouseover = postile.fx.forward; input.onmouseout = postile.fx.backward;
+USEAGE: for elements to change smoothly after hover/mouseout. this is registeration function only
+DESCRIPTION: after registration, use element.f() or element.b() to trigger
+EXAMPLE: postile.fx.hover_animate(input, function(i) { input.innerHTML = i; } ,1000); input.onmouseover = postile.fx.forward; input.onmouseout = postile.fx.backward;
 */
 postile.fx.hover_animate = function(dom, iter_func, duration) { //in the iter_func, user can use "this" for the dom
 	dom._postile.fx_status = 0;

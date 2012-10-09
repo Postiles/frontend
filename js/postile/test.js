@@ -16,11 +16,6 @@ var post_board_demo = { //this is demo JSON demonstrating some data fetched from
 };
 
 postile.test.init = function(){
-
     var pb = new postile.view.post_board.PostBoard();
-    
-    /*
     pb.renderArray(post_board_demo.posts);
-    */
-
 }

@@ -6,5 +6,5 @@ goog.addDependency('../postile/fx/effects.js', ['postile.fx.effects'], ['postile
 goog.addDependency('../postile/fx/fx.js', ['postile.fx'], []);
 goog.addDependency('../postile/test.js', ['postile.test'], ['postile.view.post_board']);
 goog.addDependency('../postile/utils/ajax.js', ['postile.utils.ajax'], []);
-goog.addDependency('../postile/view/post_board/post_board.js', ['postile.view.post_board', 'postile.view.post_board.handlers'], ['goog.dom', 'goog.events', 'postile.fx.effects', 'postile.view']);
+goog.addDependency('../postile/view/post_board/post_board.js', ['postile.view.post_board', 'postile.view.post_board.handlers'], ['goog.dom', 'goog.events', 'goog.math.Size', 'postile.fx', 'postile.fx.effects', 'postile.view']);
 goog.addDependency('../postile/view/view.js', ['postile.view'], ['goog.dom']);
