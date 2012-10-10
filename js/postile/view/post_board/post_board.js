@@ -26,7 +26,8 @@ postile.view.post_board.PostBoard = function() { //constructor
     this.canva_shadow_animation = null;
     this.currentArray = null; //an array containing all posts shown //TODO: is this really needed? anyway it is required at this moment
     this.newPostStartCoord = null; //hold the starting point of a new post in an array with the unit of "grid unit"
-    this.canvas_viewport = goog.dom.createDom('div', {'class': 'canvas_viewport', 'unselectable': 'on', 'user-select': 'none'}); //disable text selecting
+    this.canvas_viewport = goog.dom.createDom('div', {'class': 'canvas_viewport'}); //disable text selecting
+    postile.browser_compat.setCss(this.canvas_viewport, 'userSelect', 'none');
     goog.events.listen(this.canvas_viewport, goog.events.EventType.SELECTSTART, function(){ return false; }); //disable text selecting
     goog.dom.appendChild(goog.dom.getElement('wrapper'), this.canvas_viewport);
     this.canvas = goog.dom.createDom('div', {'class': 'canvas'});

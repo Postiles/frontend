@@ -12,26 +12,26 @@ postile.browser_compat.walkarounds = { //determine if we have to use some tricks
 };
 
 postile.browser_compat.testVersion = function(of) {
-    if (uas.indexOf(of) < 0) { return false; }
+    if (this.uas.indexOf(of) < 0) { return false; }
     var i;
-    var pattern = new RegExp(" "+of+"(\d*)[\. ]");
+    var pattern = new RegExp(" "+of+"(\\d*)[\\. ]");
     var matched = this.uas.match(pattern);
-    if (matched.length < 2) { return false; }
+    if (!matched || matched.length < 2) { return false; }
     postile.browser_compat.css_prefix = this.requirements[of][2];
-    if (parseInt(matched[1]) < this.requirements[of][0]) { return this.handle.unable; }
+    if (parseInt(matched[1]) < this.requirements[of][0]) { return this.handlers.unable; }
     if (parseInt(matched[1]) < this.requirements[of][1]) {
         if (this.requirements[of].length >=4) {
             for (i in this.requirements[of][3]) {
                 this.walkarounds[i] = this.requirements[of][3][i];
             }
         }
-        return this.handle.warning;
+        return this.handlers.warning;
     }
-    return this.handle.ok;
+    return this.handlers.ok;
 };
 
 postile.browser_compat.load = function() {
-    if (!uas) { this.handle.perhaps(); return; }
+    if (!this.uas) { this.handlers.perhaps(); return; }
     var result;
     for(i in this.requirements) {
         result = this.testVersion(i);
@@ -40,7 +40,7 @@ postile.browser_compat.load = function() {
             return;
         }
     }
-    this.handle.perhaps();
+    this.handlers.perhaps();
 };
 
 postile.browser_compat.requirements = { //minimum version, suggested version, walkarounds required for in-between versions(in array of strings)
@@ -80,6 +80,7 @@ postile.browser_compat.setIgnore = function() {
 };
 
 postile.browser_compat.setCss = function(dom, attr, value) {
+    console.log(postile.browser_compat.css_prefix+attr.substr(0,1).toUpperCase()+attr.substr(1));
     dom.style[attr] = value;
     dom.style[postile.browser_compat.css_prefix+attr.substr(0,1).toUpperCase()+attr.substr(1)] = value;
 }

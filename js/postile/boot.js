@@ -1,6 +1,7 @@
 goog.provide('postile');
 
 goog.require('postile.test');
+goog.require('postile.browser_compat');
 goog.require('goog.events');
 
 postile = { //the base of posTile frontend framework
@@ -15,6 +16,9 @@ postile = { //the base of posTile frontend framework
     },
     init: function() {
         postile.test.init();
+    },
+    load: function() {
+        postile.browser_compat.load();
     }
 };
 
