@@ -56,3 +56,48 @@
 	background-color: #FFF;
 	z-index: 2;
 }
+
+/*Arrow*/
+
+.arrow_control{
+    background-image: url(arrow.png);
+    width: 120px;
+    height: 40px;
+    position: absolute;
+}
+
+.arrow_control:hover {
+    background-image: url(arrow_active.png);
+}
+
+.arrow_control[title="up"] {
+    top: 5px;
+    left: 50%;
+    -webkit-transform: translateX(-50%);
+    -moz-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+}
+
+.arrow_control[title="left"] {
+    left: -35px;
+    top: 50%;
+    -webkit-transform: translateY(-50%) rotate(-90deg);
+    -moz-transform: translateY(-50%) rotate(-90deg);
+    -ms-transform: translateY(-50%) rotate(-90deg);
+}
+
+.arrow_control[title="right"] {
+    right: -35px;
+    top: 50%;
+    -webkit-transform: translateY(-50%) rotate(90deg);
+    -moz-transform: translateY(-50%) rotate(90deg);
+    -ms-transform: translateY(-50%) rotate(90deg);
+}
+
+.arrow_control[title="down"] {
+    bottom: 5px;
+    left: 50%;
+    -webkit-transform: translateX(-50%) rotate(180deg);
+    -moz-transform: translateX(-50%) rotate(180deg);
+    -ms-transform: translateX(-50%) rotate(180deg);
+}
