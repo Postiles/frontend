@@ -99,7 +99,7 @@ postile.view.post_board.PostBoard.prototype.renderArray = function(array) { //ad
 };
 
 postile.view.post_board.handlers.canvas_mousedown = function(e) {
-    this.rel_data.mousedownCoord = [e.offsetX, e.offsetY];
+    this.rel_data.mousedownCoord = [e.clientX, e.clientY];
     if (this.rel_data.canva_shadow_animation) {
         this.rel_data.canva_shadow_animation.stop(); //stop current animation
     }
@@ -125,8 +125,8 @@ postile.view.post_board.handlers.canvas_mouseup = function(e) {
 
 postile.view.post_board.handlers.canvas_mousemove = function(e) {
     if (!this.rel_data.mousedownCoord) { return; } //mouse key not down yet
-    var leftTarget = e.offsetX - this.rel_data.mousedownCoord[0] + this.rel_data.canvasCoord[0];
-    var topTarget = e.offsetY - this.rel_data.mousedownCoord[1] + this.rel_data.canvasCoord[1];
+    var leftTarget = e.clientX - this.rel_data.mousedownCoord[0] + this.rel_data.canvasCoord[0];
+    var topTarget = e.clientY - this.rel_data.mousedownCoord[1] + this.rel_data.canvasCoord[1];
     var rightTarget = leftTarget - this.parentNode.offsetWidth + this.offsetWidth;
     var bottomTarget = topTarget - this.parentNode.offsetHeight + this.offsetHeight;
     this.rel_data.shadowCoord[0] = 0;
@@ -145,7 +145,6 @@ postile.view.post_board.handlers.canvas_mousemove = function(e) {
         this.rel_data.shadowCoord[1] = bottomTarget;
         topTarget -= bottomTarget;
     }
-    console.log(leftTarget);
     this.style.left = leftTarget + 'px';
     this.style.top = topTarget + 'px'; //apply the shadow boundout effect
     this.rel_data.canvasOutBoundAnimation();
@@ -153,7 +152,7 @@ postile.view.post_board.handlers.canvas_mousemove = function(e) {
 
 //mouseevents for the mask
 postile.view.post_board.handlers.mask_mousedown = function(e){ //find the closest grid point
-    this.rel_data.newPostStartCoord = [Math.round(this.rel_data.xPosFrom(e.offsetX - this.rel_data.canvasCoord[0])), Math.round(this.rel_data.yPosFrom(e.offsetY - this.rel_data.canvasCoord[1]))]; //record current coordinate in the unit of "grid unit" //TODO: detect if the start point is legal (if there is available space around it)
+    this.rel_data.newPostStartCoord = [Math.round(this.rel_data.xPosFrom(e.clientX - this.rel_data.canvasCoord[0])), Math.round(this.rel_data.yPosFrom(e.clientY - this.rel_data.canvasCoord[1]))]; //record current coordinate in the unit of "grid unit" //TODO: detect if the start point is legal (if there is available space around it)
     this.post_preview_origin_spot.style.left = this.rel_data.xPosTo(this.rel_data.newPostStartCoord[0])+this.rel_data.canvasCoord[0]-17+'px';
     this.post_preview_origin_spot.style.top = this.rel_data.yPosTo(this.rel_data.newPostStartCoord[1])+this.rel_data.canvasCoord[1]-17+'px';
     this.post_preview_origin_spot.style.display = 'block';
@@ -161,7 +160,7 @@ postile.view.post_board.handlers.mask_mousedown = function(e){ //find the closes
 
 postile.view.post_board.handlers.mask_mousemove = function(e){ //mouse key not down yet
     if (!this.rel_data.newPostStartCoord) { return; }
-    var current = [this.rel_data.xPosFrom(e.offsetX - this.rel_data.canvasCoord[0]), this.rel_data.yPosFrom(e.offsetY - this.rel_data.canvasCoord[1])];
+    var current = [this.rel_data.xPosFrom(e.clientX - this.rel_data.canvasCoord[0]), this.rel_data.yPosFrom(e.clientY - this.rel_data.canvasCoord[1])];
     var delta = [0, 0];
     var end = [0, 0];
     var i;

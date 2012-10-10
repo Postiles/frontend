@@ -80,7 +80,6 @@ postile.browser_compat.setIgnore = function() {
 };
 
 postile.browser_compat.setCss = function(dom, attr, value) {
-    console.log(postile.browser_compat.css_prefix+attr.substr(0,1).toUpperCase()+attr.substr(1));
     dom.style[attr] = value;
     dom.style[postile.browser_compat.css_prefix+attr.substr(0,1).toUpperCase()+attr.substr(1)] = value;
 }
