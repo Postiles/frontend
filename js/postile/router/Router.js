@@ -16,12 +16,55 @@ postile.router.Router = {
             return new postile.router.Router.coure.route(path);
         }
     },
-    root:function(path) {
+
+    root:function(path){
         postile.router.Router.routes.root = path;
     },
+
+    rescue:function(fn){ // a function call when no solution found
+        postile.router.Router.routes.rescue = fn;
+    },
+
+    /**
+     * Ugly function for pattern matching
+     */
     match:function(path, parameterize) {
+        var params = {}, route = null, possible_route, slice, i, j, compare;
+        //Iterator through the registered paths
+        for(route in postile.router.Router.routes.defined) {
+            if(route!==null && route !== undefined) {
+                route = postile.router.Router.routes.defined[route];
+                possible_routes = route.partition();
+                for(j = 0; j < possible_routes.length; j++) {
+                    slice = possible_routes[j];
+                    compare = path;
+                    if(slice.search(/:/) > 0) {
+                        for(i = 0; i < slice.split("/").length; i++) {
+                            if((i<compare.split("/").length) && (slice.split("/")[i].charAt(0) === ":")) {
+                                params[slice.split('/')[i].replace(/:/,'')] = compare.split("/")[i];
+                                compare = compare.replace(compare.split("/")[i], slice.split("/")[i]);
+                            }
+                        }
+                    }
+                    if (slice == compare) {
+                        if(parameterize) {
+                            route.params = params;
+                        }
+                        return route;
+                    }
+                }
+            }
+        }
+        return null;
 
     },
+    dispatch:function(passed_route) {
+        var previous_route, matched_route;
+    }
+
+
+
+
     core:{
         /**
          * @class route
