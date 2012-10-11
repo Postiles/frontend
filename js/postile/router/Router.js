@@ -16,9 +16,11 @@ postile.router.Router = {
             return new postile.router.Router.coure.route(path);
         }
     },
+
     match:function(path, parameterize) {
 
     },
+
     core:{
         /**
          * @class route
@@ -32,12 +34,13 @@ postile.router.Router = {
             postile.router.Router.routes.defined[path] = this;
         }
     },
+
     routes:{
         current:null,
         root:null,
         previous:null,
         //The routes that have been defined..
-        defiend:{}
+        defined:{}
     }
 };
 
@@ -47,7 +50,7 @@ postile.router.Router.core.route.prototype = {
      * @param{funciton():route}
      */
     to:function(fn) {
-        this.action - fun;
+        this.action = fun;
         return this;
     },
     /**
