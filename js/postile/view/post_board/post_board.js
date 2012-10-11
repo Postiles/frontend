@@ -17,8 +17,13 @@ goog.require('postile.fx.effects');
 goog.require('goog.dom');
 goog.require('goog.math.Size');
 goog.require('goog.events');
+goog.require('goog.events.KeyCodes');
+goog.require('goog.events.KeyHandler');
 
 postile.view.post_board.PostBoard = function() { //constructor
+    var i;
+    var keyHandler;
+    var instance = this;
     postile.view.View.call(this);
     this.mousedownCoord = null; //record the mouse position when mousedown triggered
     this.canvasCoord = null; //current canvas position relative to the canvas viewport
@@ -26,24 +31,52 @@ postile.view.post_board.PostBoard = function() { //constructor
     this.canva_shadow_animation = null;
     this.currentArray = null; //an array containing all posts shown //TODO: is this really needed? anyway it is required at this moment
     this.newPostStartCoord = null; //hold the starting point of a new post in an array with the unit of "grid unit"
-    this.canvas_viewport = goog.dom.createDom('div', {'class': 'canvas_viewport'}); //disable text selecting
+    this.canvas_viewport = goog.dom.createDom('div', 'canvas_viewport'); //disable text selecting
     postile.browser_compat.setCss(this.canvas_viewport, 'userSelect', 'none');
     goog.events.listen(this.canvas_viewport, goog.events.EventType.SELECTSTART, function(){ return false; }); //disable text selecting
     goog.dom.appendChild(goog.dom.getElement('wrapper'), this.canvas_viewport);
-    this.canvas = goog.dom.createDom('div', {'class': 'canvas'});
+    this.canvas = goog.dom.createDom('div', 'canvas');
     goog.dom.appendChild(this.canvas_viewport, this.canvas);
-    this.mask = goog.dom.createDom('div', {'class': 'canvas_mask'});
+    this.mask = goog.dom.createDom('div', 'canvas_mask');
     goog.dom.appendChild(this.canvas_viewport, this.mask);
-    this.mask_notice = goog.dom.createDom('div', {'class': 'mask_notice'});
+    this.mask_notice = goog.dom.createDom('div', 'mask_notice');
     goog.dom.appendChild(this.mask, this.mask_notice);
     this.mask_notice.innerHTML = 'Click & Drag to add a post<br />Right click again to quit';
     this.canvas_viewport.rel_data = this;
     this.canvas.rel_data = this;
     this.mask.rel_data = this;
-    this.mask.preview = goog.dom.createDom('div', {'class': 'post_preview'});
+    this.mask.preview = goog.dom.createDom('div', 'post_preview');
     goog.dom.appendChild(this.mask, this.mask.preview);
     this.mask.post_preview_origin_spot = goog.dom.createDom('div', {'class': 'post_preview_origin_spot'});
     goog.dom.appendChild(this.mask, this.mask.post_preview_origin_spot);
+    /*start: controllers for moving the viewport*/
+    this.direction_controllers = [];
+    this.direction_controllers.push(goog.dom.createDom('div', {'class': 'arrow_control', 'title': 'up'}));
+    this.direction_controllers.push(goog.dom.createDom('div', {'class': 'arrow_control', 'title': 'right'}));
+    this.direction_controllers.push(goog.dom.createDom('div', {'class': 'arrow_control', 'title': 'down'}));
+    this.direction_controllers.push(goog.dom.createDom('div', {'class': 'arrow_control', 'title': 'left'}));
+    for (i in this.direction_controllers) {
+        goog.dom.appendChild(this.canvas_viewport, this.direction_controllers[i]);
+        goog.events.listen(this.direction_controllers[i], goog.events.EventType.CLICK, postile.view.post_board.handlers.arrow_control_click);
+    }
+    keyHandler = new goog.events.KeyHandler(document);
+    goog.events.listen(keyHandler, 'key', function(e) {
+        switch (e.keyCode) {
+            case goog.events.KeyCodes.LEFT:
+                instance.moveCanvas('left');
+                break;
+            case goog.events.KeyCodes.RIGHT:
+                instance.moveCanvas('right');
+                break;
+            case goog.events.KeyCodes.UP:
+                instance.moveCanvas('up');
+                break;
+            case goog.events.KeyCodes.DOWN:
+                instance.moveCanvas('down');
+                break;
+            }	
+    });
+    /*end*/
     goog.events.listen(this.canvas, goog.events.EventType.MOUSEDOWN, postile.view.post_board.handlers.canvas_mousedown);
     goog.events.listen(this.canvas, goog.events.EventType.MOUSEMOVE, postile.view.post_board.handlers.canvas_mousemove);
     goog.events.listen(this.canvas, goog.events.EventType.MOUSEUP, postile.view.post_board.handlers.canvas_mouseup);
@@ -62,6 +95,8 @@ postile.view.post_board.PostBoard.prototype.unloadedStylesheets = ['post_board.c
 postile.view.post_board.PostBoard.prototype.resize = function(){
     this.canvas_viewport.style.width = window.innerWidth + 'px';
     this.canvas_viewport.style.height = window.innerHeight + 'px';
+    //BUG: this.canvas.offsetHeight get 0 sometimes
+    if(!this.canvas.offsetHeight){ alert('来自傻逼孔祥舟的诚挚道歉：An unfixed bug postboard.js:99 happened. Pls refresh until this message disappears.'); document.body.innerHTML = ''; } //to be removed. just detect if bug happens
     this.canvasCoord = [(this.canvas_viewport.offsetWidth - this.canvas.offsetWidth)/2, (this.canvas_viewport.offsetHeight - this.canvas.offsetHeight)/2]; //To be replaced
     this.canvas.style.left = this.canvasCoord[0] + 'px'; this.canvas.style.top = this.canvasCoord[1] + 'px';   
 }
@@ -69,6 +104,30 @@ postile.view.post_board.PostBoard.prototype.resize = function(){
 postile.view.post_board.PostBoard.prototype.canvasOutBoundAnimation = function(){ //index 0 for x and 1 for y
     this.canvas.style.boxShadow = this.shadowCoord[0]/10+'px '+this.shadowCoord[1]/10+'px '+Math.sqrt(Math.pow(this.shadowCoord[0], 2)+Math.pow(this.shadowCoord[1], 2))/10+'px 0 rgba(255, 255, 255, 0.75) inset';
 };
+
+postile.view.post_board.PostBoard.prototype.moveCanvas = function(direction) {
+    if (this.mousedownCoord) { return; } //do not respond to actions if the user is actually dragging
+    switch(direction) {
+        case 'up':
+            this.canvasCoord[1] += 0.5 * this.canvas_viewport.offsetHeight;
+            this.canvasCoord[1] = Math.min(this.canvasCoord[1], 0);
+            break;
+        case 'down':
+            this.canvasCoord[1] -= 0.5 * this.canvas_viewport.offsetHeight;
+            this.canvasCoord[1] = Math.max(this.canvas_viewport.offsetHeight - this.canvas.offsetHeight, this.canvasCoord[1]);
+            break;
+        case 'left':
+            this.canvasCoord[0] += 0.5 * this.canvas_viewport.offsetWidth;
+            this.canvasCoord[0] = Math.min(this.canvasCoord[0], 0);
+            break;
+        case 'right':
+            this.canvasCoord[0] -= 0.5 * this.canvas_viewport.offsetWidth;
+            this.canvasCoord[0] = Math.max(this.canvas_viewport.offsetWidth - this.canvas.offsetWidth, this.canvasCoord[0]);
+            break;
+    }
+    this.canvas.style.left = this.canvasCoord[0] + 'px';
+    this.canvas.style.top = this.canvasCoord[1] + 'px';
+}
 
 //convent length from "unit length" of the grid to pixel.
 postile.view.post_board.PostBoard.prototype.widthTo = function(u) { return (u*(75+30) - 30); };
@@ -208,6 +267,10 @@ postile.view.post_board.handlers.mask_mouseup = function(e){
 postile.view.post_board.handlers.canvas_dblclick = function(){
     this.rel_data.mask.style.display = 'block';
 };
+
+postile.view.post_board.handlers.arrow_control_click = function() {
+    this.parentNode.rel_data.moveCanvas(this.getAttribute('title'));
+}
 
 /****
 Sections below are just for testing
