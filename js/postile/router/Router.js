@@ -17,9 +17,20 @@ postile.router.Router = {
         }
     },
 
+	root:function(path){
+		postile.router.Router.routes.root = path;
+	},
+	
+	rescue:function(fn){ // a function call when no solution found
+		postile.router.Router.routes.rescue = fn;
+	},
+
     match:function(path, parameterize) {
 
     },
+
+
+	
 
     core:{
         /**
@@ -90,6 +101,7 @@ postile.router.Router.core.route.prototype = {
     },
     /**
      * Run the functions in the do_enter
+     * Run the function in this.action
      */
     run:function() {
         var halt_execution = false, i, result, previous;
@@ -111,13 +123,4 @@ postile.router.Router.core.route.prototype = {
         }
     }
 };
-
-
-
-
-
-
-
-
-
 
