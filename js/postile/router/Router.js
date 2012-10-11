@@ -16,6 +16,9 @@ postile.router.Router = {
             return new postile.router.Router.coure.route(path);
         }
     },
+    root:function(path) {
+        postile.router.Router.routes.root = path;
+    },
     match:function(path, parameterize) {
 
     },
