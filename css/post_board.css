@@ -15,6 +15,7 @@
 	height: 2592px;
 	background-image: url(moc.jpg);
 	position: absolute;
+    display: none;
 }
 
 /*Mask*/
