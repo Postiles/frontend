@@ -35,14 +35,15 @@ postile.router = {
      */
     history:{
         initial: {}, // Empty container for "Initial Popstate" checking variable.
-        pushState: function(state, title, path) {
+        pushState: function(path) {
             if(postile.router.history.supported) {
                 if(postile.router.dispatch(path)) {
-                    window.history.pushState(state,title,path);
+                    window.history.pushState({}, "Postile", path);
                 }
             } else {
                 if(postile.router.history.fallback) {
-                    window.location.hash = "#" + path;
+                    //window.location.hash = "#" + path;
+                    window.location.href = path;
                 }
             }
         },
@@ -76,7 +77,6 @@ postile.router = {
             }
         }
     },
-
 
     /**
      * Ugly function for pattern matching
@@ -165,6 +165,8 @@ postile.router = {
              */
             postile.router.dispatch(location.hash);
         }
+        
+        /*
         // document.documentMode ensures that the router fires the right events, even in IE =_=!
         if("onhashchange" in window &&(!document.documentMode || document.documentMode >= 8)) {
             window.onhashchange = fn;
@@ -176,11 +178,9 @@ postile.router = {
         if(location.hash !== "") {
             postile.router.dispatch(location.hash);
         }
+        */
 
     },
-
-
-
 
     core:{
         /**
