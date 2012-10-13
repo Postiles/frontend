@@ -46,7 +46,7 @@ postile.view.post_board.PostBoard = function() { //constructor
     goog.dom.appendChild(this.viewport, this.canvas);
     goog.dom.appendChild(this.viewport, this.mask);
     goog.dom.appendChild(this.mask, this.mask_notice);
-    this.mask_notice.innerHTML = 'Click & Drag to add a post<br />Right click again to quit';
+    this.mask_notice.innerHTML = 'Click & Drag to add a post<br />Double click again to quit';
     this.viewport.rel_data = this;
     this.canvas.rel_data = this;
     this.mask.rel_data = this;
@@ -193,7 +193,7 @@ postile.view.post_board.PostBoard.prototype.renderArray = function(array) { //ad
         array[i].divEl.style.top = this.yPosTo(array[i].y_pos) + 'px';
         array[i].divEl.style.width = this.widthTo(array[i].width) + 'px';
         array[i].divEl.style.height = this.heightTo(array[i].height) + 'px';
-        goog.events.listen(this.mask, goog.events.EventType.DBLCLICK, function(event){event.stopPropagation();}); //prevent right click from triggering "creating new post"
+        goog.events.listen(this.mask, goog.events.EventType.DBLCLICK, function(event){event.stopPropagation();}); //prevent dbl click from triggering "creating new post"
         array[i].divEl.innerHTML = array[i].content;
         postile.fx.effects.resizeIn(array[i].divEl);
     }
