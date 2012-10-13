@@ -7,7 +7,7 @@ postile.fx.effects.resizeIn = function(dom) {
     dom.style.opcaity = 0;
     dom.style.display = 'block';
     new postile.fx.Animate(function(i){
-        postile.browser_compat.setCss(dom, 'transform', 'scale('+(1.25-0.25*i)+','+(1.25-0.25*i)+')', postile.fx.ease.cubic_ease_out);
+        postile.browser_compat.setCss(dom, 'transform', 'scale('+(1.25-0.25*i)+','+(1.25-0.25*i)+')');
         dom.style.opacity = i;
-    }, 400);
+    }, 400, postile.fx.ease.cubic_ease_out, function() { postile.browser_compat.setCss(dom, 'transform', 'none'); });
 };
