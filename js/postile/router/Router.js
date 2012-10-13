@@ -36,12 +36,9 @@ postile.router.Router = {
     history:{
         initial: {}, // Empty container for "Initial Popstate" checking variable.
         pushState: function(state, title, path) {
-		//	console.log('pushing state called and support condition is:' + postile.router.Router.history.supported);
             if(postile.router.Router.history.supported) {
-			//	console.log('history supported');
                 if(postile.router.Router.dispatch(path)) {
-                   // console.log('dispatch successfully');
-                    history.pushState(state,title,path);
+                    window.history.pushState(state,title,path);
                 }
             } else {
                 if(postile.router.Router.history.fallback) {
@@ -57,8 +54,7 @@ postile.router.Router = {
             postile.router.Router.dispatch(document.location.pathname);
         },
         listen:function(fallback) {
-			console.log('Router history Listening');
-	
+
             postile.router.Router.history.supported = !!(window.history && window.history.pushState);
             postile.router.Router.history.fallback = fallback;
 
@@ -121,6 +117,8 @@ postile.router.Router = {
     },
     /**
      * Dispatch the routing
+     * Match a URL to a predefined route and do the function
+     * corresponding to it.
      */
     dispatch:function(passed_route) {
         var previous_route, matched_route;
@@ -153,15 +151,12 @@ postile.router.Router = {
         }
     },
     listen: function(){
-		console.log('Router Listening');
-		
-		if(location.hash === ""){
-			if (postile.router.Router.routes.root !== null) {
-			    console.log('calling root');
+        if(location.hash === ""){
+            if (postile.router.Router.routes.root !== null) {
                 location.hash = postile.router.Router.routes.root;
             }
-		}
-				
+        }
+
         var fn = function() {
             /**
              * Dispatch from the location.hash
