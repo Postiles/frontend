@@ -85,11 +85,11 @@ postile.view.post_board.PostBoard = function() { //constructor
     goog.events.listen(this.canvas, goog.events.EventType.MOUSEDOWN, postile.view.post_board.handlers.canvas_mousedown);
     goog.events.listen(this.canvas, goog.events.EventType.MOUSEMOVE, postile.view.post_board.handlers.canvas_mousemove);
     goog.events.listen(this.canvas, goog.events.EventType.MOUSEUP, postile.view.post_board.handlers.canvas_mouseup);
-    goog.events.listen(this.canvas, goog.events.EventType.CONTEXTMENU, postile.view.post_board.handlers.canvas_rightclick);
+    goog.events.listen(this.canvas, goog.events.EventType.DBLCLICK, postile.view.post_board.handlers.canvas_dblclick);
     goog.events.listen(this.mask, goog.events.EventType.MOUSEDOWN, postile.view.post_board.handlers.mask_mousedown);
     goog.events.listen(this.mask, goog.events.EventType.MOUSEMOVE, postile.view.post_board.handlers.mask_mousemove);
     goog.events.listen(this.mask, goog.events.EventType.MOUSEUP, postile.view.post_board.handlers.mask_mouseup);
-    goog.events.listen(this.mask, goog.events.EventType.CONTEXTMENU, function(e){ e.preventDefault(); this.style.display = 'none'; });
+    goog.events.listen(this.mask, goog.events.EventType.DBLCLICK, function(e){ e.preventDefault(); this.style.display = 'none'; });
     this.resize();
 }
 
@@ -193,7 +193,7 @@ postile.view.post_board.PostBoard.prototype.renderArray = function(array) { //ad
         array[i].divEl.style.top = this.yPosTo(array[i].y_pos) + 'px';
         array[i].divEl.style.width = this.widthTo(array[i].width) + 'px';
         array[i].divEl.style.height = this.heightTo(array[i].height) + 'px';
-        goog.events.listen(this.mask, goog.events.EventType.CONTEXTMENU, function(event){event.stopPropagation();}); //prevent right click from triggering "creating new post"
+        goog.events.listen(this.mask, goog.events.EventType.DBLCLICK, function(event){event.stopPropagation();}); //prevent right click from triggering "creating new post"
         array[i].divEl.innerHTML = array[i].content;
         postile.fx.effects.resizeIn(array[i].divEl);
     }
@@ -321,8 +321,7 @@ postile.view.post_board.handlers.mask_mouseup = function(e){
 };
 
 //activated double click event for creating new boxes
-postile.view.post_board.handlers.canvas_rightclick = function(e){
-    e.preventDefault();
+postile.view.post_board.handlers.canvas_dblclick = function(e){
     this.rel_data.disableMovingCanvas = true;
     this.rel_data.mask.style.display = 'block';
 };
