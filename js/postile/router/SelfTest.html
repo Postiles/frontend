@@ -1,0 +1,42 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Router Test</title>	
+		<script type="text/javascript" src="../../goog/base.js"></script>
+		<script type="text/javascript" src="../deps.js"></script>
+		<script type="text/javascript" src="../boot.js"></script>
+		<script type="text/javascript" src="Router.js"></script>	
+		<script type="text/javascript">
+	
+		function define_routes(){
+			console.log('something happened');
+			console.log('something again');
+			
+			postile.router.Router.map("#/something").to(function(){
+				console.log("successful routing");
+			});
+			
+			postile.router.Router.history.listen();
+			postile.router.Router.listen();
+			
+		}
+		</script>
+		
+		<style type="text/css">
+		    body {font-family: arial;}
+		    p {width: 600px; text-align: justify;}
+		    table {font-family: courier;}
+		</style>
+	</head>
+	<body onload="define_routes();">
+	    <div id="description">
+		</div><br /><br />
+		<div id="console">
+		    <h3>Expected</h3>	
+			<h3>Actual</h3>
+			<div id="actual"></div>
+			<h3>Grade</h3>
+			<div id="grade"></div>
+		</div>
+	</body>
+</html>

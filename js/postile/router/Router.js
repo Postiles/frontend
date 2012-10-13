@@ -10,7 +10,7 @@ postile.router.Router = {
      * @return route a routing object
      */
     map:function(path) {
-        if(postile.router.Router.routes.defined.hasProperty(path)) {
+        if(postile.router.Router.routes.defined.hasOwnProperty(path)) {
             return postile.router.Router.routes.defined[path];
         } else {
             return new postile.router.Router.core.route(path);
@@ -36,8 +36,11 @@ postile.router.Router = {
     history:{
         initial: {}, // Empty container for "Initial Popstate" checking variable.
         pushState: function(state, title, path) {
+		//	console.log('pushing state called and support condition is:' + postile.router.Router.history.supported);
             if(postile.router.Router.history.supported) {
+			//	console.log('history supported');
                 if(postile.router.Router.dispatch(path)) {
+                   // console.log('dispatch successfully');
                     history.pushState(state,title,path);
                 }
             } else {
@@ -47,14 +50,16 @@ postile.router.Router = {
             }
         },
         popState: function(event) {
-            var initialPop = !postile.router.Router.history.initial.poped && loation.href == postile.router.Router.history.inital.URL;
+            var initialPop = !postile.router.Router.history.initial.poped && location.href == postile.router.Router.history.initial.URL;
             postile.router.Router.history.initial.popped = true;
             //If currently is initial pop, we give the browser to handle the return
             if(initialPop) return;
             postile.router.Router.dispatch(document.location.pathname);
         },
         listen:function(fallback) {
-            postile.router.Router.history.supported = !!(window.history && window.history.pushSate);
+			console.log('Router history Listening');
+	
+            postile.router.Router.history.supported = !!(window.history && window.history.pushState);
             postile.router.Router.history.fallback = fallback;
 
             if(postile.router.Router.history.supported) {
@@ -148,6 +153,15 @@ postile.router.Router = {
         }
     },
     listen: function(){
+		console.log('Router Listening');
+		
+		if(location.hash === ""){
+			if (postile.router.Router.routes.root !== null) {
+			    console.log('calling root');
+                location.hash = postile.router.Router.routes.root;
+            }
+		}
+				
         var fn = function() {
             /**
              * Dispatch from the location.hash
@@ -183,6 +197,7 @@ postile.router.Router = {
             /** @type{string}*/       this.path = path;
             /** @type{function(*)} */ this.action = null;
             /** @type{functio()}*/    this.do_enter = [];
+            /** @type{function(*)} */ this.do_exit = null;
 
             /**
              * Parameter of the route
@@ -200,7 +215,7 @@ postile.router.Router = {
         root     : null,
         previous : null,
         //The routes that have been defined..
-        defiend:{}
+        defined :{}
     }
 };
 
@@ -288,13 +303,3 @@ postile.router.Router.core.route.prototype = {
         }
     }
 };
-
-
-
-
-
-
-
-
-
-
