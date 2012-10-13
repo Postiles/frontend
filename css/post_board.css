@@ -47,6 +47,7 @@
 	border: 3px dashed #FFF;
 	border-radius: 4px;
 	z-index: 1;
+    display: none;
 }
 .post_preview_origin_spot {
 	display: none;

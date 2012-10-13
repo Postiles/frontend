@@ -31,7 +31,7 @@ postile.view.post_board.PostBoard = function() { //constructor
     this.shadowCoord = [0, 0]; //current shadow (the boundary-out(boundout) effect)
     this.canvasSize = [3872, 2592]; //the size of the canvas currently
     this.canva_shadow_animation = null; //the animation for the outbound shadow
-    this.manualMoveAnimation = null; //the animation for MANUAL moving (ways otehr than dragging)
+    this.disableMovingCanvas = false; //when true, moving canvas is disabled temporarily
     this.currentArray = null; //an array containing all posts shown //TODO: is this really needed? anyway it is required at this moment
     this.newPostStartCoord = null; //hold the starting point of a new post in an array with the unit of "grid unit"
     this.viewport = goog.dom.createDom('div', 'canvas_viewport'); //disable text selecting
@@ -110,49 +110,55 @@ postile.view.post_board.PostBoard.prototype.canvasOutBoundAnimation = function()
 };
 
 postile.view.post_board.PostBoard.prototype.moveCanvas = function(direction) {
-    if (this.mousedownCoord || this.manualMoveAnimation) { return; } //do not respond to actions if the user is actually dragging
+    if (this.disableMovingCanvas) { return; } //do not respond to actions if the user is actually dragging
     var leftTarget = this.canvasCoord[0];
     var topTarget = this.canvasCoord[1];
     var i;
     var instance = this;
-    var arrow_hide = -1; //the arrow index to hide
+    var arrow_hide = [false, false, false, false]; //the arrow index to hide
     switch(direction) {
         case 'up':
             topTarget += 0.5 * this.viewport.offsetHeight;
-            if (topTarget > 0) { topTarget = 0; arrow_hide = 0; }
             break;
         case 'down':
             topTarget -= 0.5 * this.viewport.offsetHeight;
-            if (topTarget < this.viewport.offsetHeight - this.canvasSize[1]) { topTarget = this.viewport.offsetHeight - this.canvasSize[1]; arrow_hide = 2; }
             break;
         case 'left':
             leftTarget += 0.5 * this.viewport.offsetWidth;
-            if (leftTarget > 0) { leftTarget = 0; arrow_hide = 3; }
             break;
         case 'right':
             leftTarget -= 0.5 * this.viewport.offsetWidth;
-            if (leftTarget < this.viewport.offsetWidth - this.canvasSize[0]) { leftTarget = this.viewport.offsetWidth - this.canvasSize[0]; arrow_hide = 1; }
             break;
     }
+    if (topTarget >= 0) { topTarget = 0; arrow_hide[0] = true; }
+    if (topTarget <= this.viewport.offsetHeight - this.canvasSize[1]) { topTarget = this.viewport.offsetHeight - this.canvasSize[1]; arrow_hide[2] = true; }
+    if (leftTarget >= 0) { leftTarget = 0; arrow_hide[3] = true; }
+    if (leftTarget <= this.viewport.offsetWidth - this.canvasSize[0]) { leftTarget = this.viewport.offsetWidth - this.canvasSize[0]; arrow_hide[1] = true; }
     if (leftTarget != instance.canvasCoord[0] || topTarget != instance.canvasCoord[1]) {
-        console.log([instance.canvasCoord[0], leftTarget, instance.canvasCoord[1], topTarget]);
+        this.disableMovingCanvas = true;
         for (i in instance.direction_controllers) {
             instance.direction_controllers[i].style.display = 'none';
         }
-        this.manualMoveAnimation = new postile.fx.Animate(function(iter) {
+        new postile.fx.Animate(function(iter) {
            instance.canvas.style.left = instance.canvasCoord[0]*(1-iter) + leftTarget*iter + 'px';
            instance.canvas.style.top = instance.canvasCoord[1]*(1-iter) + topTarget*iter + 'px';
         }, 600, postile.fx.ease.sin_ease, function() {
             instance.canvasCoord[0] = leftTarget;
             instance.canvasCoord[1] = topTarget;
             var i;
-            instance.manualMoveAnimation = null;
+            instance.disableMovingCanvas = false;
             for (i in instance.direction_controllers) {
-                if (arrow_hide != i) {
+                if (!arrow_hide[i]) {
                     instance.direction_controllers[i].style.display = 'block';
                 }
             }
         });
+    } else {
+        for (i in arrow_hide) {
+            if (arrow_hide[i]) {
+                instance.direction_controllers[i].style.display = 'none';
+            }
+        }
     }
 }
 
@@ -195,7 +201,8 @@ postile.view.post_board.PostBoard.prototype.renderArray = function(array) { //ad
 
 postile.view.post_board.handlers.canvas_mousedown = function(e) {
     var i;
-    if(this.rel_data.manualMoveAnimation) { return; }
+    if(this.rel_data.disableMovingCanvas) { return; }
+    this.rel_data.disableMovingCanvas = true;
     this.rel_data.mousedownCoord = [e.clientX, e.clientY];
     for(i in this.rel_data.direction_controllers) { //hide all dirction control arrows
         this.rel_data.direction_controllers[i].style.display = 'none';
@@ -207,6 +214,7 @@ postile.view.post_board.handlers.canvas_mousedown = function(e) {
 
 postile.view.post_board.handlers.canvas_mouseup = function(e) { 
     var post_board = this.rel_data;
+    post_board.disableMovingCanvas = false;
     post_board.mousedownCoord = null;
     post_board.canvasCoord = [parseFloat(this.style.left),parseFloat(this.style.top)];
     //animation of outbound shadow
@@ -303,7 +311,9 @@ postile.view.post_board.handlers.mask_mousemove = function(e){ //mouse key not d
 };
 
 postile.view.post_board.handlers.mask_mouseup = function(e){
+    this.rel_data.disableMovingCanvas = false;
     this.rel_data.newPostStartCoord = null;
+    this.post_preview_origin_spot.style.display = 'none';
     if (!this.legal) {
         this.preview.style.display = 'none'; return;
     }
@@ -313,6 +323,7 @@ postile.view.post_board.handlers.mask_mouseup = function(e){
 //activated double click event for creating new boxes
 postile.view.post_board.handlers.canvas_rightclick = function(e){
     e.preventDefault();
+    this.rel_data.disableMovingCanvas = true;
     this.rel_data.mask.style.display = 'block';
 };
 

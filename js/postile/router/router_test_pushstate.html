@@ -42,7 +42,7 @@
                    window.history.go(-1);
                 } else {
                     //window.location.hash = "#" + hrefs[index];
-                    postile.router.Router.history.pushState({}, "", hrefs[index]);
+                    postile.router.history.pushState({}, "", hrefs[index]);
                 }
                 index++;
             } else {
@@ -63,7 +63,7 @@
         }
 
         function define_routes(){
-            postile.router.Router.map("/A").enter(function(){
+            postile.router.map("/A").enter(function(){
                 update("A[enter]");
             }).to(function(){
                 update("A[action]");
@@ -73,15 +73,15 @@
 
         //    alert('defined routes');
 
-            postile.router.Router.map("/B").to(function(){
+            postile.router.map("/B").to(function(){
                 update("B[action]");
             });
 
-            postile.router.Router.map("/B").enter(function(){
+            postile.router.map("/B").enter(function(){
                 update("B[enter]");
             })
 
-            postile.router.Router.map("/C").to(function(){
+            postile.router.map("/C").to(function(){
                 update("C[action]");
             }).exit(function(){
                 update("C[exit]");
@@ -89,29 +89,29 @@
 
             // No map for /D1 or /D2.  This checks that our rescue method works, and works multiple times in succession.
 
-            postile.router.Router.map("/E/params/:id/parse").to(function(){
+            postile.router.map("/E/params/:id/parse").to(function(){
                 update("E[action](parse id=" + this.params['id'] + ")");
             });
 
-            postile.router.Router.map("/E/params/:id/parse").enter(function(){
+            postile.router.map("/E/params/:id/parse").enter(function(){
                 update("E[enter](parse)");
             });
 
-            postile.router.Router.map("/E/params/:id/check").to(function(){
+            postile.router.map("/E/params/:id/check").to(function(){
                 update("E[action](check id=" + this.params['id'] + ")");
             });
 
-            postile.router.Router.map("/E/params/:id/check").exit(function(){
+            postile.router.map("/E/params/:id/check").exit(function(){
                 update("E[exit](check)");
             });
 
-            postile.router.Router.map("/F").enter(function(){
+            postile.router.map("/F").enter(function(){
                 update("F[enter]");
             }).to(function(){
                 update("F[action]");
             });
 
-            postile.router.Router.map("/G").enter(function(){
+            postile.router.map("/G").enter(function(){
                 update("G[enter 1]");
             }).enter(function(){
                 update("G[enter 2]");
@@ -127,18 +127,18 @@
                 update("G[action - NOT HIT]");
             });
 
-                        postile.router.Router.map("/H(/:id_one)(/:id_two)").to(function(){
+                        postile.router.map("/H(/:id_one)(/:id_two)").to(function(){
                         var id_one = this.params["id_one"] || "N/A";
                         var id_two = this.params["id_two"] || "N/A";
                             update("H(one=" + id_one + ", two=" + id_two + ")");
                         });
 
-            postile.router.Router.rescue(function(){
+            postile.router.rescue(function(){
                 update("RESCUE");
             });
 
             console.log('entered Defined routes');
-            postile.router.Router.history.listen();
+            postile.router.history.listen();
 
             timer = setInterval(run_route, 500);
         }
