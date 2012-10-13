@@ -8,7 +8,7 @@ goog.require('goog.dom');
 postile.view.View = function() {
     var i;
     for (i in this.unloadedStylesheets) {
-        goog.dom.appendChild(document.getElementsByTagName('head')[0], goog.dom.createDom('link', { type: 'text/css', rel: 'stylesheet', href: 'css/'+this.unloadedStylesheets[i] }));
+        goog.dom.appendChild(document.getElementsByTagName('head')[0], goog.dom.createDom('link', { type: 'text/css', rel: 'stylesheet', href: '/css/'+this.unloadedStylesheets[i] }));
     }
     this.unloadedStylesheets = [];
 }
