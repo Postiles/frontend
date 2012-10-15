@@ -23,25 +23,27 @@ postile.utils.ajax = function(url, data, callback, notifier_text, use_get){
     }
     xhr.timeout = 10000;
     xhr.ontimeout = function(){ postile.utils.ajax.notifier.networkError("Request timeout."); };
-    if (!use_get) {
+    if ((!use_get) && postile.browser_compat.walkarounds.xhr >= 2) {
         xhr.open('POST', url);
-        if (postile.browser_compat.walkarounds.xhr >= 2) {
-            formData = new FormData();
-            for (i in data) {
-        　　　　formData.append(i, data[i]);
-        　　}
-        } else {
-             headers.set("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
-             formData = new Array();
-             var (i in data) {
-                formData.push(encodeURIComponent(i)+'='+encodeURIComponent(data[i]));
-             }
-             formData = formData.join('&');
-        }
+        formData = new FormData();
+        for (i in data) {
+    　　　　formData.append(i, data[i]);
+    　　}
     　　xhr.send(formData);
    } else {
-        xhr.open('GET', url);
-        xhr.send(null);
+        headers.set("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
+        formData = new Array();
+        var (i in data) {
+            formData.push(encodeURIComponent(i)+'='+encodeURIComponent(data[i]));
+        }
+        formData = formData.join('&');
+        if (!use_get) {
+            xhr.open('POST', url);
+            xhr.send(formData);
+        } else {
+            xhr.open('GET', url+'?'+formData);
+            xhr.send(null);
+        }
    }
 };
 
