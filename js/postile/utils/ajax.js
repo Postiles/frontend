@@ -4,7 +4,7 @@ library for ajax-related activities
 
 goog.provide('postile.utils.ajax');
 
-postile.utils.ajax = function(url, callback, notifier_text, data){
+postile.utils.ajax = function(url, data, callback, notifier_text, use_get){ 
     var xhr, formData, i;
     postile.utils.ajax.notifier.show(notifier_text);
     if (postile.browser_compat.walkarounds.xdr) {
@@ -23,7 +23,7 @@ postile.utils.ajax = function(url, callback, notifier_text, data){
     }
     xhr.timeout = 10000;
     xhr.ontimeout = function(){ postile.utils.ajax.notifier.networkError("Request timeout."); };
-    if (data) {
+    if (!use_get) {
         xhr.open('POST', url);
         if (postile.browser_compat.walkarounds.xhr >= 2) {
             formData = new FormData();
