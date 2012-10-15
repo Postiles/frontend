@@ -4,7 +4,7 @@ library for ajax-related activities
 
 goog.provide('postile.utils.ajax');
 
-postile.utils.ajax = function(url, data, callback, notifier_text){
+postile.utils.ajax = function(url, callback, notifier_text, data){
     var xhr, formData, i;
     postile.utils.ajax.notifier.show(notifier_text);
     if (postile.browser_compat.walkarounds.xdr) {
@@ -23,21 +23,26 @@ postile.utils.ajax = function(url, data, callback, notifier_text){
     }
     xhr.timeout = 10000;
     xhr.ontimeout = function(){ postile.utils.ajax.notifier.networkError("Request timeout."); };
-    xhr.open('POST', url);
-    if (postile.browser_compat.walkarounds.xhr >= 2) {
-        formData = new FormData();
-        for (i in data) {
-    　　　　formData.append(i, data[i]);
-    　　}
-    } else {
-         headers.set("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
-         formData = new Array();
-         var (i in data) {
-            formData.push(encodeURIComponent(i)+'='+encodeURIComponent(data[i]));
-         }
-         formData = formData.join('&');
-    }
-　　xhr.send(formData);
+    if (data) {
+        xhr.open('POST', url);
+        if (postile.browser_compat.walkarounds.xhr >= 2) {
+            formData = new FormData();
+            for (i in data) {
+        　　　　formData.append(i, data[i]);
+        　　}
+        } else {
+             headers.set("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
+             formData = new Array();
+             var (i in data) {
+                formData.push(encodeURIComponent(i)+'='+encodeURIComponent(data[i]));
+             }
+             formData = formData.join('&');
+        }
+    　　xhr.send(formData);
+   } else {
+        xhr.open('GET', url);
+        xhr.send(null);
+   }
 };
 
 postile.utils.ajax.fetchedHandler = function(callback, receivedText) {

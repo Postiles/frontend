@@ -14,8 +14,8 @@ goog.provide('postile.view.post_board.handlers');
 goog.require('postile.view');
 goog.require('postile.fx');
 goog.require('postile.fx.effects');
+goog.require('postile.utils.ajax');
 goog.require('goog.dom');
-goog.require('goog.math.Size');
 goog.require('goog.events');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.events.KeyHandler');
@@ -39,6 +39,7 @@ postile.view.post_board.PostBoard = function() { //constructor
     this.mask = goog.dom.createDom('div', 'canvas_mask'); //the mask used when creating new post
     this.mask_notice = goog.dom.createDom('div', 'mask_notice'); //text
     this.direction_controllers = []; //the conntrol arrows
+    this.currentSubscribeArea = null; //a valid area for which we've got all data we need and keep refreshing from the server
     /* END OF MEMBER DEFINITION */
     postile.browser_compat.setCss(this.viewport, 'userSelect', 'none');
     goog.events.listen(this.viewport, goog.events.EventType.SELECTSTART, function(){ return false; }); //disable text selecting
@@ -171,13 +172,29 @@ postile.view.post_board.PostBoard.prototype.yPosTo = function(u) { return (u*(50
 postile.view.post_board.PostBoard.prototype.xPosFrom = function(px) { return ((px + 7 - this.canvasSize[0]/2)/(75+30)); };
 postile.view.post_board.PostBoard.prototype.yPosFrom = function(px) { return ((px + 7 - this.canvasSize[1]/2)/(50+30)); };
 
-postile.view.post_board.PostBoard.prototype.getVisibleArea = function() { //get visible area in the unit of "grid unit"
-    return { left: Math.floor(this.xPosFrom(-this.canvasCoord[0])), top: Math.floor(this.yPosFrom(-this.canvasCoord[1])), right: Math.ceil(this.xPosFrom(this.viewport.offsetWidth - this.canvasCoord[0])), bottom: Math.ceil(this.yPosFrom(this.viewport.offsetHeight - this.canvasCoord[1]))};
+postile.view.post_board.PostBoard.prototype.getVisibleArea = function(source) { //get visible area in the unit of "grid unit" //source is esxpected to be this.canvasCoord or [parseInt(this.canvas.style.left), parseInt(this.canvas.style.top)]
+    return { left: Math.floor(this.xPosFrom(-source[0])), top: Math.floor(this.yPosFrom(-source[1])), right: Math.ceil(this.xPosFrom(this.viewport.offsetWidth - source[0])), bottom: Math.ceil(this.yPosFrom(this.viewport.offsetHeight - source[1]))};
 }
 
-postile.view.post_board.PostBoard.prototype.getSubscribeArea = function() { //get subscribe area in the unit of "grid unit"
+postile.view.post_board.PostBoard.prototype.getSubscribeArea = function(source) { //get subscribe area in the unit of "grid unit"
     var preloadRadio = 1; //the size of preloaded area. 0 for exactly visible area (no preload), n for extend n screen length on all directions.
-    return { left: Math.floor(this.xPosFrom(-this.canvasCoord[0] - preloadRadio*this.viewport.offsetWidth)), top: Math.floor(this.yPosFrom(-this.canvasCoord[1] - preloadRadio*this.viewport.offsetHeight)), right: Math.ceil(this.xPosFrom(this.viewport.offsetWidth*(1+preloadRadio) - this.canvasCoord[0])), bottom: Math.ceil(this.yPosFrom(this.viewport.offsetHeight*(1+preloadRadio) - this.canvasCoord[1]))};
+    return { left: Math.floor(this.xPosFrom(-source[0] - preloadRadio*this.viewport.offsetWidth)), top: Math.floor(this.yPosFrom(-source[1] - preloadRadio*this.viewport.offsetHeight)), right: Math.ceil(this.xPosFrom(this.viewport.offsetWidth*(1+preloadRadio) - source[0])), bottom: Math.ceil(this.yPosFrom(this.viewport.offsetHeight*(1+preloadRadio) - source[1]))};
+}
+
+postile.view.post_board.PostBoard.prototype.updateSubsribeArea = function() { //fetch the posts in the new area and subscribe it
+    var currentLoc = [parseInt(this.canvas.style.left), parseInt(this.canvas.style.top)];
+    var to_sub = this.getSubscribeArea(currentLoc);
+    var instance = this;
+    if (!this.isAreaFullInside(this.currentSubscribeArea, this.getVisibleArea(currentLoc))) {
+        //display loading
+    }
+    postile.utils.ajax( , , function() {
+        instance.currentSubscribeArea = to_sub;
+    }, 'Loading posts...');
+}
+
+postile.view.post_board.PostBoard.prototype.isAreaFullInside = function(parent, child) {
+    return (parent.left <= child.left && parent.right >= child.right && parent.top <= child.top && parent.bottom >= child.bottom);
 }
 
 postile.view.post_board.PostBoard.prototype.renderArray = function(array) { //add post objects to the screen //NOTICE: just add, no not care the duplicate
