@@ -61,45 +61,92 @@
 
 /*Arrow*/
 
-.arrow_control{
-    background-image: url(arrow.png);
-    width: 120px;
-    height: 40px;
+.right_clicker {
+    width: 106px;
+    height: 106px;
+    background: url(right.png);
+    display: none;
     position: absolute;
 }
 
-.arrow_control:hover {
-    background-image: url(arrow_active.png);
+.arrow_detect { position: absolute; background-repeat: no-repeat; }
+
+.arrow_detect.up, .arrow_detect.down {
+    width: 100%;
+    height: 50px;
 }
 
-.arrow_control[title="up"] {
-    top: 5px;
-    left: 50%;
-    -webkit-transform: translateX(-50%);
-    -moz-transform: translateX(-50%);
-    -ms-transform: translateX(-50%);
+.arrow_detect.left, .arrow_detect.right {
+    height: 100%;
+    width: 50px;
 }
 
-.arrow_control[title="left"] {
-    left: -35px;
-    top: 50%;
-    -webkit-transform: translateY(-50%) rotate(-90deg);
-    -moz-transform: translateY(-50%) rotate(-90deg);
-    -ms-transform: translateY(-50%) rotate(-90deg);
+.arrow_detect.up, .arrow_detect.down .arrow_button {
+    top: 0;
 }
 
-.arrow_control[title="right"] {
-    right: -35px;
-    top: 50%;
-    -webkit-transform: translateY(-50%) rotate(90deg);
-    -moz-transform: translateY(-50%) rotate(90deg);
-    -ms-transform: translateY(-50%) rotate(90deg);
+.arrow_detect.down, .arrow_detect.up .arrow_button  {
+    bottom: 0;
 }
 
-.arrow_control[title="down"] {
-    bottom: 5px;
-    left: 50%;
-    -webkit-transform: translateX(-50%) rotate(180deg);
-    -moz-transform: translateX(-50%) rotate(180deg);
-    -ms-transform: translateX(-50%) rotate(180deg);
+.arrow_detect.left, .arrow_detect.right .arrow_button {
+    left: 0;
+}
+
+.arrow_detect.right, .arrow_detect.left .arrow_button  {
+    right: 0;
+}
+
+.arrow_covering {
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    position: absolute;
+}
+
+.arrow_detect .arrow_button {
+    overflow: hidden; position: absolute; display: none;
+}
+
+.arrow_detect .arrow_button div { position: absolute; }
+
+.arrow_detect.up .arrow_button, .arrow_detect.down .arrow_button, .arrow_detect.up .arrow_button div, .arrow_detect.down .arrow_button div {
+    width: 120px; height: 40px;
+}
+
+.arrow_detect.left .arrow_button, .arrow_detect.right .arrow_button, .arrow_detect.left .arrow_button div, .arrow_detect.right .arrow_button div {
+    width: 40px; height: 120px;
+}
+
+.arrow_detect.up .arrow_button {
+    background: url(arrow_sm_up.png);
+}
+
+.arrow_detect.up .arrow_button div {
+    background: url(arrow_sm_up_hover.png);
+}
+
+.arrow_detect.down .arrow_button {
+    background: url(arrow_sm_down.png);
+}
+
+.arrow_detect.down .arrow_button div {
+    background: url(arrow_sm_down_hover.png);
+}
+
+.arrow_detect.left .arrow_button {
+    background: url(arrow_sm_left.png);
+}
+
+.arrow_detect.left .arrow_button div {
+    background: url(arrow_sm_left_hover.png);
+}
+
+.arrow_detect.right .arrow_button {
+    background: url(arrow_sm_right.png);
+}
+
+.arrow_detect.right .arrow_button div {
+    background: url(arrow_sm_right_hover.png);
 }

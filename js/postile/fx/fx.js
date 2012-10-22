@@ -7,7 +7,7 @@ postile.fx.Animate = function(iter_func, duration, ease, callback) {
     if (!callback) { callback = function(){} }
     var iter_status = 0;
     var iter_step = postile.fx.period/duration;
-    var interval = setInterval(function() {
+    var interval = this.interval = setInterval(function() {
         iter_status += iter_step;
         if (iter_status > 1) { iter_status = 1; }
         iter_func(ease(iter_status));

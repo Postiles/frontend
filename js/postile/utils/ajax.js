@@ -33,7 +33,7 @@ postile.utils.ajax = function(url, data, callback, notifier_text, use_get){
    } else {
         headers.set("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
         formData = new Array();
-        var (i in data) {
+        for (i in data) {
             formData.push(encodeURIComponent(i)+'='+encodeURIComponent(data[i]));
         }
         formData = formData.join('&');
@@ -61,6 +61,8 @@ postile.utils.ajax.fetchedHandler = function(callback, receivedText) {
 　　callback(received);
     postile.utils.ajax.notifier.hide();
 };
+
+postile.utils.ajax.notifier = {};
 
 postile.utils.ajax.notifier.show = function(notifier_text){};
 
