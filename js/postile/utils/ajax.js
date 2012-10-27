@@ -3,10 +3,13 @@ library for ajax-related activities
 */
 
 goog.provide('postile.utils.ajax');
+goog.provide('postile.utils.faye');
 
-postile.utils.ajax = function(url, data, callback, notifier_text, use_get){ 
+postile.utils.ajax = function(url, data, callback, use_get, notifier_text){ 
     var xhr, formData, i;
-    postile.utils.ajax.notifier.show(notifier_text);
+	if (notifier_text && notifier_text.length) {
+		postile.utils.ajax.notifier.show(notifier_text);
+	}
     if (postile.browser_compat.walkarounds.xdr) {
         xhr = new XDomainRequest();
         xhr.onload = function() { postile.utils.ajax.fetchedHandler(callback, xhr.responseText); }
@@ -76,3 +79,28 @@ postile.utils.ajax.expection_handlers = { //exception_string and corresponding h
     not_logged_login: function(received) {},
     privilege_required: function(received) {}
 }
+
+postile.utils.faye.client = null;
+
+postile.utils.faye.init = function() { postile.utils.faye.faye_client = new Faye.Client('http://localhost:9292/faye'); }
+
+postile.utils.faye.subscribe = function(channel, listener) {
+	if (!postile.utils.faye.client) {
+		postile.utils.faye.init();
+		postile.utils.faye.client.subscribe(channel, function(data) {
+			try {
+				json = JSON.parse(data);
+			} catch(e) {
+				postile.utils.ajax.notifier.networkError("Response data damaged."); //json parsing failed
+			}
+			listener(data.data.status, json);
+		});
+	}
+};
+
+postile.utils.faye.unsubscribe = function(channel) {
+	if (!postile.utils.faye.client) { return; }
+	postile.utils.faye.client.unsubscribe(channel);
+};
+
+

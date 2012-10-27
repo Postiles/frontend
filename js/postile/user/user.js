@@ -1,0 +1,1 @@
+goog.provide('postile.user');

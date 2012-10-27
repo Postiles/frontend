@@ -3,6 +3,8 @@ goog.provide('postile');
 goog.require('postile.browser_compat');
 goog.require('goog.events');
 goog.require('postile.router');
+goog.require('postile.user');
+goog.require('postile.view.topic_list');
 goog.require('postile.view.post_board');
 
 postile = { //the base of posTile frontend framework
