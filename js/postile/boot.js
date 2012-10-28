@@ -15,7 +15,7 @@ postile = { //the base of posTile frontend framework
         return "/"+arguments.join("/");
     },
     dynamicResource: function() {
-        //TODO: specified the url on dynamic server
+        return "http://localhost:3000/"+arguments.join("/");
     },
     init: function() {
         postile.router_map();

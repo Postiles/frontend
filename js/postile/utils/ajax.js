@@ -7,6 +7,9 @@ goog.provide('postile.utils.faye');
 
 postile.utils.ajax = function(url, data, callback, use_get, notifier_text){ 
     var xhr, formData, i;
+	if (url instanceof Array) {
+		url = postile.dynamicResource.apply(null, url);
+	}
 	if (notifier_text && notifier_text.length) {
 		postile.utils.ajax.notifier.show(notifier_text);
 	}
@@ -56,8 +59,8 @@ postile.utils.ajax.fetchedHandler = function(callback, receivedText) {
     } catch(e) {
         postile.utils.ajax.notifier.networkError("Response data damaged."); //json parsing failed
     }
-    if (received.expection && received.expection in postile.utils.ajax.expection_handlers) {
-        if (!postile.utils.ajax.expection_handlers[received.expection](received)) {
+    if (received.status == 'error' && received.message in postile.utils.ajax.expection_handlers) {
+        if (!postile.utils.ajax.expection_handlers[received.message](received)) {
             return;
         }
     }
