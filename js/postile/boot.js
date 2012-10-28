@@ -29,14 +29,14 @@ postile = { //the base of posTile frontend framework
         postile.router.map('/test').to(function(){ 
             var pb = new postile.view.post_board.PostBoard();
             pb.renderArray([
-                { id: 128, x_pos: -1, y_pos: -3, width: 2, height: 2, content: '<b style="font-size: 20px">You can drag the canvas till you reach the boundary</b>' }, //each one stand for a post
-                { id: 111, x_pos: -1, y_pos: -1, width: 2, height: 1, content: '<font color="#990000">All code is in this HTML</font>' },
-                { id: 198, x_pos: -2, y_pos: -2, width: 1, height: 2, content: "dummy content for block 3" },
-                { id: 256, x_pos: 1, y_pos: -4, width: 2, height: 2, content: "dummy content for block 4" },
-                { id: 280, x_pos: 0, y_pos: 0, width: 1, height: 3, content: "dummy content for block 5" },
-                { id: 310, x_pos: -2, y_pos: 2, width: 2, height: 2, content: "dummy content for block 6" },
-                { id: 317, x_pos: 1, y_pos: 0, width: 3, height: 3, content: '<b style="font-size: 24px; color: #C00">You can try to RIGHT click on blank places</b>' },
-                { id: 319, x_pos: -5, y_pos: -3, width: 3, height: 2, content: "dummy content for block 8" }
+                { id: 128, coord_x: -1, coord_y: -3, span_x: 2, span_y: 2, content: '<b style="font-size: 20px">You can drag the canvas till you reach the boundary</b>' }, //each one stand for a post
+                { id: 111, coord_x: -1, coord_y: -1, span_x: 2, span_y: 1, content: '<font color="#990000">All code is in this HTML</font>' },
+                { id: 198, coord_x: -2, coord_y: -2, span_x: 1, span_y: 2, content: "dummy content for block 3" },
+                { id: 256, coord_x: 1, coord_y: -4, span_x: 2, span_y: 2, content: "dummy content for block 4" },
+                { id: 280, coord_x: 0, coord_y: 0, span_x: 1, span_y: 3, content: "dummy content for block 5" },
+                { id: 310, coord_x: -2, coord_y: 2, span_x: 2, span_y: 2, content: "dummy content for block 6" },
+                { id: 317, coord_x: 1, coord_y: 0, span_x: 3, span_y: 3, content: '<b style="font-size: 24px; color: #C00">You can try to RIGHT click on blank places</b>' },
+                { id: 319, coord_x: -5, coord_y: -3, span_x: 3, span_y: 2, content: "dummy content for block 8" }
             ]);
         });
     }

@@ -14,18 +14,19 @@ goog.provide('postile.view.post_board.handlers');
 goog.require('postile.view');
 goog.require('postile.fx');
 goog.require('postile.fx.effects');
-goog.require('postile.utils.ajax');
+goog.require('postile.ajax');
 goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.events.KeyHandler');
 
-postile.view.post_board.PostBoard = function() { //constructor
+postile.view.post_board.PostBoard = function(topic_id) { //constructor
     var i;
     var keyHandler;
     var instance = this;
     postile.view.View.call(this);
     /* BEGINNING OF MEMBER DEFINITION */
+	this.topic_id = topic_id;
     this.mousedownCoord = null; //record the mouse position when mousedown triggered
     this.canvasCoord = null; //current canvas position relative to the canvas viewport
     this.shadowCoord = [0, 0]; //current shadow (the boundary-out(boundout) effect)
@@ -219,7 +220,7 @@ postile.view.post_board.PostBoard.prototype.updateSubsribeArea = function() { //
         //display loading
     }
     /*
-    postile.utils.ajax('', , function() {
+    postile.ajax('', , function() {
         instance.currentSubscribeArea = to_sub;
     }, 'Loading posts...', true);
     */
@@ -231,22 +232,40 @@ postile.view.post_board.PostBoard.prototype.isAreaFullInside = function(parent, 
 
 postile.view.post_board.PostBoard.prototype.renderArray = function(array) { //add post objects to the screen //NOTICE: just add, no not care the duplicate
     var i;
-    this.currentArray = array;
+    goog.array.extend(this.currentArray,array);
     for (i in array) {
-        array[i].x_pos_end = array[i].x_pos + array[i].width; //precalculate this two so that future intersect test will be faster
-        array[i].y_pos_end = array[i].y_pos + array[i].height;
+        array[i].coord_x_end = array[i].coord_x + array[i].span_x; //precalculate this two so that future intersect test will be faster
+        array[i].coord_y_end = array[i].coord_y + array[i].span_y;
         array[i].divEl = goog.dom.createDom('div', {'class':'post'});
         goog.dom.appendChild(this.canvas, array[i].divEl);
         array[i].divEl.rel_data = array[i];
-        array[i].divEl.style.left = this.xPosTo(array[i].x_pos) + 'px';
-        array[i].divEl.style.top = this.yPosTo(array[i].y_pos) + 'px';
-        array[i].divEl.style.width = this.widthTo(array[i].width) + 'px';
-        array[i].divEl.style.height = this.heightTo(array[i].height) + 'px';
+        array[i].divEl.style.left = this.xPosTo(array[i].coord_x) + 'px';
+        array[i].divEl.style.top = this.yPosTo(array[i].coord_y) + 'px';
+        array[i].divEl.style.width = this.widthTo(array[i].span_x) + 'px';
+        array[i].divEl.style.height = this.heightTo(array[i].span_y) + 'px';
         goog.events.listen(this.mask, goog.events.EventType.DBLCLICK, function(event){event.stopPropagation();}); //prevent dbl click from triggering "creating new post"
         array[i].divEl.innerHTML = array[i].content;
         postile.fx.effects.resizeIn(array[i].divEl);
     }
 };
+
+postile.view.post_board.PostBoard.prototype.createPost = function(info) {
+	var req = goog.object.clone(info);
+	var ret = goog.object.clone(info);
+	var instance = this;
+	req.topic_id = this.topic_id;
+	postile.ajax(['post','new'], info, function(data) { 
+		ret.id = data.message;
+		instance.renderArray([ret]);
+		instance.editPost([ret]);
+	});
+}
+
+postile.view.post_board.PostBoard.prototype.editPost = function(post_data_obj) {
+	postile.ajax(['post','start_edit'], { post_id: post_data_obj[id] }, function(data) {
+		//TODO
+	});
+} 
 
 postile.view.post_board.handlers.canvas_mousedown = function(e) {
     if (!e.isButton(0)) { return; }
@@ -358,6 +377,7 @@ postile.view.post_board.handlers.mask_mousemove = function(e){ //mouse key not d
     this.preview.style.height = this.rel_data.heightTo(Math.abs(delta[1])) + 'px';
     this.preview.style.backgroundColor = intersect ? '#F00' : '#0F0';
     this.preview.style.display = 'block';
+	this.position = { coord_x: current[0], coord_y: current[1], span_x: delta[0], span_y: delta[1] };
     this.legal = !intersect;
 };
 
@@ -369,6 +389,7 @@ postile.view.post_board.handlers.mask_mouseup = function(e){
         this.preview.style.display = 'none'; return;
     }
     this.legal = false;
+	this.rel_data.createPost(this.position);
 };
 
 //activated double click event for creating new boxes

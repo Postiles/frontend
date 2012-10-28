@@ -2,33 +2,33 @@
 library for ajax-related activities
 */
 
-goog.provide('postile.utils.ajax');
-goog.provide('postile.utils.faye');
+goog.provide('postile.ajax');
+goog.provide('postile.faye');
 
-postile.utils.ajax = function(url, data, callback, use_get, notifier_text){ 
+postile.ajax = function(url, data, callback, use_get, notifier_text){ 
     var xhr, formData, i;
 	if (url instanceof Array) {
 		url = postile.dynamicResource.apply(null, url);
 	}
 	if (notifier_text && notifier_text.length) {
-		postile.utils.ajax.notifier.show(notifier_text);
+		postile.ajax.notifier.show(notifier_text);
 	}
     if (postile.browser_compat.walkarounds.xdr) {
         xhr = new XDomainRequest();
-        xhr.onload = function() { postile.utils.ajax.fetchedHandler(callback, xhr.responseText); }
-        xhr.onerror = function() { postile.utils.ajax.notifier.networkError("Network Error"); }
+        xhr.onload = function() { postile.ajax.fetchedHandler(callback, xhr.responseText); }
+        xhr.onerror = function() { postile.ajax.notifier.networkError("Network Error"); }
     } else {
         xhr = new XMLHttpRequest();
     　  xhr.onreadystatechange = function(){
     　　　　if (xhr.readyState == 4 && xhr.status == 200) {
-                postile.utils.ajax.fetchedHandler(callback, xhr.responseText);
+                postile.ajax.fetchedHandler(callback, xhr.responseText);
     　　　　} else {
-    　　　　　　postile.utils.ajax.notifier.networkError(xhr.statusText); //TODO
+    　　　　　　postile.ajax.notifier.networkError(xhr.statusText); //TODO
     　　　　}
     　　};
     }
     xhr.timeout = 10000;
-    xhr.ontimeout = function(){ postile.utils.ajax.notifier.networkError("Request timeout."); };
+    xhr.ontimeout = function(){ postile.ajax.notifier.networkError("Request timeout."); };
     if ((!use_get) && postile.browser_compat.walkarounds.xhr >= 2) {
         xhr.open('POST', url);
         formData = new FormData();
@@ -53,57 +53,57 @@ postile.utils.ajax = function(url, data, callback, use_get, notifier_text){
    }
 };
 
-postile.utils.ajax.fetchedHandler = function(callback, receivedText) {
+postile.ajax.fetchedHandler = function(callback, receivedText) {
     try {
         received = JSON.parse(received);
     } catch(e) {
-        postile.utils.ajax.notifier.networkError("Response data damaged."); //json parsing failed
+        postile.ajax.notifier.networkError("Response data damaged."); //json parsing failed
     }
-    if (received.status == 'error' && received.message in postile.utils.ajax.expection_handlers) {
-        if (!postile.utils.ajax.expection_handlers[received.message](received)) {
+    if (received.status == 'error' && received.message in postile.ajax.expection_handlers) {
+        if (!postile.ajax.expection_handlers[received.message](received)) {
             return;
         }
     }
 　　callback(received);
-    postile.utils.ajax.notifier.hide();
+    postile.ajax.notifier.hide();
 };
 
-postile.utils.ajax.notifier = {};
+postile.ajax.notifier = {};
 
-postile.utils.ajax.notifier.show = function(notifier_text){};
+postile.ajax.notifier.show = function(notifier_text){};
 
-postile.utils.ajax.notifier.hide = function(){};
+postile.ajax.notifier.hide = function(){};
 
-postile.utils.ajax.notifier.networkError = function(error_string) { //network error
+postile.ajax.notifier.networkError = function(error_string) { //network error
     //todo
 }
 
-postile.utils.ajax.expection_handlers = { //exception_string and corresponding handler functions. return true to allow the callback function to be called and return false to stop the workflow. the function can also modify the "received" object
+postile.ajax.expection_handlers = { //exception_string and corresponding handler functions. return true to allow the callback function to be called and return false to stop the workflow. the function can also modify the "received" object
     not_logged_login: function(received) {},
     privilege_required: function(received) {}
 }
 
-postile.utils.faye.client = null;
+postile.faye.client = null;
 
-postile.utils.faye.init = function() { postile.utils.faye.faye_client = new Faye.Client('http://localhost:9292/faye'); }
+postile.faye.init = function() { postile.faye.faye_client = new Faye.Client('http://localhost:9292/faye'); }
 
-postile.utils.faye.subscribe = function(channel, listener) {
-	if (!postile.utils.faye.client) {
-		postile.utils.faye.init();
-		postile.utils.faye.client.subscribe(channel, function(data) {
+postile.faye.subscribe = function(channel, listener) {
+	if (!postile.faye.client) {
+		postile.faye.init();
+		postile.faye.client.subscribe(channel, function(data) {
 			try {
 				json = JSON.parse(data);
 			} catch(e) {
-				postile.utils.ajax.notifier.networkError("Response data damaged."); //json parsing failed
+				postile.ajax.notifier.networkError("Response data damaged."); //json parsing failed
 			}
 			listener(data.data.status, json);
 		});
 	}
 };
 
-postile.utils.faye.unsubscribe = function(channel) {
-	if (!postile.utils.faye.client) { return; }
-	postile.utils.faye.client.unsubscribe(channel);
+postile.faye.unsubscribe = function(channel) {
+	if (!postile.faye.client) { return; }
+	postile.faye.client.unsubscribe(channel);
 };
 
 

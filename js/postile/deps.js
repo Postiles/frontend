@@ -6,7 +6,7 @@ goog.addDependency('../postile/fx/effects.js', ['postile.fx.effects'], ['postile
 goog.addDependency('../postile/fx/fx.js', ['postile.fx'], []);
 goog.addDependency('../postile/router/Router.js', ['postile.router'], []);
 goog.addDependency('../postile/user/user.js', ['postile.user'], []);
-goog.addDependency('../postile/utils/ajax.js', ['postile.utils.ajax', 'postile.utils.faye'], []);
-goog.addDependency('../postile/view/post_board/post_board.js', ['postile.view.post_board', 'postile.view.post_board.handlers'], ['goog.dom', 'goog.events', 'goog.events.KeyCodes', 'goog.events.KeyHandler', 'postile.fx', 'postile.fx.effects', 'postile.utils.ajax', 'postile.view']);
+goog.addDependency('../postile/utils/ajax.js', ['postile.ajax', 'postile.faye'], []);
+goog.addDependency('../postile/view/post_board/post_board.js', ['postile.view.post_board', 'postile.view.post_board.handlers'], ['goog.dom', 'goog.events', 'goog.events.KeyCodes', 'goog.events.KeyHandler', 'postile.ajax', 'postile.fx', 'postile.fx.effects', 'postile.view']);
 goog.addDependency('../postile/view/topic_list/topic_list.js', ['postile.view.topic_list'], []);
 goog.addDependency('../postile/view/view.js', ['postile.view'], ['goog.dom']);
