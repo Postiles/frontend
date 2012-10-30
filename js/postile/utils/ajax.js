@@ -8,7 +8,7 @@ goog.provide('postile.faye');
 postile.ajax = function(url, data, callback, use_get, notifier_text){ 
     var xhr, formData, i;
 	if (url instanceof Array) {
-		url = postile.dynamicResource.apply(null, url);
+		url = postile.dynamicResource(url);
 	}
 	if (notifier_text && notifier_text.length) {
 		postile.ajax.notifier.show(notifier_text);

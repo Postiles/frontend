@@ -11,11 +11,11 @@ postile = { //the base of posTile frontend framework
     /*
     member functions
     */
-    staticResource: function() {
-        return "/"+arguments.join("/");
+    staticResource: function(input) {
+        return "/"+input.join("/");
     },
-    dynamicResource: function() {
-        return "http://localhost:3000/"+arguments.join("/");
+    dynamicResource: function(input) {
+        return "http://localhost:3000/"+input.join("/");
     },
     init: function() {
         postile.router_map();
