@@ -91,19 +91,22 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
     }
     keyHandler = new goog.events.KeyHandler(document);
     goog.events.listen(keyHandler, 'key', function(e) {
-        e.preventDefault();
         switch (e.keyCode) {
             case goog.events.KeyCodes.LEFT:
                 instance.preMoveCanvas('left');
+                e.preventDefault();
                 break;
             case goog.events.KeyCodes.RIGHT:
                 instance.preMoveCanvas('right');
+                e.preventDefault();
                 break;
             case goog.events.KeyCodes.UP:
                 instance.preMoveCanvas('up');
+                e.preventDefault();
                 break;
             case goog.events.KeyCodes.DOWN:
                 instance.preMoveCanvas('down');
+                e.preventDefault();
                 break;
             }	
     });

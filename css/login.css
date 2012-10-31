@@ -1,0 +1,25 @@
+.login_username, .login_password {
+    width: 150px;
+    height: 18px;
+    line-height: 18px;
+    font-size: 18px;
+    padding: 8px;
+    margin: 0 auto;
+    border: 1px solid #999;
+    outline: none;
+    display: block;
+    margin-top: 15px;
+}
+
+.login_submit {
+    display: block;
+    width: 152px;
+    border: 0 none;
+    height: 18px;
+    padding: 8px;
+    background-color: #CCC;
+    color: #333;
+    margin: 0 auto;
+    margin-top: 15px;
+    margin-bottom: 15px; 
+}

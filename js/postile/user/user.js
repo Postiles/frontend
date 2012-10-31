@@ -7,3 +7,8 @@ postile.user.login = function(username, password) {
 		//TODO
 	}, false, 'Please wait for logging in...');
 }
+
+postile.user.openLoginBox = function() {
+    if (postile.user.current_user) { return; } //already logged in
+    
+}

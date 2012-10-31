@@ -11,8 +11,15 @@
 	width: 100%;
 	height: 100%;
 	display: table;
+    position: absolute;
+    left: 0;
+    top: 0;
 }
 
 .pop_popup {
-	display: table-cell; vertical-align: middle; margin: 0 none;
+	display: table-cell; vertical-align: middle; margin: 0;
+}
+
+.pop_container {
+    background: #FFF; border: 10px solid #CCC; margin: 0 auto;
 }

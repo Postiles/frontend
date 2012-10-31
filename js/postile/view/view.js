@@ -20,18 +20,24 @@ child should implement: unloadedStylesheets, container
 */
 postile.view.PopView = function() {
     postile.view.View.call(this);
-	goog.dom.classes.add(this.container, 'pop_popup');
-	this.mask = goog.dom.createDom('div', 'pop_mask');
-	goog.dom.appendChild(this.mask, this.container);
-	goog.dom.appendChild(document.body, this.mask);
-	postile.fx.effects.resizeIn(this.container);
-}
-
-postile.view.PopView.prototype.close = function() {
-	goog.dom.removeNode(this.mask);
+    this.container = goog.dom.createDom('div', 'pop_container');
 }
 
 goog.inherits(postile.view.PopView, postile.view.View);
+
+postile.view.PopView.prototype.open = function(width) {
+    this.container.style.width = width + 'px';
+    this.container_wrap = goog.dom.createDom('div');
+    goog.dom.classes.add(this.container_wrap, 'pop_popup');
+	this.mask = goog.dom.createDom('div', 'pop_mask');
+    goog.dom.appendChild(this.container_wrap, this.container);
+	goog.dom.appendChild(this.mask, this.container_wrap);
+	goog.dom.appendChild(document.body, this.mask);
+}
+    
+postile.view.PopView.prototype.close = function() {
+	goog.dom.removeNode(this.mask);
+}
 
 /*
 to use:

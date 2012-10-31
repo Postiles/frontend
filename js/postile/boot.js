@@ -4,6 +4,7 @@ goog.require('postile.browser_compat');
 goog.require('goog.events');
 goog.require('postile.router');
 goog.require('postile.user');
+goog.require('postile.view.login');
 goog.require('postile.view.post_board');
 
 postile = { //the base of posTile frontend framework
@@ -29,7 +30,7 @@ postile = { //the base of posTile frontend framework
             var pb = new postile.view.post_board.PostBoard();
             pb.renderArray([
                 { id: 128, coord_x: -1, coord_y: -3, span_x: 2, span_y: 2, content: '<b style="font-size: 20px">You can drag the canvas till you reach the boundary</b>' }, //each one stand for a post
-                { id: 111, coord_x: -1, coord_y: -1, span_x: 2, span_y: 1, content: '<font color="#990000">All code is in this HTML</font>' },
+                { id: 111, coord_x: -1, coord_y: -1, span_x: 2, span_y: 1, content: '<a onclick="(function() { var x = new postile.view.login.Login(); x.open(200); })();">LOGIN</a>' },
                 { id: 198, coord_x: -2, coord_y: -2, span_x: 1, span_y: 2, content: "dummy content for block 3" },
                 { id: 256, coord_x: 1, coord_y: -4, span_x: 2, span_y: 2, content: "dummy content for block 4" },
                 { id: 280, coord_x: 0, coord_y: 0, span_x: 1, span_y: 3, content: "dummy content for block 5" },
