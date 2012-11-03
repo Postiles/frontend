@@ -3,6 +3,7 @@
 goog.provide('postile.view');
 
 goog.require('goog.dom');
+goog.require('postile.fx.effects');
 
 /*
 child should implement: unloadedStylesheets
@@ -33,6 +34,7 @@ postile.view.PopView.prototype.open = function(width) {
     goog.dom.appendChild(this.container_wrap, this.container);
     goog.dom.appendChild(this.mask, this.container_wrap);
     goog.dom.appendChild(document.body, this.mask);
+	postile.fx.effects.resizeIn(this.container);
 }
     
 postile.view.PopView.prototype.close = function() {

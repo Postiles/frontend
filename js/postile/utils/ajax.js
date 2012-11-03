@@ -58,10 +58,12 @@ postile.ajax = function(url, data, callback, use_get, notifier_text){
 };
 
 postile.ajax.fetchedHandler = function(callback, receivedText) {
-    try {
-        received = JSON.parse(received);
+    var received;
+	try {
+        received = JSON.parse(receivedText);
     } catch(e) {
         postile.ajax.notifier.networkError("Response data damaged."); //json parsing failed
+		return;
     }
     if (received.status == 'error' && received.message in postile.ajax.expection_handlers) {
         if (!postile.ajax.expection_handlers[received.message](received)) {
@@ -109,5 +111,3 @@ postile.faye.unsubscribe = function(channel) {
     if (!postile.faye.client) { return; }
     postile.faye.client.unsubscribe(channel);
 };
-
-
