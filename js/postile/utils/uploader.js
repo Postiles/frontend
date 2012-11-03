@@ -80,10 +80,11 @@ postile.uploader.dragSubmit = function(){ //  TODO check if browser is good
     if(/*this.xhr2supported() &&*/ this.formData !== null){
         //postile.ajax('upload.php', formData);
         var xhr = new XMLHttpRequest();
-        xhr.open('POST', 'upload_ajax.php');
+        xhr.open('POST', 'upload.php');
         xhr.send(formData);
         //alert('send');
         console.log('Ajax_sent');
+    }
     //}
     /*
     else{
@@ -101,7 +102,7 @@ postile.uploader.dragSubmit = function(){ //  TODO check if browser is good
 
 
 var dragBoxRenderer = {
-    renderBox: function(targetId){
+    renderBox: function(){
         // TODO to render a box for uploading 
         // Need to determine the size of the box
         var dragbox = goog.dom.createDom('div', "dragbox");
