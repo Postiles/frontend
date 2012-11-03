@@ -77,13 +77,12 @@ postile.uploader.iframeUpload = function(){ // How to call this function?
     
     // This function is for drog only
 postile.uploader.dragSubmit = function(){ //  TODO check if browser is good
-    //if(/*this.xhr2supported() &&*/ this.formData !== null){
-        postile.ajax('upload.php', formData);
-        //var xhr = new XMLHttpRequest();
-        /*xhr.open('POST', 'upload_ajax.php');
+    if(/*this.xhr2supported() &&*/ this.formData !== null){
+        //postile.ajax('upload.php', formData);
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'upload_ajax.php');
         xhr.send(formData);
         //alert('send');
-        */
         console.log('Ajax_sent');
     //}
     /*
