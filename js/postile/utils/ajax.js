@@ -5,11 +5,11 @@ library for ajax-related activities
 goog.provide('postile.ajax');
 goog.provide('postile.faye');
 
-postile.ajax = function(url, data, callback, use_get, notifier_text){ 
+postile.ajax = function(url, data, callback, notifier_text){ 
     var xhr, formData, i;
     if ("postile_user_session_key" in localStorage && "postile_user_session_key" in localStorage) {
-        formData.user_id = localStorage.postile_user_id;
-        formData.session_key = localStorage.postile_user_session_key;
+        data.user_id = localStorage.postile_user_id;
+        data.session_key = localStorage.postile_user_session_key;
     }
     if (url instanceof Array) {
         url = postile.dynamicResource(url);
@@ -35,7 +35,7 @@ postile.ajax = function(url, data, callback, use_get, notifier_text){
     }
     xhr.timeout = 10000;
     xhr.ontimeout = function(){ postile.ajax.notifier.networkError("Request timeout."); };
-    if ((!use_get) && postile.browser_compat.walkarounds.xhr >= 2) {
+    if (postile.browser_compat.walkarounds.xhr >= 2) {
         xhr.open('POST', url);
         formData = new FormData();
         for (i in data) {
@@ -49,13 +49,8 @@ postile.ajax = function(url, data, callback, use_get, notifier_text){
             formData.push(encodeURIComponent(i)+'='+encodeURIComponent(data[i]));
         }
         formData = formData.join('&');
-        if (!use_get) {
-            xhr.open('POST', url);
-            xhr.send(formData);
-        } else {
-            xhr.open('GET', url+'?'+formData);
-            xhr.send(null);
-        }
+        xhr.open('POST', url);
+        xhr.send(formData);
    }
 };
 

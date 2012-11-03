@@ -26,7 +26,7 @@ postile = { //the base of posTile frontend framework
     },
     router_map: function() {
         postile.router.map('/test').to(function(){ 
-            var pb = new postile.view.post_board.PostBoard();
+            var pb = new postile.view.post_board.PostBoard(5);
             pb.renderArray([
                 { id: 128, coord_x: -1, coord_y: -3, span_x: 2, span_y: 2, content: '<b style="font-size: 20px">You can drag the canvas till you reach the boundary</b>' }, //each one stand for a post
                 { id: 111, coord_x: -1, coord_y: -1, span_x: 2, span_y: 1, content: '<a onclick="postile.user.openLoginBox();">LOGIN</a>' },

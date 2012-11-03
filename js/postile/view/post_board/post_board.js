@@ -257,8 +257,10 @@ postile.view.post_board.PostBoard.prototype.createPost = function(info) {
     var ret = goog.object.clone(info);
     var instance = this;
     req.topic_id = this.topic_id;
-    postile.ajax(['post','new'], info, function(data) { 
+    ret.content = 'Your new post';
+    postile.ajax(['post','new'], req, function(data) { 
         ret.id = data.message;
+        instance.mask.style.display = 'none';
         instance.renderArray([ret]);
         instance.editPost([ret]);
     });
@@ -368,7 +370,7 @@ postile.view.post_board.handlers.mask_mousemove = function(e){ //mouse key not d
     var intersect = false;
     for (i in this.rel_data.currentArray) {
         //from http://stackoverflow.com/questions/2752349/fast-rectangle-to-rectangle-intersection
-        if(!(current[0] >= this.rel_data.currentArray[i].x_pos_end || end[0] <= this.rel_data.currentArray[i].x_pos || current[1] >=this.rel_data.currentArray[i].y_pos_end || end[1] <= this.rel_data.currentArray[i].y_pos)) { 
+        if(!(current[0] >= this.rel_data.currentArray[i].coord_x_end || end[0] <= this.rel_data.currentArray[i].coord_x || current[1] >=this.rel_data.currentArray[i].coord_y_end || end[1] <= this.rel_data.currentArray[i].coord_y)) { 
             intersect = true;
             break;
         }
