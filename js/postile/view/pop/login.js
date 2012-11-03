@@ -1,6 +1,7 @@
 goog.provide('postile.view.login');
 goog.provide('postile.view.login.handlers');
 
+goog.require('postile.user');
 goog.require('postile.view');
 goog.require('goog.events');
 goog.require('goog.ui.LabelInput');
@@ -26,7 +27,9 @@ goog.inherits(postile.view.login.Login, postile.view.PopView);
 postile.view.login.inputs = {'username': 'Username', 'password': 'Your little secret'};
 
 postile.view.login.handlers.submit = function() {
-
+    if (this.username.getValue().length && this.password.getValue().length) {
+        postile.user.login(this.username.getValue(), this.password.getValue());
+    }
 }
 
 postile.view.login.Login.prototype.unloadedStylesheets = ['login.css'];

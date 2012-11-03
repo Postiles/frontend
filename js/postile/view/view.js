@@ -29,14 +29,14 @@ postile.view.PopView.prototype.open = function(width) {
     this.container.style.width = width + 'px';
     this.container_wrap = goog.dom.createDom('div');
     goog.dom.classes.add(this.container_wrap, 'pop_popup');
-	this.mask = goog.dom.createDom('div', 'pop_mask');
+    this.mask = goog.dom.createDom('div', 'pop_mask');
     goog.dom.appendChild(this.container_wrap, this.container);
-	goog.dom.appendChild(this.mask, this.container_wrap);
-	goog.dom.appendChild(document.body, this.mask);
+    goog.dom.appendChild(this.mask, this.container_wrap);
+    goog.dom.appendChild(document.body, this.mask);
 }
     
 postile.view.PopView.prototype.close = function() {
-	goog.dom.removeNode(this.mask);
+    goog.dom.removeNode(this.mask);
 }
 
 /*

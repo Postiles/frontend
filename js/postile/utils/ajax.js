@@ -7,12 +7,16 @@ goog.provide('postile.faye');
 
 postile.ajax = function(url, data, callback, use_get, notifier_text){ 
     var xhr, formData, i;
-	if (url instanceof Array) {
-		url = postile.dynamicResource(url);
-	}
-	if (notifier_text && notifier_text.length) {
-		postile.ajax.notifier.show(notifier_text);
-	}
+    if ("postile_user_session_key" in localStorage && "postile_user_session_key" in localStorage) {
+        formData.user_id = localStorage.postile_user_id;
+        formData.session_key = localStorage.postile_user_session_key;
+    }
+    if (url instanceof Array) {
+        url = postile.dynamicResource(url);
+    }
+    if (notifier_text && notifier_text.length) {
+        postile.ajax.notifier.show(notifier_text);
+    }
     if (postile.browser_compat.walkarounds.xdr) {
         xhr = new XDomainRequest();
         xhr.onload = function() { postile.ajax.fetchedHandler(callback, xhr.responseText); }
@@ -88,22 +92,22 @@ postile.faye.client = null;
 postile.faye.init = function() { postile.faye.faye_client = new Faye.Client('http://localhost:9292/faye'); }
 
 postile.faye.subscribe = function(channel, listener) {
-	if (!postile.faye.client) {
-		postile.faye.init();
-		postile.faye.client.subscribe(channel, function(data) {
-			try {
-				json = JSON.parse(data);
-			} catch(e) {
-				postile.ajax.notifier.networkError("Response data damaged."); //json parsing failed
-			}
-			listener(data.data.status, json);
-		});
-	}
+    if (!postile.faye.client) {
+        postile.faye.init();
+        postile.faye.client.subscribe(channel, function(data) {
+            try {
+                json = JSON.parse(data);
+            } catch(e) {
+                postile.ajax.notifier.networkError("Response data damaged."); //json parsing failed
+            }
+            listener(data.data.status, json);
+        });
+    }
 };
 
 postile.faye.unsubscribe = function(channel) {
-	if (!postile.faye.client) { return; }
-	postile.faye.client.unsubscribe(channel);
+    if (!postile.faye.client) { return; }
+    postile.faye.client.unsubscribe(channel);
 };
 
 

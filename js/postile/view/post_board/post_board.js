@@ -26,7 +26,7 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
     var instance = this;
     postile.view.View.call(this);
     /* BEGINNING OF MEMBER DEFINITION */
-	this.topic_id = topic_id;
+    this.topic_id = topic_id;
     this.mousedownCoord = null; //record the mouse position when mousedown triggered
     this.canvasCoord = null; //current canvas position relative to the canvas viewport
     this.shadowCoord = [0, 0]; //current shadow (the boundary-out(boundout) effect)
@@ -108,7 +108,7 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
                 instance.preMoveCanvas('down');
                 e.preventDefault();
                 break;
-            }	
+            }    
     });
     /*end*/
     goog.events.listen(this.canvas, goog.events.EventType.MOUSEDOWN, postile.view.post_board.handlers.canvas_mousedown);
@@ -253,21 +253,21 @@ postile.view.post_board.PostBoard.prototype.renderArray = function(array) { //ad
 };
 
 postile.view.post_board.PostBoard.prototype.createPost = function(info) {
-	var req = goog.object.clone(info);
-	var ret = goog.object.clone(info);
-	var instance = this;
-	req.topic_id = this.topic_id;
-	postile.ajax(['post','new'], info, function(data) { 
-		ret.id = data.message;
-		instance.renderArray([ret]);
-		instance.editPost([ret]);
-	});
+    var req = goog.object.clone(info);
+    var ret = goog.object.clone(info);
+    var instance = this;
+    req.topic_id = this.topic_id;
+    postile.ajax(['post','new'], info, function(data) { 
+        ret.id = data.message;
+        instance.renderArray([ret]);
+        instance.editPost([ret]);
+    });
 }
 
 postile.view.post_board.PostBoard.prototype.editPost = function(post_data_obj) {
-	postile.ajax(['post','start_edit'], { post_id: post_data_obj[id] }, function(data) {
-		//TODO
-	});
+    postile.ajax(['post','start_edit'], { post_id: post_data_obj[id] }, function(data) {
+        //TODO
+    });
 } 
 
 postile.view.post_board.handlers.canvas_mousedown = function(e) {
@@ -380,7 +380,7 @@ postile.view.post_board.handlers.mask_mousemove = function(e){ //mouse key not d
     this.preview.style.height = this.rel_data.heightTo(Math.abs(delta[1])) + 'px';
     this.preview.style.backgroundColor = intersect ? '#F00' : '#0F0';
     this.preview.style.display = 'block';
-	this.position = { coord_x: current[0], coord_y: current[1], span_x: delta[0], span_y: delta[1] };
+    this.position = { coord_x: current[0], coord_y: current[1], span_x: delta[0], span_y: delta[1] };
     this.legal = !intersect;
 };
 
@@ -392,7 +392,7 @@ postile.view.post_board.handlers.mask_mouseup = function(e){
         this.preview.style.display = 'none'; return;
     }
     this.legal = false;
-	this.rel_data.createPost(this.position);
+    this.rel_data.createPost(this.position);
 };
 
 //activated double click event for creating new boxes
