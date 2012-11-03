@@ -5,16 +5,17 @@ postile.fx.period = 36; //in the unit of millisec
 postile.fx.Animate = function(iter_func, duration, ease, callback) {
     if (!ease) { ease = postile.fx.ease.linear; }
     if (!callback) { callback = function(){} }
+    var interval;
     var iter_status = 0;
     var iter_step = postile.fx.period/duration;
-	var real_iter_func = function() {
+    var real_iter_func = function() {
         iter_status += iter_step;
         if (iter_status > 1) { iter_status = 1; }
         iter_func(ease(iter_status));
         if (iter_status >= 1) { clearInterval(interval); callback(); }
     };
-    var interval = this.interval = setInterval(real_iter_func, postile.fx.period);
-	real_iter_func(); //run the first iteration
+    interval = this.interval = setInterval(real_iter_func, postile.fx.period);
+    real_iter_func(); //run the first iteration
 };
 
 postile.fx.Animate.prototype.stop = function() {

@@ -24,11 +24,13 @@ postile.ajax = function(url, data, callback, use_get, notifier_text){
     } else {
         xhr = new XMLHttpRequest();
     　  xhr.onreadystatechange = function(){
-    　　　　if (xhr.readyState == 4 && xhr.status == 200) {
-                postile.ajax.fetchedHandler(callback, xhr.responseText);
-    　　　　} else {
-    　　　　　　postile.ajax.notifier.networkError(xhr.statusText); //TODO
-    　　　　}
+    　　　　if (xhr.readyState == 4) {
+                if (xhr.status == 200) {
+                    postile.ajax.fetchedHandler(callback, xhr.responseText);
+    　　　　    } else {
+    　　　　　　    postile.ajax.notifier.networkError(xhr.statusText); //TODO
+    　　　　    }
+            }
     　　};
     }
     xhr.timeout = 10000;
@@ -59,11 +61,11 @@ postile.ajax = function(url, data, callback, use_get, notifier_text){
 
 postile.ajax.fetchedHandler = function(callback, receivedText) {
     var received;
-	try {
+    try {
         received = JSON.parse(receivedText);
     } catch(e) {
         postile.ajax.notifier.networkError("Response data damaged."); //json parsing failed
-		return;
+        return;
     }
     if (received.status == 'error' && received.message in postile.ajax.expection_handlers) {
         if (!postile.ajax.expection_handlers[received.message](received)) {

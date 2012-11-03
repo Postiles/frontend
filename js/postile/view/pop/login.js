@@ -18,6 +18,7 @@ postile.view.login.Login = function() {
     }
     this.submit = new goog.ui.CustomButton('Login', goog.ui.ImagelessButtonRenderer);
     this.submit.render(this.container);
+    this.submit.getElement().rel_data = this;
     goog.dom.classes.add(this.submit.getElement(), 'login_submit');
     goog.events.listen(this.submit.getElement(), goog.events.EventType.CLICK, postile.view.login.handlers.submit);
 }
@@ -27,8 +28,8 @@ goog.inherits(postile.view.login.Login, postile.view.PopView);
 postile.view.login.inputs = {'username': 'Username', 'password': 'Your little secret'};
 
 postile.view.login.handlers.submit = function() {
-    if (this.username.getValue().length && this.password.getValue().length) {
-        postile.user.login(this.username.getValue(), this.password.getValue());
+    if (this.rel_data.username.getValue().length && this.rel_data.password.getValue().length) {
+        postile.user.login(this.rel_data.username.getValue(), this.rel_data.password.getValue());
     }
 }
 
