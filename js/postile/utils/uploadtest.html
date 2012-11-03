@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>upload_testing</title>
+    <meta name="author" content="feiyu">
+    <link rel="stylesheet" type="text/css" href="uploadstyle.css" />
+    <script type="text/javascript" src="../goog/base.js"></script>
+    <script type="text/javascript" src="../deps.js"></script>
+    <script type="text/javascript" src="../boot.js"></script>
+    <script type='text/javascript' src='uploader.js'></script>
+    <script type="text/javascript"> 
+    
+        // This file and this portion is for Javascript Ajax Drag Upload
+        /*
+        var tests = {
+            formdata: !!window.FormData
+        };
+        var formData;
+    
+    
+        function initialize(){
+            var dropbox = document.getElementById("dropbox");
+
+            // init event handlers
+            dropbox.addEventListener("dragenter", dragEnter, false);
+            dropbox.addEventListener("dragexit", dragExit, false);
+            dropbox.addEventListener("dragover", dragOver, false);
+            dropbox.addEventListener("drop", drop, false);   
+        }
+        function dragEnter(evt) {
+          evt.stopPropagation();
+          evt.preventDefault();
+        }
+        function dragExit(evt) {
+          evt.stopPropagation();
+          evt.preventDefault();
+        }
+        function dragOver(evt) {
+          evt.stopPropagation();
+          evt.preventDefault();
+        }
+        function drop(evt) {
+            evt.stopPropagation();
+            evt.preventDefault();
+          
+            var files = evt.dataTransfer.files;
+            var count = files.length;
+
+          // Only call the handler if 1 or more files was dropped.
+            if (count !== 0){
+          	    handleFiles(files);
+          	    console.log('uploading photos');
+      	    }
+        }
+        
+        function handleFiles(files){
+            var file = files[0];
+            formData = tests.formdata ? new FormData() : null;
+            formData.append('image', file);
+            
+            document.getElementById("droplabel").innerHTML = "Processing " + file.name;
+
+            var reader = new FileReader();
+
+            // init the reader event handlers
+            reader.onload = handleReaderLoad;
+
+            // begin the read operation
+            reader.readAsDataURL(file);
+        }
+        
+        function handleReaderLoad(evt) {
+          var img = document.getElementById("preview");
+          img.src = evt.target.result;
+        }
+        
+        function xhr2Send(){
+            //var img1 = document.getElementById("preview").src;
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'upload_ajax.php');
+            xhr.send(formData);
+        }
+        */
+        // End of file that use drag to upload
+    </script>
+    
+    
+    <script type="text/javascript">
+    // this file is for iframe uploading files
+    /*
+        function iniIframe(){
+            // /var frameDiv = goog.dom.getElement("iframe");    
+            // create the form for uploading use
+            var hform = goog.dom.createDom('form', {'action': 'upload.php', 'method': 'post', 'enctype': 'multipart/form-data', 'target': 'upload_target', 'onsubmit': 'startUpload()'});
+            var input_name = goog.dom.creatDom('input', {'name': 'image', 'type':'file'});
+            var input_submit = goog.dom.creatDom('input', {'name': 'submitBtn', 'type':'submit', 'value':'Upload'});
+            
+            var iframe = goog.dom.creatDom('iframe', {'id':'upload_target', 'name':'upload_target', 'src': 'about_blank', 'style': 'width:0;height:0;border:0px solid #fff;'})
+            
+            goog.dom.appendChild(goog.dom.getElement("iframe"), hform);
+            goog.dom.appendChild(hform, input_name);
+            goog.dom.appendChild(hform, input_submit);
+            goog.dom.appendChild(goog.dom.getElement("iframe"), iframe);         
+            
+        }   
+    
+        function startUpload(){
+            document.getElementById("f1_upload_process").style.visibility = "visible";
+        }
+        */
+    // end of using iframe to upload files.
+    </script>
+    
+    
+    
+    
+</head>
+<body onload="postile.uploader.dragInit();">
+    <div id="drag">
+       <!-- <div class="dropbox"><span class="droplabel"> Drop here </span></div>
+        <img id="preview" alt="[ preview will display here ]" />
+        <button onclick="xhr2Send();"> Submit </button>
+        
+        -->
+    </div>
+    
+    <div id="iframe">
+        
+        <p id="f1_upload_process">Loading...<br/></p>
+        <p id="result"></p>
+        
+        <button name="upload_file" type='button' onclick="postile.uploader.iframeInit();"> upload a file </button>
+        
+        <!-- <form action="upload.php" method="post" enctype="multipart/form-data" target="upload_target"  onsubmit="startUpload();">
+            File: <input name="image" type="file" />
+                  <input type="submit" name="submitBtn" value="Upload" />
+        </form>
+        
+        <iframe id="upload_target" name="upload_target" src="#" style="width:0;height:0;border:0px solid #fff;"></iframe>
+        
+        -->
+        
+    </div>
+    
+    
+</body>
+</html>

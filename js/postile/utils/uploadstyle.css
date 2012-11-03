@@ -1,0 +1,40 @@
+.dragbox {
+	width: 425px;
+	height: 300px;
+	border: 2px solid #DDD;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	background-color: #FEFFEC;
+	text-align: center;
+	color: #BBB;
+	font-size: 2em;
+	font-family: Arial, sans-serif;
+}
+
+#drag{
+    float:left;
+}
+
+.droplabel {
+	position: relative;
+	top: 40%;
+}
+
+#iframe {
+    margin: 15px;
+    -moz-border-radius: 8px;
+    -webkit-border-radius: 8px;
+    background-color: #FEFFEC;
+    border: 2px solid #DDD;
+}
+
+#f1_upload_process{
+    z-index:100;
+    position:absolute;
+    visibility:hidden;
+    text-align:center;
+    width:400px;
+    margin:0px;
+    padding:0px;
+    background-color:#fff;
+    border:1px solid #ccc;
