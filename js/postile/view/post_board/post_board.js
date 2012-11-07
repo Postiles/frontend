@@ -19,6 +19,7 @@ goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.events.KeyHandler');
+goog.require('goog.ui.Textarea');
 
 postile.view.post_board.PostBoard = function(topic_id) { //constructor
     var i;
@@ -239,16 +240,16 @@ postile.view.post_board.PostBoard.prototype.renderArray = function(array) { //ad
     for (i in array) {
         array[i].coord_x_end = array[i].coord_x + array[i].span_x; //precalculate this two so that future intersect test will be faster
         array[i].coord_y_end = array[i].coord_y + array[i].span_y;
-        array[i].divEl = goog.dom.createDom('div', {'class':'post'});
-        goog.dom.appendChild(this.canvas, array[i].divEl);
-        array[i].divEl.rel_data = array[i];
-        array[i].divEl.style.left = this.xPosTo(array[i].coord_x) + 'px';
-        array[i].divEl.style.top = this.yPosTo(array[i].coord_y) + 'px';
-        array[i].divEl.style.width = this.widthTo(array[i].span_x) + 'px';
-        array[i].divEl.style.height = this.heightTo(array[i].span_y) + 'px';
+        array[i].div_el = goog.dom.createDom('div', {'class':'post'});
+        goog.dom.appendChild(this.canvas, array[i].div_el);
+        array[i].div_el.rel_data = array[i];
+        array[i].div_el.style.left = this.xPosTo(array[i].coord_x) + 'px';
+        array[i].div_el.style.top = this.yPosTo(array[i].coord_y) + 'px';
+        array[i].div_el.style.width = this.widthTo(array[i].span_x) + 'px';
+        array[i].div_el.style.height = this.heightTo(array[i].span_y) + 'px';
         goog.events.listen(this.mask, goog.events.EventType.DBLCLICK, function(event){event.stopPropagation();}); //prevent dbl click from triggering "creating new post"
-        array[i].divEl.innerHTML = array[i].content;
-        postile.fx.effects.resizeIn(array[i].divEl);
+        array[i].div_el.innerHTML = array[i].content;
+        postile.fx.effects.resizeIn(array[i].div_el);
     }
 };
 
@@ -257,19 +258,24 @@ postile.view.post_board.PostBoard.prototype.createPost = function(info) {
     var ret = goog.object.clone(info);
     var instance = this;
     req.topic_id = this.topic_id;
-    ret.content = 'Your new post';
+    ret.content = 'Your new post... Enter your content here...';
     postile.ajax(['post','new'], req, function(data) { 
         ret.id = data.message;
         instance.mask.style.display = 'none';
         instance.renderArray([ret]);
-        instance.editPost([ret]);
+        instance.editPost(ret);
     });
 }
 
 postile.view.post_board.PostBoard.prototype.editPost = function(post_data_obj) {
-    postile.ajax(['post','start_edit'], { post_id: post_data_obj[id] }, function(data) {
-        //TODO
-    });
+    //postile.ajax(['post','start_edit'], { post_id: post_data_obj.id }, function(data) {
+        //if error, alert and return
+        //to edit
+    //});
+    var editor = new goog.ui.Textarea(post_data_obj.div_el.innerHTML);
+    editor.addClassName('fill');
+    goog.dom.removeChildren(post_data_obj.div_el);
+    editor.render(post_data_obj.div_el);
 } 
 
 postile.view.post_board.handlers.canvas_mousedown = function(e) {
