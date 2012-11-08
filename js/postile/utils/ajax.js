@@ -9,7 +9,7 @@ goog.require('goog.net.jsloader');
 
 postile.ajax = function(url, data, callback, notifier_text){ 
     var xhr, formData, i;
-    if ("postile_user_session_key" in localStorage && "postile_user_session_key" in localStorage) {
+    if ("postile_user_id" in localStorage && "postile_user_session_key" in localStorage) {
         data.user_id = localStorage.postile_user_id;
         data.session_key = localStorage.postile_user_session_key;
     }

@@ -11,6 +11,8 @@ Getting Google Closure Library
 
 Copy the `closure/goog` in [Google Closure Library](https://code.google.com/p/closure-library/downloads/list) to `js/goog`.
 
+Copy the `third_party` to `third_party`.
+
 To update the dependency log of the code
 ======
 First, copy the `closure/bin/build` directory in Google Closure Library to the project directory as `build`.

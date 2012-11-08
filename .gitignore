@@ -2,3 +2,4 @@ build/
 js/goog/
 build.bat
 build.sh
+third_party
