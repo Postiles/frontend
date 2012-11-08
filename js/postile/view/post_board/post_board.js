@@ -15,6 +15,7 @@ goog.require('postile.view');
 goog.require('postile.fx');
 goog.require('postile.fx.effects');
 goog.require('postile.ajax');
+goog.require('postile.faye');
 goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('goog.events.KeyCodes');
@@ -121,6 +122,10 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
     goog.events.listen(this.mask, goog.events.EventType.MOUSEUP, postile.view.post_board.handlers.mask_mouseup);
     goog.events.listen(this.mask, goog.events.EventType.DBLCLICK, function(e){ e.preventDefault(); this.style.display = 'none'; });
     this.resize();
+    //initialize according to topic_id
+    postile.ajax(['topic','enter_topic'], { topic_id: topic_id }, function(data) {
+        postile.faye.subscribe(data.message.channel_str, function(data) { instance.fayeHandler(data); });
+    });
 }
 
 goog.inherits(postile.view.post_board.PostBoard, postile.view.View);
@@ -253,6 +258,10 @@ postile.view.post_board.PostBoard.prototype.renderArray = function(array) { //ad
     }
 };
 
+postile.view.post_board.PostBoard.prototype.fayeHandler = function(data) {
+    //TODO
+}
+
 postile.view.post_board.PostBoard.prototype.createPost = function(info) {
     var req = goog.object.clone(info);
     var ret = goog.object.clone(info);
@@ -268,10 +277,10 @@ postile.view.post_board.PostBoard.prototype.createPost = function(info) {
 }
 
 postile.view.post_board.PostBoard.prototype.editPost = function(post_data_obj) {
-    //postile.ajax(['post','start_edit'], { post_id: post_data_obj.id }, function(data) {
+    postile.ajax(['post','start_edit'], { post_id: post_data_obj.id }, function(data) {
         //if error, alert and return
         //to edit
-    //});
+    });
     var editor = new goog.ui.Textarea(post_data_obj.div_el.innerHTML);
     editor.addClassName('fill');
     goog.dom.removeChildren(post_data_obj.div_el);

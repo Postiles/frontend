@@ -5,6 +5,8 @@ library for ajax-related activities
 goog.provide('postile.ajax');
 goog.provide('postile.faye');
 
+goog.require('goog.net.jsloader');
+
 postile.ajax = function(url, data, callback, notifier_text){ 
     var xhr, formData, i;
     if ("postile_user_session_key" in localStorage && "postile_user_session_key" in localStorage) {
@@ -88,12 +90,13 @@ postile.ajax.expection_handlers = { //exception_string and corresponding handler
 
 postile.faye.client = null;
 
-postile.faye.init = function() { postile.faye.faye_client = new Faye.Client('http://localhost:9292/faye'); }
+postile.faye.init = function(callback) {
+    goog.net.jsloader.load(postile.fayeLocation+'/client.js').addCallback(function() {  postile.faye.faye_client = new Faye.Client(postile.fayeLocation); });
+}
 
 postile.faye.subscribe = function(channel, listener) {
-    if (!postile.faye.client) {
-        postile.faye.init();
-        postile.faye.client.subscribe(channel, function(data) {
+    var faye_action = function() {
+        postile.faye.client.subscribe('/faye/'+channel, function(data) {
             try {
                 json = JSON.parse(data);
             } catch(e) {
@@ -101,6 +104,11 @@ postile.faye.subscribe = function(channel, listener) {
             }
             listener(data.data.status, json);
         });
+    };
+    if (!postile.faye.client) {
+        postile.faye.init(faye_action);
+    } else {
+        faye_action();
     }
 };
 
