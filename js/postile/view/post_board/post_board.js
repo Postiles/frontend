@@ -19,273 +19,8 @@ goog.require('postile.faye');
 goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('goog.events.KeyCodes');
-goog.require('goog.events.KeyHandler');
 goog.require('goog.ui.Textarea');
-
-postile.view.post_board.PostBoard = function(topic_id) { //constructor
-    var i;
-    var keyHandler;
-    var instance = this;
-    postile.view.View.call(this);
-    /* BEGINNING OF MEMBER DEFINITION */
-    this.topic_id = topic_id;
-    this.mousedownCoord = null; //record the mouse position when mousedown triggered
-    this.canvasCoord = null; //current canvas position relative to the canvas viewport
-    this.shadowCoord = [0, 0]; //current shadow (the boundary-out(boundout) effect)
-    this.canvasSize = [3872, 2592]; //the size of the canvas currently
-    this.canva_shadow_animation = null; //the animation for the outbound shadow
-    this.disableMovingCanvas = false; //when true, moving canvas is disabled temporarily
-    this.currentArray = []; //an array containing all posts shown //TODO: is this really needed? anyway it is required at this moment
-    this.newPostStartCoord = null; //hold the starting point of a new post in an array with the unit of "grid unit"
-    this.viewport = goog.dom.createDom('div', 'canvas_viewport'); //disable text selecting
-    this.canvas = goog.dom.createDom('div', 'canvas'); //the canvas being dragged
-    this.mask = goog.dom.createDom('div', 'canvas_mask'); //the mask used when creating new post
-    this.mask_notice = goog.dom.createDom('div', 'mask_notice'); //text
-    this.direction_controllers = {}; //the control arrows
-    this.direction_controllers_animation = null;
-    this.right = goog.dom.createDom('div', 'right_clicker'); //right click display
-    this.currentSubscribeArea = null; //a valid area for which we've got all data we need and keep refreshing from the server
-    /* END OF MEMBER DEFINITION */
-    postile.browser_compat.setCss(this.viewport, 'userSelect', 'none');
-    goog.events.listen(this.viewport, goog.events.EventType.SELECTSTART, function(){ return false; }); //disable text selecting
-    goog.dom.appendChild(goog.dom.getElement('wrapper'), this.viewport);
-    goog.dom.appendChild(this.viewport, this.canvas);
-    goog.dom.appendChild(this.viewport, this.mask);
-    goog.dom.appendChild(this.mask, this.mask_notice);
-    this.mask_notice.innerHTML = 'Click & Drag to add a post<br />Double click again to quit';
-    this.viewport.rel_data = this;
-    this.canvas.rel_data = this;
-    this.mask.rel_data = this;
-    this.mask.preview = goog.dom.createDom('div', 'post_preview');
-    goog.dom.appendChild(this.mask, this.mask.preview);
-    this.mask.post_preview_origin_spot = goog.dom.createDom('div', {'class': 'post_preview_origin_spot'});
-    goog.dom.appendChild(this.mask, this.mask.post_preview_origin_spot);
-    /*start: controllers for moving the viewport*/
-    goog.dom.appendChild(this.viewport, this.right);
-    goog.events.listen(this.viewport, goog.events.EventType.CONTEXTMENU, function(e) { e.preventDefault(); });
-    goog.events.listen(this.viewport, goog.events.EventType.MOUSEDOWN, function(e) {
-        if (!e.isButton(2)) { return; }
-        this.rel_data.right.style.left = e.clientX - 53 + 'px';
-        this.rel_data.right.style.top = e.clientY - 53 + 'px';
-        this.rel_data.right.style.display = 'block';
-        this.rel_data.right._start_point = [e.clientX, e.clientY];
-    });
-    goog.events.listen(this.viewport, goog.events.EventType.MOUSEUP, function(e) {
-        if (!e.isButton(2)) { return; }
-        this.rel_data.right.style.display = 'none';
-        var dy = e.clientY - this.rel_data.right._start_point[1];
-        var dx = e.clientX - this.rel_data.right._start_point[0];
-        var length = Math.sqrt(Math.pow(dx, 2)+Math.pow(dy, 2));
-        this.rel_data.moveCanvas(dx / 2 / length * this.offsetWidth, dy / 2 / length * this.offsetHeight);
-    });
-    for (i in postile.view.post_board.direction_norm_to_css) {
-        this.direction_controllers[i] = goog.dom.createDom('div', ['arrow_detect', i]);
-        this.direction_controllers[i].direction = i;
-        this.direction_controllers[i].button = goog.dom.createDom('div', 'arrow_button'); //each one has a .button property pointing to the child
-        goog.dom.appendChild(this.direction_controllers[i], this.direction_controllers[i].button);
-        goog.dom.appendChild(this.direction_controllers[i].button, goog.dom.createDom('div'));
-        goog.dom.appendChild(this.direction_controllers[i], goog.dom.createDom('div', 'arrow_covering'));
-        goog.dom.appendChild(this.viewport, this.direction_controllers[i]);
-        goog.events.listen(this.direction_controllers[i], goog.events.EventType.CLICK, postile.view.post_board.handlers.arrow_control_click);
-        goog.events.listen(this.direction_controllers[i], goog.events.EventType.MOUSEMOVE, postile.view.post_board.handlers.arrow_control_mousemove);
-        goog.events.listen(this.direction_controllers[i], goog.events.EventType.MOUSEOVER, postile.view.post_board.handlers.arrow_control_mouseover);
-        goog.events.listen(this.direction_controllers[i], goog.events.EventType.MOUSEOUT, postile.view.post_board.handlers.arrow_control_mouseout);
-    }
-    keyHandler = new goog.events.KeyHandler(document);
-    goog.events.listen(keyHandler, 'key', function(e) {
-        switch (e.keyCode) {
-            case goog.events.KeyCodes.LEFT:
-                instance.preMoveCanvas('left');
-                e.preventDefault();
-                break;
-            case goog.events.KeyCodes.RIGHT:
-                instance.preMoveCanvas('right');
-                e.preventDefault();
-                break;
-            case goog.events.KeyCodes.UP:
-                instance.preMoveCanvas('up');
-                e.preventDefault();
-                break;
-            case goog.events.KeyCodes.DOWN:
-                instance.preMoveCanvas('down');
-                e.preventDefault();
-                break;
-            }    
-    });
-    /*end*/
-    goog.events.listen(this.canvas, goog.events.EventType.MOUSEDOWN, postile.view.post_board.handlers.canvas_mousedown);
-    goog.events.listen(this.canvas, goog.events.EventType.MOUSEMOVE, postile.view.post_board.handlers.canvas_mousemove);
-    goog.events.listen(this.canvas, goog.events.EventType.MOUSEUP, postile.view.post_board.handlers.canvas_mouseup);
-    goog.events.listen(this.canvas, goog.events.EventType.DBLCLICK, postile.view.post_board.handlers.canvas_dblclick);
-    goog.events.listen(this.mask, goog.events.EventType.MOUSEDOWN, postile.view.post_board.handlers.mask_mousedown);
-    goog.events.listen(this.mask, goog.events.EventType.MOUSEMOVE, postile.view.post_board.handlers.mask_mousemove);
-    goog.events.listen(this.mask, goog.events.EventType.MOUSEUP, postile.view.post_board.handlers.mask_mouseup);
-    goog.events.listen(this.mask, goog.events.EventType.DBLCLICK, function(e){ e.preventDefault(); this.style.display = 'none'; });
-    this.resize();
-    //initialize according to topic_id
-    postile.ajax(['topic','enter_topic'], { topic_id: topic_id }, function(data) {
-        postile.faye.subscribe(data.message.channel_str, function(data) { instance.fayeHandler(data); });
-    });
-}
-
-goog.inherits(postile.view.post_board.PostBoard, postile.view.View);
-
-postile.view.post_board.PostBoard.prototype.unloadedStylesheets = ['post_board.css'];
-
-postile.view.post_board.PostBoard.prototype.resize = function(){ //called on window.resize
-    this.canvas.style.display = 'block'; 
-    this.viewport.style.width = window.innerWidth + 'px';
-    this.viewport.style.height = window.innerHeight + 'px';
-    this.canvasCoord = [(this.viewport.offsetWidth - this.canvasSize[0])/2, (this.viewport.offsetHeight - this.canvasSize[1])/2]; //To be replaced
-    this.canvas.style.left = this.canvasCoord[0] + 'px'; this.canvas.style.top = this.canvasCoord[1] + 'px';   
-}
-
-postile.view.post_board.PostBoard.prototype.canvasOutBoundAnimation = function(){ //called while the animation iteration
-    this.canvas.style.boxShadow = this.shadowCoord[0]/10+'px '+this.shadowCoord[1]/10+'px '+Math.sqrt(Math.pow(this.shadowCoord[0], 2)+Math.pow(this.shadowCoord[1], 2))/10+'px 0 rgba(255, 255, 255, 0.75) inset';
-};
-
-postile.view.post_board.PostBoard.prototype.preMoveCanvas = function(direction) {
-    switch(direction) {
-        case 'up':
-            this.moveCanvas(0, -0.5 * this.viewport.offsetHeight);
-            break;
-        case 'down':
-            this.moveCanvas(0, 0.5 * this.viewport.offsetHeight);
-            break;
-        case 'left':
-            this.moveCanvas(-0.5 * this.viewport.offsetWidth, 0);
-            break;
-        case 'right':
-            this.moveCanvas(0.5 * this.viewport.offsetWidth, 0);
-            break;
-    }
-}
-
-postile.view.post_board.PostBoard.prototype.moveCanvas = function(dx, dy) {
-    if (this.disableMovingCanvas) { return; } //do not respond to actions if the user is actually dragging
-    var leftTarget = this.canvasCoord[0];
-    var topTarget = this.canvasCoord[1];
-    var i;
-    var instance = this;
-    var arrow_hide = {}; //the arrow index to hide
-    for (i in postile.view.post_board.direction_norm_to_css) { arrow_hide[i] = false; }
-    leftTarget -= dx; topTarget -= dy;
-    if (topTarget >= 0) { topTarget = 0; arrow_hide['up'] = true; }
-    if (topTarget <= this.viewport.offsetHeight - this.canvasSize[1]) { topTarget = this.viewport.offsetHeight - this.canvasSize[1]; arrow_hide['down'] = true; }
-    if (leftTarget >= 0) { leftTarget = 0; arrow_hide['left'] = true; }
-    if (leftTarget <= this.viewport.offsetWidth - this.canvasSize[0]) { leftTarget = this.viewport.offsetWidth - this.canvasSize[0]; arrow_hide['right'] = true; }
-    if (leftTarget != instance.canvasCoord[0] || topTarget != instance.canvasCoord[1]) {
-        this.disableMovingCanvas = true;
-        for (i in instance.direction_controllers) {
-            instance.direction_controllers[i].style.display = 'none';
-        }
-        new postile.fx.Animate(function(iter) {
-           instance.canvas.style.left = instance.canvasCoord[0]*(1-iter) + leftTarget*iter + 'px';
-           instance.canvas.style.top = instance.canvasCoord[1]*(1-iter) + topTarget*iter + 'px';
-        }, 600, postile.fx.ease.sin_ease, function() {
-            instance.canvasCoord[0] = leftTarget;
-            instance.canvasCoord[1] = topTarget;
-            var i;
-            instance.disableMovingCanvas = false;
-            for (i in instance.direction_controllers) {
-                if (!arrow_hide[i]) {
-                    instance.direction_controllers[i].style.display = 'block';
-                }
-            }
-        });
-    } else {
-        for (i in arrow_hide) {
-            if (arrow_hide[i]) {
-                instance.direction_controllers[i].style.display = 'none';
-            }
-        }
-    }
-}
-
-//convent length from "unit length" of the grid to pixel.
-postile.view.post_board.PostBoard.prototype.widthTo = function(u) { return (u*(75+30) - 30); };
-postile.view.post_board.PostBoard.prototype.heightTo = function(u) { return (u*(50+30) - 30); };
-postile.view.post_board.PostBoard.prototype.xPosTo = function(u) { return (u*(75+30) + this.canvasSize[0]/2); };
-postile.view.post_board.PostBoard.prototype.yPosTo = function(u) { return (u*(50+30) + this.canvasSize[1]/2); };
-//convent length to "unit length" of the grid from pixel. it is from the center grid points so margins and paddings are ignored.
-postile.view.post_board.PostBoard.prototype.xPosFrom = function(px) { return ((px + 7 - this.canvasSize[0]/2)/(75+30)); };
-postile.view.post_board.PostBoard.prototype.yPosFrom = function(px) { return ((px + 7 - this.canvasSize[1]/2)/(50+30)); };
-postile.view.post_board.direction_norm_to_css = { up: 'top', down: 'bottom', left: 'left', right: 'right' };
-
-postile.view.post_board.PostBoard.prototype.getVisibleArea = function(source) { //get visible area in the unit of "grid unit" //source is esxpected to be this.canvasCoord or [parseInt(this.canvas.style.left), parseInt(this.canvas.style.top)]
-    return { left: Math.floor(this.xPosFrom(-source[0])), top: Math.floor(this.yPosFrom(-source[1])), right: Math.ceil(this.xPosFrom(this.viewport.offsetWidth - source[0])), bottom: Math.ceil(this.yPosFrom(this.viewport.offsetHeight - source[1]))};
-}
-
-postile.view.post_board.PostBoard.prototype.getSubscribeArea = function(source) { //get subscribe area in the unit of "grid unit"
-    var preloadRadio = 1; //the size of preloaded area. 0 for exactly visible area (no preload), n for extend n screen length on all directions.
-    return { left: Math.floor(this.xPosFrom(-source[0] - preloadRadio*this.viewport.offsetWidth)), top: Math.floor(this.yPosFrom(-source[1] - preloadRadio*this.viewport.offsetHeight)), right: Math.ceil(this.xPosFrom(this.viewport.offsetWidth*(1+preloadRadio) - source[0])), bottom: Math.ceil(this.yPosFrom(this.viewport.offsetHeight*(1+preloadRadio) - source[1]))};
-}
-
-postile.view.post_board.PostBoard.prototype.updateSubsribeArea = function() { //fetch the posts in the new area and subscribe it
-    var currentLoc = [parseInt(this.canvas.style.left), parseInt(this.canvas.style.top)];
-    var to_sub = this.getSubscribeArea(currentLoc);
-    var instance = this;
-    if (!this.isAreaFullInside(this.currentSubscribeArea, this.getVisibleArea(currentLoc))) {
-        //display loading
-    }
-    /*
-    postile.ajax('', , function() {
-        instance.currentSubscribeArea = to_sub;
-    }, 'Loading posts...', true);
-    */
-}
-
-postile.view.post_board.PostBoard.prototype.isAreaFullInside = function(parent, child) {
-    return (parent.left <= child.left && parent.right >= child.right && parent.top <= child.top && parent.bottom >= child.bottom);
-}
-
-postile.view.post_board.PostBoard.prototype.renderArray = function(array) { //add post objects to the screen //NOTICE: just add, no not care the duplicate
-    var i;
-    goog.array.extend(this.currentArray,array);
-    for (i in array) {
-        array[i].coord_x_end = array[i].coord_x + array[i].span_x; //precalculate this two so that future intersect test will be faster
-        array[i].coord_y_end = array[i].coord_y + array[i].span_y;
-        array[i].div_el = goog.dom.createDom('div', {'class':'post'});
-        goog.dom.appendChild(this.canvas, array[i].div_el);
-        array[i].div_el.rel_data = array[i];
-        array[i].div_el.style.left = this.xPosTo(array[i].coord_x) + 'px';
-        array[i].div_el.style.top = this.yPosTo(array[i].coord_y) + 'px';
-        array[i].div_el.style.width = this.widthTo(array[i].span_x) + 'px';
-        array[i].div_el.style.height = this.heightTo(array[i].span_y) + 'px';
-        goog.events.listen(this.mask, goog.events.EventType.DBLCLICK, function(event){event.stopPropagation();}); //prevent dbl click from triggering "creating new post"
-        array[i].div_el.innerHTML = array[i].content;
-        postile.fx.effects.resizeIn(array[i].div_el);
-    }
-};
-
-postile.view.post_board.PostBoard.prototype.fayeHandler = function(data) {
-    //TODO
-}
-
-postile.view.post_board.PostBoard.prototype.createPost = function(info) {
-    var req = goog.object.clone(info);
-    var ret = goog.object.clone(info);
-    var instance = this;
-    req.topic_id = this.topic_id;
-    ret.content = 'Your new post... Enter your content here...';
-    postile.ajax(['post','new'], req, function(data) { 
-        ret.id = data.message;
-        instance.mask.style.display = 'none';
-        instance.renderArray([ret]);
-        instance.editPost(ret);
-    });
-}
-
-postile.view.post_board.PostBoard.prototype.editPost = function(post_data_obj) {
-    postile.ajax(['post','start_edit'], { post_id: post_data_obj.id }, function(data) {
-        //if error, alert and return
-        //to edit
-    });
-    var editor = new goog.ui.Textarea(post_data_obj.div_el.innerHTML);
-    editor.addClassName('fill');
-    goog.dom.removeChildren(post_data_obj.div_el);
-    editor.render(post_data_obj.div_el);
-} 
+goog.require('goog.events.KeyHandler');
 
 postile.view.post_board.handlers.canvas_mousedown = function(e) {
     if (!e.isButton(0)) { return; }
@@ -445,3 +180,281 @@ postile.view.post_board.handlers.arrow_control_mouseout = function() {
     this.parentNode.rel_data.direction_controllers_animation.stop();
     this.button.style.display = 'none';
 }
+
+postile.view.post_board.handlers.resize = function(instance){ //called on window.resize
+    instance.canvas.style.display = 'block'; 
+    instance.viewport.style.width = window.innerWidth + 'px';
+    instance.viewport.style.height = window.innerHeight + 'px';
+    instance.canvasCoord = [(instance.viewport.offsetWidth - instance.canvasSize[0])/2, (instance.viewport.offsetHeight - instance.canvasSize[1])/2]; //To be replaced
+    instance.canvas.style.left = instance.canvasCoord[0] + 'px'; instance.canvas.style.top = instance.canvasCoord[1] + 'px';   
+}
+
+postile.view.post_board.handlers.keypress = function(instance, e){
+    switch (e.keyCode) {
+        case goog.events.KeyCodes.LEFT:
+            instance.preMoveCanvas('left');
+            e.preventDefault();
+            break;
+        case goog.events.KeyCodes.RIGHT:
+            instance.preMoveCanvas('right');
+            e.preventDefault();
+            break;
+        case goog.events.KeyCodes.UP:
+            instance.preMoveCanvas('up');
+            e.preventDefault();
+            break;
+        case goog.events.KeyCodes.DOWN:
+            instance.preMoveCanvas('down');
+            e.preventDefault();
+            break;
+    }    
+}
+
+postile.view.post_board.PostBoard = function(topic_id) { //constructor
+    var i;
+    var keyHandler;
+    var instance = this;
+    postile.view.View.call(this);
+    /* BEGINNING OF MEMBER DEFINITION */
+    this.topic_id = topic_id;
+    this.channel_str = null;
+    this.mousedownCoord = null; //record the mouse position when mousedown triggered
+    this.canvasCoord = null; //current canvas position relative to the canvas viewport
+    this.shadowCoord = [0, 0]; //current shadow (the boundary-out(boundout) effect)
+    this.canvasSize = [3872, 2592]; //the size of the canvas currently
+    this.canva_shadow_animation = null; //the animation for the outbound shadow
+    this.disableMovingCanvas = false; //when true, moving canvas is disabled temporarily
+    this.currentArray = []; //an array containing all posts shown //TODO: is this really needed? anyway it is required at this moment
+    this.newPostStartCoord = null; //hold the starting point of a new post in an array with the unit of "grid unit"
+    this.viewport = goog.dom.createDom('div', 'canvas_viewport'); //disable text selecting
+    this.canvas = goog.dom.createDom('div', 'canvas'); //the canvas being dragged
+    this.mask = goog.dom.createDom('div', 'canvas_mask'); //the mask used when creating new post
+    this.mask_notice = goog.dom.createDom('div', 'mask_notice'); //text
+    this.direction_controllers = {}; //the control arrows
+    this.direction_controllers_animation = null;
+    this.right = goog.dom.createDom('div', 'right_clicker'); //right click display
+    this.currentSubscribeArea = null; //a valid area for which we've got all data we need and keep refreshing from the server
+    /* END OF MEMBER DEFINITION */
+    postile.browser_compat.setCss(this.viewport, 'userSelect', 'none');
+    goog.events.listen(this.viewport, goog.events.EventType.SELECTSTART, function(){ return false; }); //disable text selecting
+    goog.dom.appendChild(goog.dom.getElement('wrapper'), this.viewport);
+    goog.dom.appendChild(this.viewport, this.canvas);
+    goog.dom.appendChild(this.viewport, this.mask);
+    goog.dom.appendChild(this.mask, this.mask_notice);
+    this.mask_notice.innerHTML = 'Click & Drag to add a post<br />Double click again to quit';
+    this.viewport.rel_data = this;
+    this.canvas.rel_data = this;
+    this.mask.rel_data = this;
+    this.mask.preview = goog.dom.createDom('div', 'post_preview');
+    goog.dom.appendChild(this.mask, this.mask.preview);
+    this.mask.post_preview_origin_spot = goog.dom.createDom('div', {'class': 'post_preview_origin_spot'});
+    goog.dom.appendChild(this.mask, this.mask.post_preview_origin_spot);
+    /*start: controllers for moving the viewport*/
+    goog.dom.appendChild(this.viewport, this.right);
+    goog.events.listen(this.viewport, goog.events.EventType.CONTEXTMENU, function(e) { e.preventDefault(); });
+    goog.events.listen(this.viewport, goog.events.EventType.MOUSEDOWN, function(e) {
+        if (!e.isButton(2)) { return; }
+        this.rel_data.right.style.left = e.clientX - 53 + 'px';
+        this.rel_data.right.style.top = e.clientY - 53 + 'px';
+        this.rel_data.right.style.display = 'block';
+        this.rel_data.right._start_point = [e.clientX, e.clientY];
+    });
+    goog.events.listen(this.viewport, goog.events.EventType.MOUSEUP, function(e) {
+        if (!e.isButton(2)) { return; }
+        this.rel_data.right.style.display = 'none';
+        var dy = e.clientY - this.rel_data.right._start_point[1];
+        var dx = e.clientX - this.rel_data.right._start_point[0];
+        var length = Math.sqrt(Math.pow(dx, 2)+Math.pow(dy, 2));
+        this.rel_data.moveCanvas(dx / 2 / length * this.offsetWidth, dy / 2 / length * this.offsetHeight);
+    });
+    for (i in postile.view.post_board.direction_norm_to_css) {
+        this.direction_controllers[i] = goog.dom.createDom('div', ['arrow_detect', i]);
+        this.direction_controllers[i].direction = i;
+        this.direction_controllers[i].button = goog.dom.createDom('div', 'arrow_button'); //each one has a .button property pointing to the child
+        goog.dom.appendChild(this.direction_controllers[i], this.direction_controllers[i].button);
+        goog.dom.appendChild(this.direction_controllers[i].button, goog.dom.createDom('div'));
+        goog.dom.appendChild(this.direction_controllers[i], goog.dom.createDom('div', 'arrow_covering'));
+        goog.dom.appendChild(this.viewport, this.direction_controllers[i]);
+        goog.events.listen(this.direction_controllers[i], goog.events.EventType.CLICK, postile.view.post_board.handlers.arrow_control_click);
+        goog.events.listen(this.direction_controllers[i], goog.events.EventType.MOUSEMOVE, postile.view.post_board.handlers.arrow_control_mousemove);
+        goog.events.listen(this.direction_controllers[i], goog.events.EventType.MOUSEOVER, postile.view.post_board.handlers.arrow_control_mouseover);
+        goog.events.listen(this.direction_controllers[i], goog.events.EventType.MOUSEOUT, postile.view.post_board.handlers.arrow_control_mouseout);
+    }
+    /*end*/
+    goog.events.listen(this.canvas, goog.events.EventType.MOUSEDOWN, postile.view.post_board.handlers.canvas_mousedown);
+    goog.events.listen(this.canvas, goog.events.EventType.MOUSEMOVE, postile.view.post_board.handlers.canvas_mousemove);
+    goog.events.listen(this.canvas, goog.events.EventType.MOUSEUP, postile.view.post_board.handlers.canvas_mouseup);
+    goog.events.listen(this.canvas, goog.events.EventType.DBLCLICK, postile.view.post_board.handlers.canvas_dblclick);
+    goog.events.listen(this.mask, goog.events.EventType.MOUSEDOWN, postile.view.post_board.handlers.mask_mousedown);
+    goog.events.listen(this.mask, goog.events.EventType.MOUSEMOVE, postile.view.post_board.handlers.mask_mousemove);
+    goog.events.listen(this.mask, goog.events.EventType.MOUSEUP, postile.view.post_board.handlers.mask_mouseup);
+    goog.events.listen(this.mask, goog.events.EventType.DBLCLICK, function(e){ e.preventDefault(); this.style.display = 'none'; });
+    //initialize viewport size
+    postile.view.post_board.handlers.resize(instance);
+    //initialize according to topic_id
+    postile.ajax(['topic','enter_topic'], { topic_id: topic_id }, function(data) {
+        instance.channel_str = data.message.channel_str;
+        postile.faye.subscribe(data.message.channel_str, function(data) { instance.fayeHandler(data); });
+        instance.updateSubsribeArea();
+    });
+}
+
+goog.inherits(postile.view.post_board.PostBoard, postile.view.View);
+
+postile.view.post_board.PostBoard.prototype.unloaded_stylesheets = ['post_board.css'];
+
+postile.view.post_board.PostBoard.prototype.global_handlers = [
+    { subject: window, action: goog.events.EventType.RESIZE, handler: postile.view.post_board.handlers.resize },
+    { subject: postile.globalKeyHandler, action: goog.events.KeyHandler.EventType.KEY, handler: postile.view.post_board.handlers.keypress }
+];
+
+postile.view.post_board.PostBoard.prototype.canvasOutBoundAnimation = function(){ //called while the animation iteration
+    this.canvas.style.boxShadow = this.shadowCoord[0]/10+'px '+this.shadowCoord[1]/10+'px '+Math.sqrt(Math.pow(this.shadowCoord[0], 2)+Math.pow(this.shadowCoord[1], 2))/10+'px 0 rgba(255, 255, 255, 0.75) inset';
+};
+
+postile.view.post_board.PostBoard.prototype.preMoveCanvas = function(direction) {
+    switch(direction) {
+        case 'up':
+            this.moveCanvas(0, -0.5 * this.viewport.offsetHeight);
+            break;
+        case 'down':
+            this.moveCanvas(0, 0.5 * this.viewport.offsetHeight);
+            break;
+        case 'left':
+            this.moveCanvas(-0.5 * this.viewport.offsetWidth, 0);
+            break;
+        case 'right':
+            this.moveCanvas(0.5 * this.viewport.offsetWidth, 0);
+            break;
+    }
+}
+
+postile.view.post_board.PostBoard.prototype.moveCanvas = function(dx, dy) {
+    if (this.disableMovingCanvas) { return; } //do not respond to actions if the user is actually dragging
+    var leftTarget = this.canvasCoord[0];
+    var topTarget = this.canvasCoord[1];
+    var i;
+    var instance = this;
+    var arrow_hide = {}; //the arrow index to hide
+    for (i in postile.view.post_board.direction_norm_to_css) { arrow_hide[i] = false; }
+    leftTarget -= dx; topTarget -= dy;
+    if (topTarget >= 0) { topTarget = 0; arrow_hide['up'] = true; }
+    if (topTarget <= this.viewport.offsetHeight - this.canvasSize[1]) { topTarget = this.viewport.offsetHeight - this.canvasSize[1]; arrow_hide['down'] = true; }
+    if (leftTarget >= 0) { leftTarget = 0; arrow_hide['left'] = true; }
+    if (leftTarget <= this.viewport.offsetWidth - this.canvasSize[0]) { leftTarget = this.viewport.offsetWidth - this.canvasSize[0]; arrow_hide['right'] = true; }
+    if (leftTarget != instance.canvasCoord[0] || topTarget != instance.canvasCoord[1]) {
+        this.disableMovingCanvas = true;
+        for (i in instance.direction_controllers) {
+            instance.direction_controllers[i].style.display = 'none';
+        }
+        new postile.fx.Animate(function(iter) {
+           instance.canvas.style.left = instance.canvasCoord[0]*(1-iter) + leftTarget*iter + 'px';
+           instance.canvas.style.top = instance.canvasCoord[1]*(1-iter) + topTarget*iter + 'px';
+        }, 600, postile.fx.ease.sin_ease, function() {
+            instance.canvasCoord[0] = leftTarget;
+            instance.canvasCoord[1] = topTarget;
+            var i;
+            instance.disableMovingCanvas = false;
+            for (i in instance.direction_controllers) {
+                if (!arrow_hide[i]) {
+                    instance.direction_controllers[i].style.display = 'block';
+                }
+            }
+        });
+    } else {
+        for (i in arrow_hide) {
+            if (arrow_hide[i]) {
+                instance.direction_controllers[i].style.display = 'none';
+            }
+        }
+    }
+}
+
+//convent length from "unit length" of the grid to pixel.
+postile.view.post_board.PostBoard.prototype.widthTo = function(u) { return (u*(75+30) - 30); };
+postile.view.post_board.PostBoard.prototype.heightTo = function(u) { return (u*(50+30) - 30); };
+postile.view.post_board.PostBoard.prototype.xPosTo = function(u) { return (u*(75+30) + this.canvasSize[0]/2); };
+postile.view.post_board.PostBoard.prototype.yPosTo = function(u) { return (u*(50+30) + this.canvasSize[1]/2); };
+//convent length to "unit length" of the grid from pixel. it is from the center grid points so margins and paddings are ignored.
+postile.view.post_board.PostBoard.prototype.xPosFrom = function(px) { return ((px + 7 - this.canvasSize[0]/2)/(75+30)); };
+postile.view.post_board.PostBoard.prototype.yPosFrom = function(px) { return ((px + 7 - this.canvasSize[1]/2)/(50+30)); };
+postile.view.post_board.direction_norm_to_css = { up: 'top', down: 'bottom', left: 'left', right: 'right' };
+
+postile.view.post_board.PostBoard.prototype.getVisibleArea = function(source) { //get visible area in the unit of "grid unit" //source is esxpected to be this.canvasCoord or [parseInt(this.canvas.style.left), parseInt(this.canvas.style.top)]
+    return { left: Math.floor(this.xPosFrom(-source[0])), top: Math.floor(this.yPosFrom(-source[1])), right: Math.ceil(this.xPosFrom(this.viewport.offsetWidth - source[0])), bottom: Math.ceil(this.yPosFrom(this.viewport.offsetHeight - source[1]))};
+}
+
+postile.view.post_board.PostBoard.prototype.getSubscribeArea = function(source) { //get subscribe area in the unit of "grid unit"
+    var preloadRadio = 1; //the size of preloaded area. 0 for exactly visible area (no preload), n for extend n screen length on all directions.
+    return { left: Math.floor(this.xPosFrom(-source[0] - preloadRadio*this.viewport.offsetWidth)), top: Math.floor(this.yPosFrom(-source[1] - preloadRadio*this.viewport.offsetHeight)), right: Math.ceil(this.xPosFrom(this.viewport.offsetWidth*(1+preloadRadio) - source[0])), bottom: Math.ceil(this.yPosFrom(this.viewport.offsetHeight*(1+preloadRadio) - source[1]))};
+}
+
+postile.view.post_board.PostBoard.prototype.updateSubsribeArea = function() { //fetch the posts in the new area and subscribe it
+    var instance = this;
+    var current_loc = [parseInt(this.canvas.style.left), parseInt(this.canvas.style.top)];
+    var to_subscribe = this.getSubscribeArea(current_loc);
+    /*
+    if (!this.isAreaFullInside(this.currentSubscribeArea, this.getVisibleArea(currentLoc))) {
+        //display loading
+    }
+    */
+    to_subscribe.channel_str = this.channel_str;
+    postile.ajax(['topic', 'move_to'], to_subscribe, function(data) {
+       instance.renderArray(data.message);
+    }, 'Loading posts...', true);
+}
+
+postile.view.post_board.PostBoard.prototype.isAreaFullInside = function(parent, child) {
+    return (parent.left <= child.left && parent.right >= child.right && parent.top <= child.top && parent.bottom >= child.bottom);
+}
+
+postile.view.post_board.PostBoard.prototype.renderArray = function(array) { //add post objects to the screen //NOTICE: just add, no not care the duplicate
+    var i;
+    for (i in array) {
+        array[i].coord_x_end = array[i].coord_x + array[i].span_x; //precalculate this two so that future intersect test will be faster
+        array[i].coord_y_end = array[i].coord_y + array[i].span_y;
+        array[i].div_el = goog.dom.createDom('div', 'post');
+        goog.dom.appendChild(this.canvas, array[i].div_el);
+        array[i].div_el.rel_data = array[i];
+        array[i].div_el.style.left = this.xPosTo(array[i].coord_x) + 'px';
+        array[i].div_el.style.top = this.yPosTo(array[i].coord_y) + 'px';
+        array[i].div_el.style.width = this.widthTo(array[i].span_x) + 'px';
+        array[i].div_el.style.height = this.heightTo(array[i].span_y) + 'px';
+        goog.events.listen(this.mask, goog.events.EventType.DBLCLICK, function(event){event.stopPropagation();}); //prevent dbl click from triggering "creating new post"
+        array[i].div_el.innerHTML = array[i].text_content;
+        postile.fx.effects.resizeIn(array[i].div_el);
+    }
+    goog.array.extend(this.currentArray,array);
+};
+
+postile.view.post_board.PostBoard.prototype.fayeHandler = function(data) {
+    //TODO
+}
+
+postile.view.post_board.PostBoard.prototype.createPost = function(info) {
+    var req = goog.object.clone(info);
+    var ret = goog.object.clone(info);
+    var instance = this;
+    req.topic_id = this.topic_id;
+    ret.text_content = 'Your new post... Enter your content here...';
+    postile.ajax(['post','new'], req, function(data) { 
+        ret.id = data.message;
+        instance.mask.style.display = 'none';
+        instance.renderArray([ret]);
+        instance.editPost(ret);
+    });
+}
+
+postile.view.post_board.PostBoard.prototype.editPost = function(post_data_obj) {
+    postile.ajax(['post','start_edit'], { post_id: post_data_obj.id }, function(data) {
+        var editor = new goog.ui.Textarea(post_data_obj.div_el.innerHTML);
+        editor.addClassName('fill');
+        goog.dom.removeChildren(post_data_obj.div_el);
+        editor.render(post_data_obj.div_el);
+        goog.events.listen(editor.getContentElement(), goog.events.EventType.BLUR, function(){ 
+            postile.ajax(['post','submit_change'], { post_id: data.message, content: editor.getValue() }, function(data) { 
+                alert('编辑成功'); window.location.reload();
+            });
+        });
+    });
+} 

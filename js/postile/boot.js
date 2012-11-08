@@ -1,9 +1,11 @@
 goog.provide('postile');
 
 goog.require('postile.browser_compat');
+goog.require('goog.events.KeyHandler');
 goog.require('goog.events');
 goog.require('postile.router');
 goog.require('postile.user');
+//goog.require('goog.module.ModuleManager');
 goog.require('postile.view.post_board');
 
 postile = { //the base of posTile frontend framework
@@ -16,8 +18,10 @@ postile = { //the base of posTile frontend framework
     dynamicResource: function(input) {
         return "http://localhost:3000/"+input.join("/");
     },
+    globalKeyHandler: null,
     fayeLocation: 'http://localhost:9292/faye',
     init: function() {
+        postile.globalKeyHandler = new goog.events.KeyHandler(document);
         postile.router_map();
         postile.router.rescue(function(){ alert('Bad route.'); });
         postile.router.dispatch(window.location.pathname);
@@ -28,7 +32,7 @@ postile = { //the base of posTile frontend framework
     router_map: function() {
         postile.router.map('/test').to(function(){ 
             var pb = new postile.view.post_board.PostBoard(5);
-            pb.renderArray([
+            /* pb.renderArray([
                 { id: 128, coord_x: -1, coord_y: -3, span_x: 2, span_y: 2, content: '<b style="font-size: 20px">You can drag the canvas till you reach the boundary</b>' }, //each one stand for a post
                 { id: 111, coord_x: -1, coord_y: -1, span_x: 2, span_y: 1, content: '<a onclick="postile.user.openLoginBox();">LOGIN</a>' },
                 { id: 198, coord_x: -2, coord_y: -2, span_x: 1, span_y: 2, content: "dummy content for block 3" },
@@ -37,7 +41,7 @@ postile = { //the base of posTile frontend framework
                 { id: 310, coord_x: -2, coord_y: 2, span_x: 2, span_y: 2, content: "dummy content for block 6" },
                 { id: 317, coord_x: 1, coord_y: 0, span_x: 3, span_y: 3, content: '<b style="font-size: 24px; color: #C00">You can try to RIGHT click on blank places</b>' },
                 { id: 319, coord_x: -5, coord_y: -3, span_x: 3, span_y: 2, content: "dummy content for block 8" }
-            ]);
+            ]); */
         });
     }
 };

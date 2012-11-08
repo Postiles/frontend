@@ -10,10 +10,29 @@ child should implement: unloadedStylesheets
 */
 postile.view.View = function() {
     var i;
-    for (i in this.unloadedStylesheets) {
-        goog.dom.appendChild(document.getElementsByTagName('head')[0], goog.dom.createDom('link', { type: 'text/css', rel: 'stylesheet', href: postile.staticResource(['css',this.unloadedStylesheets[i]]) }));
+    var instance = this;
+    var reClosure = function(index) {
+        return (function(e) { instance.global_handlers[index].handler(instance, e); });
+    }
+    for (i in this.unloaded_stylesheets) {
+        goog.dom.appendChild(document.getElementsByTagName('head')[0], goog.dom.createDom('link', { type: 'text/css', rel: 'stylesheet', href: postile.staticResource(['css',this.unloaded_stylesheets[i]]) }));
+    }
+    for (i in this.global_handlers) {
+        if (!this.global_handlers[i].reclosured) {
+            this.global_handlers[i].reclosured = reClosure(i);
+        }
+        if (this.global_handlers[i].subject == null) { this.global_handlers[i].subject = postile.globalKeyHandler; }
+        //console.log(this.global_handlers[i].subject, this.global_handlers[i].action, this.global_handlers[i].reclosured);
+        goog.events.listen(this.global_handlers[i].subject, this.global_handlers[i].action, this.global_handlers[i].reclosured);
     }
     this.unloadedStylesheets = [];
+}
+
+postile.view.View.prototype.exit = function() {
+    var i;
+    for (i in this.global_handlers) {
+        goog.events.unlisten(this.global_handlers[i].subject, this.global_handlers[i].action, this.global_handlers[i].reclosured);
+    } 
 }
 
 /*
@@ -41,6 +60,7 @@ postile.view.PopView.prototype.open = function(width) {
     
 postile.view.PopView.prototype.close = function() {
     goog.dom.removeNode(this.mask);
+    this.exit();
 }
 
 /*

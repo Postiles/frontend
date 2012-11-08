@@ -33,4 +33,4 @@ postile.view.login.handlers.submit = function() {
     }
 }
 
-postile.view.login.Login.prototype.unloadedStylesheets = ['login.css'];
+postile.view.login.Login.prototype.unloaded_stylesheets = ['login.css'];
