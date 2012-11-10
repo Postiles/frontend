@@ -118,9 +118,9 @@ postile.view.post_board.handlers.mask_mousemove = function(e){ //mouse key not d
     //now "current" saves the smaller value and "end" saves the larger one
     //check if available
     var intersect = false;
-    for (i in this.rel_data.currentArray) {
+    for (i in this.rel_data.currentPosts) {
         //from http://stackoverflow.com/questions/2752349/fast-rectangle-to-rectangle-intersection
-        if(!(current[0] >= this.rel_data.currentArray[i].coord_x_end || end[0] <= this.rel_data.currentArray[i].coord_x || current[1] >=this.rel_data.currentArray[i].coord_y_end || end[1] <= this.rel_data.currentArray[i].coord_y)) { 
+        if(!(current[0] >= this.rel_data.currentPosts[i].coord_x_end || end[0] <= this.rel_data.currentPosts[i].coord_x || current[1] >=this.rel_data.currentPosts[i].coord_y_end || end[1] <= this.rel_data.currentPosts[i].coord_y)) { 
             intersect = true;
             break;
         }
@@ -183,10 +183,17 @@ postile.view.post_board.handlers.arrow_control_mouseout = function() {
 
 postile.view.post_board.handlers.resize = function(instance){ //called on window.resize
     instance.canvas.style.display = 'block'; 
-    instance.viewport.style.width = window.innerWidth + 'px';
-    instance.viewport.style.height = window.innerHeight + 'px';
-    instance.canvasCoord = [(instance.viewport.offsetWidth - instance.canvasSize[0])/2, (instance.viewport.offsetHeight - instance.canvasSize[1])/2]; //To be replaced
+    var new_viewport_size = [window.innerWidth,  window.innerHeight];
+    if (!instance.canvasCoord) { //first time (initialize)
+        instance.canvasCoord = [(instance.viewport.offsetWidth - instance.canvasSize[0])/2, (instance.viewport.offsetHeight - instance.canvasSize[1])/2];
+    } else { //window resize
+        //keep the center in the same position
+        instance.canvasCoord[0] += (new_viewport_size[0] - parseInt(instance.viewport.style.width))/2;
+        instance.canvasCoord[1] += (new_viewport_size[1] - parseInt(instance.viewport.style.height))/2;
+    }
+    instance.viewport.style.width = new_viewport_size[0] + 'px'; instance.viewport.style.height = new_viewport_size[1] + 'px';
     instance.canvas.style.left = instance.canvasCoord[0] + 'px'; instance.canvas.style.top = instance.canvasCoord[1] + 'px';   
+    instance.updateSubsribeArea(); //update according to the new subscribe area
 }
 
 postile.view.post_board.handlers.keypress = function(instance, e){
@@ -224,7 +231,7 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
     this.canvasSize = [3872, 2592]; //the size of the canvas currently
     this.canva_shadow_animation = null; //the animation for the outbound shadow
     this.disableMovingCanvas = false; //when true, moving canvas is disabled temporarily
-    this.currentArray = []; //an array containing all posts shown //TODO: is this really needed? anyway it is required at this moment
+    this.currentPosts = []; //an array containing all posts shown
     this.newPostStartCoord = null; //hold the starting point of a new post in an array with the unit of "grid unit"
     this.viewport = goog.dom.createDom('div', 'canvas_viewport'); //disable text selecting
     this.canvas = goog.dom.createDom('div', 'canvas'); //the canvas being dragged
@@ -289,24 +296,30 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
     goog.events.listen(this.mask, goog.events.EventType.MOUSEMOVE, postile.view.post_board.handlers.mask_mousemove);
     goog.events.listen(this.mask, goog.events.EventType.MOUSEUP, postile.view.post_board.handlers.mask_mouseup);
     goog.events.listen(this.mask, goog.events.EventType.DBLCLICK, function(e){ e.preventDefault(); this.style.display = 'none'; });
-    //initialize viewport size
-    postile.view.post_board.handlers.resize(instance);
     //initialize according to topic_id
     postile.ajax(['topic','enter_topic'], { topic_id: topic_id }, function(data) {
         instance.channel_str = data.message.channel_str;
         postile.faye.subscribe(data.message.channel_str, function(data) { instance.fayeHandler(data); });
-        instance.updateSubsribeArea();
+        //initialize viewport size
+        postile.view.post_board.handlers.resize(instance);
     });
 }
 
 goog.inherits(postile.view.post_board.PostBoard, postile.view.View);
 
+//postile.view.View required component
 postile.view.post_board.PostBoard.prototype.unloaded_stylesheets = ['post_board.css'];
 
+//postile.view.View required component
 postile.view.post_board.PostBoard.prototype.global_handlers = [
     { subject: 'window', action: goog.events.EventType.RESIZE, handler: postile.view.post_board.handlers.resize },
     { subject: 'keyboard', action: goog.events.KeyHandler.EventType.KEY, handler: postile.view.post_board.handlers.keypress }
 ];
+
+//postile.view.View required component
+postile.view.post_board.PostBoard.prototype.on_exit = function() {
+    //TODO: informaing the server that I'm fucking leaving
+}
 
 postile.view.post_board.PostBoard.prototype.canvasOutBoundAnimation = function(){ //called while the animation iteration
     this.canvas.style.boxShadow = this.shadowCoord[0]/10+'px '+this.shadowCoord[1]/10+'px '+Math.sqrt(Math.pow(this.shadowCoord[0], 2)+Math.pow(this.shadowCoord[1], 2))/10+'px 0 rgba(255, 255, 255, 0.75) inset';
@@ -391,7 +404,7 @@ postile.view.post_board.PostBoard.prototype.getSubscribeArea = function(source) 
 
 postile.view.post_board.PostBoard.prototype.updateSubsribeArea = function() { //fetch the posts in the new area and subscribe it
     var instance = this;
-    var current_loc = [parseInt(this.canvas.style.left), parseInt(this.canvas.style.top)];
+    var current_loc = this.canvasCoord;
     var to_subscribe = this.getSubscribeArea(current_loc);
     /*
     if (!this.isAreaFullInside(this.currentSubscribeArea, this.getVisibleArea(currentLoc))) {
@@ -410,7 +423,11 @@ postile.view.post_board.PostBoard.prototype.isAreaFullInside = function(parent, 
 
 postile.view.post_board.PostBoard.prototype.renderArray = function(array) { //add post objects to the screen //NOTICE: just add, no not care the duplicate
     var i;
+    var index;
     for (i in array) {
+        if (!array[i].id) { return; }
+        index = goog.array.findIndex(this.currentPosts, function(o) { return o.id == array[i].id; }); //already in CurrentPosts?
+        if (index > -1) { goog.array.removeAt(this.currentPosts, index); }
         array[i].coord_x_end = array[i].coord_x + array[i].span_x; //precalculate this two so that future intersect test will be faster
         array[i].coord_y_end = array[i].coord_y + array[i].span_y;
         array[i].div_el = goog.dom.createDom('div', 'post');
@@ -424,11 +441,11 @@ postile.view.post_board.PostBoard.prototype.renderArray = function(array) { //ad
         array[i].div_el.innerHTML = array[i].text_content;
         postile.fx.effects.resizeIn(array[i].div_el);
     }
-    goog.array.extend(this.currentArray,array);
+    goog.array.extend(this.currentPosts,array);
 };
 
 postile.view.post_board.PostBoard.prototype.fayeHandler = function(data) {
-    //TODO
+    console.log("Faye data ", data);
 }
 
 postile.view.post_board.PostBoard.prototype.createPost = function(info) {

@@ -6,33 +6,48 @@ goog.require('goog.dom');
 goog.require('postile.fx.effects');
 
 /*
-child should implement: unloadedStylesheets
+How to create a normal view:
+
+1. have a class inherits "positle.view.View".
+2. [optional, only when you need to load css] have a "unloaded_stylesheets" in its prototype, which is an array containing css files that need to be loaded.
+3. [optional, only when you need to listen to global events] have a "global_handlers" array in its prototype.
+4. [optional, only when you need to have something done on exiting] have a "on_exit" function, which will be called when leaving the view
+
+How to create a pop-up view:
+
+1. have a class inherits "postile.view.PopView".
+2-4. the same as normal view.
 */
+
 postile.view.View = function() {
     var i;
     var instance = this;
     var reClosure = function(index) {
         return (function(e) { instance.global_handlers[index].handler(instance, e); });
     }
-    for (i in this.unloaded_stylesheets) {
-        goog.dom.appendChild(document.getElementsByTagName('head')[0], goog.dom.createDom('link', { type: 'text/css', rel: 'stylesheet', href: postile.staticResource(['css',this.unloaded_stylesheets[i]]) }));
-    }
-    for (i in this.global_handlers) {
-        if (!this.global_handlers[i].reclosured) {
-            this.global_handlers[i].reclosured = reClosure(i);
+    if (this.unloaded_stylesheets) {
+        for (i in this.unloaded_stylesheets) {
+            goog.dom.appendChild(document.getElementsByTagName('head')[0], goog.dom.createDom('link', { type: 'text/css', rel: 'stylesheet', href: postile.staticResource(['css',this.unloaded_stylesheets[i]]) }));
         }
-        switch(this.global_handlers[i].handler) {
-            case 'window':
-                this.global_handlers[i].processed_subject = window;
-                break;
-            case 'keyboard':
-                this.global_handlers[i].processed_subject = postile.getKeyHandler();
-                break;
-            default:
-                return;
-        }   
-        if (this.global_handlers[i].subject == null) { this.global_handlers[i].subject = postile.globalKeyHandler; }
-        goog.events.listen(this.global_handlers[i].processed_subject, this.global_handlers[i].action, this.global_handlers[i].reclosured_handler);
+    }
+    if (this.global_handlers) {
+        for (i in this.global_handlers) {
+            console.log(i);
+            if (!this.global_handlers[i].reclosured_handler) {
+                this.global_handlers[i].reclosured_handler = reClosure(i);
+            }
+            switch(this.global_handlers[i].subject) {
+                case 'window':
+                    this.global_handlers[i].processed_subject = window;
+                    break;
+                case 'keyboard':
+                    this.global_handlers[i].processed_subject = postile.getKeyHandler();
+                    break;
+                default:
+                   continue;
+            }   
+            goog.events.listen(this.global_handlers[i].processed_subject, this.global_handlers[i].action, this.global_handlers[i].reclosured_handler);
+        }
     }
     this.unloadedStylesheets = [];
 }
@@ -45,9 +60,6 @@ postile.view.View.prototype.exit = function() {
     }
 }
 
-/*
-child should implement: unloadedStylesheets, container
-*/
 postile.view.PopView = function() {
     postile.view.View.call(this);
     this.container = goog.dom.createDom('div', 'pop_container');
@@ -72,9 +84,3 @@ postile.view.PopView.prototype.close = function() {
     goog.dom.removeNode(this.mask);
     this.exit();
 }
-
-/*
-to use:
-
-"post_board" inherits "view" and have a "unloadedStylesheets" in its PROTOTYPE
-*/
