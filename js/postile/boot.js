@@ -22,7 +22,9 @@ postile = { //the base of posTile frontend framework
         return postile.getKeyHandler.handler;
     },
     fayeLocation: 'http://localhost:9292/faye',
+    wrapper: null,
     init: function() {
+        postile.wrapper = goog.dom.getElement('wrapper');
         postile.router_map();
         postile.router.rescue(function(){ alert('Bad route.'); });
         postile.router.dispatch(window.location.pathname);
@@ -39,3 +41,5 @@ postile = { //the base of posTile frontend framework
         });
     }
 };
+
+postile.getKeyHandler.handler = null;

@@ -47,8 +47,13 @@ MIC: postile.toast
     top: 10px;
     z-index: 19520;
     text-align: center;
+    position: absolute;
 }
 
 .toast_instance  {
     background: #FFF;
+}
+
+.toast_instance span {
+    text-decoration: underline;
 }

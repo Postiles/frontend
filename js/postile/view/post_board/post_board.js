@@ -21,6 +21,7 @@ goog.require('goog.events');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.ui.Textarea');
 goog.require('goog.events.KeyHandler');
+goog.require('postile.toast');
 
 postile.view.post_board.handlers.canvas_mousedown = function(e) {
     if (!e.isButton(0)) { return; }
@@ -244,7 +245,7 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
     /* END OF MEMBER DEFINITION */
     postile.browser_compat.setCss(this.viewport, 'userSelect', 'none');
     goog.events.listen(this.viewport, goog.events.EventType.SELECTSTART, function(){ return false; }); //disable text selecting
-    goog.dom.appendChild(goog.dom.getElement('wrapper'), this.viewport);
+    goog.dom.appendChild(postile.wrapper, this.viewport);
     goog.dom.appendChild(this.viewport, this.canvas);
     goog.dom.appendChild(this.viewport, this.mask);
     goog.dom.appendChild(this.mask, this.mask_notice);
