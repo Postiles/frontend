@@ -299,7 +299,7 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
     //initialize according to topic_id
     postile.ajax(['topic','enter_topic'], { topic_id: topic_id }, function(data) {
         instance.channel_str = data.message.channel_str;
-        postile.faye.subscribe(data.message.channel_str, function(data) { instance.fayeHandler(data); });
+        postile.faye.subscribe(data.message.channel_str, function(status, data) { instance.fayeHandler(status, data); });
         //initialize viewport size
         postile.view.post_board.handlers.resize(instance);
     });
@@ -450,8 +450,12 @@ postile.view.post_board.PostBoard.prototype.renderArray = function(array) { //ad
     goog.array.extend(this.currentPosts,array);
 };
 
-postile.view.post_board.PostBoard.prototype.fayeHandler = function(data) {
-    console.log("Faye data ", data);
+postile.view.post_board.PostBoard.prototype.fayeHandler = function(status, data) {
+    switch (status) {
+        case postile.view.post_board.faye_status.FINISH:
+            this.renderArray([data]);
+            break;      
+    }
 }
 
 postile.view.post_board.PostBoard.prototype.createPost = function(info) {
@@ -480,4 +484,13 @@ postile.view.post_board.PostBoard.prototype.editPost = function(post_data_obj) {
             });
         });
     });
-} 
+}
+
+postile.view.post_board.faye_status = {
+    START: 0,
+    DELETE: 1,
+    TERMINATE: 2,
+    FINISH: 3,
+    INLINE_COMMENT: 4,
+    LINK_TO: 5,
+}
