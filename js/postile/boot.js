@@ -5,7 +5,6 @@ goog.require('goog.events.KeyHandler');
 goog.require('goog.events');
 goog.require('postile.router');
 goog.require('postile.user');
-//goog.require('goog.module.ModuleManager');
 goog.require('postile.view.post_board');
 
 postile = { //the base of posTile frontend framework
@@ -18,10 +17,12 @@ postile = { //the base of posTile frontend framework
     dynamicResource: function(input) {
         return "http://localhost:3000/"+input.join("/");
     },
-    globalKeyHandler: null,
+    getKeyHandler: function() {
+        if(!postile.getKeyHandler.handler) { postile.getKeyHandler.handler = new goog.events.KeyHandler(document); }
+        return postile.getKeyHandler.handler;
+    },
     fayeLocation: 'http://localhost:9292/faye',
     init: function() {
-        postile.globalKeyHandler = new goog.events.KeyHandler(document);
         postile.router_map();
         postile.router.rescue(function(){ alert('Bad route.'); });
         postile.router.dispatch(window.location.pathname);
@@ -30,7 +31,7 @@ postile = { //the base of posTile frontend framework
         postile.browser_compat.load();
     },
     router_map: function() {
-        postile.router.map('/test').to(function(){ 
+        postile.router.map('/test').to(function(){
             var pb = new postile.view.post_board.PostBoard(5);
             /* pb.renderArray([
                 { id: 128, coord_x: -1, coord_y: -3, span_x: 2, span_y: 2, content: '<b style="font-size: 20px">You can drag the canvas till you reach the boundary</b>' }, //each one stand for a post

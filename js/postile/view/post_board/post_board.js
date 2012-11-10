@@ -304,8 +304,8 @@ goog.inherits(postile.view.post_board.PostBoard, postile.view.View);
 postile.view.post_board.PostBoard.prototype.unloaded_stylesheets = ['post_board.css'];
 
 postile.view.post_board.PostBoard.prototype.global_handlers = [
-    { subject: window, action: goog.events.EventType.RESIZE, handler: postile.view.post_board.handlers.resize },
-    { subject: postile.globalKeyHandler, action: goog.events.KeyHandler.EventType.KEY, handler: postile.view.post_board.handlers.keypress }
+    { subject: 'window', action: goog.events.EventType.RESIZE, handler: postile.view.post_board.handlers.resize },
+    { subject: 'keyboard', action: goog.events.KeyHandler.EventType.KEY, handler: postile.view.post_board.handlers.keypress }
 ];
 
 postile.view.post_board.PostBoard.prototype.canvasOutBoundAnimation = function(){ //called while the animation iteration

@@ -21,18 +21,28 @@ postile.view.View = function() {
         if (!this.global_handlers[i].reclosured) {
             this.global_handlers[i].reclosured = reClosure(i);
         }
+        switch(this.global_handlers[i].handler) {
+            case 'window':
+                this.global_handlers[i].processed_subject = window;
+                break;
+            case 'keyboard':
+                this.global_handlers[i].processed_subject = postile.getKeyHandler();
+                break;
+            default:
+                return;
+        }   
         if (this.global_handlers[i].subject == null) { this.global_handlers[i].subject = postile.globalKeyHandler; }
-        //console.log(this.global_handlers[i].subject, this.global_handlers[i].action, this.global_handlers[i].reclosured);
-        goog.events.listen(this.global_handlers[i].subject, this.global_handlers[i].action, this.global_handlers[i].reclosured);
+        goog.events.listen(this.global_handlers[i].processed_subject, this.global_handlers[i].action, this.global_handlers[i].reclosured_handler);
     }
     this.unloadedStylesheets = [];
 }
 
 postile.view.View.prototype.exit = function() {
     var i;
-    for (i in this.global_handlers) {
-        goog.events.unlisten(this.global_handlers[i].subject, this.global_handlers[i].action, this.global_handlers[i].reclosured);
-    } 
+    var subject;
+    for (i in this.global_handlers) {    
+        goog.events.unlisten(this.global_handlers[i].processed_subject, this.global_handlers[i].action, this.global_handlers[i].reclosured_handler);
+    }
 }
 
 /*
