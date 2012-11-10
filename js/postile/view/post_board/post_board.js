@@ -185,7 +185,7 @@ postile.view.post_board.handlers.resize = function(instance){ //called on window
     instance.canvas.style.display = 'block'; 
     var new_viewport_size = [window.innerWidth,  window.innerHeight];
     if (!instance.canvasCoord) { //first time (initialize)
-        instance.canvasCoord = [(instance.viewport.offsetWidth - instance.canvasSize[0])/2, (instance.viewport.offsetHeight - instance.canvasSize[1])/2];
+        instance.canvasCoord = [(new_viewport_size[0] - instance.canvasSize[0])/2, (new_viewport_size[1] - instance.canvasSize[1])/2];
     } else { //window resize
         //keep the center in the same position
         instance.canvasCoord[0] += (new_viewport_size[0] - parseInt(instance.viewport.style.width))/2;
@@ -319,8 +319,9 @@ postile.view.post_board.PostBoard.prototype.global_handlers = [
 //postile.view.View required component
 postile.view.post_board.PostBoard.prototype.on_exit = function() {
     //TODO: informing the server that I'm fucking leaving
+    var instance = this;
     postile.ajax(['topic','leave_topic'], { channel_str: this.channel_str }, function(data){
-        if (data.message != this.topic_id) {
+        if (data.message != instance.topic_id) {
             alert("Some error occured when leaving the topic.");
         }
     });

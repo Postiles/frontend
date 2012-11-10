@@ -32,9 +32,9 @@ postile = { //the base of posTile frontend framework
     },
     router_map: function() {
         postile.router.map('/test').to(function(){
-            var pb = new postile.view.post_board.PostBoard(5);
-            pb.renderArray([
-                { id: 111, coord_x: 4, coord_y: 4, span_x: 2, span_y: 1, text_content: '<a onclick="postile.user.openLoginBox();">LOGIN</a>' }
+            window.pb = new postile.view.post_board.PostBoard(5);
+            window.pb.renderArray([
+                { id: 111, coord_x: 4, coord_y: 2, span_x: 2, span_y: 1, text_content: '<a onclick="postile.user.openLoginBox();">LOGIN</a>' }
             ]);
         });
     }

@@ -91,12 +91,13 @@ postile.ajax.expection_handlers = { //exception_string and corresponding handler
 postile.faye.client = null;
 
 postile.faye.init = function(callback) {
-    goog.net.jsloader.load(postile.fayeLocation+'/client.js').addCallback(function() {  postile.faye.faye_client = new Faye.Client(postile.fayeLocation); });
+    goog.net.jsloader.load(postile.fayeLocation+'/client.js').addCallback(function() {  postile.faye.client = new Faye.Client(postile.fayeLocation); });
 }
 
 postile.faye.subscribe = function(channel, listener) {
     var faye_action = function() {
         postile.faye.client.subscribe('/faye/'+channel, function(data) {
+            console.log(data);
             try {
                 json = JSON.parse(data);
             } catch(e) {
