@@ -6,7 +6,10 @@
     padding: 0;
 }
 
-/* For popup */
+/*
+For popup.
+MIC: postile.view
+*/
 
 .pop_mask {
     /* IE9 SVG, needs conditional override of 'filter' to 'none' */
@@ -32,4 +35,20 @@
 
 .pop_container {
     background: #FFF; border: 10px solid #CCC; margin: 0 auto;
+}
+
+/*
+For toast.
+MIC: postile.toast
+*/
+
+.toast_container {
+    width: 100%;
+    top: 10px;
+    z-index: 19520;
+    text-align: center;
+}
+
+.toast_instance  {
+    background: #FFF;
 }

@@ -318,7 +318,12 @@ postile.view.post_board.PostBoard.prototype.global_handlers = [
 
 //postile.view.View required component
 postile.view.post_board.PostBoard.prototype.on_exit = function() {
-    //TODO: informaing the server that I'm fucking leaving
+    //TODO: informing the server that I'm fucking leaving
+    postile.ajax(['topic','leave_topic'], { channel_str: this.channel_str }, function(data){
+        if (data.message != this.topic_id) {
+            alert("Some error occured when leaving the topic.");
+        }
+    });
 }
 
 postile.view.post_board.PostBoard.prototype.canvasOutBoundAnimation = function(){ //called while the animation iteration

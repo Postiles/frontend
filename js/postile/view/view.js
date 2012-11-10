@@ -32,7 +32,6 @@ postile.view.View = function() {
     }
     if (this.global_handlers) {
         for (i in this.global_handlers) {
-            console.log(i);
             if (!this.global_handlers[i].reclosured_handler) {
                 this.global_handlers[i].reclosured_handler = reClosure(i);
             }
