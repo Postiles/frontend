@@ -19,8 +19,9 @@ postile.toast.toast_container = null;
 /*
 duration in seconds. 0 for displaying forever until abortion
 use text = "click to [close] or [bye]" and callbacks as an array of two functions
+color can be yellow (default) or red now
 */
-postile.toast.Toast = function(duration, text, callbacks) {
+postile.toast.Toast = function(duration, text, callbacks, color) {
     if (!postile.toast.toast_container) {
         postile.toast.toast_container = goog.dom.createDom('div', 'toast_container');
         goog.dom.appendChild(postile.wrapper, postile.toast.toast_container);
@@ -31,8 +32,10 @@ postile.toast.Toast = function(duration, text, callbacks) {
     var links = text.match(section);
     var plain = text.split(section);
     var instance = this;
+    if (!callbacks.length) { callbacks = []; }
+    if (!color) { color = 'yellow'; }
     this.line_el = goog.dom.createDom('div', 'toast_line');
-    this.instance_el = goog.dom.createDom('div', 'toast_instance');
+    this.instance_el = goog.dom.createDom('div', ['toast_instance', 'toast_'+color]);
     this.instance_el.innerHTML = plain[0];
     for (i = 0; i < links.length; i++) {
         temp = goog.dom.createDom('span');

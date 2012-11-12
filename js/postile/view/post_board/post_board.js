@@ -474,14 +474,17 @@ postile.view.post_board.PostBoard.prototype.createPost = function(info) {
 }
 
 postile.view.post_board.PostBoard.prototype.editPost = function(post_data_obj) {
+    var instance = this;
     postile.ajax(['post','start_edit'], { post_id: post_data_obj.id }, function(data) {
         var editor = new goog.ui.Textarea(post_data_obj.div_el.innerHTML);
         editor.addClassName('fill');
         goog.dom.removeChildren(post_data_obj.div_el);
         editor.render(post_data_obj.div_el);
         goog.events.listen(editor.getContentElement(), goog.events.EventType.BLUR, function(){ 
-            postile.ajax(['post','submit_change'], { post_id: data.message, content: editor.getValue() }, function(data) { 
-                alert('编辑成功'); window.location.reload();
+            postile.ajax(['post','submit_change'], { post_id: data.message, content: editor.getValue() }, function(data) {
+                goog.dom.removeNode(post_data_obj.div_el);
+                instance.renderArray([data.message]);
+                new postile.toast.Toast(5, "Changes made. [Revert changes].", [function(){ alert("这个功能还没实现。"); }]);
             });
         });
     });

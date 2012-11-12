@@ -58,14 +58,24 @@ MIC: postile.toast
 }
 
 .toast_instance  {
-    background: #FCC;
     border-radius: 4px;
-    border: 1px solid #C33;
+    border-width: 1px;
+    border-style: solid;
     display: inline-block;
     padding: 4px 15px;
     height: 16px;
     line-height: 16px;
     font-size: 15px;
+}
+
+.toast_red {
+    border-color: #C33;
+    background: #FCC;
+}
+
+.toast_yellow {
+    border-color: #993;
+    background: #FF9;
 }
 
 .toast_instance span {
