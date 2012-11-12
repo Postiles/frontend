@@ -15,7 +15,7 @@ postile = { //the base of posTile frontend framework
         return "/"+input.join("/");
     },
     dynamicResource: function(input) {
-        return "http://localhost:3000/"+input.join("/");
+        return "http://"+window.location.hostname+":3000/"+input.join("/");
     },
     getKeyHandler: function() {
         if(!postile.getKeyHandler.handler) { postile.getKeyHandler.handler = new goog.events.KeyHandler(document); }
