@@ -1,6 +1,7 @@
 goog.provide('postile.toast');
 
 goog.require('goog.dom');
+goog.require('goog.events');
 
 /*
 To use:
@@ -26,30 +27,32 @@ postile.toast.Toast = function(duration, text, callbacks) {
     }
     var i;
     var temp;
-    var section = /\[([^\[\]]*)\]/g;
+    var section = /\[[^\[\]]+\]/g;
     var links = text.match(section);
     var plain = text.split(section);
     var instance = this;
-    this.div_el = goog.dom.createDom('div', 'toast_instance');
-    this.div_el.innerHTML = plain[0];
-    for (i in links) {
+    this.line_el = goog.dom.createDom('div', 'toast_line');
+    this.instance_el = goog.dom.createDom('div', 'toast_instance');
+    this.instance_el.innerHTML = plain[0];
+    for (i = 0; i < links.length; i++) {
         temp = goog.dom.createDom('span');
-        temp.innerHTML = links[i].substr(1, -1);
-        temp.onclick = callbacks[i];
-        goog.dom.appendChild(this.div_el, temp);
+        temp.innerHTML = links[i].substring(1, links[i].length - 1);
+        if (typeof callbacks[i] == 'function') { goog.events.listen(temp, goog.events.EventType.CLICK, callbacks[i]); }
+        goog.dom.appendChild(this.instance_el, temp);
         temp = goog.dom.createTextNode(plain[i+1]);
-        goog.dom.appendChild(this.div_el, temp);
+        goog.dom.appendChild(this.instance_el, temp);
     }
-    goog.dom.appendChild(postile.toast.toast_container, this.div_el);
+    goog.dom.appendChild(this.line_el, this.instance_el);
+    goog.dom.appendChild(postile.toast.toast_container, this.line_el);
     if (duration > 0) {
         window.setTimeout(function() {
             new postile.fx.Animate(function(iter) {
-                instance.div_el.style.opacity = 1 - iter;
-            }, 1000, null, function() { goog.dom.removeNode(instance.div_el); });
+                instance.instance_el.style.opacity = 1 - iter;
+            }, 1000, null, function() { goog.dom.removeNode(instance.line_el); });
         }, duration*1000);
     }
 }
 
-postile.toast.Toast.abort = function() {
-    goog.dom.removeNode(this.div_el);
+postile.toast.Toast.prototype.abort = function() {
+    goog.dom.removeNode(this.line_el);
 }
