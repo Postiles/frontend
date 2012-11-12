@@ -424,12 +424,18 @@ postile.view.post_board.PostBoard.prototype.isAreaFullInside = function(parent, 
 postile.view.post_board.PostBoard.prototype.renderArray = function(array) { //add post objects to the screen //NOTICE: just add, no not care the duplicate
     var i;
     var index;
+    var instance = this;
+    var animation = null;
+    var edit_button;
     for (i in array) {
         if (!array[i].id) { return; }
         index = goog.array.findIndex(this.currentPosts, function(o) { return o.id == array[i].id; }); //already in CurrentPosts?
-        if (index > -1) {
+        if (index > -1) { //if so
             goog.dom.removeNode(this.currentPosts[index].div_el); //remove original element
             goog.array.removeAt(this.currentPosts, index); //and its associated data object
+            animation = false;
+        } else {
+            animation = true;
         }
         array[i].coord_x_end = array[i].coord_x + array[i].span_x; //precalculate this two so that future intersect test will be faster
         array[i].coord_y_end = array[i].coord_y + array[i].span_y;
@@ -442,7 +448,15 @@ postile.view.post_board.PostBoard.prototype.renderArray = function(array) { //ad
         array[i].div_el.style.height = this.heightTo(array[i].span_y) + 'px';
         goog.events.listen(this.mask, goog.events.EventType.DBLCLICK, function(event){event.stopPropagation();}); //prevent dbl click from triggering "creating new post"
         array[i].div_el.innerHTML = array[i].text_content;
-        postile.fx.effects.resizeIn(array[i].div_el);
+        if (array[i].user_id == localStorage.postile_user_id) { //created by current user
+            var edit_button = goog.dom.createDom('div', 'edit_btn');
+            edit_button.innerHTML = 'edit';
+            goog.events.listen(edit_button, goog.events.EventType.CLICK, function() { instance.editPost(this.parentNode.rel_data); });
+            goog.dom.appendChild(array[i].div_el, edit_button);
+        }
+        if (animation) {
+            postile.fx.effects.resizeIn(array[i].div_el);
+        }
     }
     goog.array.extend(this.currentPosts,array);
 };
@@ -472,7 +486,8 @@ postile.view.post_board.PostBoard.prototype.createPost = function(info) {
 postile.view.post_board.PostBoard.prototype.editPost = function(post_data_obj) {
     var instance = this;
     postile.ajax(['post','start_edit'], { post_id: post_data_obj.id }, function(data) {
-        var editor = new goog.ui.Textarea(post_data_obj.div_el.innerHTML);
+        var original_value = post_data_obj.div_el.innerHTML;
+        var editor = new goog.ui.Textarea(original_value);
         editor.addClassName('fill');
         goog.dom.removeChildren(post_data_obj.div_el);
         editor.render(post_data_obj.div_el);
@@ -482,9 +497,15 @@ postile.view.post_board.PostBoard.prototype.editPost = function(post_data_obj) {
         goog.events.listen(editor.getContentElement(), goog.events.EventType.BLUR, function(){ 
             postile.ajax(['post','submit_change'], { post_id: data.message, content: editor.getValue() }, function(data) {
                 instance.disableMovingCanvas = false;
-                goog.dom.removeNode(post_data_obj.div_el);
                 instance.renderArray([data.message]);
-                new postile.toast.Toast(5, "Changes made. [Revert changes].", [function(){ alert("这个功能还没实现。"); }]);
+                new postile.toast.Toast(5, "Changes made. [Revert changes].", [function(){ 
+                    var answer = confirm("Are you sure you'd like to revert? You cannot undo once you revert.");
+                    if (answer) {
+                        postile.ajax(['post','submit_change'], { post_id: data.message.id, content: original_value }, function(data) {
+                            instance.renderArray([data.message]);
+                        });
+                    }
+                }]);
             });
         });
     });
