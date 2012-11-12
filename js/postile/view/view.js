@@ -30,33 +30,7 @@ postile.view.View = function() {
             goog.dom.appendChild(document.getElementsByTagName('head')[0], goog.dom.createDom('link', { type: 'text/css', rel: 'stylesheet', href: postile.staticResource(['css',this.unloaded_stylesheets[i]]) }));
         }
     }
-    if (this.global_handlers) {
-        for (i in this.global_handlers) {
-            if (!this.global_handlers[i].reclosured_handler) {
-                this.global_handlers[i].reclosured_handler = reClosure(i);
-            }
-            switch(this.global_handlers[i].subject) {
-                case 'window':
-                    this.global_handlers[i].processed_subject = window;
-                    break;
-                case 'keyboard':
-                    this.global_handlers[i].processed_subject = postile.getKeyHandler();
-                    break;
-                default:
-                   continue;
-            }   
-            goog.events.listen(this.global_handlers[i].processed_subject, this.global_handlers[i].action, this.global_handlers[i].reclosured_handler);
-        }
-    }
     this.unloadedStylesheets = [];
-}
-
-postile.view.View.prototype.exit = function() {
-    var i;
-    var subject;
-    for (i in this.global_handlers) {    
-        goog.events.unlisten(this.global_handlers[i].processed_subject, this.global_handlers[i].action, this.global_handlers[i].reclosured_handler);
-    }
 }
 
 postile.view.PopView = function() {

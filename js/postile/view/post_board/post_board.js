@@ -22,6 +22,7 @@ goog.require('goog.events.KeyCodes');
 goog.require('goog.ui.Textarea');
 goog.require('goog.events.KeyHandler');
 goog.require('postile.toast');
+goog.require('postile.events');
 
 postile.view.post_board.handlers.canvas_mousedown = function(e) {
     if (!e.isButton(0)) { return; }
@@ -39,6 +40,7 @@ postile.view.post_board.handlers.canvas_mousedown = function(e) {
 
 postile.view.post_board.handlers.canvas_mouseup = function(e) { 
     if (!e.isButton(0)) { return; }
+    if (!this.rel_data.mousedownCoord) { return; } //not legally mouse-downed
     var post_board = this.rel_data;
     post_board.disableMovingCanvas = false;
     post_board.mousedownCoord = null;
@@ -200,20 +202,16 @@ postile.view.post_board.handlers.resize = function(instance){ //called on window
 postile.view.post_board.handlers.keypress = function(instance, e){
     switch (e.keyCode) {
         case goog.events.KeyCodes.LEFT:
-            instance.preMoveCanvas('left');
-            e.preventDefault();
+            if (instance.preMoveCanvas('left')) { e.preventDefault(); }
             break;
         case goog.events.KeyCodes.RIGHT:
-            instance.preMoveCanvas('right');
-            e.preventDefault();
+            if (instance.preMoveCanvas('right')) { e.preventDefault(); }
             break;
         case goog.events.KeyCodes.UP:
-            instance.preMoveCanvas('up');
-            e.preventDefault();
+            if (instance.preMoveCanvas('up')) { e.preventDefault(); }
             break;
         case goog.events.KeyCodes.DOWN:
-            instance.preMoveCanvas('down');
-            e.preventDefault();
+            if (instance.preMoveCanvas('down')) { e.preventDefault(); }
             break;
     }    
 }
@@ -242,6 +240,8 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
     this.direction_controllers_animation = null;
     this.right = goog.dom.createDom('div', 'right_clicker'); //right click display
     this.currentSubscribeArea = null; //a valid area for which we've got all data we need and keep refreshing from the server
+    this.window_resize_event_handler = new postile.events.EventHandler(window, goog.events.EventType.RESIZE, function() { postile.view.post_board.handlers.resize(instance); });
+    this.keyboard_event_handler = new postile.events.EventHandler(postile.getKeyHandler(), goog.events.KeyHandler.EventType.KEY, function(e) { postile.view.post_board.handlers.keypress(instance, e); });
     /* END OF MEMBER DEFINITION */
     postile.browser_compat.setCss(this.viewport, 'userSelect', 'none');
     goog.events.listen(this.viewport, goog.events.EventType.SELECTSTART, function(){ return false; }); //disable text selecting
@@ -312,14 +312,10 @@ goog.inherits(postile.view.post_board.PostBoard, postile.view.View);
 postile.view.post_board.PostBoard.prototype.unloaded_stylesheets = ['post_board.css'];
 
 //postile.view.View required component
-postile.view.post_board.PostBoard.prototype.global_handlers = [
-    { subject: 'window', action: goog.events.EventType.RESIZE, handler: postile.view.post_board.handlers.resize },
-    { subject: 'keyboard', action: goog.events.KeyHandler.EventType.KEY, handler: postile.view.post_board.handlers.keypress }
-];
-
-//postile.view.View required component
 postile.view.post_board.PostBoard.prototype.on_exit = function() {
-    //TODO: informing the server that I'm fucking leaving
+    this.window_resize_event_handler.unlisten();
+    this.keyboard_event_handler.unlisten();
+    //informing the server that I'm fucking leaving
     var instance = this;
     postile.ajax(['topic','leave_topic'], { channel_str: this.channel_str }, function(data){
         if (data.message != instance.topic_id) {
@@ -332,25 +328,21 @@ postile.view.post_board.PostBoard.prototype.canvasOutBoundAnimation = function()
     this.canvas.style.boxShadow = this.shadowCoord[0]/10+'px '+this.shadowCoord[1]/10+'px '+Math.sqrt(Math.pow(this.shadowCoord[0], 2)+Math.pow(this.shadowCoord[1], 2))/10+'px 0 rgba(255, 255, 255, 0.75) inset';
 };
 
-postile.view.post_board.PostBoard.prototype.preMoveCanvas = function(direction) {
+postile.view.post_board.PostBoard.prototype.preMoveCanvas = function(direction) { //return true only when it's movable
     switch(direction) {
         case 'up':
-            this.moveCanvas(0, -0.5 * this.viewport.offsetHeight);
-            break;
+            return this.moveCanvas(0, -0.5 * this.viewport.offsetHeight);
         case 'down':
-            this.moveCanvas(0, 0.5 * this.viewport.offsetHeight);
-            break;
+            return this.moveCanvas(0, 0.5 * this.viewport.offsetHeight);
         case 'left':
-            this.moveCanvas(-0.5 * this.viewport.offsetWidth, 0);
-            break;
+            return this.moveCanvas(-0.5 * this.viewport.offsetWidth, 0);
         case 'right':
-            this.moveCanvas(0.5 * this.viewport.offsetWidth, 0);
-            break;
+            return this.moveCanvas(0.5 * this.viewport.offsetWidth, 0);
     }
 }
 
-postile.view.post_board.PostBoard.prototype.moveCanvas = function(dx, dy) {
-    if (this.disableMovingCanvas) { return; } //do not respond to actions if the user is actually dragging
+postile.view.post_board.PostBoard.prototype.moveCanvas = function(dx, dy) { //return true only when it's movable
+    if (this.disableMovingCanvas) { return false; } //do not respond to actions if the user is actually dragging
     var leftTarget = this.canvasCoord[0];
     var topTarget = this.canvasCoord[1];
     var i;
@@ -388,6 +380,7 @@ postile.view.post_board.PostBoard.prototype.moveCanvas = function(dx, dy) {
             }
         }
     }
+    return true;
 }
 
 //convent length from "unit length" of the grid to pixel.
@@ -434,7 +427,10 @@ postile.view.post_board.PostBoard.prototype.renderArray = function(array) { //ad
     for (i in array) {
         if (!array[i].id) { return; }
         index = goog.array.findIndex(this.currentPosts, function(o) { return o.id == array[i].id; }); //already in CurrentPosts?
-        if (index > -1) { goog.array.removeAt(this.currentPosts, index); }
+        if (index > -1) {
+            goog.dom.removeNode(this.currentPosts[index].div_el); //remove original element
+            goog.array.removeAt(this.currentPosts, index); //and its associated data object
+        }
         array[i].coord_x_end = array[i].coord_x + array[i].span_x; //precalculate this two so that future intersect test will be faster
         array[i].coord_y_end = array[i].coord_y + array[i].span_y;
         array[i].div_el = goog.dom.createDom('div', 'post');
@@ -480,8 +476,12 @@ postile.view.post_board.PostBoard.prototype.editPost = function(post_data_obj) {
         editor.addClassName('fill');
         goog.dom.removeChildren(post_data_obj.div_el);
         editor.render(post_data_obj.div_el);
+        goog.events.listen(editor.getContentElement(), goog.events.EventType.FOCUS, function(){ 
+            instance.disableMovingCanvas = true;
+        });
         goog.events.listen(editor.getContentElement(), goog.events.EventType.BLUR, function(){ 
             postile.ajax(['post','submit_change'], { post_id: data.message, content: editor.getValue() }, function(data) {
+                instance.disableMovingCanvas = false;
                 goog.dom.removeNode(post_data_obj.div_el);
                 instance.renderArray([data.message]);
                 new postile.toast.Toast(5, "Changes made. [Revert changes].", [function(){ alert("这个功能还没实现。"); }]);
