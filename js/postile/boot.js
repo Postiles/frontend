@@ -21,7 +21,7 @@ postile = { //the base of posTile frontend framework
         if(!postile.getKeyHandler.handler) { postile.getKeyHandler.handler = new goog.events.KeyHandler(document); }
         return postile.getKeyHandler.handler;
     },
-    fayeLocation: 'http://'+window.location.hostname+':9292/faye',
+    fayeLocation: 'http://localhost:9292/faye',
     wrapper: null,
     init: function() {
         postile.wrapper = goog.dom.getElement('wrapper');
