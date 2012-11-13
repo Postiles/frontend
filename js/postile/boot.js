@@ -34,7 +34,10 @@ postile = { //the base of posTile frontend framework
     },
     router_map: function() {
         postile.router.map('/test').to(function(){
-            window.pb = new postile.view.post_board.PostBoard(5);
+            document.body.innerHTML = '<center>Please use <a href="/test/3">/test/3</a> to enter demo now. Note that "3" can be changed to other topic IDs.</center>';
+        });
+        postile.router.map('/test/:id').to(function(){
+            window.pb = new postile.view.post_board.PostBoard(this.params["id"]);
             window.pb.renderArray([
                 { id: 111, coord_x: 4, coord_y: 2, span_x: 2, span_y: 1, text_content: '<a onclick="postile.user.openLoginBox();">LOGIN</a>' }
             ]);
