@@ -11,6 +11,7 @@ goog.addDependency('../postile/utils/events.js', ['postile.events'], ['goog.even
 goog.addDependency('../postile/utils/ui_toast.js', ['postile.toast'], ['goog.dom', 'goog.events']);
 goog.addDependency('../postile/utils/uploader.js', ['postile.uploader'], ['goog.dom', 'postile.ajax']);
 goog.addDependency('../postile/view/pop/login.js', ['postile.view.login', 'postile.view.login.handlers'], ['goog.dom', 'goog.events', 'goog.ui.CustomButton', 'goog.ui.LabelInput', 'postile.user', 'postile.view']);
-goog.addDependency('../postile/view/post_board/post_board.js', ['postile.view.post_board', 'postile.view.post_board.handlers'], ['goog.dom', 'goog.events', 'goog.events.KeyCodes', 'goog.events.KeyHandler', 'goog.ui.Textarea', 'postile.ajax', 'postile.events', 'postile.faye', 'postile.fx', 'postile.fx.effects', 'postile.toast', 'postile.view']);
+goog.addDependency('../postile/view/post_board/post_board.js', ['postile.view.post_board', 'postile.view.post_board.handlers'], ['goog.dom', 'goog.events', 'goog.events.KeyCodes', 'goog.events.KeyHandler', 'goog.ui.Textarea', 'postile.ajax', 'postile.events', 'postile.faye', 'postile.fx', 'postile.fx.effects', 'postile.toast', 'postile.view', 'postile.view.post_in_board']);
+goog.addDependency('../postile/view/post_board/post_in_board.js', ['postile.view.post_in_board'], ['goog.dom', 'goog.dom.classes', 'goog.events', 'goog.object', 'postile.toast']);
 goog.addDependency('../postile/view/topic_list/topic_list.js', ['postile.view.topic_list'], ['postile.view']);
 goog.addDependency('../postile/view/view.js', ['postile.view'], ['goog.dom', 'postile.fx.effects']);

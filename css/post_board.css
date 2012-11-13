@@ -1,5 +1,4 @@
-.post {
-	display: none; /*to be triggered by js*/
+.post_wrap {
 	position: absolute;
 	padding: 8px;
 	background: rgba(255, 255, 255, 0.8);
@@ -17,10 +16,10 @@
 	position: absolute;
     display: none;
 }
-.edit_btn {
+.post_edit_btn {
     position: absolute;
-    right: -16px;
-    top: -8px;
+    right: -12px;
+    top: -6px;
     height: 16px;
     width: 32px;
     line-height: 16px;
@@ -30,6 +29,15 @@
     color: #FFF;
     border-top-right-radius: 4px;
     border-bottom-left-radius: 4px;
+}
+
+.post_content { /* TODO */
+    width: 100%;
+}
+
+.post_wrap_busy {
+    background-image: url(busy.gif);
+    background-repeat: repeat;
 }
 
 /*Mask*/

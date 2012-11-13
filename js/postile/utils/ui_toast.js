@@ -32,18 +32,20 @@ postile.toast.Toast = function(duration, text, callbacks, color) {
     var links = text.match(section);
     var plain = text.split(section);
     var instance = this;
-    if (!callbacks.length) { callbacks = []; }
+    if (!callbacks) { callbacks = []; }
     if (!color) { color = 'yellow'; }
     this.line_el = goog.dom.createDom('div', 'toast_line');
     this.instance_el = goog.dom.createDom('div', ['toast_instance', 'toast_'+color]);
     this.instance_el.innerHTML = plain[0];
-    for (i = 0; i < links.length; i++) {
-        temp = goog.dom.createDom('span');
-        temp.innerHTML = links[i].substring(1, links[i].length - 1);
-        if (typeof callbacks[i] == 'function') { goog.events.listen(temp, goog.events.EventType.CLICK, callbacks[i]); }
-        goog.dom.appendChild(this.instance_el, temp);
-        temp = goog.dom.createTextNode(plain[i+1]);
-        goog.dom.appendChild(this.instance_el, temp);
+    if (links) {
+        for (i = 0; i < links.length; i++) {
+            temp = goog.dom.createDom('span');
+            temp.innerHTML = links[i].substring(1, links[i].length - 1);
+            if (typeof callbacks[i] == 'function') { goog.events.listen(temp, goog.events.EventType.CLICK, callbacks[i]); }
+            goog.dom.appendChild(this.instance_el, temp);
+            temp = goog.dom.createTextNode(plain[i+1]);
+            goog.dom.appendChild(this.instance_el, temp);
+        }
     }
     goog.dom.appendChild(this.line_el, this.instance_el);
     goog.dom.appendChild(postile.toast.toast_container, this.line_el);

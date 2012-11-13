@@ -23,6 +23,7 @@ goog.require('goog.ui.Textarea');
 goog.require('goog.events.KeyHandler');
 goog.require('postile.toast');
 goog.require('postile.events');
+goog.require('postile.view.post_in_board');
 
 postile.view.post_board.handlers.canvas_mousedown = function(e) {
     if (!e.isButton(0)) { return; }
@@ -230,7 +231,7 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
     this.canvasSize = [3872, 2592]; //the size of the canvas currently
     this.canva_shadow_animation = null; //the animation for the outbound shadow
     this.disableMovingCanvas = false; //when true, moving canvas is disabled temporarily
-    this.currentPosts = []; //an array containing all posts shown
+    this.currentPosts = {}; //an object containing all posts, as key = post_id and value = Post object
     this.newPostStartCoord = null; //hold the starting point of a new post in an array with the unit of "grid unit"
     this.viewport = goog.dom.createDom('div', 'canvas_viewport'); //disable text selecting
     this.canvas = goog.dom.createDom('div', 'canvas'); //the canvas being dragged
@@ -423,42 +424,15 @@ postile.view.post_board.PostBoard.prototype.isAreaFullInside = function(parent, 
 
 postile.view.post_board.PostBoard.prototype.renderArray = function(array) { //add post objects to the screen //NOTICE: just add, no not care the duplicate
     var i;
-    var index;
-    var instance = this;
     var animation = null;
-    var edit_button;
     for (i in array) {
         if (!array[i].id) { return; }
-        index = goog.array.findIndex(this.currentPosts, function(o) { return o.id == array[i].id; }); //already in CurrentPosts?
-        if (index > -1) { //if so
-            goog.dom.removeNode(this.currentPosts[index].div_el); //remove original element
-            goog.array.removeAt(this.currentPosts, index); //and its associated data object
-            animation = false;
+        if (array[i].id in this.currentPosts) { //if so
+            this.currentPosts[array[i].id].render(array[i]);
         } else {
-            animation = true;
-        }
-        array[i].coord_x_end = array[i].coord_x + array[i].span_x; //precalculate this two so that future intersect test will be faster
-        array[i].coord_y_end = array[i].coord_y + array[i].span_y;
-        array[i].div_el = goog.dom.createDom('div', 'post');
-        goog.dom.appendChild(this.canvas, array[i].div_el);
-        array[i].div_el.rel_data = array[i];
-        array[i].div_el.style.left = this.xPosTo(array[i].coord_x) + 'px';
-        array[i].div_el.style.top = this.yPosTo(array[i].coord_y) + 'px';
-        array[i].div_el.style.width = this.widthTo(array[i].span_x) + 'px';
-        array[i].div_el.style.height = this.heightTo(array[i].span_y) + 'px';
-        goog.events.listen(this.mask, goog.events.EventType.DBLCLICK, function(event){event.stopPropagation();}); //prevent dbl click from triggering "creating new post"
-        array[i].div_el.innerHTML = array[i].text_content;
-        if (array[i].user_id == localStorage.postile_user_id) { //created by current user
-            var edit_button = goog.dom.createDom('div', 'edit_btn');
-            edit_button.innerHTML = 'edit';
-            goog.events.listen(edit_button, goog.events.EventType.CLICK, function() { instance.editPost(this.parentNode.rel_data); });
-            goog.dom.appendChild(array[i].div_el, edit_button);
-        }
-        if (animation) {
-            postile.fx.effects.resizeIn(array[i].div_el);
+            this.currentPosts[array[i].id] = new postile.view.post_in_board.Post(array[i], this);
         }
     }
-    goog.array.extend(this.currentPosts,array);
 };
 
 postile.view.post_board.PostBoard.prototype.fayeHandler = function(status, data) {
@@ -479,35 +453,7 @@ postile.view.post_board.PostBoard.prototype.createPost = function(info) {
         ret.id = data.message;
         instance.mask.style.display = 'none';
         instance.renderArray([ret]);
-        instance.editPost(ret);
-    });
-}
-
-postile.view.post_board.PostBoard.prototype.editPost = function(post_data_obj) {
-    var instance = this;
-    postile.ajax(['post','start_edit'], { post_id: post_data_obj.id }, function(data) {
-        var original_value = post_data_obj.div_el.innerHTML;
-        var editor = new goog.ui.Textarea(original_value);
-        editor.addClassName('fill');
-        goog.dom.removeChildren(post_data_obj.div_el);
-        editor.render(post_data_obj.div_el);
-        goog.events.listen(editor.getContentElement(), goog.events.EventType.FOCUS, function(){ 
-            instance.disableMovingCanvas = true;
-        });
-        goog.events.listen(editor.getContentElement(), goog.events.EventType.BLUR, function(){ 
-            postile.ajax(['post','submit_change'], { post_id: data.message, content: editor.getValue() }, function(data) {
-                instance.disableMovingCanvas = false;
-                instance.renderArray([data.message]);
-                new postile.toast.Toast(5, "Changes made. [Revert changes].", [function(){ 
-                    var answer = confirm("Are you sure you'd like to revert? You cannot undo once you revert.");
-                    if (answer) {
-                        postile.ajax(['post','submit_change'], { post_id: data.message.id, content: original_value }, function(data) {
-                            instance.renderArray([data.message]);
-                        });
-                    }
-                }]);
-            });
-        });
+        instance.currentPosts[ret.id].edit();
     });
 }
 
