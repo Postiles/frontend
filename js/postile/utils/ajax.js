@@ -84,8 +84,10 @@ postile.ajax.notifier.networkError = function(error_string) { //network error
 }
 
 postile.ajax.expection_handlers = { //exception_string and corresponding handler functions. return true to allow the callback function to be called and return false to stop the workflow. the function can also modify the "received" object
-    not_logged_login: function(received) {},
-    privilege_required: function(received) {}
+    USER_NOT_LOGGED_IN: function() {
+        postile.user.openLoginBox();
+        return false;
+    }
 }
 
 postile.faye.client = null;
