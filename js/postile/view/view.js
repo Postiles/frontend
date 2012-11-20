@@ -55,5 +55,4 @@ postile.view.PopView.prototype.open = function(width) {
     
 postile.view.PopView.prototype.close = function() {
     goog.dom.removeNode(this.mask);
-    this.exit();
 }

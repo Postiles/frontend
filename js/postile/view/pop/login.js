@@ -29,7 +29,9 @@ postile.view.login.inputs = {'username': 'Username', 'password': 'Your little se
 
 postile.view.login.handlers.submit = function() {
     if (this.rel_data.username.getValue().length && this.rel_data.password.getValue().length) {
-        postile.user.login(this.rel_data.username.getValue(), this.rel_data.password.getValue());
+        postile.user.login(this.rel_data.username.getValue(), this.rel_data.password.getValue(), function() {
+            window.location.reload();
+        }, function(err_msg){ alert(err_msg); });
     }
 }
 
