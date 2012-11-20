@@ -172,3 +172,21 @@
 .arrow_detect.right .arrow_button div {
     background: url(arrow_sm_right_hover.png);
 }
+
+/*Editor*/
+
+.edit_textarea {
+    width: 100%;
+    margin: 0;
+    border: 0 none;
+    padding: 0;
+}
+
+.edit_title {
+    width: 100%;
+    height: 15px;
+    margin: 0;
+    padding: 4px 0;
+    border: 0 none;
+    margin-bottom: 4px;
+}

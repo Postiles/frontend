@@ -5,6 +5,7 @@ goog.require('goog.events');
 goog.require('goog.object');
 goog.require('goog.dom.classes');
 goog.require('postile.toast');
+goog.require('goog.ui.LabelInput');
 
 postile.view.post_in_board.Post = function(object, board) {
     this.board = board;
@@ -55,9 +56,13 @@ postile.view.post_in_board.Post.prototype.edit = function() {
     postile.ajax(['post','start_edit'], { post_id: this.id }, function(data) {
         var original_value = instance.text_content;
         var editor = new goog.ui.Textarea(original_value);
-        editor.addClassName('fill');
+        var title = new goog.ui.LabelInput('Title (optional)');
+        editor.addClassName('edit_textarea');
+        editor.getElement().style.height = instance.wrap_el.offsetHeight - 27;
         goog.dom.removeChildren(instance.wrap_el);
+        title.render(instance.wrap_el);
         editor.render(instance.wrap_el);
+        goog.dom.classes.add('edit_title');
         instance.board.disableMovingCanvas = true; //disable moving
         instance.enable();
         start_waiting.abort();

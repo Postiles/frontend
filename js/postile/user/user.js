@@ -21,7 +21,7 @@ postile.user.login = function(username, password, onsuccess, onfail) {
 
 postile.user.openLoginBox = function() {
     if (postile.user.current_user) { return; } //already logged in
-    if (!postile.user.login_window) { return; } //login window already opened
+    if (postile.user.login_window) { return; } //login window already opened
     postile.user.login_window = new postile.view.login.Login(); 
     postile.user.login_window.open(200);
 }
