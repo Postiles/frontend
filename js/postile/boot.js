@@ -15,7 +15,7 @@ postile = { //the base of posTile frontend framework
         return "/"+input.join("/");
     },
     dynamicResource: function(input) {
-        return "http://"+window.location.hostname+":3000/"+input.join("/");
+        return "http://"+window.location.hostname+":"+postile.dport+"/"+input.join("/");
     },
     getKeyHandler: function() {
         if(!postile.getKeyHandler.handler) { postile.getKeyHandler.handler = new goog.events.KeyHandler(document); }
@@ -34,13 +34,11 @@ postile = { //the base of posTile frontend framework
     },
     router_map: function() {
         postile.router.map('/test').to(function(){
-            document.body.innerHTML = '<center>Please use <a href="/test/3">/test/3</a> to enter demo now. Note that "3" can be changed to other topic IDs.</center>';
+            document.body.innerHTML = '<center>Please use <a href="/test/3/300">/test/3/300</a> to enter demo now. Note that "3" can be changed to other topic IDs and 300 should be changed to real port number.</center>';
         });
-        postile.router.map('/test/:id').to(function(){
+        postile.router.map('/test/:id/:port').to(function(){
+            postile.dport = this.params["port"];
             window.pb = new postile.view.post_board.PostBoard(this.params["id"]);
-            window.pb.renderArray([
-                { id: 111, coord_x: 4, coord_y: 2, span_x: 2, span_y: 1, text_content: '<a onclick="postile.user.openLoginBox();">LOGIN</a>' }
-            ]);
         });
     }
 };
