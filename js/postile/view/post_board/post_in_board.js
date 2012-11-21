@@ -9,6 +9,7 @@ goog.require('goog.ui.LabelInput');
 
 postile.view.post_in_board.Post = function(object, board) {
     this.board = board;
+    this.blur_timeout = null;
     this.render(object, true);
 }
 
@@ -33,7 +34,8 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
         goog.dom.appendChild(this.wrap_el, edit_button);
     }
     this.content_el = goog.dom.createDom('div', 'post_content');
-    this.content_el.innerHTML = this.text_content;
+    if (this.title && this.title.length) { this.content_el.innerHTML = '<center><b>'+this.title+'</b></center>'; }
+    this.content_el.innerHTML += this.text_content;
     goog.dom.appendChild(this.wrap_el, this.content_el);
     if (animation) {
         postile.fx.effects.resizeIn(this.wrap_el);
@@ -49,43 +51,56 @@ postile.view.post_in_board.Post.prototype.enable = function() {
     goog.dom.classes.remove(this.wrap_el, 'post_wrap_busy');
 }
 
+postile.view.post_in_board.Post.prototype.submitEdit = function(to_submit) {
+    var instance = this;
+    var original_value = instance.text_content;
+    var submit_waiting = new postile.toast.Toast(0, "Please wait... We're submitting... Be ready for 36s.");
+    instance.disable();
+    instance.board.disableMovingCanvas = false;
+    postile.ajax(['post','submit_change'], to_submit, function(data) {
+        instance.render(data.message);
+        submit_waiting.abort();
+        var revert_waiting = new postile.toast.Toast(5, "Changes made. [Revert changes].", [function(){ 
+            var answer = confirm("Are you sure you'd like to revert? You cannot redo once you revert.");
+            if (answer) {
+                instance.disable();
+                var revert_submit_waiting = new postile.toast.Toast(0, "Please wait... We're submitting reversion... Be ready for 36s.");
+                revert_waiting.abort();
+                postile.ajax(['post','submit_change'], { post_id: data.message.id, content: original_value }, function(data) {
+                    revert_submit_waiting.abort();
+                    instance.render(data.message);
+                });
+            }
+        }]);
+    });
+}
+
 postile.view.post_in_board.Post.prototype.edit = function() {
     var instance = this;
-    this.disable();
     var start_waiting = new postile.toast.Toast(0, "Please wait... We're starting editing... Be ready for 36s.");
+    this.disable();
     postile.ajax(['post','start_edit'], { post_id: this.id }, function(data) {
-        var original_value = instance.text_content;
-        var editor = new goog.ui.Textarea(original_value);
+        var editor = new goog.ui.Textarea(instance.text_content);
         var title = new goog.ui.LabelInput('Title (optional)');
+        var blurHandler = function() {
+            instance.blur_timeout = setTimeout(function(){ instance.submitEdit({ post_id: instance.id, content: editor.getValue(), title: title.getValue() });}, 400);
+        };
+        var focusHandler = function() {
+            clearTimeout(instance.blur_timeout);
+        };
         editor.addClassName('edit_textarea');
-        editor.getElement().style.height = instance.wrap_el.offsetHeight - 27;
         goog.dom.removeChildren(instance.wrap_el);
         title.render(instance.wrap_el);
         editor.render(instance.wrap_el);
-        goog.dom.classes.add('edit_title');
+        goog.dom.classes.add(title.getElement(), 'edit_title');
+        if (instance.title && instance.title.length) { title.setValue(instance.title); }
+        editor.getElement().style.height = instance.board.heightTo(instance.span_y) - 27 + 'px';
         instance.board.disableMovingCanvas = true; //disable moving
         instance.enable();
         start_waiting.abort();
-        goog.events.listen(editor.getContentElement(), goog.events.EventType.BLUR, function(){ 
-            instance.disable();
-            instance.board.disableMovingCanvas = false;
-            var submit_waiting = new postile.toast.Toast(0, "Please wait... We're submitting... Be ready for 36s.");
-            postile.ajax(['post','submit_change'], { post_id: data.message, content: editor.getValue() }, function(data) {
-                instance.render(data.message);
-                submit_waiting.abort();
-                var revert_waiting = new postile.toast.Toast(5, "Changes made. [Revert changes].", [function(){ 
-                    var answer = confirm("Are you sure you'd like to revert? You cannot redo once you revert.");
-                    if (answer) {
-                        instance.disable();
-                        var revert_submit_waiting = new postile.toast.Toast(0, "Please wait... We're submitting reversion... Be ready for 36s.");
-                        revert_waiting.abort();
-                        postile.ajax(['post','submit_change'], { post_id: data.message.id, content: original_value }, function(data) {
-                            revert_submit_waiting.abort();
-                            instance.render(data.message);
-                        });
-                    }
-                }]);
-            });
-        });
+        goog.events.listen(editor.getContentElement(), goog.events.EventType.BLUR, blurHandler);
+        goog.events.listen(title.getElement(), goog.events.EventType.BLUR, blurHandler);
+        goog.events.listen(editor.getContentElement(), goog.events.EventType.FOCUS, focusHandler);
+        goog.events.listen(title.getElement(), goog.events.EventType.FOCUS, focusHandler);
     });
 }
