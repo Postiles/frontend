@@ -7,7 +7,7 @@ goog.provide('postile.faye');
 
 goog.require('goog.net.jsloader');
 
-postile.ajax = function(url, data, callback, notifier_text){ 
+postile.ajax = function(url, data, onsuccess, onfail, notifier_text){ 
     var xhr, formData, i;
     if ("postile_user_id" in localStorage && "postile_user_session_key" in localStorage) {
         data.user_id = localStorage.postile_user_id;
@@ -21,14 +21,14 @@ postile.ajax = function(url, data, callback, notifier_text){
     }
     if (postile.browser_compat.walkarounds.xdr) {
         xhr = new XDomainRequest();
-        xhr.onload = function() { postile.ajax.fetchedHandler(callback, xhr.responseText); }
+        xhr.onload = function() { postile.ajax.fetchedHandler(onsuccess, onfail, xhr.responseText); }
         xhr.onerror = function() { postile.ajax.notifier.networkError("XDR unknwon error"); }
     } else {
         xhr = new XMLHttpRequest();
     　  xhr.onreadystatechange = function(){
     　　　　if (xhr.readyState == 4) {
                 if (xhr.status == 200) {
-                    postile.ajax.fetchedHandler(callback, xhr.responseText);
+                    postile.ajax.fetchedHandler(onsuccess, onfail, xhr.responseText);
     　　　　    } else {
     　　　　　　    postile.ajax.notifier.networkError("XHR unknown error"); //TODO
     　　　　    }
@@ -56,7 +56,7 @@ postile.ajax = function(url, data, callback, notifier_text){
    }
 };
 
-postile.ajax.fetchedHandler = function(callback, receivedText) {
+postile.ajax.fetchedHandler = function(onsuccess, onfail, receivedText) {
     var received;
     try {
         received = JSON.parse(receivedText);
@@ -64,12 +64,13 @@ postile.ajax.fetchedHandler = function(callback, receivedText) {
         postile.ajax.notifier.networkError("response data damaged"); //json parsing failed
         return;
     }
-    if (received.status == 'error' && received.message in postile.ajax.expection_handlers) {
-        if (!postile.ajax.expection_handlers[received.message](received)) {
-            return;
+    if (received.status == 'error') {
+        if (received.message in postile.ajax.expection_handlers) {
+            postile.ajax.expection_handlers[received.message](received);
+        } else if (typeof onfail == 'function') {
+            onfail(received);
         }
-    }
-　　callback(received);
+    } else if (typeof onsuccess == 'function') { onsuccess(received); }
     postile.ajax.notifier.hide();
 };
 
@@ -83,7 +84,7 @@ postile.ajax.notifier.networkError = function(error_string) { //network error
     new postile.toast.Toast(5, "Network error: "+error_string+'.', [], 'red');
 }
 
-postile.ajax.expection_handlers = { //exception_string and corresponding handler functions. return true to allow the callback function to be called and return false to stop the workflow. the function can also modify the "received" object
+postile.ajax.expection_handlers = { //exception_string and corresponding handler functions.
     USER_NOT_LOGGED_IN: function() {
         postile.user.openLoginBox();
         return false;

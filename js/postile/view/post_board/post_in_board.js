@@ -56,10 +56,11 @@ postile.view.post_in_board.Post.prototype.submitEdit = function(to_submit) {
     var instance = this;
     var original_title = instance.title;
     var original_value = instance.text_content;
-    if (postile.string.empty(to_submit.title)) { 
+    if (postile.string.empty(to_submit.content)) { 
         if (confirm("Leaving a post blank will effectively delete this post. Confirm to proceed?")) {
             instance.board.removePost(instance.id);
             instance.board.disableMovingCanvas = false;
+            postile.ajax(['post','delete'], { post_id: instance.id });
         }
         return;
     }
