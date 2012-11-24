@@ -53,7 +53,9 @@ postile.view.post_in_board.Post.prototype.enable = function() {
 
 postile.view.post_in_board.Post.prototype.submitEdit = function(to_submit) {
     var instance = this;
+    var original_title = instance.title;
     var original_value = instance.text_content;
+    if (to_submit.title == original_title && to_submit.content == original_value) { return; } //no change
     var submit_waiting = new postile.toast.Toast(0, "Please wait... We're submitting... Be ready for 36s.");
     instance.disable();
     instance.board.disableMovingCanvas = false;
@@ -66,7 +68,7 @@ postile.view.post_in_board.Post.prototype.submitEdit = function(to_submit) {
                 instance.disable();
                 var revert_submit_waiting = new postile.toast.Toast(0, "Please wait... We're submitting reversion... Be ready for 36s.");
                 revert_waiting.abort();
-                postile.ajax(['post','submit_change'], { post_id: data.message.id, content: original_value }, function(data) {
+                postile.ajax(['post','submit_change'], { post_id: data.message.id, content: original_value, title: original_title }, function(data) {
                     revert_submit_waiting.abort();
                     instance.render(data.message);
                 });
