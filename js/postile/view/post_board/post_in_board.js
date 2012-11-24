@@ -6,6 +6,7 @@ goog.require('goog.object');
 goog.require('goog.dom.classes');
 goog.require('postile.toast');
 goog.require('goog.ui.LabelInput');
+goog.require('postile.string');
 
 postile.view.post_in_board.Post = function(object, board) {
     this.board = board;
@@ -55,7 +56,14 @@ postile.view.post_in_board.Post.prototype.submitEdit = function(to_submit) {
     var instance = this;
     var original_title = instance.title;
     var original_value = instance.text_content;
-   instance.board.disableMovingCanvas = false;
+    if (postile.string.empty(to_submit.title)) { 
+        if (confirm("Leaving a post blank will effectively delete this post. Confirm to proceed?")) {
+            instance.board.removePost(instance.id);
+            instance.board.disableMovingCanvas = false;
+        }
+        return;
+    }
+    instance.board.disableMovingCanvas = false;
     if (to_submit.title == original_title && to_submit.content == original_value) { instance.render(); return; } //no change
     var submit_waiting = new postile.toast.Toast(0, "Please wait... We're submitting... Be ready for 36s.");
     instance.disable();

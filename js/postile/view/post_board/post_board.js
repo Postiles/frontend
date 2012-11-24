@@ -449,7 +449,7 @@ postile.view.post_board.PostBoard.prototype.createPost = function(info) {
     var ret = goog.object.clone(info);
     var instance = this;
     req.topic_id = this.topic_id;
-    ret.text_content = 'Your new post... Enter your content here...';
+    ret.text_content = '';
     postile.ajax(['post','new'], req, function(data) { 
         if (data.status != 'ok') { new postile.toast.Toast(5, "Failed to create post. Perhaps the position is occupied.", [], 'red'); return; }
         ret.id = data.message;
@@ -457,6 +457,11 @@ postile.view.post_board.PostBoard.prototype.createPost = function(info) {
         instance.renderArray([ret]);
         instance.currentPosts[ret.id].edit();
     });
+}
+
+postile.view.post_board.PostBoard.prototype.removePost = function(id) {
+    if (this.currentPosts[id].wrap_el) { goog.dom.removeNode(this.wrap_el); } //remove original element
+    delete this.currentPosts[id];
 }
 
 postile.view.post_board.faye_status = {
