@@ -130,13 +130,13 @@ postile.view.post_board.handlers.mask_mousemove = function(e){ //mouse key not d
         }
     }
     //draw on the canvas
-    this.preview.style.left = this.rel_data.xPosTo(current[0]) + this.rel_data.canvasCoord[0] + 'px';
-    this.preview.style.top = this.rel_data.yPosTo(current[1]) + this.rel_data.canvasCoord[1] + 'px';
-    this.preview.style.width = this.rel_data.widthTo(Math.abs(delta[0])) + 'px';
-    this.preview.style.height = this.rel_data.heightTo(Math.abs(delta[1])) + 'px';
+    this.position = { coord_x: current[0], coord_y: current[1], span_x: Math.abs(delta[0]), span_y: Math.abs(delta[1]) };
+    this.preview.style.left = this.rel_data.xPosTo(this.position.coord_x) + this.rel_data.canvasCoord[0] + 'px';
+    this.preview.style.top = this.rel_data.yPosTo(this.position.coord_y) + this.rel_data.canvasCoord[1] + 'px';
+    this.preview.style.width = this.rel_data.widthTo(this.position.span_x) + 'px';
+    this.preview.style.height = this.rel_data.heightTo(this.position.span_y) + 'px';
     this.preview.style.backgroundColor = intersect ? '#F00' : '#0F0';
     this.preview.style.display = 'block';
-    this.position = { coord_x: current[0], coord_y: current[1], span_x: delta[0], span_y: delta[1] };
     this.legal = !intersect;
 };
 
@@ -145,8 +145,9 @@ postile.view.post_board.handlers.mask_mouseup = function(e){
     this.rel_data.newPostStartCoord = null;
     this.post_preview_origin_spot.style.display = 'none';
     if (!this.legal) {
-        this.preview.style.display = 'none'; return;
+        //return;
     }
+    this.preview.style.display = 'none';
     this.legal = false;
     this.rel_data.createPost(this.position);
 };
@@ -390,8 +391,8 @@ postile.view.post_board.PostBoard.prototype.heightTo = function(u) { return (u*(
 postile.view.post_board.PostBoard.prototype.xPosTo = function(u) { return (u*(75+30) + this.canvasSize[0]/2); };
 postile.view.post_board.PostBoard.prototype.yPosTo = function(u) { return (u*(50+30) + this.canvasSize[1]/2); };
 //convent length to "unit length" of the grid from pixel. it is from the center grid points so margins and paddings are ignored.
-postile.view.post_board.PostBoard.prototype.xPosFrom = function(px) { return ((px + 7 - this.canvasSize[0]/2)/(75+30)); };
-postile.view.post_board.PostBoard.prototype.yPosFrom = function(px) { return ((px + 7 - this.canvasSize[1]/2)/(50+30)); };
+postile.view.post_board.PostBoard.prototype.xPosFrom = function(px) { return ((px - 7 - this.canvasSize[0]/2)/(75+30)); };
+postile.view.post_board.PostBoard.prototype.yPosFrom = function(px) { return ((px - 7 - this.canvasSize[1]/2)/(50+30)); };
 postile.view.post_board.direction_norm_to_css = { up: 'top', down: 'bottom', left: 'left', right: 'right' };
 
 postile.view.post_board.PostBoard.prototype.getVisibleArea = function(source) { //get visible area in the unit of "grid unit" //source is esxpected to be this.canvasCoord or [parseInt(this.canvas.style.left), parseInt(this.canvas.style.top)]
@@ -450,6 +451,7 @@ postile.view.post_board.PostBoard.prototype.createPost = function(info) {
     req.topic_id = this.topic_id;
     ret.text_content = 'Your new post... Enter your content here...';
     postile.ajax(['post','new'], req, function(data) { 
+        console.log(data);
         ret.id = data.message;
         instance.mask.style.display = 'none';
         instance.renderArray([ret]);

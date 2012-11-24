@@ -16,7 +16,7 @@ postile.view.post_in_board.Post = function(object, board) {
 postile.view.post_in_board.Post.prototype.render = function(object, animation) { //animation is usually ommited (false by default)
     var button;
     var instance = this;
-    goog.object.extend(this, object);
+    if (object) { goog.object.extend(this, object); }
     this.coord_x_end = this.coord_x + this.span_x; //precalculate this two so that future intersect test will be faster
     this.coord_y_end = this.coord_y + this.span_y;
     if (this.wrap_el) { goog.dom.removeNode(this.wrap_el); } //remove original element
@@ -55,10 +55,10 @@ postile.view.post_in_board.Post.prototype.submitEdit = function(to_submit) {
     var instance = this;
     var original_title = instance.title;
     var original_value = instance.text_content;
-    if (to_submit.title == original_title && to_submit.content == original_value) { return; } //no change
+   instance.board.disableMovingCanvas = false;
+    if (to_submit.title == original_title && to_submit.content == original_value) { instance.render(); return; } //no change
     var submit_waiting = new postile.toast.Toast(0, "Please wait... We're submitting... Be ready for 36s.");
     instance.disable();
-    instance.board.disableMovingCanvas = false;
     postile.ajax(['post','submit_change'], to_submit, function(data) {
         instance.render(data.message);
         submit_waiting.abort();
@@ -104,5 +104,6 @@ postile.view.post_in_board.Post.prototype.edit = function() {
         goog.events.listen(title.getElement(), goog.events.EventType.BLUR, blurHandler);
         goog.events.listen(editor.getContentElement(), goog.events.EventType.FOCUS, focusHandler);
         goog.events.listen(title.getElement(), goog.events.EventType.FOCUS, focusHandler);
+        editor.getElement().focus();
     });
 }
