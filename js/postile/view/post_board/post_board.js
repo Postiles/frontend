@@ -145,7 +145,7 @@ postile.view.post_board.handlers.mask_mouseup = function(e){
     this.rel_data.newPostStartCoord = null;
     this.post_preview_origin_spot.style.display = 'none';
     if (!this.legal) {
-        //return;
+        return;
     }
     this.preview.style.display = 'none';
     this.legal = false;
@@ -451,7 +451,7 @@ postile.view.post_board.PostBoard.prototype.createPost = function(info) {
     req.topic_id = this.topic_id;
     ret.text_content = 'Your new post... Enter your content here...';
     postile.ajax(['post','new'], req, function(data) { 
-        console.log(data);
+        if (data.status != 'ok') { new postile.toast.Toast(5, "Failed to create post. Perhaps the position is occupied.", [], 'red'); return; }
         ret.id = data.message;
         instance.mask.style.display = 'none';
         instance.renderArray([ret]);
