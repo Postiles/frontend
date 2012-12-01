@@ -35,7 +35,7 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
         goog.dom.appendChild(this.wrap_el, edit_button);
     }
     this.content_el = goog.dom.createDom('div', 'post_content');
-    if (this.text.content == null) { this.innerHTML = '[Currently editing]'; }
+    if (this.text_content == null) { this.innerHTML = '[Currently editing]'; }
     if (this.title && this.title.length) { this.content_el.innerHTML = '<center><b>'+this.title+'</b></center>'; }
     this.content_el.innerHTML += this.text_content;
     goog.dom.appendChild(this.wrap_el, this.content_el);

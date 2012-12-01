@@ -384,7 +384,7 @@ postile.view.post_board.PostBoard.prototype.moveCanvas = function(dx, dy) { //re
             }
         }
     }
-    post_board.updateSubsribeArea();
+    instance.updateSubsribeArea();
     return true;
 }
 
