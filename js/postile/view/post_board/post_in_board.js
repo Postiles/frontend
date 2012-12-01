@@ -35,6 +35,7 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
         goog.dom.appendChild(this.wrap_el, edit_button);
     }
     this.content_el = goog.dom.createDom('div', 'post_content');
+    if (this.text.content == null) { this.innerHTML = '[Currently editing]'; }
     if (this.title && this.title.length) { this.content_el.innerHTML = '<center><b>'+this.title+'</b></center>'; }
     this.content_el.innerHTML += this.text_content;
     goog.dom.appendChild(this.wrap_el, this.content_el);
@@ -95,9 +96,9 @@ postile.view.post_in_board.Post.prototype.edit = function() {
         var editor = new goog.ui.Textarea(instance.text_content);
         var title = new goog.ui.LabelInput('Title (optional)');
         var blurHandler = function() {
-            //close mask, if any
-            instance.board.mask.style.display = 'none';
-            instance.blur_timeout = setTimeout(function(){ instance.submitEdit({ post_id: instance.id, content: editor.getValue(), title: title.getValue() });}, 400);
+            instance.blur_timeout = setTimeout(function(){ 
+                instance.board.mask.style.display = 'none'; //close mask, if any
+                instance.submitEdit({ post_id: instance.id, content: editor.getValue(), title: title.getValue() });}, 400);
         };
         var focusHandler = function() {
             clearTimeout(instance.blur_timeout);

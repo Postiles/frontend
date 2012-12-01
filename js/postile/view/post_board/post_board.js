@@ -48,7 +48,7 @@ postile.view.post_board.handlers.canvas_mouseup = function(e) {
     post_board.canvasCoord = [parseFloat(this.style.left),parseFloat(this.style.top)];
     //animation of outbound shadow
     var init = post_board.shadowCoord.slice();
-    var total = Math.max(Math.abs(this.rel_data.shadowCoord[0]),Math.abs(this.rel_data.shadowCoord[1]));
+    var total = Math.max(Math.abs(post_board.shadowCoord[0]),Math.abs(post_board.shadowCoord[1]));
     if (post_board.shadowCoord[0] || post_board.shadowCoord[1]) {
         post_board.canva_shadow_animation = new postile.fx.Animate(function(i){
             var now = i * total;
@@ -60,10 +60,12 @@ postile.view.post_board.handlers.canvas_mouseup = function(e) {
         }, 800, postile.fx.ease.cubic_ease_out);
     }
     //update display status of dirction control arrows
-    if (this.rel_data.shadowCoord[1] <= 0) { this.rel_data.direction_controllers['up'].style.display = 'block'; }
-    if (this.rel_data.shadowCoord[0] >= 0) { this.rel_data.direction_controllers['right'].style.display = 'block'; }
-    if (this.rel_data.shadowCoord[1] >= 0) { this.rel_data.direction_controllers['down'].style.display = 'block'; }
-    if (this.rel_data.shadowCoord[0] <= 0) { this.rel_data.direction_controllers['left'].style.display = 'block'; }
+    if (post_board.shadowCoord[1] <= 0) { post_board.direction_controllers['up'].style.display = 'block'; }
+    if (post_board.shadowCoord[0] >= 0) { post_board.direction_controllers['right'].style.display = 'block'; }
+    if (post_board.shadowCoord[1] >= 0) { post_board.direction_controllers['down'].style.display = 'block'; }
+    if (post_board.shadowCoord[0] <= 0) { post_board.direction_controllers['left'].style.display = 'block'; }
+    //update subscribe area
+    post_board.updateSubsribeArea();
 };
 
 postile.view.post_board.handlers.canvas_mousemove = function(e) {
@@ -382,6 +384,7 @@ postile.view.post_board.PostBoard.prototype.moveCanvas = function(dx, dy) { //re
             }
         }
     }
+    post_board.updateSubsribeArea();
     return true;
 }
 
@@ -410,7 +413,7 @@ postile.view.post_board.PostBoard.prototype.updateSubsribeArea = function() { //
     var to_subscribe = this.getSubscribeArea(current_loc);
     /*
     if (!this.isAreaFullInside(this.currentSubscribeArea, this.getVisibleArea(currentLoc))) {
-        //display loading
+        //TODO: display loading
     }
     */
     to_subscribe.channel_str = this.channel_str;
@@ -439,8 +442,9 @@ postile.view.post_board.PostBoard.prototype.renderArray = function(array) { //ad
 postile.view.post_board.PostBoard.prototype.fayeHandler = function(status, data) {
     switch (status) {
         case postile.view.post_board.faye_status.FINISH:
+        case postile.view.post_board.faye_status.START:
             this.renderArray([data]);
-            break;      
+            break;
     }
 }
 
