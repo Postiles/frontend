@@ -6,6 +6,7 @@ goog.require('goog.events');
 goog.require('postile.router');
 goog.require('postile.user');
 goog.require('postile.view.post_board');
+goog.require('postile.view.user_admin');
 
 postile = { //the base of posTile frontend framework
     /*
@@ -39,6 +40,14 @@ postile = { //the base of posTile frontend framework
         postile.router.map('/test/:id/:port').to(function(){
             postile.dport = this.params["port"];
             window.pb = new postile.view.post_board.PostBoard(this.params["id"]);
+        });
+        postile.router.map('/sign_up').to(function() {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '/sign_up.html', false);
+            xhr.send();
+            if (xhr.status == 200) {
+                document.body.innerHTML = xhr.responseText;
+            }
         });
     }
 };

@@ -9,6 +9,7 @@
 goog.events.listen(window, goog.events.EventType.LOAD, postile.load);
 </script>
 <link rel="stylesheet" type="text/css" href="/css/common.css" />
+<link rel="stylesheet" type="text/css" href="/css/sign_up.css" />
 <style type="text/css">
 html, body, #wrapper {
 	padding: 0;
@@ -18,7 +19,14 @@ html, body, #wrapper {
 </style>
 </head>
 <body>
-<div id="wrapper">
-</div>
+    <div id="wrapper">
+        <div id="top_bar"></div>
+        <div id="welcome_text">Welcome to Postiles!</div>
+        <input id="username_input" type="text" name="username" placeholder="User name" /><br />
+        <input id="email_input" type="text" name="email" placeholder="Email" /><br />
+        <input id="password_input" type="password" name="password" placeholder="Password" /><br />
+        <input id="confirm_password_input" type="password" name="confirm_password" placeholder="Confirm Password" /><br />
+        <button id="confirm_button">Submit</button>
+    </div>
 </body>
 </html>
