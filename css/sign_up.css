@@ -24,3 +24,6 @@ input, button {
 ::-webkit-input-placeholder {
     color: #ccc;
 }
+
+.valid_indicator {
+}

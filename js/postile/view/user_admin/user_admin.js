@@ -15,6 +15,9 @@ postile.view.user_admin.create_user = {
         var confirm_password_input = goog.dom.getElement('confirm_password_input');
 
         goog.events.listen(username_input, goog.events.EventType.CHANGE, this.check_value);
+        goog.events.listen(email_input, goog.events.EventType.CHANGE, this.check_value);
+        goog.events.listen(password_input, goog.events.EventType.CHANGE, this.check_value);
+        goog.events.listen(confirm_password_input, goog.events.EventType.CHANGE, this.check_value);
     },
 
     check_value: function(e) { // checks the values of the fields by AJAX
@@ -23,27 +26,61 @@ postile.view.user_admin.create_user = {
         switch (type) {
         case "username":
             var username = e.target.value;
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST', 'http://localhost:3000/user/check_username_valid');
-            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-            xhr.send('username=' + username);
+            var username_valid = goog.dom.getElement('username_valid');
 
-            xhr.onreadystatechange = function() {
-                if (xhr.status == 200) {
-                    console.log(xhr.responseText);
-                } else {
-                    console.log("hehe");
-                }
+            var onsuccess = function(data) { // username not used
+                username_valid.innerHTML = 'ok!';
             };
+
+            var onfailure = function(data) { // username used
+                username_valid.innerHTML = data.message;
+            };
+
+            postile.ajax(['user', 'check_username_valid'], { username: username }, onsuccess, onfailure);
             break;
         case "email":
             var email = e.target.value;
+            var email_valid = goog.dom.getElement('email_valid');
+
+            var onsuccess = function(data) {
+                email_valid.innerHTML = 'ok!';
+            };
+
+            var onfailure = function(data) {
+                email_valid.innerHTML = data.message;
+            };
+
+            postile.ajax(['user', 'check_email_valid'], { email: email }, onsuccess, onfailure);
             break;
         case "password":
             var password = e.target.value;
+            var password_valid = goog.dom.getElement('password_valid');
+
+            var onsuccess = function(data) {
+                password_valid.innerHTML = 'ok!';
+            };
+
+            var onfailure = function(data) {
+                password_valid.innerHTML = data.message;
+            };
+
+            postile.ajax(['user', 'check_password_valid'], { password: password }, onsuccess, onfailure);
             break;
         case "confirm_password":
+            var password = goog.dom.getElement('password_input').value;
             var confirm_password = e.target.value;
+            var confirm_password_valid = goog.dom.getElement('confirm_password_valid');
+
+            var onsuccess = function(data) {
+                confirm_password_valid.innerHTML = 'ok!';
+            };
+
+            var onfailure = function(data) {
+                confirm_password_valid.innerHTML = data.message;
+            };
+
+            postile.ajax(['user', 'check_confirm_password_valid'], 
+                    { password: password, confirm_password: confirm_password }, onsuccess, onfailure);
             break;
         }
     },

@@ -7,7 +7,7 @@ goog.provide('postile.faye');
 
 goog.require('goog.net.jsloader');
 
-postile.ajax = function(url, data, onsuccess, onfail, notifier_text){ 
+postile.ajax = function(url, data, onsuccess, onfail, notifier_text) { 
     var xhr, formData, i;
     if ("postile_user_id" in localStorage && "postile_user_session_key" in localStorage) {
         data.user_id = localStorage.postile_user_id;
