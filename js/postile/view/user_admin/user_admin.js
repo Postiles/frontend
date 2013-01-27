@@ -38,6 +38,7 @@ postile.view.user_admin.create_user = {
 
             postile.ajax(['user', 'check_username_valid'], { username: username }, onsuccess, onfailure);
             break;
+
         case "email":
             var email = e.target.value;
             var email_valid = goog.dom.getElement('email_valid');
@@ -52,6 +53,7 @@ postile.view.user_admin.create_user = {
 
             postile.ajax(['user', 'check_email_valid'], { email: email }, onsuccess, onfailure);
             break;
+
         case "password":
             var password = e.target.value;
             var password_valid = goog.dom.getElement('password_valid');
@@ -66,6 +68,7 @@ postile.view.user_admin.create_user = {
 
             postile.ajax(['user', 'check_password_valid'], { password: password }, onsuccess, onfailure);
             break;
+
         case "confirm_password":
             var password = goog.dom.getElement('password_input').value;
             var confirm_password = e.target.value;

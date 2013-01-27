@@ -50,6 +50,16 @@ postile = { //the base of posTile frontend framework
                 document.body.innerHTML = xhr.responseText;
             }
         });
+        postile.router.map('/topic_board').to(function() {
+            postile.dport = 3000; // temporary hack
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '/topic_board.html', false);
+            xhr.send();
+            if (xhr.status == 200) {
+                document.body.innerHTML = xhr.responseText;
+            }
+        });
+
     }
 };
 

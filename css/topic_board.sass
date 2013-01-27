@@ -1,0 +1,177 @@
+$frame_color: #024d61
+
+$topic_image_container_size: 60px
+$topic_image_padding: 5px
+$topic_image_size: $topic_image_container_size - 2 * $topic_image_padding
+
+$profile_image_container_size: 36px
+$profile_image_padding: 3px
+$profile_image_size: $profile_image_container_size - 2 * $profile_image_padding
+
+$title_bar_height: 40px
+$title_bar_border_height: 5px
+$title_bar_total_height: 45px
+
+@mixin border_radius($val)
+  border-radius: $val
+  -webkit-border-radius: $val
+  -moz-radius: $val
+  -o-radius: $val
+  -ms-radius: $val
+
+html, body
+  margin: 0
+  width: 100%
+  height: 100%
+
+#wrapper
+  width: 100%
+  height: 100%
+  font-family: Oxygen
+  line-height: 120%
+
+#title_bar
+  width: 100%
+  height: $title_bar_height
+  background: #FFF
+  border-bottom: $title_bar_border_height solid $frame_color
+  position: relative
+  z-index: 1
+
+#topic_image_container
+  position: absolute
+  left: 5px
+  top: 5px
+  width: $topic_image_container_size
+  height: $topic_image_container_size
+  background: $frame_color
+  @include border_radius(5px)
+
+#topic_image_container img
+  float: left
+  padding: $topic_image_padding
+  width: $topic_image_size
+  height: $topic_image_size
+
+#topic_image_right_caret
+  position: relative
+  left: $topic_image_container_size
+  top: 10px
+  width: 0
+  height: 0
+  border-top: 6px solid transparent
+  border-left: 8px solid $frame_color
+  border-bottom: 6px solid transparent
+
+#topic_title
+  float: left
+  color: $frame_color
+  font-size: 14pt
+  margin-left: 80px
+  padding-top: 10px
+
+#accout_container
+  float: right
+  margin-top: 2px
+
+.account_item
+  float: left
+
+#user_info_container
+  margin-right: 10px
+
+#username_text
+  float: right
+
+#profile_image_container
+  float: left
+  width: $profile_image_container_size
+  height: $profile_image_container_size
+  background: $frame_color
+  @include border_radius(5px)
+
+#profile_image_container img
+  float: left
+  padding: $profile_image_padding
+  width: $profile_image_size
+  height: $profile_image_size
+
+#profile_image_left_caret
+  position: relative
+  left: -6px
+  top: 10px
+  width: 0
+  height: 0
+  border-top: 4px solid transparent
+  border-right: 6px solid $frame_color
+  border-bottom: 4px solid transparent
+
+.accout_button
+  color: $frame_color
+  float: left
+  font-size: 10pt
+  cursor: pointer
+
+#accout_button_delimeter
+  margin-left: 6px
+  margin-right: 6px
+
+#function_button_container
+  margin-left: 10px
+  margin-right: 10px
+
+.function_button
+  float: left
+  width: 30px
+  height: 34px
+  background-repeat: no-repeat
+  background-position: center
+
+#message_button
+  background-image: url("../images/message_icon.png")
+
+#search_button
+  background-image: url("../images/search_icon.png")
+
+#popup_button
+  background-image: url("../images/popup_icon.png")
+
+#topic_board
+  float: left
+  position: relative
+  top: - $title_bar_total_height
+  width: 80%
+  height: 100%
+
+#right_panel
+  float: right
+  position: relative
+  top: - $title_bar_total_height
+  width: 20%
+  height: 100%
+  background: #CDB
+
+.post_item
+  background: #FFF
+  position: absolute
+  font-size: 10pt
+  /* border: 1px solid #ddd */
+  border-top: 5px solid $frame_color
+  box-shadow: inset 0 0 3px rgba($frame_color, 0.6)
+
+.post_content
+  padding: 10px
+
+.post_author
+  margin-top: 10px
+  float: right
+
+#post1
+  left: 200px
+  top: 300px
+  width: 350px
+
+#post2
+  left: 450px
+  top: 500px
+  width: 300px
