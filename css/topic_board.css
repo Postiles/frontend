@@ -1,7 +1,8 @@
 html, body {
   margin: 0;
   width: 100%;
-  height: 100%; }
+  height: 100%;
+  background: whitesmoke; }
 
 #wrapper {
   width: 100%;
@@ -12,7 +13,7 @@ html, body {
 #title_bar {
   width: 100%;
   height: 40px;
-  background: white;
+  background: whitesmoke;
   border-bottom: 5px solid #024d61;
   position: relative;
   z-index: 1; }
@@ -66,6 +67,9 @@ html, body {
 #username_text {
   float: right; }
 
+#settings_logout_buttons_container {
+  clear: right; }
+
 #profile_image_container {
   float: left;
   width: 36px;
@@ -85,7 +89,7 @@ html, body {
 
 #profile_image_left_caret {
   position: relative;
-  left: -6px;
+  left: -5px;
   top: 10px;
   width: 0;
   height: 0;
@@ -139,26 +143,163 @@ html, body {
   background: #ccddbb; }
 
 .post_item {
-  background: white;
+  padding: 12px;
+  background: whitesmoke;
   position: absolute;
   font-size: 10pt;
   /* border: 1px solid #ddd */
   border-top: 5px solid #024d61;
   box-shadow: inset 0 0 3px rgba(2, 77, 97, 0.6); }
 
-.post_content {
-  padding: 10px; }
+.post_top {
+  color: #024d61;
+  font-size: 11pt; }
+
+.post_title {
+  float: left;
+  font-family: OxygenBold; }
 
 .post_author {
-  margin-top: 10px;
+  margin-left: 20px; }
+
+.post_content {
+  margin-top: 12px; }
+
+.post_pic_content img {
+  width: 250px; }
+
+.post_bottom {
+  margin-top: 10px; }
+
+.post_icon {
+  float: left;
+  margin-right: 8px;
+  width: 18px;
+  height: 18px;
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+  background-position: center; }
+
+.post_like_icon {
+  background-image: url("../images/like_icon.png"); }
+
+.post_share_icon {
+  background-image: url("../images/share_icon.png"); }
+
+.post_link_icon {
+  background-image: url("../images/link_icon.png"); }
+
+.post_comment_icon {
+  background-image: url("../images/comment_icon.png"); }
+
+.post_more_text {
+  float: right;
+  color: #024d61; }
+
+.post_box {
+  z-index: 99;
+  position: relative;
+  left: 100px;
+  width: 220px;
+  height: 200px; }
+
+.post_box_caret {
+  position: relative;
+  top: 1px;
+  left: 5px;
+  width: 0;
+  height: 0;
+  border-top: 7px solid transparent;
+  border-right: 8px solid #3d7d8e;
+  border-bottom: 7px solid transparent; }
+
+.post_box_content {
+  position: relative;
+  top: -18px;
+  left: 12px;
+  width: inherit;
+  height: inherit; }
+
+.post_box_input_text {
+  width: inherit;
+  height: 32px;
+  background: #3d7d8e; }
+
+.post_box_input_text_area {
+  width: inherit;
+  background: none;
+  border: none;
+  outline: none;
+  color: whitesmoke;
+  font-size: 10pt;
+  border-bottom: 1px solid whitesmoke; }
+
+.post_box_scroll_area {
+  width: inherit;
+  height: 20px;
+  background: #c8e5ed; }
+
+.post_box_scroll_button {
+  float: left;
+  width: 110px;
+  height: inherit; }
+
+.post_box_scroll_caret {
+  position: relative;
+  left: 50px;
+  top: 6px;
+  width: 0;
+  height: 0; }
+
+.post_box_scroll_up_caret {
+  border-left: 6px solid transparent;
+  border-bottom: 8px solid #024d61;
+  border-right: 6px solid transparent; }
+
+.post_box_scroll_down_caret {
+  border-left: 6px solid transparent;
+  border-top: 8px solid #024d61;
+  border-right: 6px solid transparent; }
+
+.post_box_comments_list {
+  width: inherit;
+  height: inherit;
+  background: #f1f1f1;
+  overflow: hidden; }
+
+.post_box_comment_item {
+  padding: 5px; }
+
+.post_box_comment_item:hover {
+  background: rgba(200, 229, 237, 0.3);
+  cursor: default; }
+
+.post_box_comment_item_username_text {
+  font-family: OxygenBold;
+  color: #3d7d8e;
+  float: left; }
+
+.post_box_comment_item_datetime_text {
   float: right; }
+
+.post_box_comment_item_content_text {
+  clear: right;
+  margin-top: 2px;
+  padding-left: 3px;
+  padding-right: 3px; }
 
 #post1 {
   left: 200px;
   top: 300px;
-  width: 350px; }
+  width: 350px;
+  max-height: 180px; }
 
 #post2 {
-  left: 450px;
-  top: 500px;
-  width: 300px; }
+  left: 650px;
+  top: 200px;
+  width: 280px; }
+
+#post3 {
+  left: 600px;
+  top: 480px;
+  width: 250px; }
