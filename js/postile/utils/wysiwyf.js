@@ -1,8 +1,8 @@
 /**********************全文开始**********************/
 
-goog.provide('WYSIWYF');
+goog.provide('postile.WYSIWYF');
 
-var WYSIWYF = {
+postile.WYSIWYF = {
     /******容器******/
     editors: new Array(),
     IEQuirk: (document.compatMode == 'BackCompat' && navigator.userAgent.indexOf('MSIE') != -1),
@@ -12,7 +12,6 @@ var WYSIWYF = {
         this.editors.push(new this.load(el));
     },
     //定义一些常量, and methods
-    toCopyStyle: new Array('left', 'right', 'top', 'bottom', 'marginLeft', 'marginTop', 'marginBottom', 'marginRight', 'position'),
     doSpanize: function (cont, a, b, style) { //a is char array, b is breakpoint list
         style = style || {
             Bold: false,
@@ -130,22 +129,25 @@ var WYSIWYF = {
         editor.eHolder = document.createElement('div');
         //编辑器菜单
         editor.eMenu = document.createElement('div');
-        var l = WYSIWYF.toCopyStyle.length;
-        for (var i = 0; i < l; i++) {
-            eval('editor.ifmElement.style.' + WYSIWYF.toCopyStyle[i] + '=editor.textarea.style.' + WYSIWYF.toCopyStyle[i]);
-        }
+        editor.eHolder.style.position = 'absolute';
+        editor.eHolder.style.left = editor.textarea.offsetLeft + 'px';
+        editor.eHolder.style.top = editor.textarea.offsetTop + 'px';
         editor.eHolder.style.width = editor.eMenu.style.width = editor.ifmElement.style.width = (editor.textarea.offsetWidth - 2) + 'px';
         editor.eHolder.style.height = (editor.textarea.offsetHeight - 2) + 'px';
-        editor.ifmElement.style.height = (editor.textarea.offsetHeight - 27) + 'px';
-        editor.ifmElement.frameBorder = '0';
-        editor.ifmElement.style.border = '0 none';
         editor.eHolder.style.border = '1px solid #999';
+        editor.eMenu.style.position = 'absolute';
+        editor.eMenu.style.left = editor.textarea.offsetLeft + Math.round((editor.textarea.offsetWidth - 171) / 2) + 'px';
+        editor.eMenu.style.top = editor.textarea.offsetTop - 25 + 'px';      
+        editor.eMenu.style.width = '171px';
         editor.eMenu.style.height = '25px';
         editor.eMenu.style.background = '#CCC';
-        editor.textarea.parentNode.insertBefore(editor.eHolder, editor.textarea);
-        editor.eHolder.appendChild(editor.eMenu);
+        editor.ifmElement.style.height = (editor.textarea.offsetHeight - 2) + 'px';
+        editor.ifmElement.frameBorder = '0';
+        editor.ifmElement.style.border = '0 none';
         editor.eHolder.appendChild(editor.ifmElement);
-        editor.textarea.style.display = 'none'; //debug_switch如需进行debug，将此行注释掉即可（不隐藏原textarea）
+        editor.textarea.offsetParent.appendChild(editor.eHolder);
+        editor.textarea.offsetParent.appendChild(editor.eMenu);
+        editor.textarea.style.visibility = 'hidden'; //debug_switch如需进行debug，将此行注释掉即可（不隐藏原textarea）
         var ifmOnLoad = function () {
             editor.ifmDocument = (editor.ifmElement.contentWindow || editor.ifmElement.contentDocument);
             if (editor.ifmDocument.document) {
@@ -172,26 +174,26 @@ var WYSIWYF = {
             }
         }
         var buttonOperate = function () { //when button being clicked
-            var l = WYSIWYF.editButtons.length;
+            var l = postile.WYSIWYF.editButtons.length;
             for (var i = 0; i < l; i++) {
-                if (this.style.backgroundPosition.toLowerCase() == WYSIWYF.editButtons[i].bgPos) {
-                    if (WYSIWYF.editButtons[i].requireSel) {
-                        if (!WYSIWYF.getRange(editor.ifmDocument, editor.ifmWindow)) {
+                if (this.style.backgroundPosition.toLowerCase() == postile.WYSIWYF.editButtons[i].bgPos) {
+                    if (postile.WYSIWYF.editButtons[i].requireSel) {
+                        if (!postile.WYSIWYF.getRange(editor.ifmDocument, editor.ifmWindow)) {
                             alert('Select something first please.');
                             return;
                         }
                     } else {
-                        if (WYSIWYF.getRange(editor.ifmDocument, editor.ifmWindow)) {
+                        if (postile.WYSIWYF.getRange(editor.ifmDocument, editor.ifmWindow)) {
                             alert('You cannot select anything when doing this action.');
                             return;
                         }
                     }
-                    WYSIWYF.editButtons[i].callback(editor);
+                    postile.WYSIWYF.editButtons[i].callback(editor);
                 }
             }
         }
         //Placing buttons
-        l = WYSIWYF.editButtons.length;
+        l = postile.WYSIWYF.editButtons.length;
         editor.buttons = new Array(l);
         for (var i = 0; i < l; i++) {
             editor.buttons[i] = document.createElement('input');
@@ -203,7 +205,7 @@ var WYSIWYF = {
             editor.buttons[i].style.height = '21px';
             editor.buttons[i].style.margin = '2px 0px 0 3px';
             editor.buttons[i].style.padding = '0';
-            editor.buttons[i].style.backgroundPosition = WYSIWYF.editButtons[i].bgPos;
+            editor.buttons[i].style.backgroundPosition = postile.WYSIWYF.editButtons[i].bgPos;
             editor.buttons[i].onclick = buttonOperate;
             editor.eMenu.appendChild(editor.buttons[i]);
         }
@@ -213,7 +215,7 @@ var WYSIWYF = {
         for (var i = 0; i < fms.length; i++) {
             temp = fms[i].onsubmit;
             fms[i].onsubmit = function () {
-                WYSIWYF.dbgCirahOut(editor);
+                postile.WYSIWYF.dbgCirahOut(editor);
                 if (typeof temp == 'function') {
                     temp();
                 }
@@ -242,7 +244,7 @@ var WYSIWYF = {
         bgPos: '-' + (21 * 5) + 'px 0px',
         callback: function (editor) {
             //Color
-            WYSIWYF.colorSelector(function (co) {
+            postile.WYSIWYF.colorSelector(function (co) {
                 editor.ifmDocument.execCommand('ForeColor', false, co);
             });
         },
@@ -275,7 +277,7 @@ var WYSIWYF = {
         bgPos: '-' + (17 * 21) + 'px 0px',
         callback: function (editor) {
             //Preview
-            WYSIWYF.dbgCirahOut(editor);
+            postile.WYSIWYF.dbgCirahOut(editor);
         },
         requireSel: false
     }),
@@ -292,12 +294,12 @@ var WYSIWYF = {
         csPanel.style.paddingLeft = '2px';
         csPanel.style.paddingTop = '2px';
         csPanel.style.height = '120px';
-        if (WYSIWYF.IEQuirk) {
+        if (postile.WYSIWYF.IEQuirk) {
             csPanel.style.width = '122px';
             csPanel.style.height = '122px';
         }
         csPanel.style.position = 'static';
-        var l = WYSIWYF.defaultColors.length;
+        var l = postile.WYSIWYF.defaultColors.length;
         var btns = new Array();
         for (var i = 0; i < l; i++) {
             btns[i] = document.createElement('button');
@@ -306,12 +308,12 @@ var WYSIWYF = {
             btns[i].style.border = '0 none';
             btns[i].style.padding = '0';
             btns[i].style.overflow = 'hidden';
-            btns[i].style.backgroundColor = WYSIWYF.defaultColors[i];
+            btns[i].style.backgroundColor = postile.WYSIWYF.defaultColors[i];
             btns[i].style.margin = '2px 2px 0 0';
             csPanel.appendChild(btns[i]);
             btns[i].onclick = function () {
                 callback(this.style.backgroundColor);
-                WYSIWYF.closeBox(this.parentNode.parentNode);
+                postile.WYSIWYF.closeBox(this.parentNode.parentNode);
             };
             //TO SEE: http://blog.csdn.net/yuanweihuayan/article/details/6330520
         }
@@ -319,7 +321,7 @@ var WYSIWYF = {
         var selectorTag = document.createElement('input');
         selectorInput.type = selectorTag.type = 'text';
         selectorTag.readOnly = 'true';
-        selectorInput.value = WYSIWYF.defaultColors[WYSIWYF.defaultColors.length - 1];
+        selectorInput.value = postile.WYSIWYF.defaultColors[postile.WYSIWYF.defaultColors.length - 1];
         selectorTag.value = '自选';
         selectorInput.style.width = '58px';
         selectorTag.style.width = '38px';
@@ -331,7 +333,7 @@ var WYSIWYF = {
         csPanel.insertBefore(selectorTag, btns[btns.length - 1]);
         selectorInput.style.fontSize = '12px';
         selectorInput.onchange = selectorInput.onkeydown = selectorInput.onkeyup = function () {
-            WYSIWYF.defaultColors[WYSIWYF.defaultColors.length - 1] = btns[btns.length - 1].style.backgroundColor = this.value;
+            postile.WYSIWYF.defaultColors[postile.WYSIWYF.defaultColors.length - 1] = btns[btns.length - 1].style.backgroundColor = this.value;
         };
         this.openBox(122, 122).appendChild(csPanel);
     },
@@ -367,7 +369,7 @@ var WYSIWYF = {
         } else {
             var equiv = document.documentElement;
         }
-        if (navigator.userAgent.indexOf('MSIE 6.0') != -1 || WYSIWYF.IEQuirk) {
+        if (navigator.userAgent.indexOf('MSIE 6.0') != -1 || postile.WYSIWYF.IEQuirk) {
             mask.style.position = 'absolute';
             mask.style.width = Math.max((equiv.scrollWidth), (equiv.clientWidth)) + 'px';
             mask.style.height = Math.max((equiv.scrollHeight), (equiv.clientHeight)) + 'px';
@@ -381,7 +383,7 @@ var WYSIWYF = {
             holder.style.top = ((equiv.clientHeight) - height - 40) / 2 + 'px';
             holder.style.left = ((equiv.clientWidth) - width - 40) / 2 + 'px';
         }
-        if (WYSIWYF.IEQuirk) {
+        if (postile.WYSIWYF.IEQuirk) {
             holder.style.width = (width + 44) + 'px';
             holder.style.height = (height + 44) + 'px';
         }

@@ -7,6 +7,7 @@ goog.require('goog.dom.classes');
 goog.require('postile.toast');
 goog.require('goog.ui.LabelInput');
 goog.require('postile.string');
+goog.require('postile.WYSIWYF');
 
 postile.view.post_in_board.Post = function(object, board) {
     this.board = board;
