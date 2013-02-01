@@ -1,16 +1,12 @@
 /**********************全文开始**********************/
 
+//** TODO: direct rendering **//
+
+//var postile = {};
 goog.provide('postile.WYSIWYF');
 
 postile.WYSIWYF = {
-    /******容器******/
-    editors: new Array(),
-    IEQuirk: (document.compatMode == 'BackCompat' && navigator.userAgent.indexOf('MSIE') != -1),
     /******预加载装置******/
-    autoLoadExecuted: false,
-    add: function (el) {
-        this.editors.push(new this.load(el));
-    },
     //定义一些常量, and methods
     doSpanize: function (cont, a, b, style) { //a is char array, b is breakpoint list
         style = style || {
@@ -87,13 +83,6 @@ postile.WYSIWYF = {
             }
         }
     },
-    dbgCirahOut: function (editor) {
-        var Chars = new Array();
-        var BreakPoints = new Array('');
-        editor.ifmDocument.body.innerHTML = editor.ifmDocument.body.innerHTML.replace(/\r\n|\n\r|\r|\n/g, '');
-        this.doSpanize(editor.ifmDocument.body, Chars, BreakPoints, false);
-        editor.ifmDocument.body.innerHTML = editor.textarea.value = this.merge(Chars, BreakPoints);
-    },
     getRange: function (docDocument, docWindow) {
         var userSelectionRange;
         if (docWindow.getSelection) {
@@ -109,46 +98,32 @@ postile.WYSIWYF = {
         }
         return true;
     },
-    //干正事：建立一个eHolder(editor holder，编辑器大容器)，并将其放到原textarea位置，然后将原textarea隐形(initialize editor)
-    load: function (el) { //创建一个editor实例,存储于editors中
+    Editor: function(parent_el, default_value) { //can use the "container" property of this.
         var editor = this;
-        editor.textarea = el;
         //编辑器iframe
         editor.ifmElement = document.createElement('iframe');
         editor.ifmLoaded = false;
-        if (editor.ifmElement.attachEvent) {
-            editor.ifmElement.attachEvent("onload", function () {
-                editor.ifmLoaded = true;
-            });
-        } else {
-            editor.ifmElement.onload = function () {
-                editor.ifmLoaded = true;
-            };
-        }
+        editor.ifmElement.onload = function () {
+            editor.ifmLoaded = true;
+        };
         //编辑器总容器
-        editor.eHolder = document.createElement('div');
+        editor.container = document.createElement('div');
         //编辑器菜单
+        editor.container.style.border = '1px solid #999';
         editor.eMenu = document.createElement('div');
-        editor.eHolder.style.position = 'absolute';
-        editor.eHolder.style.left = editor.textarea.offsetLeft + 'px';
-        editor.eHolder.style.top = editor.textarea.offsetTop + 'px';
-        editor.eHolder.style.width = editor.eMenu.style.width = editor.ifmElement.style.width = (editor.textarea.offsetWidth - 2) + 'px';
-        editor.eHolder.style.height = (editor.textarea.offsetHeight - 2) + 'px';
-        editor.eHolder.style.border = '1px solid #999';
-        editor.eMenu.style.position = 'absolute';
-        editor.eMenu.style.left = editor.textarea.offsetLeft + Math.round((editor.textarea.offsetWidth - 171) / 2) + 'px';
-        editor.eMenu.style.top = editor.textarea.offsetTop - 25 + 'px';      
         editor.eMenu.style.width = '171px';
         editor.eMenu.style.height = '25px';
+        editor.eMenu.style.margin = '0 auto';
+        editor.eMenu.style.marginTop = '-25px';
         editor.eMenu.style.background = '#CCC';
-        editor.ifmElement.style.height = (editor.textarea.offsetHeight - 2) + 'px';
+        editor.eMenu.style.display = 'none';
+        editor.ifmElement.style.width = '100%';
+        editor.ifmElement.style.height = '100%';
         editor.ifmElement.frameBorder = '0';
-        editor.ifmElement.style.border = '0 none';
-        editor.eHolder.appendChild(editor.ifmElement);
-        editor.textarea.offsetParent.appendChild(editor.eHolder);
-        editor.textarea.offsetParent.appendChild(editor.eMenu);
-        editor.textarea.style.visibility = 'hidden'; //debug_switch如需进行debug，将此行注释掉即可（不隐藏原textarea）
-        var ifmOnLoad = function () {
+        editor.container.appendChild(editor.eMenu);
+        editor.container.appendChild(editor.ifmElement);
+        parent_el.appendChild(editor.container);
+        var ifmOnLoad = function() {
             editor.ifmDocument = (editor.ifmElement.contentWindow || editor.ifmElement.contentDocument);
             if (editor.ifmDocument.document) {
                 editor.ifmWindow = editor.ifmDocument;
@@ -156,41 +131,29 @@ postile.WYSIWYF = {
             } else {
                 editor.ifmWindow = editor.ifmDocument.getParentNode();
             }
-            //TODO: THERE IS A BUG UNDER IE. Maybe anything associated with ifmDoc.body should load after ifmWin is loaded.
-            editor.ifmDocument.body.innerHTML = editor.textarea.value; //初始化时将textarea内的内容复制到iframe中
-            //editor.ifmDocument.body.style.backgroundColor = '#FCC';
+            editor.ifmDocument.body.innerHTML = default_value; //初始化时将textarea内的内容复制到iframe中
             editor.ifmDocument.body.style.fontSize = '15px';
             editor.ifmDocument.body.style.backgroundColor = '#FFF';
             editor.ifmDocument.designMode = 'on';
+            var decItv;
+            editor.ifmDocument.body.addEventListener('focus', function() {
+                clearInterval(decItv);
+                editor.eMenu.style.display = 'block';
+                editor.eMenu.style.opacity = 1;
+            });
+            editor.ifmDocument.body.addEventListener('blur', function() {
+                clearInterval(decItv);
+                decItv = setInterval(function() {
+                    editor.eMenu.style.opacity = editor.eMenu.style.opacity - 0.1;
+                }, 40);
+                setTimeout(function(){ editor.eMenu.style.display = 'none'; }, 400);
+            });
         }
         //if not loaded, add to "onload", otherwise, execute immediately
         if (editor.ifmLoaded == true) {
             ifmOnLoad();
         } else {
-            if (editor.ifmElement.attachEvent) {
-                editor.ifmElement.attachEvent("onload", ifmOnLoad);
-            } else {
-                editor.ifmElement.onload = ifmOnLoad;
-            }
-        }
-        var buttonOperate = function () { //when button being clicked
-            var l = postile.WYSIWYF.editButtons.length;
-            for (var i = 0; i < l; i++) {
-                if (this.style.backgroundPosition.toLowerCase() == postile.WYSIWYF.editButtons[i].bgPos) {
-                    if (postile.WYSIWYF.editButtons[i].requireSel) {
-                        if (!postile.WYSIWYF.getRange(editor.ifmDocument, editor.ifmWindow)) {
-                            alert('Select something first please.');
-                            return;
-                        }
-                    } else {
-                        if (postile.WYSIWYF.getRange(editor.ifmDocument, editor.ifmWindow)) {
-                            alert('You cannot select anything when doing this action.');
-                            return;
-                        }
-                    }
-                    postile.WYSIWYF.editButtons[i].callback(editor);
-                }
-            }
+            editor.ifmElement.onload = ifmOnLoad;
         }
         //Placing buttons
         l = postile.WYSIWYF.editButtons.length;
@@ -206,22 +169,9 @@ postile.WYSIWYF = {
             editor.buttons[i].style.margin = '2px 0px 0 3px';
             editor.buttons[i].style.padding = '0';
             editor.buttons[i].style.backgroundPosition = postile.WYSIWYF.editButtons[i].bgPos;
-            editor.buttons[i].onclick = buttonOperate;
+            editor.buttons[i].onclick = function() { editor.buttonOperate(this.style.backgroundPosition.toLowerCase()); }
             editor.eMenu.appendChild(editor.buttons[i]);
         }
-        //HANDLE MERGING WHEN {form submitted}
-        var fms = document.getElementsByTagName('form');
-        var temp;
-        for (var i = 0; i < fms.length; i++) {
-            temp = fms[i].onsubmit;
-            fms[i].onsubmit = function () {
-                postile.WYSIWYF.dbgCirahOut(editor);
-                if (typeof temp == 'function') {
-                    temp();
-                }
-            };
-        }
-        //HANDLE MERGING WHEN {ifm lose focus}
     },
     /******Define buttons and corresponding operations******/
     editButtons: new Array(
@@ -277,7 +227,7 @@ postile.WYSIWYF = {
         bgPos: '-' + (17 * 21) + 'px 0px',
         callback: function (editor) {
             //Preview
-            postile.WYSIWYF.dbgCirahOut(editor);
+            alert('膜拜');
         },
         requireSel: false
     }),
@@ -294,10 +244,6 @@ postile.WYSIWYF = {
         csPanel.style.paddingLeft = '2px';
         csPanel.style.paddingTop = '2px';
         csPanel.style.height = '120px';
-        if (postile.WYSIWYF.IEQuirk) {
-            csPanel.style.width = '122px';
-            csPanel.style.height = '122px';
-        }
         csPanel.style.position = 'static';
         var l = postile.WYSIWYF.defaultColors.length;
         var btns = new Array();
@@ -363,30 +309,11 @@ postile.WYSIWYF = {
         holder.style.border = '12px solid #CCC';
         holder.style.zIndex = '52';
         holder.style.padding = '10px';
-        /* IE6 way */
-        if (document.compatMode == 'BackCompat') {
-            var equiv = document.body;
-        } else {
-            var equiv = document.documentElement;
-        }
-        if (navigator.userAgent.indexOf('MSIE 6.0') != -1 || postile.WYSIWYF.IEQuirk) {
-            mask.style.position = 'absolute';
-            mask.style.width = Math.max((equiv.scrollWidth), (equiv.clientWidth)) + 'px';
-            mask.style.height = Math.max((equiv.scrollHeight), (equiv.clientHeight)) + 'px';
-            holder.style.top = ((equiv.scrollTop) + ((equiv.clientHeight) - height - 40) / 2) + 'px';
-            holder.style.left = ((equiv.scrollLeft) + ((equiv.clientWidth) - width - 40) / 2) + 'px';
-            /* Following lines are a better solution, but does not support IE6 */
-        } else {
-            mask.style.position = 'fixed';
-            mask.style.width = '100%';
-            mask.style.height = '100%';
-            holder.style.top = ((equiv.clientHeight) - height - 40) / 2 + 'px';
-            holder.style.left = ((equiv.clientWidth) - width - 40) / 2 + 'px';
-        }
-        if (postile.WYSIWYF.IEQuirk) {
-            holder.style.width = (width + 44) + 'px';
-            holder.style.height = (height + 44) + 'px';
-        }
+        mask.style.position = 'fixed';
+        mask.style.width = '100%';
+        mask.style.height = '100%';
+        holder.style.top = ((document.documentElement.clientHeight) - height - 40) / 2 + 'px';
+        holder.style.left = ((document.documentElement.clientWidth) - width - 40) / 2 + 'px';
         mask.appendChild(holder);
         return holder;
     },
@@ -446,9 +373,9 @@ postile.WYSIWYF = {
             if (chars[i].style.Color) {
                 stack_add('color', chars[i].style.Color);
             }
-            if (chars[i].style.Bold) { stack_add('b'); } 
-            if (chars[i].style.Italic) { stack_add('i'); } 
-            if (chars[i].style.Underline) { stack_add('u'); }         
+            if (chars[i].style.Bold) { stack_add('b'); }
+            if (chars[i].style.Italic) { stack_add('i'); }
+            if (chars[i].style.Underline) { stack_add('u'); }
             op += bps[i];
             op += chars[i].content;
         }
@@ -456,7 +383,7 @@ postile.WYSIWYF = {
         return op;
         /*
         This section: an un-finished version
-        
+
         //Phase 1: combine charters to some all-same groups
         var group_endings = [0];
         for(var i = 1; i < chars.length; i++) {
@@ -487,8 +414,36 @@ postile.WYSIWYF = {
         }
         op += bps[bps.length - 1];
         return op;
-        
+
         */
+    }
+};
+
+postile.WYSIWYF.Editor.prototype.getBbCode = function() {
+    var Chars = new Array();
+    var BreakPoints = new Array('');
+    this.ifmDocument.body.innerHTML = this.ifmDocument.body.innerHTML.replace(/\r\n|\n\r|\r|\n/g, '');
+    postile.WYSIWYF.doSpanize(this.ifmDocument.body, Chars, BreakPoints, false);
+    return postile.WYSIWYF.merge(Chars, BreakPoints);
+};
+
+postile.WYSIWYF.Editor.prototype.buttonOperate = function(bgpIpt) { //when button being clicked
+    var l = postile.WYSIWYF.editButtons.length;
+    for (var i = 0; i < l; i++) {
+        if (bgpIpt == postile.WYSIWYF.editButtons[i].bgPos) {
+            if (postile.WYSIWYF.editButtons[i].requireSel) {
+                if (!postile.WYSIWYF.getRange(this.ifmDocument, this.ifmWindow)) {
+                    alert('Select something first please.');
+                    return;
+                }
+            } else {
+                if (postile.WYSIWYF.getRange(this.ifmDocument, this.ifmWindow)) {
+                    alert('You cannot select anything when doing this action.');
+                    return;
+                }
+            }
+            postile.WYSIWYF.editButtons[i].callback(this);
+        }
     }
 };
 

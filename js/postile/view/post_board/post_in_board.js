@@ -8,6 +8,7 @@ goog.require('postile.toast');
 goog.require('goog.ui.LabelInput');
 goog.require('postile.string');
 goog.require('postile.WYSIWYF');
+goog.require('postile.debbcode');
 
 postile.view.post_in_board.Post = function(object, board) {
     this.board = board;
@@ -94,30 +95,28 @@ postile.view.post_in_board.Post.prototype.edit = function() {
     var start_waiting = new postile.toast.Toast(0, "Please wait... We're starting editing... Be ready for 36s.");
     this.disable();
     postile.ajax(['post','start_edit'], { post_id: this.id }, function(data) {
-        var editor = new goog.ui.Textarea(instance.text_content);
+        var y_editor = postile.WYSIWYF.Editor(instance.wrap_el, postile.parseBBcode(instance.text_content));
         var title = new goog.ui.LabelInput('Title (optional)');
         var blurHandler = function() {
             instance.blur_timeout = setTimeout(function(){ 
                 instance.board.mask.style.display = 'none'; //close mask, if any
-                instance.submitEdit({ post_id: instance.id, content: editor.getValue(), title: title.getValue() });}, 400);
+                instance.submitEdit({ post_id: instance.id, content: y_editor.getBbCode(), title: title.getValue() });}, 400);
         };
         var focusHandler = function() {
             clearTimeout(instance.blur_timeout);
         };
-        editor.addClassName('edit_textarea');
         goog.dom.removeChildren(instance.wrap_el);
         title.render(instance.wrap_el);
-        editor.render(instance.wrap_el);
         goog.dom.classes.add(title.getElement(), 'edit_title');
         if (instance.title && instance.title.length) { title.setValue(instance.title); }
-        editor.getElement().style.height = instance.board.heightTo(instance.span_y) - 27 + 'px';
+        y_editor.container.style.height = instance.board.heightTo(instance.span_y) - 27 + 'px';
         instance.board.disableMovingCanvas = true; //disable moving
         instance.enable();
         start_waiting.abort();
-        goog.events.listen(editor.getContentElement(), goog.events.EventType.BLUR, blurHandler);
+        goog.events.listen(y_editor.ifmDocument.body, goog.events.EventType.BLUR, blurHandler);
         goog.events.listen(title.getElement(), goog.events.EventType.BLUR, blurHandler);
-        goog.events.listen(editor.getContentElement(), goog.events.EventType.FOCUS, focusHandler);
+        goog.events.listen(y_editor.ifmDocument.body, goog.events.EventType.FOCUS, focusHandler);
         goog.events.listen(title.getElement(), goog.events.EventType.FOCUS, focusHandler);
-        editor.getElement().focus();
+        title.getElement().focus();
     });
 }
