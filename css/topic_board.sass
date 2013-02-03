@@ -144,6 +144,118 @@ html, body
 #popup_button
   background-image: url("../images/popup_icon.png")
 
+#search_box
+
+#search_box_caret
+  position: relative
+  left: -50px
+  top: 30px
+  border-left: 6px solid transparent
+  border-bottom: 8px solid $light_frame_color
+  border-right: 6px solid transparent
+
+$search_box_container_width: 300px
+#search_box_container
+  position: absolute
+  top: 45px
+  right: 30px
+  width: $search_box_container_width
+  background: $light_frame_color
+
+#search_bar
+  width: inherit
+  height: 40px
+  background: rgba($frame_color, 0.3)
+
+#search_icon
+  float: left
+  width: 40px
+  height: 40px
+  background-image: url("../images/search_icon.png")
+  background-repeat: no-repeat
+  background-position: center
+
+#search_input_field
+  float: left
+  margin-top: 11px
+  border: none
+  outline: none
+  background: transparent
+  font-size: 10pt
+  width: 225px
+  color: $background_color
+  border-bottom: 1px solid $background_color
+
+#search_input_field::-webkit-input-placeholder
+  color: rgba($background_color, 0.7)
+
+#search_result_container
+  width: $search_box_container_width
+
+.search_result_category
+  display: table
+
+$search_result_title_width: 65px
+$search_result_title_margin_right: 10px
+.search_result_title
+  float: left
+  width: $search_result_title_width
+  background: $light_frame_color
+  text-align: right
+  font-size: 12pt
+  color: $background_color
+  margin-top: 17px
+  margin-right: $search_result_title_margin_right
+
+$search_result_item_padding: 5px
+$search_result_content_list_width: $search_box_container_width - $search_result_title_width - $search_result_title_margin_right
+.search_result_content_list
+  float: left
+  width: $search_result_content_list_width
+  display: table-cell
+  background: $ultra_light_frame_color
+
+$search_result_item_width: $search_result_content_list_width - 2 * $search_result_item_padding
+.search_result_item
+  padding: $search_result_item_padding
+  width: $search_result_item_width
+  display: table
+  cursor: pointer
+
+.search_result_item:hover
+  background: $box_background_color
+
+$search_result_image_size: 43px
+.search_result_image
+  float: left
+  width: 43px
+  height: 43px
+
+.search_result_image img
+  width: inherit
+  height: inherit
+
+$search_result_right_container_margin_left: 4px
+$search_result_right_container_padding: 4px
+.search_result_right_container
+  float: left
+  margin-left: $search_result_right_container_margin_left
+  padding: $search_result_right_container_padding
+  display: table-cell
+  width: $search_result_item_width - $search_result_image_size - $search_result_right_container_margin_left - $search_result_right_container_padding - $search_result_item_padding
+
+#search_result_post .search_result_right_container
+  width: auto
+
+.search_result_item_title
+  font-family: OxygenBold
+  font-size: 12pt
+  color: $light_frame_color
+
+.search_result_item_info
+  font-size: 10pt
+  max-width: 150px
+
 #topic_board
   float: left
   position: relative
@@ -221,7 +333,7 @@ html, body
 
 .post_box_container
 
-$post_box_width: 220px
+$post_box_width: 260px
 
 .post_box
   z-index: 99
@@ -249,17 +361,27 @@ $post_box_width: 220px
 
 .post_box_input_text
   width: inherit
-  height: 32px
+  height: 34px
   background: $light_frame_color
 
+$post_box_input_text_area_margin: 5px
+$post_box_input_text_area_padding: 5px
+$post_box_input_text_area_width: $post_box_width - ($post_box_input_text_area_margin + $post_box_input_text_area_padding) * 2
+
 .post_box_input_text_area
-  width: inherit
+  margin-left: $post_box_input_text_area_margin
+  width: $post_box_input_text_area_width
+  padding-left: $post_box_input_text_area_padding
+  padding-right: $post_box_input_text_area_padding
   background: none
   border: none
   outline: none
   color: $background_color
-  font-size: 10pt
+  font-size: 11pt
   border-bottom: 1px solid $background_color
+
+.post_box_input_text_area::-webkit-input-placeholder
+  color: rgba($background_color, 0.7)
 
 .post_box_scroll_area
   width: inherit
@@ -271,6 +393,9 @@ $post_box_scroll_half_width: $post_box_width / 2
   float: left
   width: $post_box_scroll_half_width
   height: inherit
+
+.post_box_scroll_button:hover
+  background: $box_background_color
 
 $post_box_scroll_caret_width: 10px
 $post_box_scroll_caret_left_pos: ($post_box_scroll_half_width - $post_box_scroll_caret_width) / 2
