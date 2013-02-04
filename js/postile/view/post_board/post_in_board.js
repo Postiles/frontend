@@ -95,7 +95,6 @@ postile.view.post_in_board.Post.prototype.edit = function() {
     var start_waiting = new postile.toast.Toast(0, "Please wait... We're starting editing... Be ready for 36s.");
     this.disable();
     postile.ajax(['post','start_edit'], { post_id: this.id }, function(data) {
-        var y_editor = postile.WYSIWYF.Editor(instance.wrap_el, postile.parseBBcode(instance.text_content));
         var title = new goog.ui.LabelInput('Title (optional)');
         var blurHandler = function() {
             instance.blur_timeout = setTimeout(function(){ 
@@ -107,6 +106,7 @@ postile.view.post_in_board.Post.prototype.edit = function() {
         };
         goog.dom.removeChildren(instance.wrap_el);
         title.render(instance.wrap_el);
+        var y_editor = new postile.WYSIWYF.Editor(instance.wrap_el, postile.parseBBcode(instance.text_content));
         goog.dom.classes.add(title.getElement(), 'edit_title');
         if (instance.title && instance.title.length) { title.setValue(instance.title); }
         y_editor.container.style.height = instance.board.heightTo(instance.span_y) - 27 + 'px';

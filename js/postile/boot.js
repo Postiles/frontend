@@ -42,7 +42,6 @@ postile = { //the base of posTile frontend framework
             window.pb = new postile.view.post_board.PostBoard(this.params["id"]);
         });
         postile.router.map('/sign_up').to(function() {
-            postile.dport = 3000; // temporary hack
             var xhr = new XMLHttpRequest();
             xhr.open('GET', '/sign_up.html', false);
             xhr.send();
@@ -51,7 +50,6 @@ postile = { //the base of posTile frontend framework
             }
         });
         postile.router.map('/topic_board').to(function() {
-            postile.dport = 3000; // temporary hack
             var xhr = new XMLHttpRequest();
             xhr.open('GET', '/topic_board.html', false);
             xhr.send();
@@ -59,7 +57,6 @@ postile = { //the base of posTile frontend framework
                 document.body.innerHTML = xhr.responseText;
             }
         });
-
     }
 };
 
