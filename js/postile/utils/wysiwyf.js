@@ -46,7 +46,7 @@ postile.WYSIWYF = {
             } else if (t == 'U') {
                 cStyle.Underline = true;
             } else if (t == 'SPAN' || t == 'FONT') {
-                cStyle.Color = cont.getAttribute('color') || cStyle.Color;
+                cStyle.Color = this.colorNormalize(cont.getAttribute('color')) || cStyle.Color;
                 if (cont.style.fontWeight == 'normal') {
                     cStyle.Bold = false;
                 } else if (cont.style.fontWeight == 'bold') {
@@ -63,7 +63,8 @@ postile.WYSIWYF = {
                     cStyle.Underline = true;
                 }
                 if (cont.style.Color && cont.style.Color != '') {
-                    cStyle.Color = cont.style.Color;
+                    var tpc = this.colorNormalize(cont.style.Color);
+                    if (tpc) { cStyle.Color = tpc; }
                 }
             }
             //END of [STYLING I]
@@ -425,7 +426,7 @@ postile.WYSIWYF = {
             return ipt.toLowerCase();
         } else if (this.COLOR_TYPES.hex_6digit.test(ipt)) {
             return ipt.replace(/[0-9A-Fa-f]{2}/g, function(dg) {
-                return (Math.round(parseInt(dg, 16) / 16)).toString(16);
+                return Math.ceil((parseInt(dg, 16) - 8.5) / 17).toString(16);
             });
         } else if (this.COLOR_TYPES.rgb.test(ipt)) {
             var i;
@@ -433,7 +434,7 @@ postile.WYSIWYF = {
             var nums = ipt.match(/[0-9]{1,3}/g);
             for (i in nums) {
                 if (nums[i] > 255) { return false; }
-                output += (Math.round(parseInt(nums[i])/16)).toString(16);
+                output += Math.ceil((parseInt(nums[i]) - 8.5) / 17).toString(16);
             }
             return output;
         }
