@@ -143,10 +143,12 @@ postile.WYSIWYF = {
             });
             editor.ifmDocument.body.addEventListener('blur', function() {
                 clearInterval(decItv);
+                var opa = 1;
                 decItv = setInterval(function() {
-                    editor.eMenu.style.opacity = editor.eMenu.style.opacity - 0.1;
+                    opa -= 0.1;
+                    editor.eMenu.style.opacity = opa;
+                    if (opa < 0.1) { editor.eMenu.style.display = 'none'; clearInterval(decItv); }
                 }, 40);
-                setTimeout(function(){ editor.eMenu.style.display = 'none'; }, 400);
             });
         }
         //if not loaded, add to "onload", otherwise, execute immediately
@@ -169,7 +171,7 @@ postile.WYSIWYF = {
             editor.buttons[i].style.margin = '2px 0px 0 3px';
             editor.buttons[i].style.padding = '0';
             editor.buttons[i].style.backgroundPosition = postile.WYSIWYF.editButtons[i].bgPos;
-            editor.buttons[i].onclick = function() { editor.buttonOperate(this.style.backgroundPosition.toLowerCase()); }
+            editor.buttons[i].onclick = function() { editor.buttonOperate(this.style.backgroundPosition.toLowerCase()); editor.ifmDocument.body.focus(); }
             editor.eMenu.appendChild(editor.buttons[i]);
         }
     },
@@ -416,6 +418,26 @@ postile.WYSIWYF = {
         return op;
 
         */
+    },
+    COLOR_TYPES: { hex_6digit: /^#[0-9A-Fa-f]{6}$/, hex_3digit: /^#[0-9A-Fa-f]{3}$/, rgb: /^rgb\([0-9]{1,3}\,[0-9]{1,3}\,[0-9]{1,3}\)$/ },
+    colorNormalize: function(ipt) {
+        if (this.COLOR_TYPES.hex_3digit.test(ipt)) {
+            return ipt.toLowerCase();
+        } else if (this.COLOR_TYPES.hex_6digit.test(ipt)) {
+            return ipt.replace(/[0-9A-Fa-f]{2}/g, function(dg) {
+                return (Math.round(parseInt(dg, 16) / 16)).toString(16);
+            });
+        } else if (this.COLOR_TYPES.rgb.test(ipt)) {
+            var i;
+            var output = '#';
+            var nums = ipt.match(/[0-9]{1,3}/g);
+            for (i in nums) {
+                if (nums[i] > 255) { return false; }
+                output += (Math.round(parseInt(nums[i])/16)).toString(16);
+            }
+            return output;
+        }
+        return false;
     }
 };
 

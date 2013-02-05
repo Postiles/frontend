@@ -39,7 +39,7 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
     this.content_el = goog.dom.createDom('div', 'post_content');
     if (this.text_content == null) { this.innerHTML = '[Currently editing]'; }
     if (this.title && this.title.length) { this.content_el.innerHTML = '<center><b>'+this.title+'</b></center>'; }
-    this.content_el.innerHTML += this.text_content;
+    this.content_el.innerHTML += postile.parseBBcode(this.text_content);
     goog.dom.appendChild(this.wrap_el, this.content_el);
     if (animation) {
         postile.fx.effects.resizeIn(this.wrap_el);
@@ -96,14 +96,6 @@ postile.view.post_in_board.Post.prototype.edit = function() {
     this.disable();
     postile.ajax(['post','start_edit'], { post_id: this.id }, function(data) {
         var title = new goog.ui.LabelInput('Title (optional)');
-        var blurHandler = function() {
-            instance.blur_timeout = setTimeout(function(){ 
-                instance.board.mask.style.display = 'none'; //close mask, if any
-                instance.submitEdit({ post_id: instance.id, content: y_editor.getBbCode(), title: title.getValue() });}, 400);
-        };
-        var focusHandler = function() {
-            clearTimeout(instance.blur_timeout);
-        };
         goog.dom.removeChildren(instance.wrap_el);
         title.render(instance.wrap_el);
         var y_editor = new postile.WYSIWYF.Editor(instance.wrap_el, postile.parseBBcode(instance.text_content));
@@ -113,10 +105,18 @@ postile.view.post_in_board.Post.prototype.edit = function() {
         instance.board.disableMovingCanvas = true; //disable moving
         instance.enable();
         start_waiting.abort();
+        var blurHandler = function() {
+            instance.blur_timeout = setTimeout(function(){ 
+                instance.board.mask.style.display = 'none'; //close mask, if any
+                instance.submitEdit({ post_id: instance.id, content: y_editor.getBbCode(), title: title.getValue() });}, 400);
+        };
+        var focusHandler = function() {
+            clearTimeout(instance.blur_timeout);
+        };
         goog.events.listen(y_editor.ifmDocument.body, goog.events.EventType.BLUR, blurHandler);
         goog.events.listen(title.getElement(), goog.events.EventType.BLUR, blurHandler);
         goog.events.listen(y_editor.ifmDocument.body, goog.events.EventType.FOCUS, focusHandler);
         goog.events.listen(title.getElement(), goog.events.EventType.FOCUS, focusHandler);
-        title.getElement().focus();
+        y_editor.ifmDocument.body.focus();
     });
 }
