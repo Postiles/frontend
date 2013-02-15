@@ -46,7 +46,7 @@ postile.WYSIWYF = {
             } else if (t == 'U') {
                 cStyle.Underline = true;
             } else if (t == 'SPAN' || t == 'FONT') {
-                cStyle.Color = cont.getAttribute('color') || cStyle.Color;
+                cStyle.Color = this.colorNormalize(cont.getAttribute('color')) || cStyle.Color;
                 if (cont.style.fontWeight == 'normal') {
                     cStyle.Bold = false;
                 } else if (cont.style.fontWeight == 'bold') {
@@ -62,8 +62,9 @@ postile.WYSIWYF = {
                 } else if (cont.style.textDecoration == 'underline') {
                     cStyle.Underline = true;
                 }
-                if (cont.style.Color && cont.style.Color != '') {
-                    cStyle.Color = cont.style.Color;
+                if (cont.style.color && cont.style.color != '') {
+                    var tpc = this.colorNormalize(cont.style.color);
+                    if (tpc) { cStyle.Color = tpc; }
                 }
             }
             //END of [STYLING I]
@@ -198,7 +199,7 @@ postile.WYSIWYF = {
             //Color
             postile.WYSIWYF.colorSelector(function (co) {
                 editor.ifmDocument.execCommand('ForeColor', false, co);
-            });
+            }, function() { editor.ifmDocument.body.focus(); });
         },
         requireSel: true
     }, {
@@ -240,7 +241,7 @@ postile.WYSIWYF = {
         '#660000', '#006600', '#000066', '#006666', '#660066', '#666600',
         '#FF6666', '#66FF66', '#6666FF', '#66FFFF', '#FF66FF', '#FFFF66',
         '#FF9999', '#99FF99', '#9999FF', '#99FFFF', '#FF99FF', '#FFFF99', '#FFCCCC'),
-    colorSelector: function (callback) { //parameters: what to do after color selected(the callback function must receive a paramter suggesting the selected color in '#000000' format)
+    colorSelector: function (callback, onclick) { //parameters: what to do after color selected(the callback function must receive a paramter suggesting the selected color in '#000000' format)
         var csPanel = document.createElement('div');
         csPanel.style.width = '120px';
         csPanel.style.paddingLeft = '2px';
@@ -283,7 +284,9 @@ postile.WYSIWYF = {
         selectorInput.onchange = selectorInput.onkeydown = selectorInput.onkeyup = function () {
             postile.WYSIWYF.defaultColors[postile.WYSIWYF.defaultColors.length - 1] = btns[btns.length - 1].style.backgroundColor = this.value;
         };
-        this.openBox(122, 122).appendChild(csPanel);
+        var box = this.openBox(122, 122);
+        box.appendChild(csPanel);
+        box.onclick = onclick;
     },
     openBox: function (width, height) {
         var holder = document.createElement('div');
@@ -419,13 +422,13 @@ postile.WYSIWYF = {
 
         */
     },
-    COLOR_TYPES: { hex_6digit: /^#[0-9A-Fa-f]{6}$/, hex_3digit: /^#[0-9A-Fa-f]{3}$/, rgb: /^rgb\([0-9]{1,3}\,[0-9]{1,3}\,[0-9]{1,3}\)$/ },
+    COLOR_TYPES: { hex_6digit: /^#[0-9A-Fa-f]{6}$/, hex_3digit: /^#[0-9A-Fa-f]{3}$/, rgb: /^rgb\([0-9]{1,3}\, ?[0-9]{1,3}\, ?[0-9]{1,3}\)$/ },
     colorNormalize: function(ipt) {
         if (this.COLOR_TYPES.hex_3digit.test(ipt)) {
             return ipt.toLowerCase();
         } else if (this.COLOR_TYPES.hex_6digit.test(ipt)) {
             return ipt.replace(/[0-9A-Fa-f]{2}/g, function(dg) {
-                return (Math.round(parseInt(dg, 16) / 16)).toString(16);
+                return Math.ceil((parseInt(dg, 16) - 8.5) / 17).toString(16);
             });
         } else if (this.COLOR_TYPES.rgb.test(ipt)) {
             var i;
@@ -433,7 +436,7 @@ postile.WYSIWYF = {
             var nums = ipt.match(/[0-9]{1,3}/g);
             for (i in nums) {
                 if (nums[i] > 255) { return false; }
-                output += (Math.round(parseInt(nums[i])/16)).toString(16);
+                output += Math.ceil((parseInt(nums[i]) - 8.5) / 17).toString(16);
             }
             return output;
         }
