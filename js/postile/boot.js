@@ -38,6 +38,13 @@ postile = { //the base of posTile frontend framework
             document.body.innerHTML = '<center>Please use <a href="/test/3/300">/test/3/300</a> to enter demo now. Note that "3" can be changed to other topic IDs and 300 should be changed to real port number.</center>';
         });
         postile.router.map('/test/:id/:port').to(function(){
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '/topic_board.html', false);
+            xhr.send();
+            if (xhr.status == 200) {
+                document.body.innerHTML = xhr.responseText;
+            }
+
             postile.dport = this.params["port"];
             window.pb = new postile.view.post_board.PostBoard(this.params["id"]);
         });

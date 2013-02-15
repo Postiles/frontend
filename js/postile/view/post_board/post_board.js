@@ -249,7 +249,14 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
     /* END OF MEMBER DEFINITION */
     postile.browser_compat.setCss(this.viewport, 'userSelect', 'none');
     goog.events.listen(this.viewport, goog.events.EventType.SELECTSTART, function(){ return false; }); //disable text selecting
-    goog.dom.appendChild(postile.wrapper, this.viewport);
+
+    /* guanlun hacking */
+    this.wrapper = goog.dom.getElement("wrapper");
+    goog.dom.appendChild(this.wrapper, this.viewport);
+    /* guanlun hacked */
+
+    // goog.dom.appendChild(postile.wrapper, this.viewport);
+
     goog.dom.appendChild(this.viewport, this.canvas);
     goog.dom.appendChild(this.viewport, this.mask);
     goog.dom.appendChild(this.mask, this.mask_notice);

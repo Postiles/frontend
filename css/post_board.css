@@ -1,9 +1,11 @@
 .post_wrap {
 	position: absolute;
 	padding: 8px;
-	background: rgba(255, 255, 255, 0.8);
-	border-radius: 4px;
+  background: whitesmoke;
+  font-size: 10pt;
 	z-index: 0;
+  border-top: 5px solid #024d61;
+  box-shadow: inset 0 0 3px rgba(2, 77, 97, 0.6);
 }
 .canvas_viewport {
 	overflow: hidden;
@@ -12,7 +14,6 @@
 .canvas {
 	width: 3872px;
 	height: 2592px;
-	background-image: url(moc.jpg);
 	position: absolute;
     display: none;
 }
