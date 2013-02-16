@@ -4,4 +4,4 @@ build.bat
 build.sh
 third_party
 
-.swp
+*.swp
