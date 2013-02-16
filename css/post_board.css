@@ -116,7 +116,8 @@ html, body {
   width: 30px;
   height: 34px;
   background-repeat: no-repeat;
-  background-position: center; }
+  background-position: center;
+  cursor: pointer; }
 
 #message_button {
   background-image: url("../images/message_icon.png"); }

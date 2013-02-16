@@ -39,7 +39,7 @@ postile = { //the base of posTile frontend framework
         });
         postile.router.map('/test/:id/:port').to(function(){
             var xhr = new XMLHttpRequest();
-            xhr.open('GET', '/topic_board.html', false);
+            xhr.open('GET', '/post_board.html', false);
             xhr.send();
             if (xhr.status == 200) {
                 document.body.innerHTML = xhr.responseText;

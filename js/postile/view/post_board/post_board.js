@@ -349,6 +349,13 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
 
     this.search_input_field = goog.dom.getElement("search_input_field");
     goog.events.listen(this.search_input_field, goog.events.EventType.CHANGE, postile.view.post_board.handlers.search);
+
+    this.search_button = goog.dom.getElement("search_button");
+
+    goog.events.listen(this.search_button, goog.events.EventType.CLICK, function(e) {
+        this.search_box = goog.dom.getElement("search_box");
+        this.search_box.style.display = "block";
+    });
     /* guanlun hacked */
 
     // goog.dom.appendChild(postile.wrapper, this.viewport);
@@ -416,7 +423,7 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
 goog.inherits(postile.view.post_board.PostBoard, postile.view.View);
 
 //postile.view.View required component
-postile.view.post_board.PostBoard.prototype.unloaded_stylesheets = ['font.css', 'post_board.css'];
+postile.view.post_board.PostBoard.prototype.unloaded_stylesheets = ['fonts.css', 'post_board.css'];
 
 //postile.view.View required component
 postile.view.post_board.PostBoard.prototype.on_exit = function() {
