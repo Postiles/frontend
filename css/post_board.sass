@@ -459,18 +459,170 @@ $post_box_scroll_caret_left_pos: ($post_box_scroll_half_width - $post_box_scroll
   padding-left: 3px
   padding-right: 3px
 
-#post1
-  left: 200px
-  top: 300px
-  width: 350px
-  max-height: 180px
+.post_wrap
+  position: absolute
+  padding: 8px
+  background: whitesmoke
+  font-size: 10pt
+  z-index: 0
+  border-top: 5px solid $frame_color
+  box-shadow: inset 0 0 3px rgba(2, 77, 97, 0.6)
 
-#post2
-  left: 650px
-  top: 200px
-  width: 280px
+.canvas_viewport
+  overflow: hidden
+  position: relative
 
-#post3
-  left: 600px
-  top: 480px
-  width: 250px
+.canvas
+  width: 3872px
+  height: 2592px
+  position: absolute
+  display: none
+
+.post_edit_btn
+  position: absolute
+  right: -12px
+  top: -6px
+  height: 16px
+  width: 32px
+  line-height: 16px
+  font-size: 13px
+  text-align: center
+  background: #666
+  color: #FFF
+  border-top-right-radius: 4px
+  border-bottom-left-radius: 4px
+
+.post_content
+  width: 100%
+
+.post_wrap_busy 
+  background-image: url(/images/busy.gif)
+  background-repeat: repeat
+
+/*Mask*
+.canvas_mask 
+  width: 100%
+  height: 100%
+  position: absolute
+  z-index: 100
+  left: 0
+  top: 0
+  background-color: rgba(0, 0, 0, 0.3)
+  display: none
+
+.mask_notice 
+  margin-top: 5%
+  text-align: center
+  height: 88px
+  font-size: 32px
+  line-height: 44px
+  color: white
+  font-weight: bold
+  z-index: 0
+
+.post_preview 
+  position: absolute
+  opacity: 0.6
+  padding: 5px
+  border: 3px dashed #FFF
+  border-radius: 4px
+  z-index: 1
+  display: none
+
+.post_preview_origin_spot 
+  display: none
+  position: absolute
+  width: 20px
+  height: 20px
+  border-radius: 8px
+  background-color: #FFF
+  z-index: 2
+
+/*Arrow*
+.right_clicker 
+  width: 106px
+  height: 106px
+  background: url(right.png)
+  display: none
+  position: absolute
+
+.arrow_detect
+  position: absolute
+  background-repeat: no-repeat
+
+.arrow_detect.up, .arrow_detect.down 
+  width: 100%
+  height: 50px
+
+.arrow_detect.left, .arrow_detect.right 
+  height: 100%
+  width: 50px
+
+.arrow_detect.up, .arrow_detect.down .arrow_button 
+  top: 0
+
+.arrow_detect.down, .arrow_detect.up .arrow_button  
+  bottom: 0
+
+.arrow_detect.left, .arrow_detect.right .arrow_button 
+  left: 0
+
+.arrow_detect.right, .arrow_detect.left .arrow_button  
+  right: 0
+
+.arrow_covering 
+  width: 100%
+  height: 100%
+  left: 0
+  top: 0
+  position: absolute
+
+.arrow_detect .arrow_button 
+  overflow: hidden
+  position: absolute
+  display: none
+
+.arrow_detect .arrow_button div
+  position: absolute
+
+.arrow_detect.up .arrow_button, .arrow_detect.down .arrow_button, .arrow_detect.up .arrow_button div, .arrow_detect.down .arrow_button div 
+  width: 120px
+  height: 40px
+
+.arrow_detect.left .arrow_button, .arrow_detect.right .arrow_button, .arrow_detect.left .arrow_button div, .arrow_detect.right .arrow_button div 
+  width: 40px
+  height: 120px
+
+.arrow_detect.up .arrow_button 
+  background: url(/images/arrow_sm_up.png)
+
+.arrow_detect.up .arrow_button div 
+  background: url(/images/arrow_sm_up_hover.png)
+
+.arrow_detect.down .arrow_button 
+  background: url(/images/arrow_sm_down.png)
+
+.arrow_detect.down .arrow_button div 
+  background: url(/images/arrow_sm_down_hover.png)
+
+.arrow_detect.left .arrow_button 
+  background: url(/images/arrow_sm_left.png)
+
+.arrow_detect.left .arrow_button div 
+  background: url(/images/arrow_sm_left_hover.png)
+
+.arrow_detect.right .arrow_button 
+  background: url(/images/arrow_sm_right.png)
+
+.arrow_detect.right .arrow_button div 
+  background: url(/images/arrow_sm_right_hover.png)
+
+/*Editor*
+.edit_title 
+  width: 100%
+  height: 15px
+  margin: 0
+  padding: 4px 0
+  border: 0 none
+  margin-bottom: 4px
+  display: block

@@ -416,7 +416,7 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
 goog.inherits(postile.view.post_board.PostBoard, postile.view.View);
 
 //postile.view.View required component
-postile.view.post_board.PostBoard.prototype.unloaded_stylesheets = ['post_board.css'];
+postile.view.post_board.PostBoard.prototype.unloaded_stylesheets = ['font.css', 'post_board.css'];
 
 //postile.view.View required component
 postile.view.post_board.PostBoard.prototype.on_exit = function() {
