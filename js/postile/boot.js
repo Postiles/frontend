@@ -12,8 +12,9 @@ postile = { //the base of posTile frontend framework
     /*
     member functions
     */
-    dhost: window.location.hostname,
-    dport: 3000,
+    dhost: null,
+    dport: null,
+    fayeLocation: null,
     staticResource: function(input) {
         return "/"+input.join("/");
     },
@@ -24,7 +25,6 @@ postile = { //the base of posTile frontend framework
         if(!postile.getKeyHandler.handler) { postile.getKeyHandler.handler = new goog.events.KeyHandler(document); }
         return postile.getKeyHandler.handler;
     },
-    fayeLocation: 'http://'+postile.dhost+':9292/faye',
     wrapper: null,
     init: function() {
         postile.wrapper = goog.dom.getElement('wrapper');
@@ -48,6 +48,7 @@ postile = { //the base of posTile frontend framework
             }
             postile.dhost = this.params["domain"];
             postile.dport = this.params["port"];
+            postile.fayeLocation = 'http://'+postile.dhost+':9292/faye';
             window.pb = new postile.view.post_board.PostBoard(this.params["id"]);
         });
         /*
