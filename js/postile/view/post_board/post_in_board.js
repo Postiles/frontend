@@ -13,10 +13,12 @@ goog.require('postile.debbcode');
 postile.view.post_in_board.Post = function(object, board) {
     this.board = board;
     this.blur_timeout = null;
+    this.disabled = false;
     this.render(object, true);
 }
 
 postile.view.post_in_board.Post.prototype.render = function(object, animation) { //animation is usually ommited (false by default)
+    if (this.disabled) { return; }
     var button;
     var instance = this;
     if (object) { goog.object.extend(this, object); }
@@ -41,7 +43,7 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
     /* guanlun's code, quality cannot be guaranteed: */
     this.post_top_el = goog.dom.createDom("div", "post_top");
     goog.dom.appendChild(this.wrap_el, this.post_top_el);
-
+    console.log('RECREA!!');
     this.post_title_el = goog.dom.createDom("span", "post_title");
     this.post_title_el.innerHTML = this.title;
     goog.dom.appendChild(this.post_top_el, this.post_title_el);
@@ -88,11 +90,13 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
 }
 
 postile.view.post_in_board.Post.prototype.disable = function() {
+    this.disabled = true;
     goog.dom.removeChildren(this.wrap_el);
     goog.dom.classes.add(this.wrap_el, 'post_wrap_busy');
 }
 
 postile.view.post_in_board.Post.prototype.enable = function() {
+    this.disabled = false;
     goog.dom.classes.remove(this.wrap_el, 'post_wrap_busy');
 }
 
