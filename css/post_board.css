@@ -288,7 +288,8 @@ html, body {
   width: 250px; }
 
 .post_bottom {
-  margin-top: 10px; }
+  position: absolute;
+  bottom: 0;  }
 
 .post_icon {
   float: left;
