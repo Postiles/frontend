@@ -52,13 +52,13 @@ postile.browser_compat.requirements = { //minimum version, suggested version, wa
 postile.browser_compat.handlers = {
     unable: function() {
         //the broswer is totally unsupported.
-        $("body").load(postile.staticResource("browser_compat","unable.html"));
+        //TODO: display UNABLE
     },
     perhaps: function() {
         if (goog.net.cookies.get("browser_compat_ignored")) {
             postile.init();
         } else {
-            $("body").load(postile.staticResource("browser_compat","perhaps.html"));
+            //TODO: display PERHAPS
         }
     },
     ok: function() {
@@ -69,7 +69,7 @@ postile.browser_compat.handlers = {
         if (goog.net.cookies.get("browser_compat_ignored")) {
             postile.init();
         } else {
-            $("body").load(postile.staticResource("browser_compat","warning.html"));
+            //TODO: display DEPRECATED
         }
     }
 };

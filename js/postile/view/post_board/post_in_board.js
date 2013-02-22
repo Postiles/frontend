@@ -43,7 +43,6 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
     /* guanlun's code, quality cannot be guaranteed: */
     this.post_top_el = goog.dom.createDom("div", "post_top");
     goog.dom.appendChild(this.wrap_el, this.post_top_el);
-    console.log('RECREA!!');
     this.post_title_el = goog.dom.createDom("span", "post_title");
     this.post_title_el.innerHTML = this.title;
     goog.dom.appendChild(this.post_top_el, this.post_title_el);

@@ -344,8 +344,7 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
     goog.events.listen(this.viewport, goog.events.EventType.SELECTSTART, function(){ return false; }); //disable text selecting
 
     /* guanlun hacking */
-    this.wrapper = goog.dom.getElement("wrapper");
-    goog.dom.appendChild(this.wrapper, this.viewport);
+    goog.dom.appendChild(goog.dom.getElement("wrapper"), this.viewport);
 
     this.search_input_field = goog.dom.getElement("search_input_field");
     goog.events.listen(this.search_input_field, goog.events.EventType.CHANGE, postile.view.post_board.handlers.search);

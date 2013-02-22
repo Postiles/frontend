@@ -7,6 +7,7 @@ goog.require('postile.router');
 goog.require('postile.user');
 goog.require('postile.view.post_board');
 goog.require('postile.view.user_admin');
+goog.require('postile.ui');
 
 postile = { //the base of posTile frontend framework
     /*
@@ -15,6 +16,7 @@ postile = { //the base of posTile frontend framework
     dhost: null,
     dport: null,
     fayeLocation: null,
+    wrapper: null,
     staticResource: function(input) {
         return "/"+input.join("/");
     },
@@ -25,7 +27,6 @@ postile = { //the base of posTile frontend framework
         if(!postile.getKeyHandler.handler) { postile.getKeyHandler.handler = new goog.events.KeyHandler(document); }
         return postile.getKeyHandler.handler;
     },
-    wrapper: null,
     init: function() {
         postile.wrapper = goog.dom.getElement('wrapper');
         postile.router_map();
@@ -40,12 +41,7 @@ postile = { //the base of posTile frontend framework
             window.location.href = '/test/'+this.params["id"]+'/'+window.location.hostname+'/'+this.params["port"];
         });
         postile.router.map('/test/:id/:domain/:port').to(function(){
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', '/post_board.html', false);
-            xhr.send();
-            if (xhr.status == 200) {
-                document.body.innerHTML = xhr.responseText;
-            }
+            postile.ui.load(document.body, postile.staticResource(['post_board.html']));
             postile.dhost = this.params["domain"];
             postile.dport = this.params["port"];
             postile.fayeLocation = 'http://'+postile.dhost+':9292/faye';

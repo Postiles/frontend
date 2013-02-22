@@ -24,7 +24,7 @@ color can be yellow (default) or red now
 postile.toast.Toast = function(duration, text, callbacks, color) {
     if (!postile.toast.toast_container) {
         postile.toast.toast_container = goog.dom.createDom('div', 'toast_container');
-        goog.dom.appendChild(postile.wrapper, postile.toast.toast_container);
+        goog.dom.appendChild(document.body, postile.toast.toast_container);
     }
     var i;
     var temp;
