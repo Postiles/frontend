@@ -33,13 +33,6 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
     this.wrap_el.style.width = this.board.widthTo(this.span_x) + 'px';
     this.wrap_el.style.height = this.board.heightTo(this.span_y) + 'px';
 
-    if (this.user_id == localStorage.postile_user_id) { //created by current user
-        var edit_button = goog.dom.createDom('div', 'post_edit_btn');
-        edit_button.innerHTML = 'edit';
-        goog.events.listen(edit_button, goog.events.EventType.CLICK, function() { instance.edit(); });
-        goog.dom.appendChild(this.wrap_el, edit_button);
-    }
-
     /* guanlun's code, quality cannot be guaranteed: */
     this.post_top_el = goog.dom.createDom("div", "post_top");
     goog.dom.appendChild(this.wrap_el, this.post_top_el);
@@ -61,17 +54,18 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
     this.post_icon_container_el = goog.dom.createDom("div", "post_icon_container");
     goog.dom.appendChild(this.post_bottom_el, this.post_icon_container_el);
 
-    this.post_like_icon_el = goog.dom.createDom("div", "post_icon post_like_icon");
-    goog.dom.appendChild(this.post_icon_container_el, this.post_like_icon_el);
-
-    this.post_like_icon_el = goog.dom.createDom("div", "post_icon post_share_icon");
-    goog.dom.appendChild(this.post_icon_container_el, this.post_like_icon_el);
-
-    this.post_like_icon_el = goog.dom.createDom("div", "post_icon post_link_icon");
-    goog.dom.appendChild(this.post_icon_container_el, this.post_like_icon_el);
-
-    this.post_like_icon_el = goog.dom.createDom("div", "post_icon post_comment_icon");
-    goog.dom.appendChild(this.post_icon_container_el, this.post_like_icon_el);
+    var addIcon = function(name) {
+        var icon = goog.dom.createDom("div", "post_icon post_"+name+"_icon");
+        goog.dom.appendChild(instance.post_icon_container_el, icon);
+        return icon;
+    }
+    
+    addIcon("like"); addIcon("share"); addIcon("link"); addIcon("comment");
+    
+    if (this.user_id == localStorage.postile_user_id) { //created by current user
+        goog.events.listen(addIcon("edit"), goog.events.EventType.CLICK, function() { instance.edit(); });
+        addIcon("delete");
+    }
 
     this.post_more_text_el = goog.dom.createDom("div", "post_more_text");
     this.post_more_text_el.innerHTML = "MORE";
