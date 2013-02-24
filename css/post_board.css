@@ -260,15 +260,21 @@ html, body {
   width: 20%;
   height: 100%;
   background: #ccddbb; }
-
-.post_item {
-  padding: 12px;
-  background: whitesmoke;
+  
+.post_wrap {
   position: absolute;
+  background: whitesmoke;
   font-size: 10pt;
-  /* border: 1px solid #ddd */
-  border-top: 5px solid #024d61;
+  z-index: 0;
+  border-top: 5px solid #024d61; 
   box-shadow: inset 0 0 3px rgba(2, 77, 97, 0.6); }
+  
+.post_container {
+  padding: 8px;
+  padding-bottom: 25px; /* 13px for post_bottom and 6px padding for it */
+  height: 100%;
+  box-sizing: border-box;
+  overflow: hidden; }
 
 .post_top {
   color: #024d61;
@@ -290,14 +296,14 @@ html, body {
 .post_bottom {
   position: absolute;
   width: 100%;
+  height: 13px;
   bottom: 6px;  }
 
 .post_icon {
   float: left;
   margin-right: 8px;
-  width: 18px;
-  height: 18px;
-  background-size: 100% auto;
+  width: 13px;
+  height: 13px;
   background-repeat: no-repeat;
   background-position: center; }
 
@@ -318,11 +324,6 @@ html, body {
   
 .post_delete_icon {
   background-image: url("../images/delete_icon.png"); }
-
-.post_more_text {
-  float: right;
-  margin-right: 16px;
-  color: #024d61; }
 
 .post_box {
   z-index: 99;
@@ -424,15 +425,6 @@ html, body {
   margin-top: 2px;
   padding-left: 3px;
   padding-right: 3px; }
-
-.post_wrap {
-  position: absolute;
-  padding: 8px;
-  background: whitesmoke;
-  font-size: 10pt;
-  z-index: 0;
-  border-top: 5px solid #024d61;
-  box-shadow: inset 0 0 3px rgba(2, 77, 97, 0.6); }
 
 .canvas_viewport {
   overflow: hidden;

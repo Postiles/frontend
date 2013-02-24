@@ -13,8 +13,8 @@ postile = { //the base of posTile frontend framework
     /*
     member functions
     */
-    dhost: null,
-    dport: null,
+    dhost: window.location.hostname,
+    dport: 3000,
     fayeLocation: null,
     wrapper: null,
     staticResource: function(input) {

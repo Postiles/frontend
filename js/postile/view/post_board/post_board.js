@@ -498,13 +498,13 @@ postile.view.post_board.PostBoard.prototype.moveCanvas = function(dx, dy) { //re
 }
 
 //convent length from "unit length" of the grid to pixel.
-postile.view.post_board.PostBoard.prototype.widthTo = function(u) { return (u*(75+30) - 30); };
-postile.view.post_board.PostBoard.prototype.heightTo = function(u) { return (u*(50+30) - 30); };
-postile.view.post_board.PostBoard.prototype.xPosTo = function(u) { return (u*(75+30) + this.canvasSize[0]/2); };
-postile.view.post_board.PostBoard.prototype.yPosTo = function(u) { return (u*(50+30) + this.canvasSize[1]/2); };
+postile.view.post_board.PostBoard.prototype.widthTo = function(u) { return (u*(75+14) - 14); };
+postile.view.post_board.PostBoard.prototype.heightTo = function(u) { return (u*(50+14) - 14); };
+postile.view.post_board.PostBoard.prototype.xPosTo = function(u) { return (u*(75+14) + this.canvasSize[0]/2); };
+postile.view.post_board.PostBoard.prototype.yPosTo = function(u) { return (u*(50+14) + this.canvasSize[1]/2); };
 //convent length to "unit length" of the grid from pixel. it is from the center grid points so margins and paddings are ignored.
-postile.view.post_board.PostBoard.prototype.xPosFrom = function(px) { return ((px - 7 - this.canvasSize[0]/2)/(75+30)); };
-postile.view.post_board.PostBoard.prototype.yPosFrom = function(px) { return ((px - 7 - this.canvasSize[1]/2)/(50+30)); };
+postile.view.post_board.PostBoard.prototype.xPosFrom = function(px) { return ((px - 7 - this.canvasSize[0]/2)/(75+14)); };
+postile.view.post_board.PostBoard.prototype.yPosFrom = function(px) { return ((px - 7 - this.canvasSize[1]/2)/(50+14)); };
 postile.view.post_board.direction_norm_to_css = { up: 'top', down: 'bottom', left: 'left', right: 'right' };
 
 postile.view.post_board.PostBoard.prototype.getVisibleArea = function(source) { //get visible area in the unit of "grid unit" //source is esxpected to be this.canvasCoord or [parseInt(this.canvas.style.left), parseInt(this.canvas.style.top)]

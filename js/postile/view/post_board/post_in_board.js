@@ -27,6 +27,8 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
     if (this.wrap_el) { goog.dom.removeNode(this.wrap_el); } //remove original element
     this.wrap_el = goog.dom.createDom('div', 'post_wrap');
     this.wrap_el.rel_data = this;
+    this.container_el = goog.dom.createDom('div', 'post_container');
+    goog.dom.appendChild(this.wrap_el, this.container_el);
     goog.dom.appendChild(this.board.canvas, this.wrap_el);
     this.wrap_el.style.left = this.board.xPosTo(this.coord_x) + 'px';
     this.wrap_el.style.top = this.board.yPosTo(this.coord_y) + 'px';
@@ -35,7 +37,7 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
 
     /* guanlun's code, quality cannot be guaranteed: */
     this.post_top_el = goog.dom.createDom("div", "post_top");
-    goog.dom.appendChild(this.wrap_el, this.post_top_el);
+    goog.dom.appendChild(this.container_el, this.post_top_el);
     this.post_title_el = goog.dom.createDom("span", "post_title");
     this.post_title_el.innerHTML = this.title;
     goog.dom.appendChild(this.post_top_el, this.post_title_el);
@@ -46,10 +48,10 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
 
     this.post_content_el = goog.dom.createDom("div", "post_content");
     this.post_content_el.innerHTML = postile.parseBBcode(this.text_content);
-    goog.dom.appendChild(this.wrap_el, this.post_content_el);
+    goog.dom.appendChild(this.container_el, this.post_content_el);
 
     this.post_bottom_el = goog.dom.createDom("div", "post_bottom");
-    goog.dom.appendChild(this.wrap_el, this.post_bottom_el);
+    goog.dom.appendChild(this.container_el, this.post_bottom_el);
 
     this.post_icon_container_el = goog.dom.createDom("div", "post_icon_container");
     goog.dom.appendChild(this.post_bottom_el, this.post_icon_container_el);
@@ -66,17 +68,13 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
         goog.events.listen(addIcon("edit"), goog.events.EventType.CLICK, function() { instance.edit(); });
         addIcon("delete");
     }
-
-    this.post_more_text_el = goog.dom.createDom("div", "post_more_text");
-    this.post_more_text_el.innerHTML = "MORE";
-    goog.dom.appendChild(this.post_bottom_el, this.post_more_text_el);
     /* end of guanlun's code and unstability */
 
-    this.content_el = goog.dom.createDom('div', 'post_content');
-    if (this.text_content == null) { this.innerHTML = '[Currently editing]'; }
+    // this.content_el = goog.dom.createDom('div', 'post_content');
+    // if (this.text_content == null) { this.innerHTML = '[Currently editing]'; }
     // if (this.title && this.title.length) { this.content_el.innerHTML = '<center><b>'+this.title+'</b></center>'; }
     // this.content_el.innerHTML += postile.parseBBcode(this.text_content);
-    goog.dom.appendChild(this.wrap_el, this.content_el);
+    //goog.dom.appendChild(this.wrap_el, this.content_el);
     if (animation) {
         postile.fx.effects.resizeIn(this.wrap_el);
     }  
@@ -84,7 +82,7 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
 
 postile.view.post_in_board.Post.prototype.disable = function() {
     this.disabled = true;
-    goog.dom.removeChildren(this.wrap_el);
+    goog.dom.removeChildren(this.container_el);
     goog.dom.classes.add(this.wrap_el, 'post_wrap_busy');
 }
 
@@ -134,9 +132,9 @@ postile.view.post_in_board.Post.prototype.edit = function() {
     this.disable();
     postile.ajax(['post','start_edit'], { post_id: this.id }, function(data) {
         var title = new goog.ui.LabelInput('Title (optional)');
-        goog.dom.removeChildren(instance.wrap_el);
-        title.render(instance.wrap_el);
-        var y_editor = new postile.WYSIWYF.Editor(instance.wrap_el, postile.parseBBcode(instance.text_content));
+        goog.dom.removeChildren(instance.container_el);
+        title.render(instance.container_el);
+        var y_editor = new postile.WYSIWYF.Editor(instance.container_el, postile.parseBBcode(instance.text_content));
         goog.dom.classes.add(title.getElement(), 'edit_title');
         if (instance.title && instance.title.length) { title.setValue(instance.title); }
         y_editor.container.style.height = instance.board.heightTo(instance.span_y) - 27 + 'px';
