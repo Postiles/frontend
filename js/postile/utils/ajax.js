@@ -103,12 +103,15 @@ postile.faye.init = function(callback) {
 postile.faye.subscribe = function(channel, listener) {
     var faye_action = function() {
         postile.faye.client.subscribe('/faye/'+channel, function(data) {
-            var json = null;
+            var json = data.data.message;
+            /*
+            var json = null;       
             try {
                 json = JSON.parse(data.data.message);
             } catch(e) {
                 postile.ajax.notifier.networkError("Faye response data damaged"); //json parsing failed
             }
+            */
             listener(data.data.status, json);
         });
     };

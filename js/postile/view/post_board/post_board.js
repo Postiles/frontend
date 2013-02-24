@@ -345,8 +345,7 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
     goog.events.listen(this.viewport, goog.events.EventType.SELECTSTART, function(){ return false; }); //disable text selecting
 
     /* guanlun hacking */
-    this.wrapper = goog.dom.getElement("wrapper");
-    goog.dom.appendChild(this.wrapper, this.viewport);
+    goog.dom.appendChild(goog.dom.getElement("wrapper"), this.viewport);
 
     this.search_input_field = goog.dom.getElement("search_input_field");
     goog.events.listen(this.search_input_field, goog.events.EventType.KEYUP, postile.view.post_board.handlers.search);
@@ -500,13 +499,13 @@ postile.view.post_board.PostBoard.prototype.moveCanvas = function(dx, dy) { //re
 }
 
 //convent length from "unit length" of the grid to pixel.
-postile.view.post_board.PostBoard.prototype.widthTo = function(u) { return (u*(75+30) - 30); };
-postile.view.post_board.PostBoard.prototype.heightTo = function(u) { return (u*(50+30) - 30); };
-postile.view.post_board.PostBoard.prototype.xPosTo = function(u) { return (u*(75+30) + this.canvasSize[0]/2); };
-postile.view.post_board.PostBoard.prototype.yPosTo = function(u) { return (u*(50+30) + this.canvasSize[1]/2); };
+postile.view.post_board.PostBoard.prototype.widthTo = function(u) { return (u*(75+14) - 14); };
+postile.view.post_board.PostBoard.prototype.heightTo = function(u) { return (u*(50+14) - 14); };
+postile.view.post_board.PostBoard.prototype.xPosTo = function(u) { return (u*(75+14) + this.canvasSize[0]/2); };
+postile.view.post_board.PostBoard.prototype.yPosTo = function(u) { return (u*(50+14) + this.canvasSize[1]/2); };
 //convent length to "unit length" of the grid from pixel. it is from the center grid points so margins and paddings are ignored.
-postile.view.post_board.PostBoard.prototype.xPosFrom = function(px) { return ((px - 7 - this.canvasSize[0]/2)/(75+30)); };
-postile.view.post_board.PostBoard.prototype.yPosFrom = function(px) { return ((px - 7 - this.canvasSize[1]/2)/(50+30)); };
+postile.view.post_board.PostBoard.prototype.xPosFrom = function(px) { return ((px - 7 - this.canvasSize[0]/2)/(75+14)); };
+postile.view.post_board.PostBoard.prototype.yPosFrom = function(px) { return ((px - 7 - this.canvasSize[1]/2)/(50+14)); };
 postile.view.post_board.direction_norm_to_css = { up: 'top', down: 'bottom', left: 'left', right: 'right' };
 
 postile.view.post_board.PostBoard.prototype.getVisibleArea = function(source) { //get visible area in the unit of "grid unit" //source is esxpected to be this.canvasCoord or [parseInt(this.canvas.style.left), parseInt(this.canvas.style.top)]
@@ -553,8 +552,16 @@ postile.view.post_board.PostBoard.prototype.renderArray = function(array) { //ad
 postile.view.post_board.PostBoard.prototype.fayeHandler = function(status, data) {
     switch (status) {
         case postile.view.post_board.faye_status.FINISH:
-        case postile.view.post_board.faye_status.START:
+            console.log(data, data.id, this.currentPosts);
+            this.currentPosts[data.id].enable();
             this.renderArray([data]);
+            break;
+        case postile.view.post_board.faye_status.START:
+            if (data.id in this.currentPosts) {
+                this.currentPosts[data.id].disable();
+            } else {
+                this.renderArray([data]);
+            }
             break;
     }
 }

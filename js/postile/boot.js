@@ -7,23 +7,26 @@ goog.require('postile.router');
 goog.require('postile.user');
 goog.require('postile.view.post_board');
 goog.require('postile.view.user_admin');
+goog.require('postile.ui');
 
 postile = { //the base of posTile frontend framework
     /*
     member functions
     */
+    dhost: window.location.hostname,
+    dport: 3000,
+    fayeLocation: null,
+    wrapper: null,
     staticResource: function(input) {
         return "/"+input.join("/");
     },
     dynamicResource: function(input) {
-        return "http://"+window.location.hostname+":"+postile.dport+"/"+input.join("/");
+        return "http://"+postile.dhost+":"+postile.dport+"/"+input.join("/");
     },
     getKeyHandler: function() {
         if(!postile.getKeyHandler.handler) { postile.getKeyHandler.handler = new goog.events.KeyHandler(document); }
         return postile.getKeyHandler.handler;
     },
-    fayeLocation: 'http://'+window.location.hostname+':9292/faye',
-    wrapper: null,
     init: function() {
         postile.wrapper = goog.dom.getElement('wrapper');
         postile.router_map();
@@ -34,20 +37,17 @@ postile = { //the base of posTile frontend framework
         postile.browser_compat.load();
     },
     router_map: function() {
-        postile.router.map('/test').to(function(){
-            document.body.innerHTML = '<center>Please use <a href="/test/3/300">/test/3/300</a> to enter demo now. Note that "3" can be changed to other topic IDs and 300 should be changed to real port number.</center>';
-        });
         postile.router.map('/test/:id/:port').to(function(){
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', '/post_board.html', false);
-            xhr.send();
-            if (xhr.status == 200) {
-                document.body.innerHTML = xhr.responseText;
-            }
-
+            window.location.href = '/test/'+this.params["id"]+'/'+window.location.hostname+'/'+this.params["port"];
+        });
+        postile.router.map('/test/:id/:domain/:port').to(function(){
+            postile.ui.load(document.body, postile.staticResource(['post_board.html']));
+            postile.dhost = this.params["domain"];
             postile.dport = this.params["port"];
+            postile.fayeLocation = 'http://'+postile.dhost+':9292/faye';
             window.pb = new postile.view.post_board.PostBoard(this.params["id"]);
         });
+        /*
         postile.router.map('/sign_up').to(function() {
             var xhr = new XMLHttpRequest();
             xhr.open('GET', '/sign_up.html', false);
@@ -65,6 +65,7 @@ postile = { //the base of posTile frontend framework
                 document.body.innerHTML = xhr.responseText;
             }
         });
+        */
     }
 };
 
