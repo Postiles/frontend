@@ -54,6 +54,7 @@ postile = { //the base of posTile frontend framework
             xhr.send();
             if (xhr.status == 200) {
                 document.body.innerHTML = xhr.responseText;
+                postile.view.user_admin.create_user.init();
             }
         });
         postile.router.map('/topic_board').to(function() {

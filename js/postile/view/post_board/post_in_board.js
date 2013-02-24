@@ -47,7 +47,7 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
     goog.dom.appendChild(this.post_top_el, this.post_title_el);
 
     this.post_author_el = goog.dom.createDom("span", "post_author");
-    this.post_author_el.innerHTML = this.author;
+    this.post_author_el.innerHTML = this.username;
     goog.dom.appendChild(this.post_top_el, this.post_author_el);
 
     this.post_content_el = goog.dom.createDom("div", "post_content");

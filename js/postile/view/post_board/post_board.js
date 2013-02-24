@@ -318,6 +318,7 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
     var keyHandler;
     var instance = this;
     postile.view.View.call(this);
+
     /* BEGINNING OF MEMBER DEFINITION */
     this.topic_id = topic_id;
     this.channel_str = null;
@@ -348,7 +349,7 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
     goog.dom.appendChild(this.wrapper, this.viewport);
 
     this.search_input_field = goog.dom.getElement("search_input_field");
-    goog.events.listen(this.search_input_field, goog.events.EventType.CHANGE, postile.view.post_board.handlers.search);
+    goog.events.listen(this.search_input_field, goog.events.EventType.KEYUP, postile.view.post_board.handlers.search);
 
     this.search_button = goog.dom.getElement("search_button");
 
