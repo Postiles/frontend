@@ -467,10 +467,12 @@ html, body {
 .post_preview {
   position: absolute;
   opacity: 0.6;
-  padding: 5px;
   border: 3px dashed white;
   border-radius: 4px;
+  box-sizing: border-box;
   z-index: 1;
+  -webkit-transition-duration: 0.5s;
+  -webkit-transition-property: left, top, width, height;
   display: none; }
 
 .post_preview_origin_spot {

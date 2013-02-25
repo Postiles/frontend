@@ -190,7 +190,7 @@ postile.view.post_board.handlers.arrow_control_mouseout = function() {
 
 postile.view.post_board.handlers.resize = function(instance){ //called on window.resize
     instance.canvas.style.display = 'block'; 
-    var new_viewport_size = [window.innerWidth,  window.innerHeight];
+    var new_viewport_size = [window.innerWidth,  window.innerHeight - 45]; //45 is the menu bar height
     if (!instance.canvasCoord) { //first time (initialize)
         instance.canvasCoord = [(new_viewport_size[0] - instance.canvasSize[0])/2, (new_viewport_size[1] - instance.canvasSize[1])/2];
     } else { //window resize
@@ -439,7 +439,7 @@ postile.view.post_board.PostBoard.prototype.on_exit = function() {
 }
 
 postile.view.post_board.PostBoard.prototype.canvasOutBoundAnimation = function(){ //called while the animation iteration
-    this.canvas.style.boxShadow = this.shadowCoord[0]/10+'px '+this.shadowCoord[1]/10+'px '+Math.sqrt(Math.pow(this.shadowCoord[0], 2)+Math.pow(this.shadowCoord[1], 2))/10+'px 0 rgba(255, 255, 255, 0.75) inset';
+    this.canvas.style.boxShadow = this.shadowCoord[0]/10+'px '+this.shadowCoord[1]/10+'px '+Math.sqrt(Math.pow(this.shadowCoord[0], 2)+Math.pow(this.shadowCoord[1], 2))/10+'px 0 rgba(153, 153, 153, 0.75) inset';
 };
 
 postile.view.post_board.PostBoard.prototype.preMoveCanvas = function(direction) { //return true only when it's movable
