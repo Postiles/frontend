@@ -82,7 +82,7 @@ postile.view.user_admin.create_user = {
                 confirm_password_valid.innerHTML = data.message;
             };
 
-            postile.ajax(['user', 'check_confirm_password_valid'], 
+            postile.ajax(['user', 'check_password_confirm'], 
                     { password: password, confirm_password: confirm_password }, onsuccess, onfailure);
             break;
         }
@@ -99,8 +99,23 @@ postile.view.user_admin.create_user = {
         var password = password_input.value;
         var confirm_password = confirm_password_input.value;
 
-        if (username == "" || email == "" || password == "" || confirm_password == "") {
-        }
+        var onsuccess = function(data) {
+            alert("account successfully created!");
+        };
 
+        var onfailure = function(data) {
+            alert("account cannot be created!");
+        };
+
+        if (username != "" && email != "" && password != "" 
+                && confirm_password != "" && password == confirm_password) {
+            postile.ajax(['user', 'create'],
+                    {
+                        username: username, 
+                        email: email, 
+                        password: password, 
+                        confirm_password: confirm_password
+                    }, onsuccess, onfailure);
+        }
     },
 }

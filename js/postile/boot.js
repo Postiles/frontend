@@ -18,7 +18,7 @@ postile = { //the base of posTile frontend framework
     fayeLocation: null,
     wrapper: null,
     staticResource: function(input) {
-        return "/"+input.join("/");
+        return "/templates/"+input.join("/");
     },
     dynamicResource: function(input) {
         return "http://"+postile.dhost+":"+postile.dport+"/"+input.join("/");
@@ -47,25 +47,10 @@ postile = { //the base of posTile frontend framework
             postile.fayeLocation = 'http://'+postile.dhost+':9292/faye';
             window.pb = new postile.view.post_board.PostBoard(this.params["id"]);
         });
-        /*
         postile.router.map('/sign_up').to(function() {
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', '/sign_up.html', false);
-            xhr.send();
-            if (xhr.status == 200) {
-                document.body.innerHTML = xhr.responseText;
-                postile.view.user_admin.create_user.init();
-            }
+            postile.ui.load(document.body, postile.staticResource(['sign_up.html']));
+            postile.view.user_admin.create_user.init();
         });
-        postile.router.map('/topic_board').to(function() {
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', '/topic_board.html', false);
-            xhr.send();
-            if (xhr.status == 200) {
-                document.body.innerHTML = xhr.responseText;
-            }
-        });
-        */
     }
 };
 
