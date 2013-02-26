@@ -325,6 +325,8 @@ html, body {
 .post_delete_icon {
   background-image: url("../images/delete_icon.png"); }
 
+/*
+  
 .post_box {
   z-index: 99;
   position: relative;
@@ -425,6 +427,77 @@ html, body {
   margin-top: 2px;
   padding-left: 3px;
   padding-right: 3px; }
+  
+*/
+
+/* begin: inline comment from fei */
+
+inl_comment-wrapper {
+  font-size: 12px;
+  position: absolute;
+  width: 230px; }
+  
+.inl_comment-wrapper .input_up {
+  background: url(../images/inline_input_19_30.png) no-repeat;
+  height: 19px;
+  width: 230px; }
+
+.inl_comment-wrapper .input_main {
+  margin-left: 10px;
+  margin-top: -14px;
+  background: #3d7d8e;
+  outline: none;
+  padding: 0 8px;
+  color: #f5f5f5;
+  width: 204px; }
+
+.inl_comment-wrapper .input_low {
+  background: url(../images/inline_input_19_30.png) no-repeat;
+  background-position: 0 -19px;
+  height: 27px;
+  width: 230px;
+  margin-top: -5px; }
+
+.inl_comment-wrapper .input_low .nav_up {
+  margin-top: 11px;
+  margin-left: 10px;
+  width: 110px;
+  height: 15px;
+  float: left; }
+  
+.inl_comment-wrapper .input_low .nav_down {
+  margin-top: 11px;
+  width: 110px;
+  height: 15px;
+  float: right; }
+  
+.inl_comment-wrapper .inl_comment {
+  margin-left: 10px;
+  background: #f1f1f6; }
+
+.inl_comment-wrapper .inl_comment .past_comment {
+  margin-left: 8px;
+  margin-right: 8px; }
+ 
+.inl_comment-wrapper .inl_comment .past_comment .name {
+  color: #024d61;
+  float: left;
+  margin-top: 6px;
+  margin-bottom: 6px; }
+
+.inl_comment-wrapper .inl_comment .past_comment .time {
+  float: right;
+  color: #000;
+  margin-top: 6px; }
+
+.inl_comment-wrapper .inl_comment .past_comment .comment {
+  clear: both;
+  padding-bottom: 6px; }
+
+.inl_comment-wrapper .inl_comment .past_comment .main-color {
+  color: #024d61; }
+
+/* end */
 
 .canvas_viewport {
   overflow: hidden;
@@ -471,7 +544,7 @@ html, body {
   border-radius: 4px;
   box-sizing: border-box;
   z-index: 1;
-  -webkit-transition-duration: 0.5s;
+  -webkit-transition-duration: 0.3s;
   -webkit-transition-property: left, top, width, height;
   display: none; }
 
@@ -566,9 +639,10 @@ html, body {
 /*Editor* */
 .edit_title {
   width: 100%;
-  height: 15px;
-  margin: 0;
-  padding: 4px 0;
   border: 0 none;
-  margin-bottom: 4px;
+  color: #024d61;
+  font-size: 11pt; 
+  font-family: OxygenBold;
+  outline: none;
+  background: transparent;
   display: block; }
