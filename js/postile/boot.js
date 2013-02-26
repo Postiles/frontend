@@ -18,7 +18,7 @@ postile = { //the base of posTile frontend framework
     fayeLocation: null,
     wrapper: null,
     staticResource: function(input) {
-        return "/templates/"+input.join("/");
+        return "/" + input.join("/");
     },
     dynamicResource: function(input) {
         return "http://"+postile.dhost+":"+postile.dport+"/"+input.join("/");
@@ -50,6 +50,9 @@ postile = { //the base of posTile frontend framework
         postile.router.map('/sign_up').to(function() {
             postile.ui.load(document.body, postile.staticResource(['sign_up.html']));
             postile.view.user_admin.create_user.init();
+        });
+        postile.router.map('/login').to(function() {
+            postile.ui.load(document.body, postile.staticResource(['login.html']));
         });
     }
 };
