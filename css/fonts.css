@@ -3,7 +3,17 @@
     src: url('../fonts/Oxygen-Regular.ttf');
 }
 
-@font-face  {
+@font-face {
     font-family: OxygenBold;
     src: url('../fonts/Oxygen-Bold.ttf');
+}
+
+@font-face {
+    font-family: OxygenLight;
+    src: url('../fonts/Oxygen-Light.ttf');
+}
+
+@font-face {
+    font-family: RobotoRegular;
+    src: url('../fonts/Roboto-Regular.ttf');
 }
