@@ -8,7 +8,7 @@ html, body {
 
 #mid-container {
   margin: 0 auto;
-  height: 500px;
+  height: 100%;
   width: 450px;
   background: -webkit-linear-gradient(left, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.15));
   z-index: 0; }

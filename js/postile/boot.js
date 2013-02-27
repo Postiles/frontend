@@ -6,7 +6,8 @@ goog.require('goog.events');
 goog.require('postile.router');
 goog.require('postile.user');
 goog.require('postile.view.post_board');
-goog.require('postile.view.user_admin');
+goog.require('postile.view.create_user');
+goog.require('postile.view.profile');
 goog.require('postile.ui');
 
 postile = { //the base of posTile frontend framework
@@ -49,10 +50,14 @@ postile = { //the base of posTile frontend framework
         });
         postile.router.map('/sign_up').to(function() {
             postile.ui.load(document.body, postile.staticResource(['sign_up.html']));
-            postile.view.user_admin.create_user.init();
+            postile.view.create_user.init();
         });
         postile.router.map('/login').to(function() {
             postile.ui.load(document.body, postile.staticResource(['login.html']));
+        });
+        postile.router.map('/profile/:user_id').to(function() {
+            postile.ui.load(document.body, postile.staticResource(['profile.html']));
+            postile.view.profile.get_profile(this.params["user_id"]);
         });
     }
 };
