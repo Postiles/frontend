@@ -8,6 +8,7 @@ goog.addDependency('../postile/router/Router.js', ['postile.router'], []);
 goog.addDependency('../postile/user/user.js', ['postile.user'], ['postile.view.login']);
 goog.addDependency('../postile/utils/ajax.js', ['postile.ajax', 'postile.faye'], ['goog.net.jsloader']);
 goog.addDependency('../postile/utils/debbcode.js', ['postile.debbcode'], ['goog.string']);
+goog.addDependency('../postile/utils/dom.js', ['postile.dom'], []);
 goog.addDependency('../postile/utils/events.js', ['postile.events'], ['goog.events']);
 goog.addDependency('../postile/utils/string.js', ['postile.string'], []);
 goog.addDependency('../postile/utils/ui_misc.js', ['postile.ui'], []);
@@ -16,7 +17,7 @@ goog.addDependency('../postile/utils/uploader.js', ['postile.uploader'], ['goog.
 goog.addDependency('../postile/utils/wysiwyf.js', ['postile.WYSIWYF'], []);
 goog.addDependency('../postile/view/pop/login.js', ['postile.view.login', 'postile.view.login.handlers'], ['goog.dom', 'goog.events', 'goog.ui.CustomButton', 'goog.ui.LabelInput', 'postile.user', 'postile.view']);
 goog.addDependency('../postile/view/post_board/post_board.js', ['postile.view.post_board', 'postile.view.post_board.handlers'], ['goog.dom', 'goog.events', 'goog.events.KeyCodes', 'goog.events.KeyHandler', 'goog.ui.Textarea', 'postile.ajax', 'postile.events', 'postile.faye', 'postile.fx', 'postile.fx.effects', 'postile.toast', 'postile.view', 'postile.view.post_in_board']);
-goog.addDependency('../postile/view/post_board/post_in_board.js', ['postile.view.post_in_board'], ['goog.dom', 'goog.dom.classes', 'goog.events', 'goog.object', 'goog.ui.LabelInput', 'postile.WYSIWYF', 'postile.debbcode', 'postile.string', 'postile.toast']);
+goog.addDependency('../postile/view/post_board/post_in_board.js', ['postile.view.post_in_board'], ['goog.dom', 'goog.dom.classes', 'goog.events', 'goog.object', 'goog.ui.LabelInput', 'postile.WYSIWYF', 'postile.debbcode', 'postile.dom', 'postile.string', 'postile.toast']);
 goog.addDependency('../postile/view/topic_list/topic_list.js', ['postile.view.topic_list'], ['postile.view']);
 goog.addDependency('../postile/view/user_admin/create_user.js', ['postile.view.create_user'], ['goog.dom', 'goog.events', 'postile.view']);
 goog.addDependency('../postile/view/user_admin/profile.js', ['postile.view.profile'], ['goog.dom', 'goog.events', 'postile.view']);

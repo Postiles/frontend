@@ -110,7 +110,7 @@ postile.WYSIWYF = {
         //编辑器总容器
         editor.container = document.createElement('div');
         //编辑器菜单
-        editor.container.style.border = '1px solid #999';
+        //editor.container.style.border = '1px solid #999';
         editor.eMenu = document.createElement('div');
         editor.eMenu.style.width = '171px';
         editor.eMenu.style.height = '25px';
@@ -121,6 +121,7 @@ postile.WYSIWYF = {
         editor.ifmElement.style.width = '100%';
         editor.ifmElement.style.height = '100%';
         editor.ifmElement.frameBorder = '0';
+        editor.ifmElement.allowTransparency = true;
         editor.container.appendChild(editor.eMenu);
         editor.container.appendChild(editor.ifmElement);
         parent_el.appendChild(editor.container);
@@ -133,8 +134,19 @@ postile.WYSIWYF = {
                 editor.ifmWindow = editor.ifmDocument.getParentNode();
             }
             editor.ifmDocument.body.innerHTML = default_value; //初始化时将textarea内的内容复制到iframe中
-            editor.ifmDocument.body.style.fontSize = '15px';
-            editor.ifmDocument.body.style.backgroundColor = '#FFF';
+            editor.ifmDocument.body.style.background = 'transparent';
+            /* styling */
+            var fileref = document.createElement("link")
+            fileref.setAttribute("rel", "stylesheet")
+            fileref.setAttribute("type", "text/css")
+            fileref.setAttribute("href", "/css/fonts.css");
+            editor.ifmDocument.body.appendChild(fileref);               
+            editor.ifmDocument.body.style.fontSize = '10pt';
+            editor.ifmDocument.body.style.fontFamily = 'Oxygen';
+            editor.ifmDocument.body.style.padding = '0'; editor.ifmDocument.body.style.margin = '0';
+            editor.ifmDocument.documentElement.style.padding = '0'; editor.ifmDocument.documentElement.style.margin = '0';
+            editor.ifmElement.style.marginTop = '12px';
+            /* end of styling */
             editor.ifmDocument.designMode = 'on';
             var decItv;
             editor.ifmDocument.body.addEventListener('focus', function() {
