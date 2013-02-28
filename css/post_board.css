@@ -305,6 +305,7 @@ html, body {
   width: 13px;
   height: 13px;
   background-repeat: no-repeat;
+  position: relative;
   background-position: center; }
 
 .post_like_icon {
@@ -432,7 +433,7 @@ html, body {
 
 /* begin: inline comment from fei */
 
-inl_comment-wrapper {
+.inl_comment-wrapper {
   font-size: 12px;
   position: absolute;
   width: 230px; }
@@ -473,6 +474,7 @@ inl_comment-wrapper {
   
 .inl_comment-wrapper .inl_comment {
   margin-left: 10px;
+  width: 220px;
   background: #f1f1f6; }
 
 .inl_comment-wrapper .inl_comment .past_comment {

@@ -1,6 +1,7 @@
 goog.provide('postile.view.post_in_board');
 
 goog.require('goog.dom');
+goog.require('goog.style');
 goog.require('postile.dom');
 goog.require('goog.events');
 goog.require('goog.object');
@@ -23,6 +24,7 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
     var button;
     var instance = this;
     if (object) { goog.object.extend(this, object); }
+    if (this.id == 1) { window.xxx = this; } // 4 debug use
     this.coord_x_end = this.coord_x + this.span_x; //precalculate this two so that future intersect test will be faster
     this.coord_y_end = this.coord_y + this.span_y;
     if (this.wrap_el) { goog.dom.removeNode(this.wrap_el); } //remove original element
@@ -182,8 +184,8 @@ postile.view.post_in_board.InlineCommentsBlock = function(postObj) {
     goog.dom.appendChild(this.wrap_el, this.comments_container);
     postile.ajax(['post','get_inline_comments'], { post_id: postObj.id }, function(data) {
         for (var i in data.message) { instance.renderComment(data.message[i]); }
-        console.log(postObj.container_el);
-        postile.dom.getDescendantByClass(postObj.container_el, 'post_comment_icon').appendChild(instance.wrap_el);
+        goog.style.setPosition(instance.wrap_el, goog.style.getRelativePosition(postile.dom.getDescendantByClass(postObj.container_el, 'post_comment_icon'), postObj.board.canvas));
+        goog.dom.appendChild(postObj.board.canvas, instance.wrap_el);
     });
 }
 

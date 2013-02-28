@@ -9,7 +9,7 @@ postile.dom.getDescendantByClass = function(element, className) {
         if (goog.dom.classes.has(cldn[i], className)) { 
             return cldn[i];
         } else {
-            tried = postile.dom.getDescendantByClass(className, cldn[i]);
+            tried = postile.dom.getDescendantByClass(cldn[i], className);
             if (tried) { return tried; }
         }
     }
