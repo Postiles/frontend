@@ -221,10 +221,10 @@ postile.view.post_in_board.InlineCommentsBlock.prototype.renderComment = functio
     var comment_container = goog.dom.createDom("div", "past_comment");
     var tmp_el;
     tmp_el = goog.dom.createDom("p", "name");
-    tmp_el.innerHTML = single_comment_data.user_name + ' Says: ';
+    tmp_el.innerHTML = single_comment_data.username + ' Says: ';
     goog.dom.appendChild(comment_container, tmp_el);
     tmp_el = goog.dom.createDom("p", "time");
-    tmp_el.innerHTML = single_comment_data.created_at;
+    tmp_el.innerHTML = postile.date(single_comment_data.created_at, 'inline');
     goog.dom.appendChild(comment_container, tmp_el);
     tmp_el = goog.dom.createDom("p", "comment");
     tmp_el.innerHTML = (single_comment_data.reply_to ? '<span class="main-color">' + single_comment_data.reply_to + '</span>' : '') + single_comment_data.content;

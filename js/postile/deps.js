@@ -4,14 +4,14 @@ goog.addDependency('../postile/boot.js', ['postile'], ['goog.events', 'goog.even
 goog.addDependency('../postile/browser_compat.js', ['postile.browser_compat'], ['goog.net.Cookies']);
 goog.addDependency('../postile/fx/effects.js', ['postile.fx.effects'], ['postile.browser_compat', 'postile.fx']);
 goog.addDependency('../postile/fx/fx.js', ['postile.fx'], []);
-goog.addDependency('../postile/locale.js', ['postile.locale'], []);
+goog.addDependency('../postile/locale.js', ['postile.locale.en', 'postile.locale.zh_CN', 'postile.locale.zh_TW'], []);
 goog.addDependency('../postile/router/Router.js', ['postile.router'], []);
 goog.addDependency('../postile/user/user.js', ['postile.user'], ['postile.view.login']);
 goog.addDependency('../postile/utils/ajax.js', ['postile.ajax', 'postile.faye'], ['goog.net.jsloader']);
 goog.addDependency('../postile/utils/debbcode.js', ['postile.debbcode'], ['goog.string']);
 goog.addDependency('../postile/utils/dom.js', ['postile.dom'], ['goog.dom.classes']);
 goog.addDependency('../postile/utils/events.js', ['postile.events'], ['goog.events']);
-goog.addDependency('../postile/utils/i18n.js', ['postile.i18n'], ['goog.locale', 'postile.locale']);
+goog.addDependency('../postile/utils/i18n.js', ['postile.i18n'], ['goog.locale', 'postile.locale.en']);
 goog.addDependency('../postile/utils/string.js', ['postile.string'], []);
 goog.addDependency('../postile/utils/ui_misc.js', ['postile.ui'], []);
 goog.addDependency('../postile/utils/ui_toast.js', ['postile.toast'], ['goog.dom', 'goog.events']);
