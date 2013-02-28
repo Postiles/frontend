@@ -176,17 +176,19 @@ postile.view.post_in_board.InlineCommentsBlock = function(postObj) {
     goog.dom.appendChild(this.wrap_el, this.text_input);
     tmp_el = goog.dom.createDom("div", "input_low");
     goog.dom.appendChild(this.wrap_el, tmp_el);
-    goog.dom.appendChild(this.tmp_el, goog.dom.createDom("div", "nav_up"));
-    goog.dom.appendChild(this.tmp_el, goog.dom.createDom("div", "nav_down"));
+    goog.dom.appendChild(tmp_el, goog.dom.createDom("div", "nav_up"));
+    goog.dom.appendChild(tmp_el, goog.dom.createDom("div", "nav_down"));
     this.comments_container = goog.dom.createDom("div", "inl_comment");
     goog.dom.appendChild(this.wrap_el, this.comments_container);
     postile.ajax(['post','get_inline_comments'], { post_id: postObj.id }, function(data) {
-        for (var i in data) { instance.renderComment(data[i]); }
-        postile.dom.getDescendantByClass(postObj.container_el, 'post_comment_icon').appendChild(this.wrap_el);
-    }
+        for (var i in data.message) { instance.renderComment(data.message[i]); }
+        console.log(postObj.container_el);
+        postile.dom.getDescendantByClass(postObj.container_el, 'post_comment_icon').appendChild(instance.wrap_el);
+    });
 }
 
 postile.view.post_in_board.InlineCommentsBlock.prototype.renderComment = function(single_comment_data) {
+    console.log(single_comment_data);
     var comment_container = goog.dom.createDom("div", "past_comment");
     var tmp_el;
     tmp_el = goog.dom.createDom("p", "name");

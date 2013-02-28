@@ -8,7 +8,7 @@ goog.addDependency('../postile/router/Router.js', ['postile.router'], []);
 goog.addDependency('../postile/user/user.js', ['postile.user'], ['postile.view.login']);
 goog.addDependency('../postile/utils/ajax.js', ['postile.ajax', 'postile.faye'], ['goog.net.jsloader']);
 goog.addDependency('../postile/utils/debbcode.js', ['postile.debbcode'], ['goog.string']);
-goog.addDependency('../postile/utils/dom.js', ['postile.dom'], []);
+goog.addDependency('../postile/utils/dom.js', ['postile.dom'], ['goog.dom.classes']);
 goog.addDependency('../postile/utils/events.js', ['postile.events'], ['goog.events']);
 goog.addDependency('../postile/utils/string.js', ['postile.string'], []);
 goog.addDependency('../postile/utils/ui_misc.js', ['postile.ui'], []);
