@@ -41,6 +41,7 @@ postile = { //the base of posTile frontend framework
         postile.router.map('/test/:id/:port').to(function(){
             window.location.href = '/test/'+this.params["id"]+'/'+window.location.hostname+'/'+this.params["port"];
         });
+
         postile.router.map('/test/:id/:domain/:port').to(function(){
             postile.ui.load(document.body, postile.staticResource(['post_board.html']));
             postile.dhost = this.params["domain"];
@@ -48,15 +49,22 @@ postile = { //the base of posTile frontend framework
             postile.fayeLocation = 'http://'+postile.dhost+':9292/faye';
             window.pb = new postile.view.post_board.PostBoard(this.params["id"]);
         });
+
         postile.router.map('/sign_up').to(function() {
             postile.ui.load(document.body, postile.staticResource(['sign_up.html']));
             postile.view.create_user.init();
         });
+
         postile.router.map('/login').to(function() {
             postile.ui.load(document.body, postile.staticResource(['login.html']));
         });
+
+        postile.router.map('/profile/:user_id/edit').to(function() {
+            postile.ui.load(document.body, postile.staticResource(['profile_edit.html']));
+        });
+
         postile.router.map('/profile/:user_id').to(function() {
-            postile.ui.load(document.body, postile.staticResource(['profile.html']));
+            postile.ui.load(document.body, postile.staticResource(['profile_display.html']));
             postile.view.profile.get_profile(this.params["user_id"]);
         });
     }
