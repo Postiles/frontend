@@ -91,12 +91,12 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
 postile.view.post_in_board.Post.prototype.disable = function() {
     this.disabled = true;
     goog.dom.removeChildren(this.container_el);
-    goog.dom.classes.add(this.wrap_el, 'post_wrap_busy');
+    goog.dom.classes.add(this.wrap_el, 'busy');
 }
 
 postile.view.post_in_board.Post.prototype.enable = function() {
     this.disabled = false;
-    goog.dom.classes.remove(this.wrap_el, 'post_wrap_busy');
+    goog.dom.classes.remove(this.wrap_el, 'busy');
 }
 
 postile.view.post_in_board.Post.prototype.submitEdit = function(to_submit) {
@@ -188,11 +188,13 @@ postile.view.post_in_board.InlineCommentsBlock = function(postObj) {
             instance.text_input.innerHTML = '';
             goog.dom.classes.remove(instance.text_input, 'inactive');
         } else if (e.keyCode == goog.events.KeyCodes.ENTER) {
-            
+            goog.dom.classes.add(instance.text_input, 'busy');
+            postile.ajax(['post','inline_comment'], { post_id: postObj.id, content: instance.text_input.innerHTML }, function(data) {
+                new postile.toast.Toast(5, "Inline comment posted.");
+            });
         }
     });
     goog.events.listen(this.text_input, goog.events.EventType.BLUR, function(){
-        console.log(instance.text_input.innerHTML);
         if (goog.string.trim(postile.string.strip_tags(instance.text_input.innerHTML)) == '') {
             instance.text_input.innerHTML = postile._('inline_comment_prompt');
             goog.dom.classes.add(instance.text_input, 'inactive');

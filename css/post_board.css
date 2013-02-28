@@ -519,8 +519,8 @@ html, body {
 .post_content {
   width: 100%; }
 
-.post_wrap_busy {
-  background-image: url(/images/busy.gif);
+.busy {
+  background-image: url(/images/busy.gif) !important;
   background-repeat: repeat; }
 
 /*Mask* */
