@@ -442,7 +442,7 @@ html, body {
   background: url(../images/inline_input_19_30.png) no-repeat;
   height: 19px;
   width: 230px; }
-
+  
 .inl_comment-wrapper .input_main {
   margin-left: 10px;
   margin-top: -14px;
@@ -450,7 +450,11 @@ html, body {
   outline: none;
   padding: 0 8px;
   color: #f5f5f5;
+  -webkit-user-select: text;
   width: 204px; }
+  
+.inl_comment-wrapper .input_main.inactive {
+  color: #ccc; }
 
 .inl_comment-wrapper .input_low {
   background: url(../images/inline_input_19_30.png) no-repeat;
@@ -475,7 +479,7 @@ html, body {
 .inl_comment-wrapper .inl_comment {
   margin-left: 10px;
   width: 220px;
-  background: #f1f1f6; }
+  background: #c8e5ed; }
 
 .inl_comment-wrapper .inl_comment .past_comment {
   margin-left: 8px;
@@ -503,6 +507,7 @@ html, body {
 
 .canvas_viewport {
   overflow: hidden;
+  -webkit-user-select: none;
   position: relative; }
 
 .canvas {

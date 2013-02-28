@@ -5,10 +5,13 @@ goog.require('goog.style');
 goog.require('postile.dom');
 goog.require('goog.events');
 goog.require('goog.object');
+goog.require('goog.string');
 goog.require('goog.dom.classes');
 goog.require('postile.toast');
 goog.require('goog.ui.LabelInput');
+goog.require('postile.i18n');
 goog.require('postile.string');
+goog.require('goog.events.KeyHandler');
 goog.require('postile.WYSIWYF');
 goog.require('postile.debbcode');
 
@@ -65,7 +68,9 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
         return icon;
     }
     
-    addIcon("like"); addIcon("share"); addIcon("link"); addIcon("comment");
+    addIcon("like"); addIcon("share"); addIcon("link"); 
+    
+    goog.events.listen(addIcon("comment"), goog.events.EventType.CLICK, function() { instance.inline_comments_block = new postile.view.post_in_board.InlineCommentsBlock(instance); });
     
     if (this.user_id == localStorage.postile_user_id) { //created by current user
         goog.events.listen(addIcon("edit"), goog.events.EventType.CLICK, function() { instance.edit(); });
@@ -143,7 +148,7 @@ postile.view.post_in_board.Post.prototype.edit = function() {
     var content_style = getComputedStyle(instance.post_content_el);
     this.disable();
     postile.ajax(['post','start_edit'], { post_id: this.id }, function(data) {
-        var title = new goog.ui.LabelInput('Title (optional)');
+        var title = new goog.ui.LabelInput(postile._('post_title_prompt'));
         goog.dom.removeChildren(instance.container_el);
         title.render(instance.container_el);
         var y_editor = new postile.WYSIWYF.Editor(instance.container_el, postile.parseBBcode(instance.text_content), content_style);
@@ -176,6 +181,24 @@ postile.view.post_in_board.InlineCommentsBlock = function(postObj) {
     goog.dom.appendChild(this.wrap_el, goog.dom.createDom("div", "input_up"));
     this.text_input = goog.dom.createDom("div", "input_main");
     goog.dom.appendChild(this.wrap_el, this.text_input);
+    this.text_input.innerHTML = postile._('inline_comment_prompt');
+    goog.dom.classes.add(this.text_input, 'inactive');
+    goog.events.listen(new goog.events.KeyHandler(this.text_input), goog.events.KeyHandler.EventType.KEY, function(e) {
+        if (instance.text_input.innerHTML == postile._('inline_comment_prompt')) {
+            instance.text_input.innerHTML = '';
+            goog.dom.classes.remove(instance.text_input, 'inactive');
+        } else if (e.keyCode == goog.events.KeyCodes.ENTER) {
+            
+        }
+    });
+    goog.events.listen(this.text_input, goog.events.EventType.BLUR, function(){
+        console.log(instance.text_input.innerHTML);
+        if (goog.string.trim(postile.string.strip_tags(instance.text_input.innerHTML)) == '') {
+            instance.text_input.innerHTML = postile._('inline_comment_prompt');
+            goog.dom.classes.add(instance.text_input, 'inactive');
+        }
+    });
+    this.text_input.contentEditable = "true";
     tmp_el = goog.dom.createDom("div", "input_low");
     goog.dom.appendChild(this.wrap_el, tmp_el);
     goog.dom.appendChild(tmp_el, goog.dom.createDom("div", "nav_up"));
@@ -184,13 +207,15 @@ postile.view.post_in_board.InlineCommentsBlock = function(postObj) {
     goog.dom.appendChild(this.wrap_el, this.comments_container);
     postile.ajax(['post','get_inline_comments'], { post_id: postObj.id }, function(data) {
         for (var i in data.message) { instance.renderComment(data.message[i]); }
-        goog.style.setPosition(instance.wrap_el, goog.style.getRelativePosition(postile.dom.getDescendantByClass(postObj.container_el, 'post_comment_icon'), postObj.board.canvas));
-        goog.dom.appendChild(postObj.board.canvas, instance.wrap_el);
+        var coord = goog.style.getRelativePosition(postile.dom.getDescendantByClass(postObj.container_el, 'post_comment_icon'), postObj.wrap_el);
+        coord.x += 18; coord.y -= 12; //magic number based on 目测
+        goog.style.setPosition(instance.wrap_el, coord);
+        goog.dom.appendChild(postObj.wrap_el, instance.wrap_el);
+        postObj.wrap_el.style.zIndex = (++postObj.board.maxZIndex);
     });
 }
 
 postile.view.post_in_board.InlineCommentsBlock.prototype.renderComment = function(single_comment_data) {
-    console.log(single_comment_data);
     var comment_container = goog.dom.createDom("div", "past_comment");
     var tmp_el;
     tmp_el = goog.dom.createDom("p", "name");

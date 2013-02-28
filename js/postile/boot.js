@@ -24,9 +24,9 @@ postile = { //the base of posTile frontend framework
     dynamicResource: function(input) {
         return "http://"+postile.dhost+":"+postile.dport+"/"+input.join("/");
     },
-    getKeyHandler: function() {
-        if(!postile.getKeyHandler.handler) { postile.getKeyHandler.handler = new goog.events.KeyHandler(document); }
-        return postile.getKeyHandler.handler;
+    getGlobalKeyHandler: function() {
+        if(!postile.getGlobalKeyHandler.handler) { postile.getGlobalKeyHandler.handler = new goog.events.KeyHandler(document); }
+        return postile.getGlobalKeyHandler.handler;
     },
     init: function() {
         postile.wrapper = goog.dom.getElement('wrapper');
@@ -62,4 +62,4 @@ postile = { //the base of posTile frontend framework
     }
 };
 
-postile.getKeyHandler.handler = null;
+postile.getGlobalKeyHandler.handler = null;

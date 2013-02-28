@@ -40,10 +40,11 @@ postile.view.post_board.handlers.canvas_mousedown = function(e) {
 };
 
 postile.view.post_board.handlers.canvas_mouseup = function(e) { 
+    var post_board = this.rel_data;
     if (!e.isButton(0)) { return; }
     if (!this.rel_data.mousedownCoord) { return; } //not legally mouse-downed
-    var post_board = this.rel_data;
     post_board.disableMovingCanvas = false;
+    if (e.clientX == post_board.mousedownCoord[0] && e.clientY == post_board.mousedownCoord[1]) { post_board.mousedownCoord = null; return; }
     post_board.mousedownCoord = null;
     post_board.canvasCoord = [parseFloat(this.style.left),parseFloat(this.style.top)];
     //animation of outbound shadow
@@ -339,10 +340,10 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
     this.right = goog.dom.createDom('div', 'right_clicker'); //right click display
     this.currentSubscribeArea = null; //a valid area for which we've got all data we need and keep refreshing from the server
     this.window_resize_event_handler = new postile.events.EventHandler(window, goog.events.EventType.RESIZE, function() { postile.view.post_board.handlers.resize(instance); });
-    this.keyboard_event_handler = new postile.events.EventHandler(postile.getKeyHandler(), goog.events.KeyHandler.EventType.KEY, function(e) { postile.view.post_board.handlers.keypress(instance, e); });
+    this.keyboard_event_handler = new postile.events.EventHandler(postile.getGlobalKeyHandler(), goog.events.KeyHandler.EventType.KEY, function(e) { postile.view.post_board.handlers.keypress(instance, e); });
+    this.maxZIndex = 0; //max zIndex of posts currently
     /* END OF MEMBER DEFINITION */
-    postile.browser_compat.setCss(this.viewport, 'userSelect', 'none');
-    goog.events.listen(this.viewport, goog.events.EventType.SELECTSTART, function(){ return false; }); //disable text selecting
+    goog.events.listen(this.viewport, goog.events.EventType.SELECTSTART, function(){ return false; }); //disable text selecting, for ie
 
     /* guanlun hacking */
     goog.dom.appendChild(goog.dom.getElement("wrapper"), this.viewport);
