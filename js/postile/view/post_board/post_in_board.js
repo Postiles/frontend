@@ -14,6 +14,7 @@ goog.require('postile.string');
 goog.require('goog.events.KeyHandler');
 goog.require('postile.WYSIWYF');
 goog.require('postile.debbcode');
+goog.require('postile.fx.effects');
 
 postile.view.post_in_board.Post = function(object, board) {
     this.board = board;
@@ -181,8 +182,11 @@ postile.view.post_in_board.InlineCommentsBlock = function(postObj) {
     goog.dom.appendChild(this.wrap_el, goog.dom.createDom("div", "input_up"));
     this.text_input = goog.dom.createDom("div", "input_main");
     goog.dom.appendChild(this.wrap_el, this.text_input);
-    this.text_input.innerHTML = postile._('inline_comment_prompt');
-    goog.dom.classes.add(this.text_input, 'inactive');
+    var text_input_init = function() {
+        instance.text_input.innerHTML = postile._('inline_comment_prompt');
+        goog.dom.classes.add(instance.text_input, 'inactive');
+    }
+    text_input_init();
     goog.events.listen(new goog.events.KeyHandler(this.text_input), goog.events.KeyHandler.EventType.KEY, function(e) {
         if (instance.text_input.innerHTML == postile._('inline_comment_prompt')) {
             instance.text_input.innerHTML = '';
@@ -190,14 +194,17 @@ postile.view.post_in_board.InlineCommentsBlock = function(postObj) {
         } else if (e.keyCode == goog.events.KeyCodes.ENTER) {
             goog.dom.classes.add(instance.text_input, 'busy');
             postile.ajax(['post','inline_comment'], { post_id: postObj.id, content: instance.text_input.innerHTML }, function(data) {
-                new postile.toast.Toast(5, "Inline comment posted.");
+                if (data.status == postile.ajax.status.OK) {
+                    postile.fx.effects.verticalExpand((new postile.view.post_in_board.InlineComment(instance, data.message)).comment_container);
+                    goog.dom.classes.remove(instance.text_input, 'busy');
+                    text_input_init();
+                }
             });
         }
     });
     goog.events.listen(this.text_input, goog.events.EventType.BLUR, function(){
         if (goog.string.trim(postile.string.strip_tags(instance.text_input.innerHTML)) == '') {
-            instance.text_input.innerHTML = postile._('inline_comment_prompt');
-            goog.dom.classes.add(instance.text_input, 'inactive');
+            text_input_init();
         }
     });
     this.text_input.contentEditable = "true";
@@ -208,7 +215,7 @@ postile.view.post_in_board.InlineCommentsBlock = function(postObj) {
     this.comments_container = goog.dom.createDom("div", "inl_comment");
     goog.dom.appendChild(this.wrap_el, this.comments_container);
     postile.ajax(['post','get_inline_comments'], { post_id: postObj.id }, function(data) {
-        for (var i in data.message) { instance.renderComment(data.message[i]); }
+        for (var i in data.message) { new postile.view.post_in_board.InlineComment(instance, data.message[i]); }
         var coord = goog.style.getRelativePosition(postile.dom.getDescendantByClass(postObj.container_el, 'post_comment_icon'), postObj.wrap_el);
         coord.x += 18; coord.y -= 12; //magic number based on 目测
         goog.style.setPosition(instance.wrap_el, coord);
@@ -217,17 +224,18 @@ postile.view.post_in_board.InlineCommentsBlock = function(postObj) {
     });
 }
 
-postile.view.post_in_board.InlineCommentsBlock.prototype.renderComment = function(single_comment_data) {
-    var comment_container = goog.dom.createDom("div", "past_comment");
+/*return the container element*/
+postile.view.post_in_board.InlineComment = function(icb, single_comment_data) {
+    this.comment_container = goog.dom.createDom("div", "past_comment");
     var tmp_el;
     tmp_el = goog.dom.createDom("p", "name");
     tmp_el.innerHTML = single_comment_data.username + ' Says: ';
-    goog.dom.appendChild(comment_container, tmp_el);
+    goog.dom.appendChild(this.comment_container, tmp_el);
     tmp_el = goog.dom.createDom("p", "time");
     tmp_el.innerHTML = postile.date(single_comment_data.created_at, 'inline');
-    goog.dom.appendChild(comment_container, tmp_el);
+    goog.dom.appendChild(this.comment_container, tmp_el);
     tmp_el = goog.dom.createDom("p", "comment");
     tmp_el.innerHTML = (single_comment_data.reply_to ? '<span class="main-color">' + single_comment_data.reply_to + '</span>' : '') + single_comment_data.content;
-    goog.dom.appendChild(comment_container, tmp_el);
-    goog.dom.appendChild(this.comments_container, comment_container);
+    goog.dom.appendChild(this.comment_container, tmp_el);
+    goog.dom.appendChild(icb.comments_container, this.comment_container);
 }

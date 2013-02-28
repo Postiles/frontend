@@ -56,6 +56,11 @@ postile.ajax = function(url, data, onsuccess, onfail, notifier_text) {
    }
 };
 
+postile.ajax.status = { //possible returning status from server
+    ERROR: 'error',
+    OK: 'ok'
+}
+
 postile.ajax.fetchedHandler = function(onsuccess, onfail, receivedText) {
     var received;
     try {
@@ -64,7 +69,7 @@ postile.ajax.fetchedHandler = function(onsuccess, onfail, receivedText) {
         postile.ajax.notifier.networkError("response data damaged"); //json parsing failed
         return;
     }
-    if (received.status == 'error') {
+    if (received.status == postile.ajax.status.ERROR) {
         if (received.message in postile.ajax.expection_handlers) {
             postile.ajax.expection_handlers[received.message](received);
         } else if (typeof onfail == 'function') {

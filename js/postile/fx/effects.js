@@ -11,3 +11,9 @@ postile.fx.effects.resizeIn = function(dom) {
         dom.style.opacity = i;
     }, 400, postile.fx.ease.cubic_ease_out, function() { postile.browser_compat.setCss(dom, 'transform', 'none'); });
 };
+
+postile.fx.effects.verticalExpand = function(dom) { //TODO: to be improved
+    new postile.fx.Animate(function(i){
+        postile.browser_compat.setCss(dom, 'transform', 'scaleY('+i+')');
+    }, 400, postile.fx.ease.cubic_ease_out, function() { postile.browser_compat.setCss(dom, 'transform', 'none'); });
+}
