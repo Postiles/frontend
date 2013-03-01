@@ -136,11 +136,18 @@ postile.view.post_in_board.Post.prototype.submitEdit = function(to_submit) {
 }
 
 postile.view.post_in_board.Post.prototype.remove = function() {
+    var instance = this;
     if (window.confirm('Sure to delete?')) {
         postile.ajax(['post','delete'], { post_id: this.id }, function(data) {
             new postile.toast.Toast(5, "The post is successfully deleted. Please refresh.");
+            instance.removeFromBoard();
         });
     }
+}
+
+postile.view.post_in_board.Post.prototype.removeFromBoard = function() {
+    goog.dom.removeNode(this.wrap_el);
+    delete this.board.currentPosts[this.id];
 }
 
 postile.view.post_in_board.Post.prototype.edit = function() {

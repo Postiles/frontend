@@ -553,7 +553,6 @@ postile.view.post_board.PostBoard.prototype.renderArray = function(array) { //ad
 postile.view.post_board.PostBoard.prototype.fayeHandler = function(status, data) {
     switch (status) {
         case postile.view.post_board.faye_status.FINISH:
-            console.log(data, data.id, this.currentPosts);
             this.currentPosts[data.id].enable();
             this.renderArray([data]);
             break;
@@ -562,6 +561,11 @@ postile.view.post_board.PostBoard.prototype.fayeHandler = function(status, data)
                 this.currentPosts[data.id].disable();
             } else {
                 this.renderArray([data]);
+            }
+            break;
+        case postile.view.post_board.faye_status.DELETE:
+            if (data.id in this.currentPosts) {
+                this.currentPosts[data.id].removeFromBoard();
             }
             break;
     }
