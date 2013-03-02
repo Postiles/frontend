@@ -550,7 +550,6 @@ postile.view.post_board.PostBoard.prototype.isAreaFullInside = function(parent, 
 postile.view.post_board.PostBoard.prototype.renderArray = function(array) { //add post objects to the screen //NOTICE: just add, no not care the duplicate
     var i;
     var animation = null;
-    console.log(array);
     for (i in array) {
         if (!array[i].post.id) { return; }
         if (array[i].post.id in this.currentPosts) { //if so // so what?

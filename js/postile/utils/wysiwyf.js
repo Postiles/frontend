@@ -90,77 +90,10 @@ postile.WYSIWYF = {
         }
         return true;
     },
-    Editor: function(parent_el, default_value) { //can use the "container" property of this.
+    Editor: function(editor_el) { //can use the "container" property of this.
         var editor = this;
-        //编辑器iframe
-        editor.ifmElement = document.createElement('iframe');
-        editor.ifmLoaded = false;
-        editor.ifmElement.onload = function () {
-            editor.ifmLoaded = true;
-        };
-        //编辑器总容器
-        editor.container = document.createElement('div');
-        //编辑器菜单
-        //editor.container.style.border = '1px solid #999';
-        editor.eMenu = document.createElement('div');
-        editor.eMenu.style.width = '171px';
-        editor.eMenu.style.height = '25px';
-        editor.eMenu.style.margin = '0 auto';
-        editor.eMenu.style.marginTop = '-25px';
-        editor.eMenu.style.background = '#CCC';
-        editor.eMenu.style.display = 'none';
-        editor.ifmElement.style.width = '100%';
-        editor.ifmElement.style.height = '100%';
-        editor.ifmElement.frameBorder = '0';
-        editor.ifmElement.allowTransparency = true;
-        editor.container.appendChild(editor.eMenu);
-        editor.container.appendChild(editor.ifmElement);
-        parent_el.appendChild(editor.container);
-        var ifmOnLoad = function() {
-            editor.ifmDocument = (editor.ifmElement.contentWindow || editor.ifmElement.contentDocument);
-            if (editor.ifmDocument.document) {
-                editor.ifmWindow = editor.ifmDocument;
-                editor.ifmDocument = editor.ifmWindow.document;
-            } else {
-                editor.ifmWindow = editor.ifmDocument.getParentNode();
-            }
-            editor.ifmDocument.body.innerHTML = default_value; //初始化时将textarea内的内容复制到iframe中
-            editor.ifmDocument.body.style.background = 'transparent';
-            /* styling */
-            var fileref = document.createElement("link")
-            fileref.setAttribute("rel", "stylesheet")
-            fileref.setAttribute("type", "text/css")
-            fileref.setAttribute("href", "/css/fonts.css");
-            editor.ifmDocument.body.appendChild(fileref);               
-            editor.ifmDocument.body.style.fontSize = '10pt';
-            editor.ifmDocument.body.style.fontFamily = 'Oxygen';
-            editor.ifmDocument.body.style.padding = '0'; editor.ifmDocument.body.style.margin = '0';
-            editor.ifmDocument.documentElement.style.padding = '0'; editor.ifmDocument.documentElement.style.margin = '0';
-            editor.ifmElement.style.marginTop = '12px';
-            /* end of styling */
-            editor.ifmDocument.designMode = 'on';
-            var decItv;
-            editor.ifmDocument.body.addEventListener('focus', function() {
-                clearInterval(decItv);
-                editor.eMenu.style.display = 'block';
-                editor.eMenu.style.opacity = 1;
-            });
-            editor.ifmDocument.body.addEventListener('blur', function() {
-                clearInterval(decItv);
-                var opa = 1;
-                decItv = setInterval(function() {
-                    opa -= 0.1;
-                    editor.eMenu.style.opacity = opa;
-                    if (opa < 0.1) { editor.eMenu.style.display = 'none'; clearInterval(decItv); }
-                }, 40);
-            });
-        }
-        //if not loaded, add to "onload", otherwise, execute immediately
-        if (editor.ifmLoaded == true) {
-            ifmOnLoad();
-        } else {
-            editor.ifmElement.onload = ifmOnLoad;
-        }
+        editor.editor_el = editor_el;
+        editor_el.contentEditable = true;
         //Placing buttons
         l = postile.WYSIWYF.editButtons.length;
         editor.buttons = new Array(l);
@@ -169,14 +102,14 @@ postile.WYSIWYF = {
             editor.buttons[i].setAttribute('type', 'button');
             editor.buttons[i].style.backgroundColor = '#E0E0E0';
             editor.buttons[i].style.border = '0 none';
-            editor.buttons[i].style.backgroundImage = staticResource('images', 'edtior_sprite.png');
+            editor.buttons[i].style.backgroundImage = postile.staticResource(['images', 'edtior_sprite.png']);
             editor.buttons[i].style.width = '21px';
             editor.buttons[i].style.height = '21px';
             editor.buttons[i].style.margin = '2px 0px 0 3px';
             editor.buttons[i].style.padding = '0';
             editor.buttons[i].style.backgroundPosition = postile.WYSIWYF.editButtons[i].bgPos;
-            editor.buttons[i].onclick = function() { editor.buttonOperate(this.style.backgroundPosition.toLowerCase()); editor.ifmDocument.body.focus(); }
-            editor.eMenu.appendChild(editor.buttons[i]);
+            editor.buttons[i].onclick = function() { editor.buttonOperate(this.style.backgroundPosition.toLowerCase()); editor_el.focus(); }
+            //editor.eMenu.appendChild(editor.buttons[i]);
         }
     },
     /******Define buttons and corresponding operations******/
@@ -185,7 +118,7 @@ postile.WYSIWYF = {
         bgPos: '-' + (13 * 3) + 'px 0px',
         callback: function (editor) {
             //Link
-            editor.ifmDocument.execCommand('CreateLink', false, prompt('Enter link address (URL)', 'http://'));
+            document.execCommand('CreateLink', false, prompt('Enter link address (URL)', 'http://'));
         },
         display: [true, true]
     }, {
@@ -194,7 +127,7 @@ postile.WYSIWYF = {
             //Img
             var srcTo = prompt('Enter image address (URL)', 'http://');
             if (srcTo && srcTo != '' && srcTo != 'http://') {
-                editor.ifmDocument.execCommand('InsertImage', false, srcTo);
+                document.execCommand('InsertImage', false, srcTo);
             }
         },
         display: [true, true]
@@ -208,21 +141,21 @@ postile.WYSIWYF = {
         bgPos: '0px 0px',
         callback: function (editor) {
             //Bold
-            editor.ifmDocument.execCommand('bold', false, null);
+            document.execCommand('bold', false, null);
         },
         display: [false, true]
     }, {
         bgPos: '-' + (13 * true) + 'px 0px',
         callback: function (editor) {
             //Italic
-            editor.ifmDocument.execCommand('italic', false, null);
+            document.execCommand('italic', false, null);
         },
         display: [false, true]
     }, {
         bgPos: '-' + (13 * 5) + 'px 0px',
         callback: function (editor) {
             //Underline
-            editor.ifmDocument.execCommand('Underline', false, null);
+            document.execCommand('Underline', false, null);
         },
         display: [false, true]
     }, {
@@ -329,8 +262,8 @@ postile.WYSIWYF = {
 postile.WYSIWYF.Editor.prototype.getBbCode = function() {
     var Chars = new Array();
     var BreakPoints = new Array('');
-    this.ifmDocument.body.innerHTML = this.ifmDocument.body.innerHTML.replace(/\r\n|\n\r|\r|\n/g, '');
-    postile.WYSIWYF.doSpanize(this.ifmDocument.body, Chars, BreakPoints, false);
+    this.editor_el.innerHTML = this.editor_el.innerHTML.replace(/\r\n|\n\r|\r|\n/g, '');
+    postile.WYSIWYF.doSpanize(this.editor_el, Chars, BreakPoints, false);
     return postile.WYSIWYF.merge(Chars, BreakPoints);
 };
 
