@@ -151,7 +151,7 @@ postile.view.post_in_board.Post.prototype.edit = function() {
         //title.render(instance.container_el);
         instance.post_title_el.contentEditable = true;
         goog.dom.classes.add(instance.post_title_el, 'selectable');
-        var y_editor = new postile.WYSIWYF.Editor(instance.post_content_el);
+        var y_editor = new postile.WYSIWYF.Editor(instance.post_content_el, instance.post_icon_container_el);
         goog.dom.classes.add(instance.post_content_el, 'selectable');
         instance.board.disableMovingCanvas = true; //disable moving
         instance.enable();
@@ -159,7 +159,7 @@ postile.view.post_in_board.Post.prototype.edit = function() {
         var blurHandler = function() {
             instance.blur_timeout = setTimeout(function(){ 
                 //instance.board.mask.style.display = 'none'; //close mask, if any
-                instance.submitEdit({ post_id: instance.id, content: y_editor.getBbCode(), title: instance.post_title_el.innerHTML });}, 400);
+                instance.submitEdit({ post_id: instance.post.id, content: y_editor.getBbCode(), title: instance.post_title_el.innerHTML });}, 400);
         };
         var focusHandler = function() {
             clearTimeout(instance.blur_timeout);

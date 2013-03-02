@@ -90,7 +90,7 @@ postile.WYSIWYF = {
         }
         return true;
     },
-    Editor: function(editor_el) { //can use the "container" property of this.
+    Editor: function(editor_el, icon_container_el) { //can use the "container" property of this.
         var editor = this;
         editor.editor_el = editor_el;
         editor_el.contentEditable = true;
@@ -109,7 +109,7 @@ postile.WYSIWYF = {
             editor.buttons[i].style.padding = '0';
             editor.buttons[i].style.backgroundPosition = postile.WYSIWYF.editButtons[i].bgPos;
             editor.buttons[i].onclick = function() { editor.buttonOperate(this.style.backgroundPosition.toLowerCase()); editor_el.focus(); }
-            //editor.eMenu.appendChild(editor.buttons[i]);
+            icon_container_el.appendChild(editor.buttons[i]);
         }
     },
     /******Define buttons and corresponding operations******/
