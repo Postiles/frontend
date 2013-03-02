@@ -181,13 +181,13 @@ postile.WYSIWYF = {
     },
     /******Define buttons and corresponding operations******/
     editButtons: new Array(
-    //requireSql true: must selected; false: must NOT selected
     {
         bgPos: '-' + (13 * 3) + 'px 0px',
         callback: function (editor) {
             //Link
             editor.ifmDocument.execCommand('CreateLink', false, prompt('Enter link address (URL)', 'http://'));
-        }
+        },
+        display: [true, true]
     }, {
         bgPos: '-' + (13 * 2) + 'px 0px',
         callback: function (editor) {
@@ -196,37 +196,41 @@ postile.WYSIWYF = {
             if (srcTo && srcTo != '' && srcTo != 'http://') {
                 editor.ifmDocument.execCommand('InsertImage', false, srcTo);
             }
-        }
+        },
+        display: [true, true]
     }, {
         bgPos: '-' + (13 * 7) + 'px 0px',
         callback: function (editor) {
-            //Expand
-            //TODO
-        }
+            editor.toDisplayMode(1);
+        },
+        display: [true, false]
     }, {
         bgPos: '0px 0px',
         callback: function (editor) {
             //Bold
             editor.ifmDocument.execCommand('bold', false, null);
-        }
+        },
+        display: [false, true]
     }, {
-        bgPos: '-' + (13 * 1) + 'px 0px',
+        bgPos: '-' + (13 * true) + 'px 0px',
         callback: function (editor) {
             //Italic
             editor.ifmDocument.execCommand('italic', false, null);
-        }
+        },
+        display: [false, true]
     }, {
         bgPos: '-' + (13 * 5) + 'px 0px',
         callback: function (editor) {
             //Underline
             editor.ifmDocument.execCommand('Underline', false, null);
-        }
+        },
+        display: [false, true]
     }, {
         bgPos: '-' + (13 * 6) + 'px 0px',
         callback: function (editor) {
-            //Fold
-            //TODO
-        }
+            editor.toDisplayMode(0);
+        },
+        display: [false, true]
     })
     /*
     input parameters for "merge"
@@ -335,6 +339,16 @@ postile.WYSIWYF.Editor.prototype.buttonOperate = function(bgpIpt) { //when butto
     for (var i = 0; i < l; i++) {
         if (bgpIpt == postile.WYSIWYF.editButtons[i].bgPos) {
             postile.WYSIWYF.editButtons[i].callback(this);
+        }
+    }
+};
+
+postile.WYSIWYF.Editor.prototype.toDisplayMode = function (displayOptionIndex){
+    for(var i in this.buttons) {
+        if (postile.WYSIWYF.editButtons[i].display[displayOptionIndex]) {
+            this.buttons[i].style.display = 'inline';
+        } else {
+            this.buttons[i].style.display = 'none';
         }
     }
 };
