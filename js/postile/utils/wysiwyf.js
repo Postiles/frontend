@@ -231,7 +231,7 @@ postile.WYSIWYF = {
             editor.toDisplayMode(0);
         },
         display: [false, true]
-    })
+    }),
     /*
     input parameters for "merge"
         characters (array)
