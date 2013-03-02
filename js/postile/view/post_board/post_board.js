@@ -529,7 +529,7 @@ postile.view.post_board.PostBoard.prototype.updateSubsribeArea = function() { //
     */
     to_subscribe.channel_str = this.channel_str;
     postile.ajax(['topic', 'move_to'], to_subscribe, function(data) {
-       instance.renderArray(data.message);
+        instance.renderArray(data.message);
     }, 'Loading posts...', true);
 }
 
@@ -537,15 +537,25 @@ postile.view.post_board.PostBoard.prototype.isAreaFullInside = function(parent, 
     return (parent.left <= child.left && parent.right >= child.right && parent.top <= child.top && parent.bottom >= child.bottom);
 }
 
+/**
+ * The parameter "array" is an array of returned objects, which contains a post object and a username:
+ *  Array: [ 
+ *      Object {
+ *          post { post attrs },
+ *          username: <str>
+ *      },
+ *      Object { ... }
+ *  ]
+ */
 postile.view.post_board.PostBoard.prototype.renderArray = function(array) { //add post objects to the screen //NOTICE: just add, no not care the duplicate
     var i;
     var animation = null;
     for (i in array) {
-        if (!array[i].id) { return; }
-        if (array[i].id in this.currentPosts) { //if so
-            this.currentPosts[array[i].id].render(array[i]);
+        if (!array[i].post.id) { return; }
+        if (array[i].post.id in this.currentPosts) { //if so // so what?
+            this.currentPosts[array[i].post.id].render(array[i]);
         } else {
-            this.currentPosts[array[i].id] = new postile.view.post_in_board.Post(array[i], this);
+            this.currentPosts[array[i].post.id] = new postile.view.post_in_board.Post(array[i], this);
         }
     }
 };

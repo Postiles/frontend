@@ -37,16 +37,15 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
     this.container_el = goog.dom.createDom('div', 'post_container');
     goog.dom.appendChild(this.wrap_el, this.container_el);
     goog.dom.appendChild(this.board.canvas, this.wrap_el);
-    this.wrap_el.style.left = this.board.xPosTo(this.coord_x) + 'px';
-    this.wrap_el.style.top = this.board.yPosTo(this.coord_y) + 'px';
-    this.wrap_el.style.width = this.board.widthTo(this.span_x) + 'px';
-    this.wrap_el.style.height = this.board.heightTo(this.span_y) + 'px';
+    this.wrap_el.style.left = this.board.xPosTo(this.post.coord_x) + 'px';
+    this.wrap_el.style.top = this.board.yPosTo(this.post.coord_y) + 'px';
+    this.wrap_el.style.width = this.board.widthTo(this.post.span_x) + 'px';
+    this.wrap_el.style.height = this.board.heightTo(this.post.span_y) + 'px';
 
-    /* guanlun's code, quality cannot be guaranteed: */
     this.post_top_el = goog.dom.createDom("div", "post_top");
     goog.dom.appendChild(this.container_el, this.post_top_el);
     this.post_title_el = goog.dom.createDom("span", "post_title");
-    this.post_title_el.innerHTML = this.title;
+    this.post_title_el.innerHTML = this.post.title;
     goog.dom.appendChild(this.post_top_el, this.post_title_el);
 
     this.post_author_el = goog.dom.createDom("span", "post_author");
@@ -54,7 +53,7 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
     goog.dom.appendChild(this.post_top_el, this.post_author_el);
 
     this.post_content_el = goog.dom.createDom("div", "post_content");
-    this.post_content_el.innerHTML = postile.parseBBcode(this.text_content);
+    this.post_content_el.innerHTML = postile.parseBBcode(this.post.text_content);
     goog.dom.appendChild(this.container_el, this.post_content_el);
 
     this.post_bottom_el = goog.dom.createDom("div", "post_bottom");
@@ -73,17 +72,11 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
     
     goog.events.listen(addIcon("comment"), goog.events.EventType.CLICK, function() { instance.inline_comments_block = new postile.view.post_in_board.InlineCommentsBlock(instance); });
     
-    if (this.user_id == localStorage.postile_user_id) { //created by current user
+    if (this.post.user_id == localStorage.postile_user_id) { //created by current user
         goog.events.listen(addIcon("edit"), goog.events.EventType.CLICK, function() { instance.edit(); });
         goog.events.listen(addIcon("delete"), goog.events.EventType.CLICK, function() { instance.remove(); });
     }
-    /* end of guanlun's code and unstability */
 
-    // this.content_el = goog.dom.createDom('div', 'post_content');
-    // if (this.text_content == null) { this.innerHTML = '[Currently editing]'; }
-    // if (this.title && this.title.length) { this.content_el.innerHTML = '<center><b>'+this.title+'</b></center>'; }
-    // this.content_el.innerHTML += postile.parseBBcode(this.text_content);
-    //goog.dom.appendChild(this.wrap_el, this.content_el);
     if (animation) {
         postile.fx.effects.resizeIn(this.wrap_el);
     }  
@@ -200,7 +193,7 @@ postile.view.post_in_board.InlineCommentsBlock = function(postObj) {
             goog.dom.classes.remove(instance.text_input, 'inactive');
         } else if (e.keyCode == goog.events.KeyCodes.ENTER) {
             goog.dom.classes.add(instance.text_input, 'busy');
-            postile.ajax(['post','inline_comment'], { post_id: postObj.id, content: instance.text_input.innerHTML }, function(data) {
+            postile.ajax(['post','inline_comment'], { post_id: postObj.post.id, content: instance.text_input.innerHTML }, function(data) {
                 if (data.status == postile.ajax.status.OK) {
                     postile.fx.effects.verticalExpand((new postile.view.post_in_board.InlineComment(instance, data.message)).comment_container);
                     goog.dom.classes.remove(instance.text_input, 'busy');
@@ -221,8 +214,11 @@ postile.view.post_in_board.InlineCommentsBlock = function(postObj) {
     goog.dom.appendChild(tmp_el, goog.dom.createDom("div", "nav_down"));
     this.comments_container = goog.dom.createDom("div", "inl_comment");
     goog.dom.appendChild(this.wrap_el, this.comments_container);
-    postile.ajax(['post','get_inline_comments'], { post_id: postObj.id }, function(data) {
-        for (var i in data.message) { new postile.view.post_in_board.InlineComment(instance, data.message[i]); }
+
+    postile.ajax(['post','get_inline_comments'], { post_id: postObj.post.id }, function(data) {
+        for (var i in data.message) { 
+            new postile.view.post_in_board.InlineComment(instance, data.message[i]); 
+        }
         var coord = goog.style.getRelativePosition(postile.dom.getDescendantByClass(postObj.container_el, 'post_comment_icon'), postObj.wrap_el);
         coord.x += 18; coord.y -= 12; //magic number based on 目测
         goog.style.setPosition(instance.wrap_el, coord);
@@ -237,12 +233,13 @@ postile.view.post_in_board.InlineComment = function(icb, single_comment_data) {
     var tmp_el;
     tmp_el = goog.dom.createDom("p", "name");
     tmp_el.innerHTML = single_comment_data.username + ' Says: ';
+
     goog.dom.appendChild(this.comment_container, tmp_el);
     tmp_el = goog.dom.createDom("p", "time");
-    tmp_el.innerHTML = postile.date(single_comment_data.created_at, 'inline');
+    tmp_el.innerHTML = postile.date(single_comment_data.inline_comment.created_at, 'inline');
     goog.dom.appendChild(this.comment_container, tmp_el);
     tmp_el = goog.dom.createDom("p", "comment");
-    tmp_el.innerHTML = (single_comment_data.reply_to ? '<span class="main-color">' + single_comment_data.reply_to + '</span>' : '') + single_comment_data.content;
+    tmp_el.innerHTML = (single_comment_data.reply_to ? '<span class="main-color">' + single_comment_data.reply_to + '</span>' : '') + single_comment_data.inline_comment.content;
     goog.dom.appendChild(this.comment_container, tmp_el);
     goog.dom.appendChild(icb.comments_container, this.comment_container);
 }
