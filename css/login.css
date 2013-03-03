@@ -149,7 +149,7 @@ html, body {
   height: 26px;
   text-align: right;
   color: #024d61;
-  font-size: 11pt;
+  font-size: 10pt;
   padding-right: 8px;
   background: #ececec;
   border: 1px solid #aaaaaa;
@@ -260,7 +260,8 @@ html, body {
   height: 25px;
   outline: none;
   border: none;
-  padding: 5px;
+  padding-left: 8px;
+  font-size: 10pt;
   color: #024d61;
   -webkit-border-radius: 6px; }
 
