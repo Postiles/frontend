@@ -165,7 +165,7 @@ html, body {
   box-shadow: inset 0px 0px 8px #c2cfd2; }
 
 #login-form-container .incorrect {
-  width: 230px;
+  width: 240px;
   text-align: right;
   font-size: 9pt;
   margin-top: 5px;
@@ -173,7 +173,7 @@ html, body {
   color: #bacfd5; }
 
 #login-form-container .forgot-password {
-  width: 230px;
+  width: 240px;
   text-align: right;
   font-size: 9pt;
   margin-top: 5px; }
