@@ -59,6 +59,10 @@ postile = { //the base of posTile frontend framework
             postile.ui.load(document.body, postile.staticResource(['login.html']));
         });
 
+        postile.router.map('/_profile_preview').to(function() {
+            postile.ui.load(document.body, postile.staticResource(['_profile_preview.html']));
+        });
+
         postile.router.map('/profile/:user_id/edit').to(function() {
             postile.ui.load(document.body, postile.staticResource(['profile_edit.html']));
             postile.view.profile.get_profile_for_edit(this.params["user_id"]);

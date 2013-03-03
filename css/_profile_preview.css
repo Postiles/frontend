@@ -1,0 +1,99 @@
+html, body {
+  margin: 0;
+  padding: 50px;
+  font-size: 10pt; }
+
+.profile-preview {
+  font-family: Oxygen; }
+  .profile-preview .image-container {
+    float: left; }
+    .profile-preview .image-container .left-fold {
+      position: absolute;
+      margin-left: -30px;
+      margin-top: 30px;
+      width: 30px;
+      height: 100px; }
+      .profile-preview .image-container .left-fold .back-page {
+        position: absolute;
+        width: inherit;
+        height: inherit;
+        background: #024d61;
+        box-shadow: 0px 0px 8px #024d61; }
+      .profile-preview .image-container .left-fold .front-page {
+        position: absolute;
+        width: 50px;
+        height: inherit;
+        margin-top: 9px;
+        background: #024d61;
+        z-index: 2;
+        -webkit-transform: skewY(20deg);
+        box-shadow: 0px 0px 6px black; }
+    .profile-preview .image-container .picture {
+      position: relative;
+      width: 200px;
+      height: 200px;
+      -webkit-border-radius: 10px;
+      border: 5px #024d61 solid;
+      box-shadow: 0px 0px 8px #024d61; }
+      .profile-preview .image-container .picture img {
+        width: inherit;
+        height: inherit;
+        -webkit-border-radius: 5px; }
+  .profile-preview .info-container {
+    float: left;
+    width: 500px; }
+    .profile-preview .info-container .exit-button {
+      position: relative;
+      left: 490px;
+      top: 10px;
+      width: 20px;
+      height: 20px;
+      z-index: 2;
+      cursor: pointer;
+      -webkit-border-radius: 10px;
+      box-shadow: 0px 0px 8px #024d61; }
+      .profile-preview .info-container .exit-button img {
+        width: inherit;
+        height: inherit; }
+    .profile-preview .info-container .top {
+      position: relative;
+      z-index: 1;
+      padding: 20px;
+      background: #024d61;
+      color: #ececec;
+      box-shadow: 0px 0px 8px #024d61; }
+      .profile-preview .info-container .top .name {
+        font-size: 13pt; }
+      .profile-preview .info-container .top .signiture {
+        margin-top: 15px; }
+    .profile-preview .info-container .bottom {
+      position: relative;
+      z-index: 0;
+      width: 440px;
+      margin-left: 10px;
+      padding: 20px;
+      background: #bacfd5;
+      -webkit-border-bottom-left-radius: 10px;
+      -webkit-border-bottom-right-radius: 10px;
+      box-shadow: 0px 0px 8px #bacfd5; }
+      .profile-preview .info-container .bottom .item-container .item {
+        margin-top: 10px; }
+        .profile-preview .info-container .bottom .item-container .item .icon {
+          float: left;
+          width: 15px;
+          height: 12px; }
+          .profile-preview .info-container .bottom .item-container .item .icon img {
+            width: inherit;
+            height: inherit; }
+        .profile-preview .info-container .bottom .item-container .item .text {
+          margin-left: 24px; }
+          .profile-preview .info-container .bottom .item-container .item .text .highlight {
+            color: #024d61;
+            cursor: pointer; }
+          .profile-preview .info-container .bottom .item-container .item .text .highlight:hover {
+            text-decoration: underline; }
+      .profile-preview .info-container .bottom .self-intro {
+        margin-left: 24px;
+        margin-top: 15px;
+        margin-right: 20px;
+        text-align: justify; }
