@@ -1,7 +1,6 @@
 html, body {
   margin: 0px;
-  background: url("../images/login_sunset.jpg") 100%;
-  background-size: 100%;
+  background: url("../images/login_sunset.jpg");
   height: 100%; }
 
 #wrapper {
@@ -119,14 +118,15 @@ html, body {
 #login-form-container .text-container {
   float: left;
   color: #ececec;
-  margin-top: 45px; }
+  margin-top: 45px;
+  margin-left: 15px; }
 
 #login-form-container .text-container .welcome-text {
   font-family: Oxygen;
-  font-size: 24pt; }
+  font-size: 22pt; }
 
 #login-form-container .text-container .sub-text {
-  font-size: 12pt; }
+  font-size: 11pt; }
 
 #login-form-container .login-fields {
   float: left;
@@ -154,12 +154,13 @@ html, body {
   background: #ececec;
   border: 1px solid #aaaaaa;
   outline: none;
-  -webkit-border-radius: 6px;
+  font-family: RobotoRegular;
+  -webkit-border-radius: 3px;
   box-shadow: inset 0px 0px 8px #666666;
   -webkit-transition: box-shadow 0.3s; }
 
 #login-form-container .login-fields input:focus {
-  box-shadow: inset 0px 0px 8px #007580; }
+  box-shadow: inset 0px 0px 8px #024d61; }
 
 #login-form-container .forgot-password {
   width: 230px;
@@ -189,7 +190,8 @@ html, body {
 #login-button-container .login-button {
   position: absolute;
   left: 100px;
-  top: 40px; }
+  top: 40px;
+  cursor: pointer; }
 
 #login-button-container .login-button .button-back {
   width: 120px;
@@ -200,25 +202,40 @@ html, body {
   -webkit-border-radius: 60px;
   -webkit-transition: box-shadow 0.4s; }
 
-#login-button-container .login-button .button-back:hover {
+#login-button-container .login-button:hover .button-back {
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.4), 0px 0px 190px #ffc873; }
 
-#login-button-container .login-button .button-back img {
+#login-button-container .login-button .button-back .button-inner {
   position: absolute;
-  left: 8px;
-  top: 8px;
+  width: 100px;
+  height: 100px;
+  left: 10px;
+  top: 10px;
+  background: #024d61;
+  -webkit-border-radius: 50px;
+  -webkit-transition: background 0.4s; }
+
+#login-button-container .login-button:hover .button-back .button-inner {
+  background: #e2672b; }
+
+#login-button-container .login-button .button-back .button-inner img {
+  position: absolute;
   width: 104px;
   height: 104px;
-  -webkit-mask: red;
-  -webkit-transition: opacity 0.4s; }
-
-#login-button-container .login-button .button-back:hover .foreground {
-  opacity: 0; }
+  left: -2px;
+  top: -2px; }
 
 #login-button-container .login-button .text {
   position: relative;
-  top: 10px;
-  left: 3px; }
+  top: 5px;
+  left: 3px;
+  font-family: PlayBold;
+  color: #024d61;
+  font-size: 26pt;
+  -webkit-transition: color 0.4s; }
+
+#login-button-container .login-button:hover .text {
+  color: #e2672b; }
 
 #external-login-container {
   position: absolute;
@@ -240,12 +257,12 @@ html, body {
   padding: 20px; }
 
 #external-login-container .login-title {
-  font-family: PlayBold;
+  font-family: OxygenBold;
   font-size: 20pt;
   margin-left: 10px; }
 
 #external-login-container .login-fields-container {
-  font-family: Play; }
+  font-family: Oxygen; }
 
 #external-login-container .login-fields-container .group {
   margin-top: 20px; }
@@ -263,16 +280,23 @@ html, body {
   padding-left: 8px;
   font-size: 10pt;
   color: #024d61;
-  -webkit-border-radius: 6px; }
+  font-family: RobotoRegular;
+  -webkit-border-radius: 3px;
+  box-shadow: inset 0px 0px 8px #666666;
+  -webkit-transition: box-shadow 0.3s; }
+
+#external-login-container .login-fields-container input:focus {
+  box-shadow: inset 0px 0px 8px #024d61; }
 
 #external-login-container .bottom-container {
   margin-top: 10px; }
 
 #external-login-container .text {
   margin-left: 70px;
+  margin-top: 2px;
   color: #024d61;
   float: left;
-  font-size: 11pt; }
+  font-size: 9pt; }
 
 #external-login-container .icons {
   float: left;
