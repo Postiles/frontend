@@ -160,7 +160,7 @@ html, body {
   -webkit-transition: box-shadow 0.3s; }
 
 #login-form-container .login-fields input:focus {
-  box-shadow: inset 0px 0px 8px #024d61; }
+  box-shadow: inset 0px 0px 8px #c2cfd2; }
 
 #login-form-container .forgot-password {
   width: 230px;
