@@ -127,7 +127,7 @@ postile.view.post_board.handlers.mask_mousemove = function(e){ //mouse key not d
     var intersect = false;
     for (i in this.rel_data.currentPosts) {
         //from http://stackoverflow.com/questions/2752349/fast-rectangle-to-rectangle-intersection
-        if(!(current[0] >= this.rel_data.currentPosts[i].coord_x_end || end[0] <= this.rel_data.currentPosts[i].coord_x || current[1] >=this.rel_data.currentPosts[i].coord_y_end || end[1] <= this.rel_data.currentPosts[i].coord_y)) { 
+        if(!(current[0] >= this.rel_data.currentPosts[i].post.coord_x_end || end[0] <= this.rel_data.currentPosts[i].post.coord_x || current[1] >=this.rel_data.currentPosts[i].post.coord_y_end || end[1] <= this.rel_data.currentPosts[i].post.coord_y)) { 
             intersect = true;
             break;
         }

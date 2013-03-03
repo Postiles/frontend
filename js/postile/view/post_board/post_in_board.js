@@ -28,9 +28,8 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
     var button;
     var instance = this;
     if (object) { goog.object.extend(this, object); }
-    if (this.id == 1) { window.xxx = this; } // 4 debug use
-    this.coord_x_end = this.coord_x + this.span_x; //precalculate this two so that future intersect test will be faster
-    this.coord_y_end = this.coord_y + this.span_y;
+    this.post.coord_x_end = this.post.coord_x + this.post.span_x; //precalculate this two so that future intersect test will be faster
+    this.post.coord_y_end = this.post.coord_y + this.post.span_y;
     if (this.wrap_el) { goog.dom.removeNode(this.wrap_el); } //remove original element
     this.wrap_el = goog.dom.createDom('div', 'post_wrap');
     this.wrap_el.rel_data = this;
@@ -84,7 +83,6 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
 
 postile.view.post_in_board.Post.prototype.disable = function() {
     this.disabled = true;
-    goog.dom.removeChildren(this.container_el);
     goog.dom.classes.add(this.wrap_el, 'busy');
 }
 
@@ -146,32 +144,31 @@ postile.view.post_in_board.Post.prototype.removeFromBoard = function() {
 postile.view.post_in_board.Post.prototype.edit = function() {
     var instance = this;
     var start_waiting = new postile.toast.Toast(0, "Please wait... We're starting editing... Be ready for 36s.");
-    var content_style = getComputedStyle(instance.post_content_el);
     this.disable();
-    postile.ajax(['post','start_edit'], { post_id: this.id }, function(data) {
-        var title = new goog.ui.LabelInput(postile._('post_title_prompt'));
-        goog.dom.removeChildren(instance.container_el);
-        title.render(instance.container_el);
-        var y_editor = new postile.WYSIWYF.Editor(instance.container_el, postile.parseBBcode(instance.text_content), content_style);
-        goog.dom.classes.add(title.getElement(), 'edit_title');
-        if (instance.title && instance.title.length) { title.setValue(instance.title); }
-        y_editor.container.style.height = instance.board.heightTo(instance.span_y) - 27 + 'px';
+    postile.ajax(['post','start_edit'], { post_id: this.post.id }, function(data) {
+        //var title = new goog.ui.LabelInput(postile._('post_title_prompt'));
+        //goog.dom.removeChildren(instance.container_el);
+        //title.render(instance.container_el);
+        instance.post_title_el.contentEditable = true;
+        goog.dom.classes.add(instance.post_title_el, 'selectable');
+        var y_editor = new postile.WYSIWYF.Editor(instance.post_content_el, instance.post_icon_container_el);
+        goog.dom.classes.add(instance.post_content_el, 'selectable');
         instance.board.disableMovingCanvas = true; //disable moving
         instance.enable();
         start_waiting.abort();
         var blurHandler = function() {
             instance.blur_timeout = setTimeout(function(){ 
-                instance.board.mask.style.display = 'none'; //close mask, if any
-                instance.submitEdit({ post_id: instance.id, content: y_editor.getBbCode(), title: title.getValue() });}, 400);
+                //instance.board.mask.style.display = 'none'; //close mask, if any
+                instance.submitEdit({ post_id: instance.post.id, content: y_editor.getBbCode(), title: instance.post_title_el.innerHTML });}, 400);
         };
         var focusHandler = function() {
             clearTimeout(instance.blur_timeout);
         };
-        goog.events.listen(y_editor.ifmDocument.body, goog.events.EventType.BLUR, blurHandler);
-        goog.events.listen(title.getElement(), goog.events.EventType.BLUR, blurHandler);
-        goog.events.listen(y_editor.ifmDocument.body, goog.events.EventType.FOCUS, focusHandler);
-        goog.events.listen(title.getElement(), goog.events.EventType.FOCUS, focusHandler);
-        y_editor.ifmDocument.body.focus();
+        goog.events.listen(y_editor.editor_el, goog.events.EventType.BLUR, blurHandler);
+        goog.events.listen(instance.post_title_el, goog.events.EventType.BLUR, blurHandler);
+        goog.events.listen(y_editor.editor_el, goog.events.EventType.FOCUS, focusHandler);
+        goog.events.listen(instance.post_title_el, goog.events.EventType.FOCUS, focusHandler);
+        y_editor.editor_el.focus();
     });
 }
 
@@ -180,7 +177,7 @@ postile.view.post_in_board.InlineCommentsBlock = function(postObj) {
     var tmp_el;
     this.wrap_el = goog.dom.createDom("div", "inl_comment-wrapper");
     goog.dom.appendChild(this.wrap_el, goog.dom.createDom("div", "input_up"));
-    this.text_input = goog.dom.createDom("div", "input_main");
+    this.text_input = goog.dom.createDom("div", "input_main selectable");
     goog.dom.appendChild(this.wrap_el, this.text_input);
     var text_input_init = function() {
         instance.text_input.innerHTML = postile._('inline_comment_prompt');

@@ -450,7 +450,6 @@ html, body {
   outline: none;
   padding: 0 8px;
   color: #f5f5f5;
-  -webkit-user-select: text;
   width: 204px; }
   
 .inl_comment-wrapper .input_main.inactive {
@@ -523,8 +522,11 @@ html, body {
 .busy {
   background-image: url(/images/busy.gif) !important;
   background-repeat: repeat; }
+  
+.selectable {
+  -webkit-user-select: text; }
 
-/*Mask* */
+/*Mask */
 .canvas_mask {
   width: 100%;
   height: 100%;
@@ -643,14 +645,3 @@ html, body {
 
 .arrow_detect.right .arrow_button div {
   background: url(/images/arrow_sm_right_hover.png); }
-
-/*Editor* */
-.edit_title {
-  width: 100%;
-  border: 0 none;
-  color: #024d61;
-  font-size: 11pt; 
-  font-family: OxygenBold;
-  outline: none;
-  background: transparent;
-  display: block; }

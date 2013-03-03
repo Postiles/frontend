@@ -12,16 +12,12 @@ postile.WYSIWYF = {
         style = style || {
             Bold: false,
             Italic: false,
-            Color: '#000000',
-            Underline: false,
+            Underline: false
         };
         if (cont.nodeType == 3) { //text
             var l = cont.nodeValue.length;
             if (l < 1) {
                 return;
-            }
-            if (style.Color == '#000000' || style.Color == 'rgb(0,0,0)' || style.Color == 'rgb(0, 0, 0)') {
-                style.Color = false;
             }
             for (var i = 0; i < l; i++) {
                 if (i > 0 && cont.nodeValue.substr(i, 1) == ' ' && a[a.length - 1].Content == ' ') { //ignore continous blanks
@@ -46,7 +42,6 @@ postile.WYSIWYF = {
             } else if (t == 'U') {
                 cStyle.Underline = true;
             } else if (t == 'SPAN' || t == 'FONT') {
-                cStyle.Color = this.colorNormalize(cont.getAttribute('color')) || cStyle.Color;
                 if (cont.style.fontWeight == 'normal') {
                     cStyle.Bold = false;
                 } else if (cont.style.fontWeight == 'bold') {
@@ -61,10 +56,6 @@ postile.WYSIWYF = {
                     cStyle.Underline = false;
                 } else if (cont.style.textDecoration == 'underline') {
                     cStyle.Underline = true;
-                }
-                if (cont.style.color && cont.style.color != '') {
-                    var tpc = this.colorNormalize(cont.style.color);
-                    if (tpc) { cStyle.Color = tpc; }
                 }
             }
             //END of [STYLING I]
@@ -99,77 +90,10 @@ postile.WYSIWYF = {
         }
         return true;
     },
-    Editor: function(parent_el, default_value) { //can use the "container" property of this.
+    Editor: function(editor_el, icon_container_el) { //can use the "container" property of this.
         var editor = this;
-        //编辑器iframe
-        editor.ifmElement = document.createElement('iframe');
-        editor.ifmLoaded = false;
-        editor.ifmElement.onload = function () {
-            editor.ifmLoaded = true;
-        };
-        //编辑器总容器
-        editor.container = document.createElement('div');
-        //编辑器菜单
-        //editor.container.style.border = '1px solid #999';
-        editor.eMenu = document.createElement('div');
-        editor.eMenu.style.width = '171px';
-        editor.eMenu.style.height = '25px';
-        editor.eMenu.style.margin = '0 auto';
-        editor.eMenu.style.marginTop = '-25px';
-        editor.eMenu.style.background = '#CCC';
-        editor.eMenu.style.display = 'none';
-        editor.ifmElement.style.width = '100%';
-        editor.ifmElement.style.height = '100%';
-        editor.ifmElement.frameBorder = '0';
-        editor.ifmElement.allowTransparency = true;
-        editor.container.appendChild(editor.eMenu);
-        editor.container.appendChild(editor.ifmElement);
-        parent_el.appendChild(editor.container);
-        var ifmOnLoad = function() {
-            editor.ifmDocument = (editor.ifmElement.contentWindow || editor.ifmElement.contentDocument);
-            if (editor.ifmDocument.document) {
-                editor.ifmWindow = editor.ifmDocument;
-                editor.ifmDocument = editor.ifmWindow.document;
-            } else {
-                editor.ifmWindow = editor.ifmDocument.getParentNode();
-            }
-            editor.ifmDocument.body.innerHTML = default_value; //初始化时将textarea内的内容复制到iframe中
-            editor.ifmDocument.body.style.background = 'transparent';
-            /* styling */
-            var fileref = document.createElement("link")
-            fileref.setAttribute("rel", "stylesheet")
-            fileref.setAttribute("type", "text/css")
-            fileref.setAttribute("href", "/css/fonts.css");
-            editor.ifmDocument.body.appendChild(fileref);               
-            editor.ifmDocument.body.style.fontSize = '10pt';
-            editor.ifmDocument.body.style.fontFamily = 'Oxygen';
-            editor.ifmDocument.body.style.padding = '0'; editor.ifmDocument.body.style.margin = '0';
-            editor.ifmDocument.documentElement.style.padding = '0'; editor.ifmDocument.documentElement.style.margin = '0';
-            editor.ifmElement.style.marginTop = '12px';
-            /* end of styling */
-            editor.ifmDocument.designMode = 'on';
-            var decItv;
-            editor.ifmDocument.body.addEventListener('focus', function() {
-                clearInterval(decItv);
-                editor.eMenu.style.display = 'block';
-                editor.eMenu.style.opacity = 1;
-            });
-            editor.ifmDocument.body.addEventListener('blur', function() {
-                clearInterval(decItv);
-                var opa = 1;
-                decItv = setInterval(function() {
-                    opa -= 0.1;
-                    editor.eMenu.style.opacity = opa;
-                    if (opa < 0.1) { editor.eMenu.style.display = 'none'; clearInterval(decItv); }
-                }, 40);
-            });
-        }
-        //if not loaded, add to "onload", otherwise, execute immediately
-        if (editor.ifmLoaded == true) {
-            ifmOnLoad();
-        } else {
-            editor.ifmElement.onload = ifmOnLoad;
-        }
+        editor.editor_el = editor_el;
+        editor_el.contentEditable = true;
         //Placing buttons
         l = postile.WYSIWYF.editButtons.length;
         editor.buttons = new Array(l);
@@ -178,165 +102,69 @@ postile.WYSIWYF = {
             editor.buttons[i].setAttribute('type', 'button');
             editor.buttons[i].style.backgroundColor = '#E0E0E0';
             editor.buttons[i].style.border = '0 none';
-            editor.buttons[i].style.backgroundImage = 'url(//ssl.gstatic.com/ui/v1/icons/mail/html_editor.png)';
+            editor.buttons[i].style.backgroundImage = postile.staticResource(['images', 'edtior_sprite.png']);
             editor.buttons[i].style.width = '21px';
             editor.buttons[i].style.height = '21px';
             editor.buttons[i].style.margin = '2px 0px 0 3px';
             editor.buttons[i].style.padding = '0';
             editor.buttons[i].style.backgroundPosition = postile.WYSIWYF.editButtons[i].bgPos;
-            editor.buttons[i].onclick = function() { editor.buttonOperate(this.style.backgroundPosition.toLowerCase()); editor.ifmDocument.body.focus(); }
-            editor.eMenu.appendChild(editor.buttons[i]);
+            editor.buttons[i].onclick = function() { editor.buttonOperate(this.style.backgroundPosition.toLowerCase()); editor_el.focus(); }
+            icon_container_el.appendChild(editor.buttons[i]);
         }
     },
     /******Define buttons and corresponding operations******/
     editButtons: new Array(
-    //requireSql true: must selected; false: must NOT selected
     {
-        bgPos: '0px 0px',
+        bgPos: '-' + (13 * 3) + 'px 0px',
         callback: function (editor) {
-            //Bold
-            editor.ifmDocument.execCommand('bold', false, null);
+            //Link
+            document.execCommand('CreateLink', false, prompt('Enter link address (URL)', 'http://'));
         },
-        requireSel: true
+        display: [true, true]
     }, {
-        bgPos: '-' + (21 * 1) + 'px 0px',
-        callback: function (editor) {
-            //Italic
-            editor.ifmDocument.execCommand('italic', false, null);
-        },
-        requireSel: true
-    }, {
-        bgPos: '-' + (21 * 5) + 'px 0px',
-        callback: function (editor) {
-            //Color
-            postile.WYSIWYF.colorSelector(function (co) {
-                editor.ifmDocument.execCommand('ForeColor', false, co);
-            }, function() { editor.ifmDocument.body.focus(); });
-        },
-        requireSel: true
-    }, {
-        bgPos: '-' + (21 * 18) + 'px 0px',
+        bgPos: '-' + (13 * 2) + 'px 0px',
         callback: function (editor) {
             //Img
             var srcTo = prompt('Enter image address (URL)', 'http://');
             if (srcTo && srcTo != '' && srcTo != 'http://') {
-                editor.ifmDocument.execCommand('InsertImage', false, srcTo);
+                document.execCommand('InsertImage', false, srcTo);
             }
         },
-        requireSel: false
+        display: [true, true]
     }, {
-        bgPos: '-' + (21 * 7) + 'px 0px',
+        bgPos: '-' + (13 * 7) + 'px 0px',
         callback: function (editor) {
-            //Link
-            editor.ifmDocument.execCommand('CreateLink', false, prompt('Enter link address (URL)', 'http://'));
+            editor.toDisplayMode(1);
         },
-        requireSel: false
+        display: [true, false]
     }, {
-        bgPos: '-' + (21 * 2) + 'px 0px',
+        bgPos: '0px 0px',
+        callback: function (editor) {
+            //Bold
+            document.execCommand('bold', false, null);
+        },
+        display: [false, true]
+    }, {
+        bgPos: '-' + (13 * true) + 'px 0px',
+        callback: function (editor) {
+            //Italic
+            document.execCommand('italic', false, null);
+        },
+        display: [false, true]
+    }, {
+        bgPos: '-' + (13 * 5) + 'px 0px',
         callback: function (editor) {
             //Underline
-            editor.ifmDocument.execCommand('Underline', false, null);
+            document.execCommand('Underline', false, null);
         },
-        requireSel: true
+        display: [false, true]
     }, {
-        bgPos: '-' + (17 * 21) + 'px 0px',
+        bgPos: '-' + (13 * 6) + 'px 0px',
         callback: function (editor) {
-            //Preview
-            alert('膜拜');
+            editor.toDisplayMode(0);
         },
-        requireSel: false
+        display: [false, true]
     }),
-    /******实用工具一枚：颜色选择器******/
-    //默认颜色值
-    defaultColors: new Array('#000000', '#333333', '#666666', '#999999', '#CCCCCC', '#FFFFFF',
-        '#FF0000', '#00FF00', '#0000FF', '#00FFFF', '#FF00FF', '#FFFF00',
-        '#660000', '#006600', '#000066', '#006666', '#660066', '#666600',
-        '#FF6666', '#66FF66', '#6666FF', '#66FFFF', '#FF66FF', '#FFFF66',
-        '#FF9999', '#99FF99', '#9999FF', '#99FFFF', '#FF99FF', '#FFFF99', '#FFCCCC'),
-    colorSelector: function (callback, onclick) { //parameters: what to do after color selected(the callback function must receive a paramter suggesting the selected color in '#000000' format)
-        var csPanel = document.createElement('div');
-        csPanel.style.width = '120px';
-        csPanel.style.paddingLeft = '2px';
-        csPanel.style.paddingTop = '2px';
-        csPanel.style.height = '120px';
-        csPanel.style.position = 'static';
-        var l = postile.WYSIWYF.defaultColors.length;
-        var btns = new Array();
-        for (var i = 0; i < l; i++) {
-            btns[i] = document.createElement('button');
-            btns[i].style.width = '18px';
-            btns[i].style.height = '18px';
-            btns[i].style.border = '0 none';
-            btns[i].style.padding = '0';
-            btns[i].style.overflow = 'hidden';
-            btns[i].style.backgroundColor = postile.WYSIWYF.defaultColors[i];
-            btns[i].style.margin = '2px 2px 0 0';
-            csPanel.appendChild(btns[i]);
-            btns[i].onclick = function () {
-                callback(this.style.backgroundColor);
-                postile.WYSIWYF.closeBox(this.parentNode.parentNode);
-            };
-            //TO SEE: http://blog.csdn.net/yuanweihuayan/article/details/6330520
-        }
-        var selectorInput = document.createElement('input');
-        var selectorTag = document.createElement('input');
-        selectorInput.type = selectorTag.type = 'text';
-        selectorTag.readOnly = 'true';
-        selectorInput.value = postile.WYSIWYF.defaultColors[postile.WYSIWYF.defaultColors.length - 1];
-        selectorTag.value = '自选';
-        selectorInput.style.width = '58px';
-        selectorTag.style.width = '38px';
-        selectorInput.style.height = selectorTag.style.height = '18px';
-        selectorInput.style.padding = selectorTag.style.padding = '0';
-        selectorInput.style.border = selectorTag.style.border = '0 none';
-        selectorInput.style.margin = selectorTag.style.margin = '2px 2px 0 0';
-        csPanel.appendChild(selectorInput);
-        csPanel.insertBefore(selectorTag, btns[btns.length - 1]);
-        selectorInput.style.fontSize = '12px';
-        selectorInput.onchange = selectorInput.onkeydown = selectorInput.onkeyup = function () {
-            postile.WYSIWYF.defaultColors[postile.WYSIWYF.defaultColors.length - 1] = btns[btns.length - 1].style.backgroundColor = this.value;
-        };
-        var box = this.openBox(122, 122);
-        box.appendChild(csPanel);
-        box.onclick = onclick;
-    },
-    openBox: function (width, height) {
-        var holder = document.createElement('div');
-        var mask = document.createElement('div');
-        document.body.appendChild(mask);
-        holder.style.width = (width) + 'px';
-        holder.style.height = (height) + 'px';
-        mask.style.zIndex = '19520';
-        mask.style.top = '0';
-        mask.style.left = '0';
-        if (navigator.userAgent.indexOf('MSIE') != -1) {
-            mask.style.background = 'url(about:blank)';
-            mask.style.filter = 'progid:DXImageTransform.Microsoft.gradient(startcolorstr=#66444444,endcolorstr=#99000000)';
-        } else if (navigator.userAgent.indexOf('WebKit') != -1) {
-            mask.style.background = '-webkit-gradient(linear, 0 0, 0 bottom, from(rgba(68, 68, 68, 0.4)), to(rgba(0, 0, 0, 0.6)))';
-        } else if (navigator.userAgent.indexOf('Firefox') != -1) {
-            mask.style.background = '-moz-linear-gradient(top, rgba(68, 68, 68, 0.4), rgba(0, 0, 0, 0.6))';
-        } else if (navigator.userAgent.indexOf('Presto') != -1) {
-            mask.style.background = '-o-linear-gradient(top, rgba(68, 68, 68, 0.4), rgba(0, 0, 0, 0.6))';
-        } else {
-            mask.style.background = '#999999';
-        }
-        holder.style.position = 'absolute';
-        holder.style.background = '#FFF';
-        holder.style.border = '12px solid #CCC';
-        holder.style.zIndex = '52';
-        holder.style.padding = '10px';
-        mask.style.position = 'fixed';
-        mask.style.width = '100%';
-        mask.style.height = '100%';
-        holder.style.top = ((document.documentElement.clientHeight) - height - 40) / 2 + 'px';
-        holder.style.left = ((document.documentElement.clientWidth) - width - 40) / 2 + 'px';
-        mask.appendChild(holder);
-        return holder;
-    },
-    closeBox: function (holder) { //holder from openbox
-        document.body.removeChild(holder.parentNode);
-    },
     /*
     input parameters for "merge"
         characters (array)
@@ -345,7 +173,6 @@ postile.WYSIWYF = {
             |- style (object)
               |- Bold (bool)
               |- Italic (bool)
-              |- Color (string)
               |- Underline (bool)
         breakpoints (array)
           |- (string)
@@ -386,17 +213,13 @@ postile.WYSIWYF = {
             if (!chars[i].style.Underline) { pop_stack('u'); }
             if (!chars[i].style.Italic) { pop_stack('i'); }
             if (!chars[i].style.Bold) { pop_stack('b'); }
-            if (!chars[i].style.Color) { pop_stack('color'); }
-            if (chars[i].style.Color) {
-                stack_add('color', chars[i].style.Color);
-            }
             if (chars[i].style.Bold) { stack_add('b'); }
             if (chars[i].style.Italic) { stack_add('i'); }
             if (chars[i].style.Underline) { stack_add('u'); }
             op += bps[i];
             op += chars[i].content;
         }
-        op += bps[i]; pop_stack('u'); pop_stack('i'); pop_stack('b'); pop_stack('color');
+        op += bps[i]; pop_stack('u'); pop_stack('i'); pop_stack('b');
         return op;
         /*
         This section: an un-finished version
@@ -433,34 +256,14 @@ postile.WYSIWYF = {
         return op;
 
         */
-    },
-    COLOR_TYPES: { hex_6digit: /^#[0-9A-Fa-f]{6}$/, hex_3digit: /^#[0-9A-Fa-f]{3}$/, rgb: /^rgb\([0-9]{1,3}\, ?[0-9]{1,3}\, ?[0-9]{1,3}\)$/ },
-    colorNormalize: function(ipt) {
-        if (this.COLOR_TYPES.hex_3digit.test(ipt)) {
-            return ipt.toLowerCase();
-        } else if (this.COLOR_TYPES.hex_6digit.test(ipt)) {
-            return ipt.replace(/[0-9A-Fa-f]{2}/g, function(dg) {
-                return Math.ceil((parseInt(dg, 16) - 8.5) / 17).toString(16);
-            });
-        } else if (this.COLOR_TYPES.rgb.test(ipt)) {
-            var i;
-            var output = '#';
-            var nums = ipt.match(/[0-9]{1,3}/g);
-            for (i in nums) {
-                if (nums[i] > 255) { return false; }
-                output += Math.ceil((parseInt(nums[i]) - 8.5) / 17).toString(16);
-            }
-            return output;
-        }
-        return false;
     }
 };
 
 postile.WYSIWYF.Editor.prototype.getBbCode = function() {
     var Chars = new Array();
     var BreakPoints = new Array('');
-    this.ifmDocument.body.innerHTML = this.ifmDocument.body.innerHTML.replace(/\r\n|\n\r|\r|\n/g, '');
-    postile.WYSIWYF.doSpanize(this.ifmDocument.body, Chars, BreakPoints, false);
+    this.editor_el.innerHTML = this.editor_el.innerHTML.replace(/\r\n|\n\r|\r|\n/g, '');
+    postile.WYSIWYF.doSpanize(this.editor_el, Chars, BreakPoints, false);
     return postile.WYSIWYF.merge(Chars, BreakPoints);
 };
 
@@ -468,18 +271,17 @@ postile.WYSIWYF.Editor.prototype.buttonOperate = function(bgpIpt) { //when butto
     var l = postile.WYSIWYF.editButtons.length;
     for (var i = 0; i < l; i++) {
         if (bgpIpt == postile.WYSIWYF.editButtons[i].bgPos) {
-            if (postile.WYSIWYF.editButtons[i].requireSel) {
-                if (!postile.WYSIWYF.getRange(this.ifmDocument, this.ifmWindow)) {
-                    alert('Select something first please.');
-                    return;
-                }
-            } else {
-                if (postile.WYSIWYF.getRange(this.ifmDocument, this.ifmWindow)) {
-                    alert('You cannot select anything when doing this action.');
-                    return;
-                }
-            }
             postile.WYSIWYF.editButtons[i].callback(this);
+        }
+    }
+};
+
+postile.WYSIWYF.Editor.prototype.toDisplayMode = function (displayOptionIndex){
+    for(var i in this.buttons) {
+        if (postile.WYSIWYF.editButtons[i].display[displayOptionIndex]) {
+            this.buttons[i].style.display = 'inline';
+        } else {
+            this.buttons[i].style.display = 'none';
         }
     }
 };
