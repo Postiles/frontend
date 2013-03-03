@@ -191,7 +191,7 @@ html, body {
   left: 100px;
   top: 40px; }
 
-#login-button-container .login-button .image {
+#login-button-container .login-button .button-back {
   width: 120px;
   height: 120px;
   cursor: pointer;
@@ -200,20 +200,20 @@ html, body {
   -webkit-border-radius: 60px;
   -webkit-transition: box-shadow 0.4s; }
 
-#login-button-container .login-button .image:hover {
+#login-button-container .login-button .button-back:hover {
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.4), 0px 0px 190px #ffc873; }
 
-#login-button-container .login-button .image:hover img {
-  opacity: 0.7; }
-
-#login-button-container .login-button .image img {
-  position: relative;
+#login-button-container .login-button .button-back img {
+  position: absolute;
   left: 8px;
   top: 8px;
   width: 104px;
   height: 104px;
   -webkit-mask: red;
   -webkit-transition: opacity 0.4s; }
+
+#login-button-container .login-button .button-back:hover .foreground {
+  opacity: 0; }
 
 #login-button-container .login-button .text {
   position: relative;
