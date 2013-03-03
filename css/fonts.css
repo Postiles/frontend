@@ -17,3 +17,13 @@
     font-family: RobotoRegular;
     src: url('../fonts/Roboto-Regular.ttf');
 }
+
+@font-face  {
+    font-family: Play;
+    src: url('../fonts/Play-Regular.ttf');
+}
+
+@font-face  {
+    font-family: PlayBold;
+    src: url('../fonts/Play-Bold.ttf');
+}

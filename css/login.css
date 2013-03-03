@@ -5,7 +5,7 @@ html, body {
   height: 100%; }
 
 #wrapper {
-  font-family: OxygenLight;
+  font-family: RobotoRegular;
   height: 100%; }
 
 #mid-container {
@@ -89,7 +89,12 @@ html, body {
   z-index: -1;
   -webkit-border-radius: 8px;
   color: #ececec;
-  text-align: center; }
+  text-align: center;
+  cursor: pointer;
+  -webkit-transition: background 0.5s; }
+
+#sign-up-button:hover {
+  background: rgba(2, 77, 97, 0.7); }
 
 #login-form-fold {
   position: absolute;
@@ -117,6 +122,7 @@ html, body {
   margin-top: 45px; }
 
 #login-form-container .text-container .welcome-text {
+  font-family: Oxygen;
   font-size: 24pt; }
 
 #login-form-container .text-container .sub-text {
@@ -124,7 +130,6 @@ html, body {
 
 #login-form-container .login-fields {
   float: left;
-  margin-top: 10px;
   margin-left: 40px;
   color: #ececec; }
 
@@ -141,15 +146,16 @@ html, body {
 #login-form-container .login-fields input {
   margin-top: 5px;
   width: inherit;
-  height: 30px;
+  height: 26px;
   text-align: right;
   color: #024d61;
-  font-size: 10pt;
-  padding: 4px;
+  font-size: 11pt;
+  padding-right: 8px;
   background: #ececec;
-  border: 1px solid #999999;
+  border: 1px solid #aaaaaa;
   outline: none;
   -webkit-border-radius: 6px;
+  box-shadow: inset 0px 0px 8px #666666;
   -webkit-transition: box-shadow 0.3s; }
 
 #login-form-container .login-fields input:focus {
@@ -188,29 +194,78 @@ html, body {
 #login-button-container .login-button .image {
   width: 120px;
   height: 120px;
-  background: url("../images/login/login-button.png");
-  background-size: 100%;
-  -webkit-border-radius: 60px;
+  cursor: pointer;
+  background: #024d61;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.4), 0px 0px 150px #ffc873;
-  z-index: -100;
-  cursor: pointer; }
+  -webkit-border-radius: 60px;
+  -webkit-transition: box-shadow 0.4s; }
+
+#login-button-container .login-button .image:hover {
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.4), 0px 0px 190px #ffc873; }
+
+#login-button-container .login-button .image:hover img {
+  opacity: 0.7; }
+
+#login-button-container .login-button .image img {
+  position: relative;
+  left: 8px;
+  top: 8px;
+  width: 104px;
+  height: 104px;
+  -webkit-mask: red;
+  -webkit-transition: opacity 0.4s; }
 
 #login-button-container .login-button .text {
   position: relative;
-  left: 3px;
-  font-family: OxygenBold;
-  font-size: 25pt;
-  color: #024d61; }
+  top: 10px;
+  left: 3px; }
 
 #external-login-container {
   position: absolute;
-  top: 200px;
+  top: 40px;
   left: 80px;
   width: 330px;
   background: #c2cfd2;
   padding: 10px;
+  z-index: -2;
   -webkit-border-bottom-left-radius: 6px;
-  -webkit-border-bottom-right-radius: 6px; }
+  -webkit-border-bottom-right-radius: 6px;
+  -webkit-transition: top 0.5s; }
+
+#external-login-container:hover {
+  top: 200px; }
+
+#external-login-container .login-form-container {
+  color: #024d61;
+  padding: 20px; }
+
+#external-login-container .login-title {
+  font-family: PlayBold;
+  font-size: 20pt;
+  margin-left: 10px; }
+
+#external-login-container .login-fields-container {
+  font-family: Play; }
+
+#external-login-container .login-fields-container .group {
+  margin-top: 20px; }
+
+#external-login-container .login-fields-container label {
+  position: relative;
+  top: 2px; }
+
+#external-login-container .login-fields-container input {
+  float: right;
+  width: 200px;
+  height: 25px;
+  outline: none;
+  border: none;
+  padding: 5px;
+  color: #024d61;
+  -webkit-border-radius: 6px; }
+
+#external-login-container .bottom-container {
+  margin-top: 10px; }
 
 #external-login-container .text {
   margin-left: 70px;
@@ -228,24 +283,7 @@ html, body {
   margin-left: 15px;
   width: 15px;
   height: 15px;
-  background-repeat: no-repeat;
-  background-position: center;
   cursor: pointer; }
-
-#external-login-container .icons #twitter-icon {
-  background-image: url("../images/login/twitter-icon.png"); }
-
-#external-login-container .icons #gplus-icon {
-  background-image: url("../images/login/gplus-icon.png"); }
-
-#external-login-container .icons #rss-icon {
-  background-image: url("../images/login/rss-icon.png"); }
-
-#external-login-container .icons #linkedin-icon {
-  background-image: url("../images/login/linkedin-icon.png"); }
-
-#external-login-container .icons #facebook-icon {
-  background-image: url("../images/login/facebook-icon.png"); }
 
 #bottom-nav {
   position: absolute;
@@ -262,6 +300,9 @@ html, body {
 
 #bottom-nav .item {
   cursor: pointer; }
+
+#bottom-nav .item:hover {
+  text-decoration: underline; }
 
 #bottom-nav .delimeter {
   margin-left: 15px;

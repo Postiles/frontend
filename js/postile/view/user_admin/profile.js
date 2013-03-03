@@ -49,6 +49,9 @@ postile.view.profile = {
             this.last_name_el = goog.dom.getElement("last_name");
             this.last_name_el.value = profile.last_name;
 
+            this.gender_el = goog.dom.getElement("gender");
+            this.gender_el.value = profile.gender;
+
             this.submit_button = goog.dom.getElement("submit_button");
             goog.events.listen(this.submit_button, goog.events.EventType.CLICK, 
                     function() {

@@ -1,10 +1,9 @@
 <div id="wrapper">
-    <link rel="stylesheet" type="text/css" href="/css/fonts.css" />
-    <link rel="stylesheet" type="text/css" href="/css/login.css" />
+    <link rel="stylesheet" type="text/css" href="css/fonts.css" />
+    <link rel="stylesheet" type="text/css" href="css/login.css" />
     <div id="mid-container">
         <div id="postile-title">
-            <span class="postiles">POSTILES</span>
-            <span class="com">.com</span>
+            <img src="images/login/title.png" />
         </div>
         <div id="login-container">
             <div id="back-pages-container">
@@ -47,19 +46,48 @@
             <div id="login-button-container">
                 <div class="link-to-button"></div>
                 <div class="login-button">
-                    <div class="image"></div>
-                    <div class="text">LOG IN</div>
+                    <div class="image"><img src="images/login/login-button-trans.png" /></div>
+                    <div class="text"><img src="images/login/login-text.png" /></div>
                 </div>
             </div>
 
             <div id="external-login-container">
-                <span class="text">or log in with</span>
-                <div class="icons">
-                    <span id="twitter-icon" class="external-icon"></span>
-                    <span id="gplus-icon" class="external-icon"></span>
-                    <span id="rss-icon" class="external-icon"></span>
-                    <span id="linkedin-icon" class="external-icon"></span>
-                    <span id="facebook-icon" class="external-icon"></span>
+                <div id="external-login-fields-container">
+                    <div class="login-form-container">
+                        <div class="login-title">
+                            Twitter Account
+                        </div>
+                        <div class="login-fields-container">
+                            <div class="group">
+                                <label for="external-account">Account</label>
+                                <input type="text" name="account">
+                            </div>
+                            <div class="group">
+                                <label for="external-password">Password</label>
+                                <input type="password" name="password">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bottom-container">
+                    <span class="text">or log in with</span>
+                    <div class="icons">
+                        <span id="twitter-icon" class="external-icon">
+                            <img src="images/login/twitter-icon.png" />
+                        </span>
+                        <span id="gplus-icon" class="external-icon">
+                            <img src="images/login/gplus-icon.png" />
+                        </span>
+                        <span id="rss-icon" class="external-icon">
+                            <img src="images/login/rss-icon.png" />
+                        </span>
+                        <span id="linkedin-icon" class="external-icon">
+                            <img src="images/login/linkedin-icon.png" />
+                        </span>
+                        <span id="facebook-icon" class="external-icon">
+                            <img src="images/login/facebook-icon.png" />
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>
