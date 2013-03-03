@@ -228,14 +228,14 @@ html, body {
 #login-button-container .login-button .text {
   position: relative;
   top: 5px;
-  left: 10px;
+  left: 12px;
   font-family: OxygenBold;
   color: #024d61;
   font-size: 24pt;
   -webkit-transition: color 0.4s, text-shadow 0.4s; }
 
 #login-button-container .login-button:hover .text {
-  text-shadow: 0px 0px 10px rgba(0, 0, 0, 0.4);
+  text-shadow: 0px 0px 10px #e2672b;
   color: #e2672b; }
 
 #external-login-container {
