@@ -4,44 +4,44 @@ html, body {
   font-size: 10pt; }
 
 .profile-preview {
-  font-family: Oxygen; }
-  .profile-preview .image-container {
-    float: left; }
-    .profile-preview .image-container .left-fold {
+  font-family: RobotoRegular; }
+  .profile-preview .image-container .left-fold {
+    position: absolute;
+    margin-left: -30px;
+    margin-top: 20px;
+    width: 30px;
+    height: 100px; }
+    .profile-preview .image-container .left-fold .back-page {
       position: absolute;
-      margin-left: -30px;
-      margin-top: 30px;
-      width: 30px;
-      height: 100px; }
-      .profile-preview .image-container .left-fold .back-page {
-        position: absolute;
-        width: inherit;
-        height: inherit;
-        background: #024d61;
-        box-shadow: 0px 0px 8px #024d61; }
-      .profile-preview .image-container .left-fold .front-page {
-        position: absolute;
-        width: 50px;
-        height: inherit;
-        margin-top: 9px;
-        background: #024d61;
-        z-index: 2;
-        -webkit-transform: skewY(20deg);
-        box-shadow: 0px 0px 6px black; }
-    .profile-preview .image-container .picture {
-      position: relative;
-      width: 200px;
-      height: 200px;
-      -webkit-border-radius: 10px;
-      border: 5px #024d61 solid;
+      width: inherit;
+      height: inherit;
+      background: #024d61;
       box-shadow: 0px 0px 8px #024d61; }
-      .profile-preview .image-container .picture img {
-        width: inherit;
-        height: inherit;
-        -webkit-border-radius: 5px; }
+    .profile-preview .image-container .left-fold .front-page {
+      position: absolute;
+      width: 50px;
+      height: inherit;
+      margin-top: 9px;
+      background: #024d61;
+      z-index: 2;
+      -webkit-transform: skewY(20deg);
+      box-shadow: 0px 0px 6px black; }
+  .profile-preview .image-container .picture {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    -webkit-border-radius: 10px;
+    border: 5px #024d61 solid;
+    box-shadow: 0px 0px 8px #024d61; }
+    .profile-preview .image-container .picture img {
+      width: inherit;
+      height: inherit;
+      -webkit-border-radius: 5px; }
   .profile-preview .info-container {
-    float: left;
-    width: 500px; }
+    width: 500px;
+    position: relative;
+    left: 210px;
+    top: -210px; }
     .profile-preview .info-container .exit-button {
       position: relative;
       left: 490px;
@@ -63,6 +63,7 @@ html, body {
       color: #ececec;
       box-shadow: 0px 0px 8px #024d61; }
       .profile-preview .info-container .top .name {
+        font-family: Oxygen;
         font-size: 13pt; }
       .profile-preview .info-container .top .signiture {
         margin-top: 15px; }
@@ -77,7 +78,8 @@ html, body {
       -webkit-border-bottom-right-radius: 10px;
       box-shadow: 0px 0px 8px #bacfd5; }
       .profile-preview .info-container .bottom .item-container .item {
-        margin-top: 10px; }
+        margin-top: 6px;
+        display: table; }
         .profile-preview .info-container .bottom .item-container .item .icon {
           float: left;
           width: 15px;
@@ -86,14 +88,25 @@ html, body {
             width: inherit;
             height: inherit; }
         .profile-preview .info-container .bottom .item-container .item .text {
+          float: left;
           margin-left: 24px; }
           .profile-preview .info-container .bottom .item-container .item .text .highlight {
             color: #024d61;
             cursor: pointer; }
           .profile-preview .info-container .bottom .item-container .item .text .highlight:hover {
             text-decoration: underline; }
+        .profile-preview .info-container .bottom .item-container .item .edit {
+          float: left;
+          margin-left: 20px;
+          color: #999999;
+          cursor: pointer;
+          visibility: hidden; }
+        .profile-preview .info-container .bottom .item-container .item .edit:hover {
+          text-decoration: underline; }
+      .profile-preview .info-container .bottom .item-container .item:hover .edit {
+        visibility: visible; }
       .profile-preview .info-container .bottom .self-intro {
         margin-left: 24px;
-        margin-top: 15px;
+        margin-top: 20px;
         margin-right: 20px;
         text-align: justify; }
