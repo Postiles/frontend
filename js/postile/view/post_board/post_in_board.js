@@ -129,7 +129,7 @@ postile.view.post_in_board.Post.prototype.submitEdit = function(to_submit) {
 postile.view.post_in_board.Post.prototype.remove = function() {
     var instance = this;
     if (window.confirm('Sure to delete?')) {
-        postile.ajax(['post','delete'], { post_id: this.id }, function(data) {
+        postile.ajax(['post','delete'], { post_id: this.post.id }, function(data) {
             new postile.toast.Toast(5, "The post is successfully deleted. Please refresh.");
             instance.removeFromBoard();
         });
@@ -151,6 +151,8 @@ postile.view.post_in_board.Post.prototype.edit = function() {
         //title.render(instance.container_el);
         instance.post_title_el.contentEditable = true;
         goog.dom.classes.add(instance.post_title_el, 'selectable');
+        //hide the original bottom bar
+        goog.dom.removeChildren(instance.post_icon_container_el);
         var y_editor = new postile.WYSIWYF.Editor(instance.post_content_el, instance.post_icon_container_el);
         goog.dom.classes.add(instance.post_content_el, 'selectable');
         instance.board.disableMovingCanvas = true; //disable moving

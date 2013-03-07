@@ -98,14 +98,13 @@ postile.WYSIWYF = {
         l = postile.WYSIWYF.editButtons.length;
         editor.buttons = new Array(l);
         for (var i = 0; i < l; i++) {
-            editor.buttons[i] = document.createElement('input');
+            editor.buttons[i] = document.createElement('div');
+            editor.buttons[i].className = 'post_icon';
             editor.buttons[i].setAttribute('type', 'button');
-            editor.buttons[i].style.backgroundColor = '#E0E0E0';
             editor.buttons[i].style.border = '0 none';
-            editor.buttons[i].style.backgroundImage = postile.staticResource(['images', 'edtior_sprite.png']);
-            editor.buttons[i].style.width = '21px';
-            editor.buttons[i].style.height = '21px';
-            editor.buttons[i].style.margin = '2px 0px 0 3px';
+            editor.buttons[i].style.backgroundImage = 'url('+postile.staticResource(['images', 'edtior_sprite.png'])+')';
+            editor.buttons[i].style.width = '13px';
+            editor.buttons[i].style.height = '13px';
             editor.buttons[i].style.padding = '0';
             editor.buttons[i].style.backgroundPosition = postile.WYSIWYF.editButtons[i].bgPos;
             editor.buttons[i].onclick = function() { editor.buttonOperate(this.style.backgroundPosition.toLowerCase()); editor_el.focus(); }
@@ -264,7 +263,7 @@ postile.WYSIWYF.Editor.prototype.getBbCode = function() {
     var BreakPoints = new Array('');
     this.editor_el.innerHTML = this.editor_el.innerHTML.replace(/\r\n|\n\r|\r|\n/g, '');
     postile.WYSIWYF.doSpanize(this.editor_el, Chars, BreakPoints, false);
-    return postile.WYSIWYF.merge(Chars, BreakPoints);
+    return postile.WYSIWYF.merge(Chars, BreakPoints).replace(/^[\r\n\s]*/, '').replace(/[\r\n\s]*$/, ''); //trim
 };
 
 postile.WYSIWYF.Editor.prototype.buttonOperate = function(bgpIpt) { //when button being clicked
