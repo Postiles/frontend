@@ -72,6 +72,9 @@ postile = { //the base of posTile frontend framework
             postile.ui.load(document.body, postile.staticResource(['profile_display.html']));
             postile.view.profile.get_profile(this.params["user_id"]);
         });
+        postile.router.map('/renrenlogin').to(function() {
+            postile.ui.load(document.body, postile.staticResource(['renren_test.html']));
+        });
     }
 };
 
