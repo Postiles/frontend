@@ -318,7 +318,7 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
     var i;
     var keyHandler;
     var instance = this;
-    postile.view.View.call(this);
+    postile.view.FullScreenView.call(this);
 
     /* BEGINNING OF MEMBER DEFINITION */
     this.topic_id = topic_id;
@@ -421,10 +421,12 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
     });
 }
 
-goog.inherits(postile.view.post_board.PostBoard, postile.view.View);
+goog.inherits(postile.view.post_board.PostBoard, postile.view.FullScreenView);
 
 //postile.view.View required component
 postile.view.post_board.PostBoard.prototype.unloaded_stylesheets = ['fonts.css', 'post_board.css'];
+
+postile.view.post_board.PostBoard.prototype.html_segment = postile.staticResource(['post_board.html']);
 
 //postile.view.View required component
 postile.view.post_board.PostBoard.prototype.on_exit = function() {

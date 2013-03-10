@@ -43,11 +43,10 @@ postile = { //the base of posTile frontend framework
         });
 
         postile.router.map('/test/:id/:domain/:port').to(function(){
-            postile.ui.load(document.body, postile.staticResource(['post_board.html']));
             postile.dhost = this.params["domain"];
             postile.dport = this.params["port"];
             postile.fayeLocation = 'http://'+postile.dhost+':9292/faye';
-            window.pb = new postile.view.post_board.PostBoard(this.params["id"]);
+            new postile.view.post_board.PostBoard(this.params["id"]);
         });
 
         postile.router.map('/sign_up').to(function() {
