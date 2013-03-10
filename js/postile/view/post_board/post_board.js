@@ -592,8 +592,8 @@ postile.view.post_board.PostBoard.prototype.createPost = function(info) {
     postile.ajax(['post','new'], req, function(data) {
         ret.id = data.message;
         instance.mask.style.display = 'none';
-        instance.renderArray([ret]);
-        instance.currentPosts[ret.post.id].edit();
+        instance.renderArray([{post: ret, username: ''}]);
+        instance.currentPosts[ret.id].edit();
     });
 }
 
