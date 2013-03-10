@@ -1,9 +1,8 @@
-/**********************全文开始**********************/
-
-//** TODO: direct rendering **//
-
-//var postile = {};
 goog.provide('postile.WYSIWYF');
+
+/*******************************************************
+Note: content below does not use ANY Google Closure code
+*******************************************************/
 
 postile.WYSIWYF = {
     /******预加载装置******/
@@ -110,6 +109,7 @@ postile.WYSIWYF = {
             editor.buttons[i].onclick = function() { editor.buttonOperate(this.style.backgroundPosition.toLowerCase()); editor_el.focus(); }
             icon_container_el.appendChild(editor.buttons[i]);
         }
+        editor.toDisplayMode(0);
     },
     /******Define buttons and corresponding operations******/
     editButtons: new Array(
@@ -284,5 +284,3 @@ postile.WYSIWYF.Editor.prototype.toDisplayMode = function (displayOptionIndex){
         }
     }
 };
-
-/**********************全文结束**********************/

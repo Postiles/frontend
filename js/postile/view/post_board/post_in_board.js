@@ -145,7 +145,7 @@ postile.view.post_in_board.Post.prototype.edit = function() {
     var instance = this;
     var start_waiting = new postile.toast.Toast(0, "Please wait... We're starting editing... Be ready for 36s.");
     this.disable();
-    postile.ajax(['post','start_edit'], { post_id: this.post.id }, function(data) {
+    var go_editing = function() {
         //var title = new goog.ui.LabelInput(postile._('post_title_prompt'));
         //goog.dom.removeChildren(instance.container_el);
         //title.render(instance.container_el);
@@ -171,7 +171,11 @@ postile.view.post_in_board.Post.prototype.edit = function() {
         goog.events.listen(y_editor.editor_el, goog.events.EventType.FOCUS, focusHandler);
         goog.events.listen(instance.post_title_el, goog.events.EventType.FOCUS, focusHandler);
         y_editor.editor_el.focus();
-    });
+    }
+    /*** START SPECIAL DEBUGGING **/
+    go_editing(); return;
+    /*** END SPECIAL DEBUGGING ***/
+    postile.ajax(['post','start_edit'], { post_id: this.post.id }, go_editing);
 }
 
 postile.view.post_in_board.InlineCommentsBlock = function(postObj) {
