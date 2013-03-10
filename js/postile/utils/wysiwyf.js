@@ -106,6 +106,7 @@ postile.WYSIWYF = {
             editor.buttons[i].style.height = '13px';
             editor.buttons[i].style.padding = '0';
             editor.buttons[i].style.backgroundPosition = postile.WYSIWYF.editButtons[i].bgPos;
+            editor.buttons[i].addEventListener('mousedown', function(evt) { evt.preventDefault(); });
             editor.buttons[i].onclick = function() { editor.buttonOperate(this.style.backgroundPosition.toLowerCase()); editor_el.focus(); }
             icon_container_el.appendChild(editor.buttons[i]);
         }
