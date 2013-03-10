@@ -6,18 +6,37 @@ goog.require('goog.dom');
 goog.require('postile.fx.effects');
 
 /*
-How to create a normal view:
+=== How to create a normal view ===
 
 1. have a class inherits "positle.view.View".
 2. [optional, only when you need to load css] have a "unloaded_stylesheets" in its prototype, which is an array containing css files that need to be loaded.
-3. [optional, only when you need to listen to global events] have a "global_handlers" array in its prototype.
-4. [optional, only when you need to have something done on exiting] have a "on_exit" function, which will be called when leaving the view
 
-How to create a pop-up view:
+=== How to create a pop-up view ===
 
 1. have a class inherits "postile.view.PopView".
-2-4. the same as normal view.
+2. the same as normal view.
+
+just put your fucking things into this.container, and use "open" and "close" if needed
+
+=== How to create a fullscreen view ===
+
+1. have a class inherits "postile.view.FullScreenView", and use "html_segment" property to represent the HTML that need to be loaded into document.body
+2. the same as normal view
+
+=== How to create a tip view ===
+
+1.  have a class inherits "postile.view.TipView".
+2. the same as normal view
+
+just put your fucking things into this.container, and use "open" and "close" if needed. 
+
+the "open: functon will receive a parameter indicating the reference element and container element of the tip view. If the reference element is not set, the parent element of the reference element will be used
+
+directly set "container.style.left" and "container.style.top" to further offset the container
+
 */
+
+postile.loaded_stylesheets = {};
 
 postile.view.View = function() {
     var i;
@@ -27,7 +46,10 @@ postile.view.View = function() {
     }
     if (this.unloaded_stylesheets) {
         for (i in this.unloaded_stylesheets) {
-            goog.dom.appendChild(document.getElementsByTagName('head')[0], goog.dom.createDom('link', { type: 'text/css', rel: 'stylesheet', href: postile.staticResource(['css',this.unloaded_stylesheets[i]]) }));
+            if (!(this.unloaded_stylesheets[i] in postile.loaded_stylesheets)) {
+                postile.loaded_stylesheets[this.unloaded_stylesheets[i]] = true;
+                goog.dom.appendChild(document.getElementsByTagName('head')[0], goog.dom.createDom('link', { type: 'text/css', rel: 'stylesheet', href: postile.staticResource(['css',this.unloaded_stylesheets[i]]) }));
+            }
         }
     }
     this.unloadedStylesheets = [];
@@ -36,18 +58,18 @@ postile.view.View = function() {
 postile.view.PopView = function() {
     postile.view.View.call(this);
     this.container = goog.dom.createDom('div', 'pop_container');
+    this.container_wrap = goog.dom.createDom('div');
+    goog.dom.classes.add(this.container_wrap, 'pop_popup');
+    goog.dom.appendChild(this.container_wrap, this.container);
+    this.mask = goog.dom.createDom('div', 'pop_mask');
+    goog.dom.appendChild(this.mask, this.container_wrap);
 }
 
 goog.inherits(postile.view.PopView, postile.view.View);
 
 postile.view.PopView.prototype.open = function(width) {
-    var mask;
+    var mask = this.mask;
     this.container.style.width = width + 'px';
-    this.container_wrap = goog.dom.createDom('div');
-    goog.dom.classes.add(this.container_wrap, 'pop_popup');
-    mask = this.mask = goog.dom.createDom('div', 'pop_mask');
-    goog.dom.appendChild(this.container_wrap, this.container);
-    goog.dom.appendChild(this.mask, this.container_wrap);
     goog.dom.appendChild(document.body, this.mask);
     postile.fx.effects.resizeIn(this.container);
     postile.fx.Animate(function(i) { mask.style.opacity = i; }, 400);
@@ -56,3 +78,30 @@ postile.view.PopView.prototype.open = function(width) {
 postile.view.PopView.prototype.close = function() {
     goog.dom.removeNode(this.mask);
 }
+
+postile.view.FullScreenView = function() {
+    postile.view.View.call(this);
+    postile.ui.load(document.body, this.html_segment);
+}
+
+goog.inherits(postile.view.FullScreenView, postile.view.View);
+
+postile.view.TipView = function() {
+    postile.view.View.call(this);
+    this.container = goog.dom.createDom('div');
+    this.container.style.position = 'absolute';
+    this.container_wrap = goog.dom.createDom('div');
+    goog.dom.appendChild(this.container_wrap, this.container);
+    this.container_wrap.style.position = 'absolute';
+}
+
+goog.inherits(postile.view.TipView, postile.view.View);
+
+postile.view.TipView.prototype.open = function(reference, parent) {
+    if (!parent) { parent = reference.parentNode; }
+    var coord = goog.style.getRelativePosition(reference, parent);
+    goog.style.setPosition(this.container_wrap, coord);
+    goog.dom.appendChild(parent, this.container_wrap);
+}
+
+postile.view.TipView.prototype.close = function() { /* Not implemented yet */ }

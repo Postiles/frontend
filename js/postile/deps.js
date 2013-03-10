@@ -25,3 +25,4 @@ goog.addDependency('../postile/view/user_admin/create_user.js', ['postile.view.c
 goog.addDependency('../postile/view/user_admin/profile.js', ['postile.view.profile'], ['goog.dom', 'goog.events', 'postile.view']);
 goog.addDependency('../postile/view/user_admin/user_admin.js', ['postile.view.user_admin'], ['goog.dom', 'goog.events', 'postile.view']);
 goog.addDependency('../postile/view/view.js', ['postile.view'], ['goog.dom', 'postile.fx.effects']);
+goog.addDependency('../postile/user/renren.js',['postile.renren_connection'], ['goog.net.Cookies', 'goog.events']);
