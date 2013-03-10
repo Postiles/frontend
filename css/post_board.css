@@ -129,13 +129,14 @@ html, body {
   background-image: url("../images/popup_icon.png"); }
 
 #search_box {
-  display: none;
-  background: #024d61; }
+  position: absolute;
+  top: 35px;
+  right: 30px;
+  display: none; }
 
 #search_box_caret {
   position: relative;
-  left: 228px;
-  top: 33px;
+  left: 268px;
   width: 0;
   height: 0;
   border-left: 8px solid transparent;
@@ -144,9 +145,6 @@ html, body {
   z-index: 100; }
 
 #search_box_container {
-  position: absolute;
-  top: 45px;
-  right: 30px;
   width: 300px;
   background: #3d7d8e; }
 

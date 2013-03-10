@@ -37,6 +37,23 @@ html, body {
       width: inherit;
       height: inherit;
       -webkit-border-radius: 5px; }
+    .profile-preview .image-container .picture .edit {
+      position: absolute;
+      width: 100%;
+      background: black;
+      bottom: 0;
+      color: white;
+      opacity: 0;
+      text-align: center;
+      padding: 5px 0px;
+      cursor: pointer;
+      -webkit-border-bottom-left-radius: 5px;
+      -webkit-border-bottom-right-radius: 5px;
+      -webkit-transition: opacity 0.3s; }
+      .profile-preview .image-container .picture .edit:hover {
+        text-decoration: underline; }
+    .profile-preview .image-container .picture:hover .edit {
+      opacity: 0.7; }
   .profile-preview .info-container {
     width: 500px;
     position: relative;
@@ -50,11 +67,16 @@ html, body {
       height: 20px;
       z-index: 2;
       cursor: pointer;
+      background: black;
       -webkit-border-radius: 10px;
-      box-shadow: 0px 0px 8px #024d61; }
-      .profile-preview .info-container .exit-button img {
-        width: inherit;
-        height: inherit; }
+      box-shadow: 0px 0px 6px #024d61;
+      -webkit-transition: box-shadow 0.5s; }
+      .profile-preview .info-container .exit-button .x {
+        position: relative;
+        left: 7px;
+        color: white; }
+      .profile-preview .info-container .exit-button:hover {
+        box-shadow: 0px 0px 15px #024d61; }
     .profile-preview .info-container .top {
       position: relative;
       z-index: 1;
@@ -67,12 +89,22 @@ html, body {
         font-size: 13pt; }
       .profile-preview .info-container .top .signiture {
         margin-top: 15px; }
+        .profile-preview .info-container .top .signiture .edit {
+          margin-left: 10px;
+          color: #999999;
+          cursor: pointer;
+          visibility: hidden; }
+          .profile-preview .info-container .top .signiture .edit:hover {
+            text-decoration: underline; }
+        .profile-preview .info-container .top .signiture:hover .edit {
+          visibility: visible; }
     .profile-preview .info-container .bottom {
       position: relative;
       z-index: 0;
       width: 440px;
       margin-left: 10px;
       padding: 20px;
+      padding-bottom: 30px;
       background: #bacfd5;
       -webkit-border-bottom-left-radius: 10px;
       -webkit-border-bottom-right-radius: 10px;
@@ -89,7 +121,7 @@ html, body {
             height: inherit; }
         .profile-preview .info-container .bottom .item-container .item .text {
           float: left;
-          margin-left: 24px; }
+          margin-left: 10px; }
           .profile-preview .info-container .bottom .item-container .item .text .highlight {
             color: #024d61;
             cursor: pointer; }
@@ -101,12 +133,11 @@ html, body {
           color: #999999;
           cursor: pointer;
           visibility: hidden; }
-        .profile-preview .info-container .bottom .item-container .item .edit:hover {
-          text-decoration: underline; }
-      .profile-preview .info-container .bottom .item-container .item:hover .edit {
-        visibility: visible; }
+          .profile-preview .info-container .bottom .item-container .item .edit:hover {
+            text-decoration: underline; }
+        .profile-preview .info-container .bottom .item-container .item:hover .edit {
+          visibility: visible; }
       .profile-preview .info-container .bottom .self-intro {
         margin-left: 24px;
-        margin-top: 20px;
-        margin-right: 20px;
-        text-align: justify; }
+        margin-top: 15px;
+        margin-right: 20px; }
