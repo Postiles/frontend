@@ -17,6 +17,7 @@ goog.require('postile.fx.effects');
 goog.require('postile.ajax');
 goog.require('postile.faye');
 goog.require('goog.dom');
+goog.require('goog.style');
 goog.require('goog.events');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.ui.Textarea');
@@ -24,6 +25,7 @@ goog.require('goog.events.KeyHandler');
 goog.require('postile.toast');
 goog.require('postile.events');
 goog.require('postile.view.post_in_board');
+goog.require('postile.view.board_more_pop');
 
 postile.view.post_board.handlers.canvas_mousedown = function(e) {
     if (!e.isButton(0)) { return; }
@@ -221,7 +223,6 @@ postile.view.post_board.handlers.keypress = function(instance, e){
     }    
 }
 
-/* guanlun hacks */
 postile.view.post_board.handlers.search = function(instance) {
     // people search result
     var search_result_people = goog.dom.getElement("search_result_people");
@@ -240,85 +241,108 @@ postile.view.post_board.handlers.search = function(instance) {
 
     var search_value = goog.dom.getElement("search_input_field").value;
 
-    postile.ajax(['search','search_user'], { search: search_value }, function(data) {
-        user_arr = JSON.parse(data.message);
-        for (i in user_arr) {
-            user = user_arr[i];
+    if (search_value) {
+        postile.ajax(['search','search_user'], { search: search_value }, function(data) {
+            user_arr = JSON.parse(data.message);
+            if (user_arr.length == 0) {
+                goog.style.showElement(search_result_people, false);
+            } else {
+                goog.style.showElement(search_result_people, true);
+            }
+            for (i in user_arr) {
+                user = user_arr[i];
 
-            // people item
-            var people_result = goog.dom.createDom("div", "search_result_item search_result_people");
-            goog.dom.appendChild(people_list, people_result);
+                // people item
+                var people_result = goog.dom.createDom("div", "search_result_item search_result_people");
+                goog.dom.appendChild(people_list, people_result);
 
-            // profile image
-            var result_image = goog.dom.createDom("div", "search_result_image");
-            goog.dom.appendChild(people_result, result_image);
+                // profile image
+                var result_image = goog.dom.createDom("div", "search_result_image");
+                goog.dom.appendChild(people_result, result_image);
 
-            // right container
-            var result_right_container = goog.dom.createDom("div", "search_result_right_container");
-            goog.dom.appendChild(people_result, result_right_container);
+                // right container
+                var result_right_container = goog.dom.createDom("div", "search_result_right_container");
+                goog.dom.appendChild(people_result, result_right_container);
 
-            // title (username)
-            var result_item_title = goog.dom.createDom("div", "search_result_item_title");
-            result_item_title.innerHTML = user.username;
-            goog.dom.appendChild(result_right_container, result_item_title);
+                // title (username)
+                var result_item_title = goog.dom.createDom("div", "search_result_item_title");
+                result_item_title.innerHTML = user.username;
+                goog.dom.appendChild(result_right_container, result_item_title);
 
-            // info (email)
-            var result_item_info = goog.dom.createDom("div", "search_result_item_info");
-            result_item_info.innerHTML = user.email;
-            goog.dom.appendChild(result_right_container, result_item_info);
+                // info (email)
+                var result_item_info = goog.dom.createDom("div", "search_result_item_info");
+                result_item_info.innerHTML = user.email;
+                goog.dom.appendChild(result_right_container, result_item_info);
+            }
+        });
+
+        postile.ajax(['search','search_topic'], { search: search_value }, function(data) {
+            topic_arr = JSON.parse(data.message);
+            if (topic_arr.length == 0) {
+                goog.style.showElement(search_result_topic, false);
+            } else {
+                goog.style.showElement(search_result_topic, true);
+            }
+            for (i in topic_arr) {
+                topic = topic_arr[i];
+                console.log(topic);
+
+                // topic item
+                var topic_result = goog.dom.createDom("div", "search_result_item search_result_topic");
+                goog.dom.appendChild(topic_list, topic_result);
+
+                // profile image
+                var result_image = goog.dom.createDom("div", "search_result_image");
+                goog.dom.appendChild(topic_result, result_image);
+
+                // right container
+                var result_right_container = goog.dom.createDom("div", "search_result_right_container");
+                goog.dom.appendChild(topic_result, result_right_container);
+
+                // title (name)
+                var result_item_title = goog.dom.createDom("div", "search_result_item_title");
+                result_item_title.innerHTML = topic.name;
+                goog.dom.appendChild(result_right_container, result_item_title);
+
+                // info (description)
+                var result_item_info = goog.dom.createDom("div", "search_result_item_info");
+                result_item_info.innerHTML = topic.description;
+                goog.dom.appendChild(result_right_container, result_item_info);
+            }
+        });
+
+        postile.ajax(['search','search_post'], { search: search_value }, function(data) {
+            post_arr = JSON.parse(data.message); // not sure why here I need one more level of parsing
+            if (post_arr.length == 0) {
+                goog.style.showElement(search_result_post, false);
+            } else {
+                goog.style.showElement(search_result_post, true);
+            }
+            for (i in post_arr) {
+                post = post_arr[i];
+
+                var post_result = goog.dom.createDom("div", "search_result_item search_result_post");
+                goog.dom.appendChild(post_list, post_result);
+
+                var item_title = goog.dom.createDom("div", "search_result_item_title");
+                item_title.innerHTML = post.title;
+                goog.dom.appendChild(post_result, item_title);
+            }
+        });
+    } else {
+        /* hides all the search result containers */
+        this.search_result_containers = goog.dom.getElementsByClass("search_result_category");
+        for (i = 0; i < this.search_result_containers.length; i++) {
+            goog.style.showElement(this.search_result_containers[i], false);
         }
-    });
-
-    postile.ajax(['search','search_topic'], { search: search_value }, function(data) {
-        topic_arr = JSON.parse(data.message);
-        for (i in topic_arr) {
-            topic = topic_arr[i];
-            console.log(topic);
-
-            // topic item
-            var topic_result = goog.dom.createDom("div", "search_result_item search_result_topic");
-            goog.dom.appendChild(topic_list, topic_result);
-
-            // profile image
-            var result_image = goog.dom.createDom("div", "search_result_image");
-            goog.dom.appendChild(topic_result, result_image);
-
-            // right container
-            var result_right_container = goog.dom.createDom("div", "search_result_right_container");
-            goog.dom.appendChild(topic_result, result_right_container);
-
-            // title (name)
-            var result_item_title = goog.dom.createDom("div", "search_result_item_title");
-            result_item_title.innerHTML = topic.name;
-            goog.dom.appendChild(result_right_container, result_item_title);
-
-            // info (description)
-            var result_item_info = goog.dom.createDom("div", "search_result_item_info");
-            result_item_info.innerHTML = topic.description;
-            goog.dom.appendChild(result_right_container, result_item_info);
-        }
-    });
-
-    postile.ajax(['search','search_post'], { search: search_value }, function(data) {
-        post_arr = JSON.parse(data.message); // not sure why here I need one more level of parsing
-        for (i in post_arr) {
-            post = post_arr[i];
-
-            var post_result = goog.dom.createDom("div", "search_result_item search_result_post");
-            goog.dom.appendChild(post_list, post_result);
-
-            var item_title = goog.dom.createDom("div", "search_result_item_title");
-            item_title.innerHTML = post.title;
-            goog.dom.appendChild(post_result, item_title);
-        }
-    });
+    }
 }
 
 postile.view.post_board.PostBoard = function(topic_id) { //constructor
     var i;
     var keyHandler;
     var instance = this;
-    postile.view.View.call(this);
+    postile.view.FullScreenView.call(this);
 
     /* BEGINNING OF MEMBER DEFINITION */
     this.topic_id = topic_id;
@@ -345,7 +369,6 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
     /* END OF MEMBER DEFINITION */
     goog.events.listen(this.viewport, goog.events.EventType.SELECTSTART, function(){ return false; }); //disable text selecting, for ie
 
-    /* guanlun hacking */
     goog.dom.appendChild(goog.dom.getElement("wrapper"), this.viewport);
 
     this.search_input_field = goog.dom.getElement("search_input_field");
@@ -356,10 +379,13 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
     goog.events.listen(this.search_button, goog.events.EventType.CLICK, function(e) {
         this.search_box = goog.dom.getElement("search_box");
         this.search_box.style.display = "block";
-    });
-    /* guanlun hacked */
 
-    // goog.dom.appendChild(postile.wrapper, this.viewport);
+        /* hides all the search result containers */
+        this.search_result_containers = goog.dom.getElementsByClass("search_result_category");
+        for (i = 0; i < this.search_result_containers.length; i++) {
+            goog.style.showElement(this.search_result_containers[i], false);
+        }
+    });
 
     goog.dom.appendChild(this.viewport, this.canvas);
     goog.dom.appendChild(this.viewport, this.mask);
@@ -421,10 +447,12 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
     });
 }
 
-goog.inherits(postile.view.post_board.PostBoard, postile.view.View);
+goog.inherits(postile.view.post_board.PostBoard, postile.view.FullScreenView);
 
 //postile.view.View required component
 postile.view.post_board.PostBoard.prototype.unloaded_stylesheets = ['fonts.css', 'post_board.css'];
+
+postile.view.post_board.PostBoard.prototype.html_segment = postile.staticResource(['post_board.html']);
 
 //postile.view.View required component
 postile.view.post_board.PostBoard.prototype.on_exit = function() {
@@ -592,8 +620,8 @@ postile.view.post_board.PostBoard.prototype.createPost = function(info) {
     postile.ajax(['post','new'], req, function(data) {
         ret.id = data.message;
         instance.mask.style.display = 'none';
-        instance.renderArray([ret]);
-        instance.currentPosts[ret.post.id].edit();
+        instance.renderArray([{post: ret, username: ''}]);
+        instance.currentPosts[ret.id].edit();
     });
 }
 

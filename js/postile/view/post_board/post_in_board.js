@@ -145,7 +145,7 @@ postile.view.post_in_board.Post.prototype.edit = function() {
     var instance = this;
     var start_waiting = new postile.toast.Toast(0, "Please wait... We're starting editing... Be ready for 36s.");
     this.disable();
-    postile.ajax(['post','start_edit'], { post_id: this.post.id }, function(data) {
+    var go_editing = function() {
         //var title = new goog.ui.LabelInput(postile._('post_title_prompt'));
         //goog.dom.removeChildren(instance.container_el);
         //title.render(instance.container_el);
@@ -171,16 +171,18 @@ postile.view.post_in_board.Post.prototype.edit = function() {
         goog.events.listen(y_editor.editor_el, goog.events.EventType.FOCUS, focusHandler);
         goog.events.listen(instance.post_title_el, goog.events.EventType.FOCUS, focusHandler);
         y_editor.editor_el.focus();
-    });
+    }
+    postile.ajax(['post','start_edit'], { post_id: this.post.id }, go_editing);
 }
 
 postile.view.post_in_board.InlineCommentsBlock = function(postObj) {
     var instance = this;
     var tmp_el;
-    this.wrap_el = goog.dom.createDom("div", "inl_comment-wrapper");
-    goog.dom.appendChild(this.wrap_el, goog.dom.createDom("div", "input_up"));
+    postile.view.TipView.call(this);
+    goog.dom.classes.add(this.container, "inl_comment-wrapper");
+    goog.dom.appendChild(this.container, goog.dom.createDom("div", "input_up"));
     this.text_input = goog.dom.createDom("div", "input_main selectable");
-    goog.dom.appendChild(this.wrap_el, this.text_input);
+    goog.dom.appendChild(this.container, this.text_input);
     var text_input_init = function() {
         instance.text_input.innerHTML = postile._('inline_comment_prompt');
         goog.dom.classes.add(instance.text_input, 'inactive');
@@ -208,23 +210,24 @@ postile.view.post_in_board.InlineCommentsBlock = function(postObj) {
     });
     this.text_input.contentEditable = "true";
     tmp_el = goog.dom.createDom("div", "input_low");
-    goog.dom.appendChild(this.wrap_el, tmp_el);
+    goog.dom.appendChild(this.container, tmp_el);
     goog.dom.appendChild(tmp_el, goog.dom.createDom("div", "nav_up"));
     goog.dom.appendChild(tmp_el, goog.dom.createDom("div", "nav_down"));
     this.comments_container = goog.dom.createDom("div", "inl_comment");
-    goog.dom.appendChild(this.wrap_el, this.comments_container);
+    goog.dom.appendChild(this.container, this.comments_container);
 
     postile.ajax(['post','get_inline_comments'], { post_id: postObj.post.id }, function(data) {
         for (var i in data.message) { 
             new postile.view.post_in_board.InlineComment(instance, data.message[i]); 
         }
-        var coord = goog.style.getRelativePosition(postile.dom.getDescendantByClass(postObj.container_el, 'post_comment_icon'), postObj.wrap_el);
-        coord.x += 18; coord.y -= 12; //magic number based on 目测
-        goog.style.setPosition(instance.wrap_el, coord);
-        goog.dom.appendChild(postObj.wrap_el, instance.wrap_el);
+        instance.open(postile.dom.getDescendantByClass(postObj.container_el, 'post_comment_icon'), postObj.wrap_el);
+        instance.container.style.left = '18px';
+        instance.container.style.top = '-12px'; //magic number based on 目测       
         postObj.wrap_el.style.zIndex = (++postObj.board.maxZIndex);
     });
 }
+
+goog.inherits(postile.view.post_in_board.InlineCommentsBlock, postile.view.TipView);
 
 /*return the container element*/
 postile.view.post_in_board.InlineComment = function(icb, single_comment_data) {

@@ -43,11 +43,10 @@ postile = { //the base of posTile frontend framework
         });
 
         postile.router.map('/test/:id/:domain/:port').to(function(){
-            postile.ui.load(document.body, postile.staticResource(['post_board.html']));
             postile.dhost = this.params["domain"];
             postile.dport = this.params["port"];
             postile.fayeLocation = 'http://'+postile.dhost+':9292/faye';
-            window.pb = new postile.view.post_board.PostBoard(this.params["id"]);
+            new postile.view.post_board.PostBoard(this.params["id"]);
         });
 
         postile.router.map('/sign_up').to(function() {
@@ -61,6 +60,7 @@ postile = { //the base of posTile frontend framework
 
         postile.router.map('/_profile_preview').to(function() {
             postile.ui.load(document.body, postile.staticResource(['_profile_preview.html']));
+            postile.view.profile.init();
         });
 
         postile.router.map('/profile/:user_id/edit').to(function() {
@@ -71,6 +71,10 @@ postile = { //the base of posTile frontend framework
         postile.router.map('/profile/:user_id').to(function() {
             postile.ui.load(document.body, postile.staticResource(['profile_display.html']));
             postile.view.profile.get_profile(this.params["user_id"]);
+        });
+
+        postile.router.map('/renrenlogin').to(function() {
+            postile.ui.load(document.body, postile.staticResource(['renren_test.html']));
         });
     }
 };

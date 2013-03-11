@@ -1,0 +1,143 @@
+/* layout */
+body {
+  margin: 0px;
+  padding: 0px;
+  font-family: OxygenLight; }
+
+#board_more {
+  position: fixed;
+  right: 0px;
+  top: 0px;
+  width: 40px;
+  height: 100%;
+  background-color: #cccccc; }
+  #board_more .more_icon {
+    height: 30px;
+    padding: 0px;
+    margin: 8px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 14px; }
+  #board_more #board_switch {
+    background: url(../images/board_list.png) no-repeat; }
+  #board_more #place {
+    margin-left: 15px;
+    background: url(../images/board_place.png) no-repeat; }
+  #board_more #star {
+    margin-left: 13px;
+    background: url(../images/board_star.png) no-repeat; }
+
+#other_boards {
+  margin-top: 35px;
+  width: 240px;
+  position: fixed;
+  right: 45px;
+  background-color: #aaaaaa;
+  box-shadow: 3px 3px 20px 1px #888888; }
+  #other_boards .other_header {
+    background-color: #024d61;
+    height: 40px;
+    color: #fff; }
+    #other_boards .other_header h3 {
+      font-size: 14px;
+      float: left;
+      margin: 10px;
+      margin-left: 14px; }
+    #other_boards .other_header p {
+      float: right;
+      margin-top: 14px;
+      margin-right: 15px;
+      font-size: 10px;
+      cursor: pointer; }
+      #other_boards .other_header p:hover {
+        color: #FF8C00; }
+    #other_boards .other_header #arrow_right {
+      border-top: 10px solid transparent;
+      border-bottom: 10px solid transparent;
+      border-left: 10px solid #024d61;
+      position: absolute;
+      left: 240px;
+      top: 10px; }
+  #other_boards #board_list .up_roll {
+    height: 10px;
+    background-color: #cccccc;
+    cursor: pointer; }
+    #other_boards #board_list .up_roll:hover {
+      background-color: #fff; }
+    #other_boards #board_list .up_roll .list_prev {
+      position: absolute;
+      left: 115px;
+      top: 43px;
+      width: 0px;
+      height: 0px;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-bottom: 5px solid #024d61; }
+  #other_boards #board_list .down_roll {
+    height: 10px;
+    background-color: #cccccc;
+    cursor: pointer; }
+    #other_boards #board_list .down_roll:hover {
+      background-color: #fff; }
+    #other_boards #board_list .down_roll .list_next {
+      position: absolute;
+      left: 115px;
+      bottom: 3px;
+      width: 0px;
+      height: 0px;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 5px solid #024d61; }
+  #other_boards #board_list .listed_board {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    height: 50px;
+    cursor: pointer;
+    border-top: 1px solid #024d61;
+    border-bottom: 1px solid #024d61; }
+    #other_boards #board_list .listed_board h3.board_title {
+      font-size: 14px;
+      margin-top: 0px;
+      margin-bottom: 0px;
+      margin-left: 14px;
+      color: #024d61; }
+    #other_boards #board_list .listed_board p.board_discription {
+      margin-left: 14px;
+      margin-top: 3px;
+      font-size: 10px;
+      width: 200px; }
+    #other_boards #board_list .listed_board .selected_icon {
+      opacity: 0;
+      position: absolute;
+      right: 10px;
+      top: 25px;
+      width: 20px;
+      height: 20px;
+      background: url(../images/featured_board.png) no-repeat; }
+    #other_boards #board_list .listed_board:hover {
+      background: #024d61;
+      color: #aaaaaa;
+      position: relative; }
+      #other_boards #board_list .listed_board:hover h3.board_title {
+        font-size: 14px;
+        margin-bottom: 0px;
+        margin-left: 14px;
+        color: #fff !important; }
+      #other_boards #board_list .listed_board:hover .selected_icon {
+        opacity: 1; }
+  #other_boards #board_list .selected_board {
+    background: #024d61;
+    color: #aaaaaa;
+    position: relative; }
+    #other_boards #board_list .selected_board h3.board_title {
+      font-size: 14px;
+      margin-bottom: 0px;
+      margin-left: 14px;
+      color: #fff !important; }
+    #other_boards #board_list .selected_board .selected_icon {
+      position: absolute;
+      right: 10px;
+      top: 25px;
+      width: 20px;
+      height: 20px;
+      background: url(../images/featured_board.png) no-repeat; }
