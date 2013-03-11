@@ -24,6 +24,7 @@ goog.require('goog.events.KeyHandler');
 goog.require('postile.toast');
 goog.require('postile.events');
 goog.require('postile.view.post_in_board');
+goog.require('postile.view.board_more_pop');
 
 postile.view.post_board.handlers.canvas_mousedown = function(e) {
     if (!e.isButton(0)) { return; }

@@ -7,6 +7,7 @@ body {
 #board_more {
   position: fixed;
   right: 0px;
+  top: 0px;
   width: 40px;
   height: 100%;
   background-color: #cccccc; }
