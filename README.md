@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 ﻿LATEST NOTICE
+=======
+LATEST NOTICE
+>>>>>>> d15aac631cf3321764daff5a157811ee1feee1b7
 ======
 **Notice: Now the code can ONLY run in the ROOT directory of a web server.**
 
@@ -22,6 +26,7 @@ Then, simply run
 `build/depswriter.py --root_with_prefix="js/postile ../postile" --output_file="js/postile/deps.js"`
 
 at the project directory.
+<<<<<<< HEAD
 
 Last update
 ======
@@ -32793,3 +32798,5 @@ Last update
 伦巴傻逼
 伦巴傻逼
 伦巴傻逼
+=======
+>>>>>>> d15aac631cf3321764daff5a157811ee1feee1b7

@@ -172,9 +172,6 @@ postile.view.post_in_board.Post.prototype.edit = function() {
         goog.events.listen(instance.post_title_el, goog.events.EventType.FOCUS, focusHandler);
         y_editor.editor_el.focus();
     }
-    /*** START SPECIAL DEBUGGING **/
-    go_editing(); return;
-    /*** END SPECIAL DEBUGGING ***/
     postile.ajax(['post','start_edit'], { post_id: this.post.id }, go_editing);
 }
 

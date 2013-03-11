@@ -8,8 +8,10 @@ goog.require('postile.fx.effects');
 /*
 === How to create a normal view ===
 
-1. have a class inherits "positle.view.View".
+1. have a class inherits "positle.view.NormalView".
 2. [optional, only when you need to load css] have a "unloaded_stylesheets" in its prototype, which is an array containing css files that need to be loaded.
+
+just put your fucking things into this.container, and use "open" and "close" if needed
 
 === How to create a pop-up view ===
 
@@ -38,7 +40,7 @@ directly set "container.style.left" and "container.style.top" to further offset 
 
 postile.loaded_stylesheets = {};
 
-postile.view.View = function() {
+postile.view.View = function() { //Do not use this class directly (this is an abstract class)
     var i;
     var instance = this;
     var reClosure = function(index) {
@@ -104,4 +106,17 @@ postile.view.TipView.prototype.open = function(reference, parent) {
     goog.dom.appendChild(parent, this.container_wrap);
 }
 
-postile.view.TipView.prototype.close = function() { /* Not implemented yet */ }
+postile.view.TipView.prototype.close = function() { 
+    goog.dom.removeNode(this.container);
+}
+
+postile.view.NormalView = function() {
+    postile.view.View.call(this);
+    this.container = goog.dom.createDom('div');
+}
+
+postile.view.NormalView.prototype.close = function() { 
+    goog.dom.removeNode(this.container);
+}
+
+goog.inherits(postile.view.NormalView, postile.view.View);

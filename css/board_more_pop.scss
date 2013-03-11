@@ -1,8 +1,9 @@
 /* layout */
 
-$main-color:#024d61;
-$second-color:#ccc;
-$third-color:#aaa;
+$main-color:    #024d61;
+$second-color:  #ccc;
+$third-color:	#aaa;
+$fourth-color:  #bbb; 
 
 
 body {
@@ -22,9 +23,12 @@ body {
 	.more_icon {
 		height: 30px;
 		padding: 0px;
-		margin: 10px;
+		margin: 8px;
+		margin-top: 10px;
+		margin-bottom: 10px;
 		margin-left: 14px;
 	}
+
 	#board_switch {
 		background: url(../images/board_list.png) no-repeat;
 	}
@@ -42,8 +46,9 @@ body {
 	margin-top: 35px;
 	width: 240px;
 	position: fixed;
-	right: 55px;
+	right: 45px;
 	background-color: $third-color;
+	box-shadow: 3px 3px 20px 1px #888888;
 
 	.other_header {
 		background-color: $main-color;
@@ -60,6 +65,20 @@ body {
 			margin-top: 14px;
 			margin-right: 15px;
 			font-size: 10px;
+			cursor: pointer;
+
+			&:hover {
+				color: #FF8C00;
+			}
+		}
+
+		#arrow_right {
+			border-top: 10px solid transparent;
+    		border-bottom: 10px solid transparent;
+    		border-left: 10px solid $main-color;
+    		position: absolute;
+    		left: 240px;
+    		top: 10px;
 		}
 	}
 
@@ -67,16 +86,52 @@ body {
 		.up_roll {
 			height: 10px;
 			background-color: $second-color;
+			cursor: pointer;
+
+			&:hover {
+				background-color: #fff;
+			}
+
+			.list_prev {
+				position: absolute;
+				left: 115px;
+				top: 43px;
+				width: 0px;
+				height: 0px;
+    			border-left: 5px solid transparent;	
+    			border-right: 5px solid transparent;	
+    			border-bottom: 5px solid $main-color;
+			}
 		}
 		.down_roll {
 			height: 10px;
 			background-color: $second-color;
+			cursor: pointer;
+
+			&:hover {
+				background-color: #fff;
+			}
+
+			.list_next {
+				position: absolute;
+				left: 115px;
+				bottom: 3px;
+				width: 0px;
+				height: 0px;
+    			border-left: 5px solid transparent;	
+    			border-right: 5px solid transparent;	
+				border-top: 5px solid $main-color;
+			}
 		}
 
 		.listed_board {
 			padding-top: 10px;
 			padding-bottom: 10px;
 			height: 50px;
+			cursor: pointer;
+			border-top: 1px solid $main-color;
+			border-bottom: 1px solid $main-color;
+
 			h3.board_title {
 				font-size: 14px;
 				margin-top: 0px;
@@ -84,12 +139,42 @@ body {
 				margin-left: 14px;
 				color: $main-color;
 			}
+
 			p.board_discription {
 				margin-left: 14px;
 				margin-top:3px;
 				font-size: 10px;
 				width:200px;
 			}
+
+			.selected_icon {
+				opacity: 0;
+				position: absolute;
+				right: 10px;
+				top: 25px;
+				width:20px;
+				height:20px;
+				background: url(../images/featured_board.png) no-repeat;
+			}
+
+			&:hover {
+				background: $main-color;
+				color: $third-color;
+				position: relative;
+
+				h3.board_title {
+					font-size: 14px;
+					margin-bottom: 0px;
+					margin-left: 14px;
+					color: #fff !important;
+				}
+
+				.selected_icon {
+					opacity: 1;
+
+				}
+			}
+
 		}
 
 		.selected_board {
