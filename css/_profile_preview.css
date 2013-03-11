@@ -89,6 +89,12 @@ html, body {
         font-size: 13pt; }
       .profile-preview .info-container .top .signiture {
         margin-top: 15px; }
+        .profile-preview .info-container .top .signiture textarea {
+          border: none;
+          outline: none;
+          resize: none;
+          width: 100%;
+          height: 40px; }
         .profile-preview .info-container .top .signiture .edit {
           margin-left: 10px;
           color: #999999;
@@ -122,10 +128,13 @@ html, body {
         .profile-preview .info-container .bottom .item-container .item .text {
           float: left;
           margin-left: 10px; }
-          .profile-preview .info-container .bottom .item-container .item .text .highlight {
+          .profile-preview .info-container .bottom .item-container .item .text .data {
             color: #024d61;
             cursor: pointer; }
-          .profile-preview .info-container .bottom .item-container .item .text .highlight:hover {
+            .profile-preview .info-container .bottom .item-container .item .text .data input {
+              border: none;
+              outline: none; }
+          .profile-preview .info-container .bottom .item-container .item .text .data:hover {
             text-decoration: underline; }
         .profile-preview .info-container .bottom .item-container .item .edit {
           float: left;
@@ -141,3 +150,18 @@ html, body {
         margin-left: 24px;
         margin-top: 15px;
         margin-right: 20px; }
+        .profile-preview .info-container .bottom .self-intro textarea {
+          border: none;
+          outline: none;
+          resize: none;
+          width: 100%;
+          height: 80px; }
+        .profile-preview .info-container .bottom .self-intro .edit {
+          margin-left: 20px;
+          color: #999999;
+          cursor: pointer;
+          visibility: hidden; }
+          .profile-preview .info-container .bottom .self-intro .edit:hover {
+            text-decoration: underline; }
+        .profile-preview .info-container .bottom .self-intro:hover .edit {
+          visibility: visible; }
