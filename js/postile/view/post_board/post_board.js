@@ -365,7 +365,9 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
     this.right = goog.dom.createDom('div', 'right_clicker'); //right click display
     this.currentSubscribeArea = null; //a valid area for which we've got all data we need and keep refreshing from the server
     this.window_resize_event_handler = new postile.events.EventHandler(window, goog.events.EventType.RESIZE, function() { postile.view.post_board.handlers.resize(instance); });
+    this.window_resize_event_handler.listen();
     this.keyboard_event_handler = new postile.events.EventHandler(postile.getGlobalKeyHandler(), goog.events.KeyHandler.EventType.KEY, function(e) { postile.view.post_board.handlers.keypress(instance, e); });
+    this.keyboard_event_handler.listen();
     this.maxZIndex = 0; //max zIndex of posts currently
     /* END OF MEMBER DEFINITION */
     goog.events.listen(this.viewport, goog.events.EventType.SELECTSTART, function(){ return false; }); //disable text selecting, for ie
@@ -456,7 +458,7 @@ postile.view.post_board.PostBoard.prototype.unloaded_stylesheets = ['fonts.css',
 postile.view.post_board.PostBoard.prototype.html_segment = postile.staticResource(['post_board.html']);
 
 //postile.view.View required component
-postile.view.post_board.PostBoard.prototype.on_exit = function() {
+postile.view.post_board.PostBoard.prototype.close = function() {
     this.window_resize_event_handler.unlisten();
     this.keyboard_event_handler.unlisten();
     //informing the server that I'm fucking leaving

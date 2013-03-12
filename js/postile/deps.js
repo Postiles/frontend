@@ -26,4 +26,4 @@ goog.addDependency('../postile/view/topic_list/topic_list.js', ['postile.view.to
 goog.addDependency('../postile/view/user_admin/create_user.js', ['postile.view.create_user'], ['goog.dom', 'goog.events', 'postile.view']);
 goog.addDependency('../postile/view/user_admin/profile.js', ['postile.view.profile'], ['goog.dom', 'goog.events', 'postile.view']);
 goog.addDependency('../postile/view/user_admin/user_admin.js', ['postile.view.user_admin'], ['goog.dom', 'goog.events', 'postile.view']);
-goog.addDependency('../postile/view/view.js', ['postile.view'], ['goog.dom', 'postile.fx.effects']);
+goog.addDependency('../postile/view/view.js', ['postile.view'], ['goog.dom', 'postile.events', 'postile.fx.effects']);
