@@ -19,7 +19,7 @@ postile.ui.startLoading = function(target_el) {
     target_el._postile_spinner_wrap = goog.dom.createDom('div', 'busy_wrap');
     target_el._postile_spinner = goog.dom.createDom('div', 'busy');
     
-    target_el._postile_spinner_animation = postile.fx.effects.rotateOn(target_el);
+    target_el._postile_spinner_animation = postile.fx.effects.rotateOn(target_el._postile_spinner);
     goog.dom.appendChild(target_el._postile_spinner_wrap, target_el._postile_spinner);
     goog.dom.appendChild(target_el, target_el._postile_spinner_wrap);
 }

@@ -81,7 +81,14 @@ MIC: postile.toast
 }
 
 .busy {
-    background: url(/images/spinner.svg);
+    background-image: url(/images/spinner.svg);
+    width: 50%;
+    height: 50%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    position: absolute;
+    left: 25%;
+    top: 25%;
 }
 
 .busy_wrap {
