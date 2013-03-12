@@ -1,10 +1,11 @@
-html, body {
-  margin: 0;
-  padding: 50px;
-  font-size: 10pt; }
-
 .profile-preview {
-  font-family: RobotoRegular; }
+  position: relative;
+  top: 150px;
+  font-family: RobotoRegular;
+  font-size: 10pt;
+  width: 710px;
+  height: 400px;
+  margin: 0 auto; }
   .profile-preview .image-container .left-fold {
     position: absolute;
     margin-left: -30px;

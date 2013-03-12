@@ -2,17 +2,25 @@ goog.provide('postile.fx');
 
 postile.fx.period = 36; //in the unit of millisec
 
-postile.fx.Animate = function(iter_func, duration, ease, callback) {
+postile.fx.Animate = function(iter_func, duration_or_period, ease, callback, mode) { //see enums at the end of this file to know
     if (!ease) { ease = postile.fx.ease.linear; }
     if (!callback) { callback = function(){} }
+    if (!mode) { mode = postile.fx.modes.ONCE; }
     var interval;
     var iter_status = 0;
-    var iter_step = postile.fx.period/duration;
+    var iter_step = postile.fx.period/duration_or_period;
     var real_iter_func = function() {
         iter_status += iter_step;
         if (iter_status > 1) { iter_status = 1; }
         iter_func(ease(iter_status));
-        if (iter_status >= 1) { clearInterval(interval); callback(); }
+        if (iter_status >= 1) {
+            if (mode == postile.fx.modes.ONCE) {
+                clearInterval(interval);
+            } else if (mode == postile.fx.modes.FOREVER_REPEAT) {
+                iter_status = 0;
+            }
+            callback();
+        }
     };
     interval = this.interval = setInterval(real_iter_func, postile.fx.period);
     real_iter_func(); //run the first iteration
@@ -64,3 +72,7 @@ postile.fx.ease = {
     sin_ease_out: function(i) { return Math.sin(i*Math.PI/2); },
     sin_ease: function(i) { return Math.sin((i-0.5)*Math.PI)/2+0.5; }
 };
+
+postile.fx.modes = {
+    ONCE: 0, FOREVER_REPEAT: 1 //将来再implement一个往返的。现在用不着就先不写。
+}

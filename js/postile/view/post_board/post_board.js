@@ -26,6 +26,8 @@ goog.require('postile.toast');
 goog.require('postile.events');
 goog.require('postile.view.post_in_board');
 goog.require('postile.view.board_more_pop');
+goog.require('postile.view.confirm_delete');
+goog.require('postile.view.profile');
 
 postile.view.post_board.handlers.canvas_mousedown = function(e) {
     if (!e.isButton(0)) { return; }
@@ -140,9 +142,9 @@ postile.view.post_board.handlers.mask_mousemove = function(e){ //mouse key not d
     this.preview.style.top = this.rel_data.yPosTo(this.position.coord_y) + this.rel_data.canvasCoord[1] + 'px';
     this.preview.style.width = this.rel_data.widthTo(this.position.span_x) + 'px';
     this.preview.style.height = this.rel_data.heightTo(this.position.span_y) + 'px';
-    this.preview.style.backgroundColor = intersect ? '#F00' : '#0F0';
+    this.legal = (!intersect) && this.position.span_x > 1 && this.position.span_y > 1;
+    this.preview.style.backgroundColor = this.legal ? '#e4eee4': '#f4dcdc';
     this.preview.style.display = 'block';
-    this.legal = !intersect;
 };
 
 postile.view.post_board.handlers.mask_mouseup = function(e){
@@ -338,6 +340,11 @@ postile.view.post_board.handlers.search = function(instance) {
     }
 }
 
+
+
+
+
+
 postile.view.post_board.PostBoard = function(topic_id) { //constructor
     var i;
     var keyHandler;
@@ -364,7 +371,9 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
     this.right = goog.dom.createDom('div', 'right_clicker'); //right click display
     this.currentSubscribeArea = null; //a valid area for which we've got all data we need and keep refreshing from the server
     this.window_resize_event_handler = new postile.events.EventHandler(window, goog.events.EventType.RESIZE, function() { postile.view.post_board.handlers.resize(instance); });
+    this.window_resize_event_handler.listen();
     this.keyboard_event_handler = new postile.events.EventHandler(postile.getGlobalKeyHandler(), goog.events.KeyHandler.EventType.KEY, function(e) { postile.view.post_board.handlers.keypress(instance, e); });
+    this.keyboard_event_handler.listen();
     this.maxZIndex = 0; //max zIndex of posts currently
     /* END OF MEMBER DEFINITION */
     goog.events.listen(this.viewport, goog.events.EventType.SELECTSTART, function(){ return false; }); //disable text selecting, for ie
@@ -455,7 +464,7 @@ postile.view.post_board.PostBoard.prototype.unloaded_stylesheets = ['fonts.css',
 postile.view.post_board.PostBoard.prototype.html_segment = postile.staticResource(['post_board.html']);
 
 //postile.view.View required component
-postile.view.post_board.PostBoard.prototype.on_exit = function() {
+postile.view.post_board.PostBoard.prototype.close = function() {
     this.window_resize_event_handler.unlisten();
     this.keyboard_event_handler.unlisten();
     //informing the server that I'm fucking leaving

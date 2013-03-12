@@ -6,10 +6,9 @@ postile.events.EventHandler = function(subject, action, handler) {
     this.subject = subject;
     this.action = action;
     this.handler = handler;
-    this.relisten();
 }
 
-postile.events.EventHandler.prototype.relisten = function() {
+postile.events.EventHandler.prototype.listen = function() {
     goog.events.listen(this.subject, this.action, this.handler);
 }
 
