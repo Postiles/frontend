@@ -95,14 +95,19 @@ postile.view.FullScreenView = function() {
 goog.inherits(postile.view.FullScreenView, postile.view.View);
 
 postile.view.TipView = function() {
+    var instance = this;
     postile.view.View.call(this);
     this.container = goog.dom.createDom('div');
     this.container.style.position = 'absolute';
     this.container_wrap = goog.dom.createDom('div');
     goog.dom.appendChild(this.container_wrap, this.container);
     this.container_wrap.style.position = 'absolute';
-    this.global_click_handler = new postile.events.EventHandler(document.body, goog.events.EventType.CLICK, function(){});
-    this.container_click_handler = new postile.events.EventHandler(this.container, goog.events.EventType.CLICK, function(){});
+    this.global_click_handler = new postile.events.EventHandler(document.body, goog.events.EventType.CLICK, function(){
+        instance.close();
+    });
+    this.container_click_handler = new postile.events.EventHandler(this.container, goog.events.EventType.CLICK, function(evt){
+        evt.stopPropagation();
+    });
 }
 
 goog.inherits(postile.view.TipView, postile.view.View);
@@ -112,9 +117,13 @@ postile.view.TipView.prototype.open = function(reference, parent) {
     var coord = goog.style.getRelativePosition(reference, parent);
     goog.style.setPosition(this.container_wrap, coord);
     goog.dom.appendChild(parent, this.container_wrap);
+    this.global_click_handler.listen();
+    this.container_click_handler.listen();
 }
 
 postile.view.TipView.prototype.close = function() { 
+    this.global_click_handler.unlisten();
+    this.container_click_handler.unlisten();
     goog.dom.removeNode(this.container);
 }
 
