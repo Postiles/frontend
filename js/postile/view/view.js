@@ -24,7 +24,8 @@ just put your fucking things into this.container, and use "open" and "close" if 
 === How to create a fullscreen view ===
 
 1. have a class inherits "postile.view.FullScreenView", and use "html_segment" property to represent the HTML that need to be loaded into document.body
-2. the same as normal view
+2. have a "close" method as destrcutor if needed
+3. the same as normal view
 
 === How to create a tip view ===
 
@@ -40,6 +41,8 @@ directly set "container.style.left" and "container.style.top" to further offset 
 */
 
 postile.loaded_stylesheets = {};
+
+postile.current_full_screen = null;
 
 postile.view.View = function() { //Do not use this class directly (this is an abstract class)
     var i;
@@ -80,6 +83,10 @@ postile.view.PopView.prototype.close = function() {
 }
 
 postile.view.FullScreenView = function() {
+    if (postile.current_full_screen && postile.current_full_screen.close) {
+        postile.current_full_screen.close(); //destruct the original fullscreenview
+    }
+    postile.current_full_screen = this;
     postile.view.View.call(this);
     this.container = document.body;
     postile.ui.load(this.container, this.html_segment);
@@ -94,6 +101,8 @@ postile.view.TipView = function() {
     this.container_wrap = goog.dom.createDom('div');
     goog.dom.appendChild(this.container_wrap, this.container);
     this.container_wrap.style.position = 'absolute';
+    this.global_click_handler = new postile.events.EventHandler(document.body, goog.events.EventType.CLICK, function(){});
+    this.container_click_handler = new postile.events.EventHandler(this.container, goog.events.EventType.CLICK, function(){});
 }
 
 goog.inherits(postile.view.TipView, postile.view.View);
