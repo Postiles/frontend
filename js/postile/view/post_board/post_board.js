@@ -26,6 +26,7 @@ goog.require('postile.toast');
 goog.require('postile.events');
 goog.require('postile.view.post_in_board');
 goog.require('postile.view.board_more_pop');
+goog.require('postile.view.confirm_delete');
 
 postile.view.post_board.handlers.canvas_mousedown = function(e) {
     if (!e.isButton(0)) { return; }
@@ -337,6 +338,11 @@ postile.view.post_board.handlers.search = function(instance) {
         }
     }
 }
+
+
+
+
+
 
 postile.view.post_board.PostBoard = function(topic_id) { //constructor
     var i;
