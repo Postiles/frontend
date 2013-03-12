@@ -557,7 +557,9 @@ html, body {
   width: 20px;
   height: 20px;
   border-radius: 8px;
-  background-color: white;
+  background: url(/images/guanlun.jpg);
+  background-size: 30px 30px;
+  background-position: center;
   z-index: 2; }
 
 /*Arrow* */
