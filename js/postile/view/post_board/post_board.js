@@ -143,7 +143,7 @@ postile.view.post_board.handlers.mask_mousemove = function(e){ //mouse key not d
     this.preview.style.width = this.rel_data.widthTo(this.position.span_x) + 'px';
     this.preview.style.height = this.rel_data.heightTo(this.position.span_y) + 'px';
     this.legal = (!intersect) && this.position.span_x > 1 && this.position.span_y > 1;
-    this.preview.style.backgroundColor = this.legal ? '#0F0': '#F00';
+    this.preview.style.backgroundColor = this.legal ? '#e4eee4': '#f4dcdc';
     this.preview.style.display = 'block';
 };
 
