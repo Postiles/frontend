@@ -100,12 +100,12 @@ postile.view.TipView = function() {
     this.container = goog.dom.createDom('div');
     this.container.style.position = 'absolute';
     this.container_wrap = goog.dom.createDom('div');
-    goog.dom.appendChild(this.container_wrap, this.container);
     this.container_wrap.style.position = 'absolute';
-    this.global_click_handler = new postile.events.EventHandler(document.body, goog.events.EventType.CLICK, function(){
+    goog.dom.appendChild(this.container_wrap, this.container);
+    this.global_click_handler = new postile.events.EventHandler(document.body, goog.events.EventType.MOUSEDOWN, function(){
         instance.close();
     });
-    this.container_click_handler = new postile.events.EventHandler(this.container, goog.events.EventType.CLICK, function(evt){
+    this.container_click_handler = new postile.events.EventHandler(this.container, goog.events.EventType.MOUSEDOWN, function(evt){
         evt.stopPropagation();
     });
 }
@@ -124,7 +124,7 @@ postile.view.TipView.prototype.open = function(reference, parent) {
 postile.view.TipView.prototype.close = function() { 
     this.global_click_handler.unlisten();
     this.container_click_handler.unlisten();
-    goog.dom.removeNode(this.container);
+    goog.dom.removeNode(this.container_wrap);
 }
 
 postile.view.NormalView = function() {
