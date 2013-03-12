@@ -4,93 +4,30 @@ goog.require('postile.view');
 goog.require('goog.dom');
 goog.require('goog.events');
 
-postile.view.profile = {
-    get_profile: function(user_id) {
-        var onsuccess = function(data) {
-            var user = data.message.user;
-            var profile = data.message.profile;
+postile.view.profile.ProfileView = function() { // constructor
+    postile.view.PopView.call(this);
+    postile.ui.load(this.container, postile.staticResource(['_profile_preview.html']));
 
-            for (var attr in user) {
-                profile[attr] = user[attr];
-            }
+    this.exitButton = goog.dom.getElementByClass('exit-button', this.container);
+    goog.events.listen(this.exitButton, goog.events.EventType.CLICK, function(e) {
+        this.close();
+    }.bind(this));
 
-            this.username_el = goog.dom.getElement("username");
-            this.username_el.innerHTML = profile.username;
-
-            this.email_el = goog.dom.getElement("email");
-            this.email_el.innerHTML = profile.email;
-
-            this.first_name_el = goog.dom.getElement("first_name");
-            this.first_name_el.innerHTML = profile.first_name;
-
-            this.last_name_el = goog.dom.getElement("last_name");
-            this.last_name_el.innerHTML = profile.last_name;
-        };
-
-        var onfailure = function(data) {
-        };
-
-        postile.ajax(['user', 'get_profile'], { }, onsuccess, onfailure);
-    },
-
-    get_profile_for_edit: function(user_id) {
-        var onsuccess = function(data) {
-            var user = data.message.user;
-            var profile = data.message.profile;
-
-            for (var attr in user) {
-                profile[attr] = user[attr];
-            }
-            console.log(profile);
-
-            this.first_name_el = goog.dom.getElement("first_name");
-            this.first_name_el.value = profile.first_name;
-
-            this.last_name_el = goog.dom.getElement("last_name");
-            this.last_name_el.value = profile.last_name;
-
-            this.gender_el = goog.dom.getElement("gender");
-            this.gender_el.value = profile.gender;
-
-            this.submit_button = goog.dom.getElement("submit_button");
-            goog.events.listen(this.submit_button, goog.events.EventType.CLICK, 
-                    function() {
-                        var params = {
-                            first_name: this.first_name_el.value,
-                            last_name: this.last_name_el.value,
-                        };
-                        postile.view.profile.save_profile(params);
-                    }.bind(this));
-        };
-
-        var onfailure = function(data) {
-            console.log(data);
-        };
-
-        postile.ajax(['user', 'get_profile'], { }, onsuccess, onfailure);
-    },
-
-    save_profile: function(params) {
-        var onsuccess = function(data) {
-            console.log(data);
-        };
-
-        var onfailure = function(data) {
-            console.log(data);
-        };
-
-        postile.ajax(['profile', 'save_profile'], params, onsuccess, onfailure);
-    },
-
-    init: function() {
-        var profileItems = goog.dom.getElementsByClass('editable');
-        for (var i = 0; i < profileItems.length; i++) {
-            item = new postile.view.profile.ProfileItem(profileItems[i]);
-        }
-    },
+    this.profileItems = goog.dom.getElementsByClass('editable', this.container);
+    console.log('hehe');
+    console.log(this.profileItems);
+    for (var i = 0; i < this.profileItems.length; i++) {
+        item = new postile.view.profile.ProfileItem(this.profileItems[i]);
+    }
 }
 
+// Profile is a subclass of PopView
+goog.inherits(postile.view.profile.ProfileView, postile.view.PopView);
+
+postile.view.profile.ProfileView.prototype.unloaded_stylesheets = ['_profile_preview.css'];
+
 postile.view.profile.ProfileItem = function(baseDom) { // constructor
+    console.log(baseDom);
     this.baseDom = baseDom;
     this.className = goog.dom.classes.get(this.baseDom)[0];
 

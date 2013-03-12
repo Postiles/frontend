@@ -65,17 +65,22 @@ postile.view.PopView = function() {
     goog.dom.classes.add(this.container_wrap, 'pop_popup');
     goog.dom.appendChild(this.container_wrap, this.container);
     this.mask = goog.dom.createDom('div', 'pop_mask');
+
+    this.mask.style.position = 'absolute';
+    this.mask.style.top = '0px';
+
     goog.dom.appendChild(this.mask, this.container_wrap);
 }
 
 goog.inherits(postile.view.PopView, postile.view.View);
 
 postile.view.PopView.prototype.open = function(width) {
-    var mask = this.mask;
-    this.container.style.width = width + 'px';
+    this.mask.style.height = '100%';
+    this.mask.style.background = 'rgba(0, 0, 0, 0.8)';
+    this.container.style.width = (width || document.body.clientWidth) + 'px';
     goog.dom.appendChild(document.body, this.mask);
     postile.fx.effects.resizeIn(this.container);
-    postile.fx.Animate(function(i) { mask.style.opacity = i; }, 400);
+    postile.fx.Animate(function(i) { this.mask.style.opacity = i; }.bind(this), 400);
 }
     
 postile.view.PopView.prototype.close = function() {

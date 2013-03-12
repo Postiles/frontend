@@ -51,6 +51,13 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
     this.post_author_el.innerHTML = this.username;
     goog.dom.appendChild(this.post_top_el, this.post_author_el);
 
+    // username clicked, should display user profile
+    goog.events.listen(this.post_author_el, goog.events.EventType.CLICK, function(e) {
+        var id = 1; // temporary hack
+        profileView = new postile.view.profile.ProfileView();
+        profileView.open();
+    }.bind(this));
+
     this.post_content_el = goog.dom.createDom("div", "post_content");
     this.post_content_el.innerHTML = postile.parseBBcode(this.post.text_content);
     goog.dom.appendChild(this.container_el, this.post_content_el);
