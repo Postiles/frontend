@@ -26,6 +26,7 @@ postile.view.post_in_board.Post = function(object, board) {
 
 postile.view.post_in_board.Post.prototype.render = function(object, animation) { //animation is usually ommited (false by default)
     if (this.disabled) { return; }
+    console.log('Duckmywifee');
     var button;
     var instance = this;
     if (object) { goog.object.extend(this, object); }

@@ -565,7 +565,7 @@ html, body {
 .right_clicker {
   width: 106px;
   height: 106px;
-  background: url(right.png);
+  background: url(/images/right.png);
   display: none;
   position: absolute; }
 
