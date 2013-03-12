@@ -3,6 +3,7 @@
 goog.provide('postile.view');
 
 goog.require('goog.dom');
+goog.require('postile.events');
 goog.require('postile.fx.effects');
 
 /*
@@ -43,9 +44,6 @@ postile.loaded_stylesheets = {};
 postile.view.View = function() { //Do not use this class directly (this is an abstract class)
     var i;
     var instance = this;
-    var reClosure = function(index) {
-        return (function(e) { instance.global_handlers[index].handler(instance, e); });
-    }
     if (this.unloaded_stylesheets) {
         for (i in this.unloaded_stylesheets) {
             if (!(this.unloaded_stylesheets[i] in postile.loaded_stylesheets)) {
@@ -83,7 +81,8 @@ postile.view.PopView.prototype.close = function() {
 
 postile.view.FullScreenView = function() {
     postile.view.View.call(this);
-    postile.ui.load(document.body, this.html_segment);
+    this.container = document.body;
+    postile.ui.load(this.container, this.html_segment);
 }
 
 goog.inherits(postile.view.FullScreenView, postile.view.View);
