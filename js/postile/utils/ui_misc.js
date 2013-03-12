@@ -18,7 +18,6 @@ postile.ui.load = function (target_el, source_url) {
 postile.ui.startLoading = function(target_el) {
     target_el._postile_spinner_wrap = goog.dom.createDom('div', 'busy_wrap');
     target_el._postile_spinner = goog.dom.createDom('div', 'busy');
-    
     target_el._postile_spinner_animation = postile.fx.effects.rotateOn(target_el._postile_spinner);
     goog.dom.appendChild(target_el._postile_spinner_wrap, target_el._postile_spinner);
     goog.dom.appendChild(target_el, target_el._postile_spinner_wrap);
@@ -26,5 +25,5 @@ postile.ui.startLoading = function(target_el) {
 
 postile.ui.stopLoading = function(target_el){
     target_el._postile_spinner_animation.stop();
-    goog.dom.removeNode(target_el._postile_spinner);
+    goog.dom.removeNode(target_el._postile_spinner_wrap);
 }

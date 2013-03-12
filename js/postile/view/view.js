@@ -118,6 +118,7 @@ postile.view.TipView = function() {
 goog.inherits(postile.view.TipView, postile.view.View);
 
 postile.view.TipView.prototype.open = function(reference, parent) {
+    console.log(this);
     if (!parent) { parent = reference.parentNode; }
     var coord = goog.style.getRelativePosition(reference, parent);
     goog.style.setPosition(this.container_wrap, coord);

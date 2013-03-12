@@ -22,5 +22,5 @@ postile.fx.effects.verticalExpand = function(dom) { //TODO: to be improved
 postile.fx.effects.rotateOn = function(dom) {
     return new postile.fx.Animate(function(i){
         postile.browser_compat.setCss(dom, 'transform', 'rotate('+Math.floor(i*360)+'deg)');
-    }, 800, null);
+    }, 1600, null, null, postile.fx.modes.FOREVER_REPEAT);
 }
