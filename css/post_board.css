@@ -517,10 +517,6 @@ html, body {
 .post_content {
   width: 100%; }
 
-.busy {
-  background-image: url(/images/busy.gif) !important;
-  background-repeat: repeat; }
-  
 .selectable {
   -webkit-user-select: text; }
 

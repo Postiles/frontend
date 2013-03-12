@@ -9,7 +9,6 @@ postile.view.board_more_pop.BoardMorePop = function() {
     postile.ui.load(this.container, postile.staticResource(['board_more_pop.html']));
     this.container.id = 'board_more';
     var button = this.container.children[1];
-    console.log(button);
     goog.events.listen(button, goog.events.EventType.CLICK, function(){
         (new postile.view.board_more_pop.OtherBoard()).open(button);
     });
