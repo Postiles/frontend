@@ -8,6 +8,7 @@ goog.require('goog.object');
 goog.require('goog.string');
 goog.require('goog.dom.classes');
 goog.require('postile.toast');
+goog.require('postile.ui');
 goog.require('goog.ui.LabelInput');
 goog.require('postile.i18n');
 goog.require('postile.string');
@@ -83,12 +84,12 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
 
 postile.view.post_in_board.Post.prototype.disable = function() {
     this.disabled = true;
-    goog.dom.classes.add(this.wrap_el, 'busy');
+    postile.ui.startLoading(this.wrap_el);
 }
 
 postile.view.post_in_board.Post.prototype.enable = function() {
     this.disabled = false;
-    goog.dom.classes.remove(this.wrap_el, 'busy');
+    postile.ui.stopLoading(this.wrap_el);
 }
 
 postile.view.post_in_board.Post.prototype.submitEdit = function(to_submit) {
@@ -193,14 +194,14 @@ postile.view.post_in_board.InlineCommentsBlock = function(postObj) {
             instance.text_input.innerHTML = '';
             goog.dom.classes.remove(instance.text_input, 'inactive');
         } else if (e.keyCode == goog.events.KeyCodes.ENTER) {
-            goog.dom.classes.add(instance.text_input, 'busy');
             postile.ajax(['post','inline_comment'], { post_id: postObj.post.id, content: instance.text_input.innerHTML }, function(data) {
                 if (data.status == postile.ajax.status.OK) {
                     postile.fx.effects.verticalExpand((new postile.view.post_in_board.InlineComment(instance, data.message)).comment_container);
-                    goog.dom.classes.remove(instance.text_input, 'busy');
+                    postile.ui.stopLoading(instance.text_input);
                     text_input_init();
                 }
             });
+            postile.ui.startLoading(instance.text_input);
         }
     });
     goog.events.listen(this.text_input, goog.events.EventType.BLUR, function(){
