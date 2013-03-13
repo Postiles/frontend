@@ -143,6 +143,12 @@ postile.view.post_in_board.Post.prototype.submitEdit = function(to_submit) {
 
 postile.view.post_in_board.Post.prototype.removeFromBoard = function() {
     goog.dom.removeNode(this.wrap_el);
+
+    /* guanlun hacks */
+    postile.ajax([ 'post', 'delete' ], { post_id: this.post.id }, function(data) {
+        console.log(data);
+    });
+
     delete this.board.currentPosts[this.id];
 }
 

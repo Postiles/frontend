@@ -17,8 +17,8 @@ postile.view.confirm_delete.ConfirmDelete = function(input_instance) {
 
 	var self = this;
 	
-	var bt_delete = this.container.lastChild.previousSibling.lastChild.previousSibling;
-	var bt_cancel = bt_delete.previousSibling.previousSibling;
+	var bt_delete = this.container.lastChild.lastChild;
+	var bt_cancel = bt_delete.previousSibling;
 	
 	goog.events.listen(bt_delete, goog.events.EventType.CLICK, function(){
         instance.removeFromBoard();

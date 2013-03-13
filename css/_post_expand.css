@@ -5,24 +5,110 @@
   margin: 0px;
   height: 600px;
   background: whitesmoke;
-  font-family: RobotoRegular; }
+  font-family: RobotoRegular;
+  box-shadow: 0px 0px 20px #024d62; }
   .post-expand .container {
+    margin: 0 auto;
+    width: 800px;
     height: 100%; }
     .post-expand .container .left {
       float: left;
-      width: 50%;
-      padding: 60px; }
-      .post-expand .container .left .title {
-        font-size: 15pt;
-        color: #024d62; }
-      .post-expand .container .left .author {
-        font-size: 12pt;
-        color: #024d62; }
-      .post-expand .container .left .content {
-        margin-top: 20px;
-        height: 400px;
-        box-shadow: 0px 10px 40px -20px #888888 inset, 0px -10px 40px -20px #888888 inset;
-        overflow: scroll;
-        font-size: 11pt; }
+      width: 400px;
+      padding-top: 30px; }
+      .post-expand .container .left .left-container {
+        box-shadow: 0px 10px 40px -25px #888888 inset, 0px -10px 40px -25px #888888 inset;
+        overflow: scroll; }
+        .post-expand .container .left .left-container .title {
+          margin-top: 20px;
+          font-size: 15pt;
+          color: #024d62; }
+        .post-expand .container .left .left-container .author {
+          margin-top: 30px;
+          font-size: 12pt;
+          color: #024d62; }
+        .post-expand .container .left .left-container .content {
+          margin-top: 20px;
+          height: 400px;
+          font-size: 11pt; }
     .post-expand .container .right {
-      float: left; }
+      float: left;
+      margin-left: 60px;
+      width: 340px; }
+      .post-expand .container .right .comment-box {
+        width: inherit; }
+        .post-expand .container .right .comment-box .caret {
+          position: relative;
+          top: 30px;
+          left: -16px;
+          margin-top: 6px;
+          width: 0;
+          height: 0;
+          border-top: 12px solid transparent;
+          border-right: 16px solid #024d62;
+          border-bottom: 12px solid transparent; }
+        .post-expand .container .right .comment-box .form {
+          width: inherit;
+          padding: 10px;
+          background: #024d62;
+          display: table-cell; }
+          .post-expand .container .right .comment-box .form .profile-image {
+            float: left;
+            width: 60px;
+            height: 60px;
+            background: red; }
+            .post-expand .container .right .comment-box .form .profile-image img {
+              width: inherit;
+              height: inherit; }
+          .post-expand .container .right .comment-box .form .field {
+            float: left;
+            margin-left: 10px;
+            margin-right: 10px; }
+            .post-expand .container .right .comment-box .form .field .input {
+              width: 240px;
+              padding: 4px 0;
+              background: #024d62;
+              color: whitesmoke;
+              border-top: 1px solid whitesmoke;
+              border-bottom: 1px solid whitesmoke;
+              outline: none; }
+      .post-expand .container .right .comment-container {
+        width: inherit;
+        margin-top: 10px;
+        height: 420px;
+        overflow: scroll; }
+        .post-expand .container .right .comment-container .comment {
+          margin-top: 5px;
+          display: table;
+          width: inherit;
+          background: #ecf0fd; }
+          .post-expand .container .right .comment-container .comment .profile-image {
+            margin: 3px;
+            float: left;
+            width: 50px;
+            height: 50px;
+            background: red; }
+            .post-expand .container .right .comment-container .comment .profile-image img {
+              width: inherit;
+              height: inherit; }
+          .post-expand .container .right .comment-container .comment .comment-right {
+            margin: 0 10px;
+            width: 260px;
+            float: left;
+            padding-top: 4px; }
+            .post-expand .container .right .comment-container .comment .comment-right .username {
+              color: #024d62; }
+  .post-expand .footer {
+    width: 100%; }
+    .post-expand .footer .close-button {
+      position: relative;
+      margin: 0 auto;
+      padding: 5px;
+      width: 200px;
+      background: #024d62;
+      color: whitesmoke;
+      font-size: 14pt;
+      text-align: center;
+      cursor: pointer;
+      -webkit-transition: background 0.4s; }
+      .post-expand .footer .close-button:hover {
+        background: #008299; }

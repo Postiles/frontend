@@ -22,6 +22,11 @@ postile.view.post.PostExpand = function(post, username) { // constructor
     this.content_el = goog.dom.getElementByClass('content', this.post_el);
     this.content_el.innerHTML = post.text_content;
 
+    this.closeButton_el = goog.dom.getElementByClass('close-button', this.post_el);
+    goog.events.listen(this.closeButton_el, goog.events.EventType.CLICK, function(e) {
+        this.close();
+    }.bind(this));
+
     this.open(1165);
 }
 
