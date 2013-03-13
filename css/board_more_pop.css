@@ -7,7 +7,6 @@ body {
 #board_more {
   position: fixed;
   right: 0px;
-  top: 0px;
   width: 40px;
   height: 100%;
   background-color: #cccccc; }
@@ -51,13 +50,13 @@ body {
       cursor: pointer; }
       #other_boards .other_header p:hover {
         color: #FF8C00; }
-    #other_boards .other_header #arrow_right {
-      border-top: 10px solid transparent;
-      border-bottom: 10px solid transparent;
-      border-left: 10px solid #024d61;
+    #other_boards .other_header #arrow_up {
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      border-bottom: 10px solid #024d61;
       position: absolute;
-      left: 240px;
-      top: 10px; }
+      left: 110px;
+      top: -10px; }
   #other_boards #board_list .up_roll {
     height: 10px;
     background-color: #cccccc;

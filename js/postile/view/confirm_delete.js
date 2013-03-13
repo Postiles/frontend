@@ -16,9 +16,10 @@ postile.view.confirm_delete.ConfirmDelete = function(input_instance) {
 	this.container.style.left = '22px';
 
 	var self = this;
-	
-	var bt_delete = this.container.lastChild.previousSibling.lastChild.previousSibling;
-	var bt_cancel = bt_delete.previousSibling.previousSibling;
+	console.log(this.container.lastChild);
+	var bt_delete = this.container.lastChild.lastChild;
+	console.log(bt_delete);
+	var bt_cancel = bt_delete.previousSibling;
 	
 	goog.events.listen(bt_delete, goog.events.EventType.CLICK, function(){
         instance.removeFromBoard();
