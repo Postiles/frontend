@@ -395,6 +395,11 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
             goog.style.showElement(this.search_result_containers[i], false);
         }
     });
+    var switch_board_button = goog.dom.getElement("switch_board_button");
+    goog.events.listen(switch_board_button, goog.events.EventType.CLICK, function(e) {
+        (new postile.view.board_more_pop.OtherBoard(switch_board_button)).open(switch_board_button);
+    });
+
 
     goog.dom.appendChild(this.viewport, this.canvas);
     goog.dom.appendChild(this.viewport, this.mask);
