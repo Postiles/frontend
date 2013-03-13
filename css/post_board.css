@@ -543,9 +543,8 @@ html, body {
 
 .post_preview {
   position: absolute;
-  opacity: 0.6;
-  border: 3px dashed white;
-  border-radius: 4px;
+  opacity: 0.8;
+  box-shadow: inset 0 0 3px 1px rgba(2, 77, 97, 0.8);
   box-sizing: border-box;
   z-index: 1;
   -webkit-transition-duration: 0.3s;
@@ -558,14 +557,16 @@ html, body {
   width: 20px;
   height: 20px;
   border-radius: 8px;
-  background-color: white;
+  background: url(/images/guanlun.jpg);
+  background-size: 30px 30px;
+  background-position: center;
   z-index: 2; }
 
 /*Arrow* */
 .right_clicker {
   width: 106px;
   height: 106px;
-  background: url(right.png);
+  background: url(/images/right.png);
   display: none;
   position: absolute; }
 

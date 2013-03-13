@@ -18,9 +18,3 @@ postile.fx.effects.verticalExpand = function(dom) { //TODO: to be improved
         postile.browser_compat.setCss(dom, 'height', i*th + 'px');
     }, 500, postile.fx.ease.cubic_ease_out);
 }
-
-postile.fx.effects.rotateOn = function(dom) {
-    return new postile.fx.Animate(function(i){
-        postile.browser_compat.setCss(dom, 'transform', 'rotate('+Math.floor(i*360)+'deg)');
-    }, 800, null);
-}

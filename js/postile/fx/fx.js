@@ -5,7 +5,7 @@ postile.fx.period = 36; //in the unit of millisec
 postile.fx.Animate = function(iter_func, duration_or_period, ease, callback, mode) { //see enums at the end of this file to know
     if (!ease) { ease = postile.fx.ease.linear; }
     if (!callback) { callback = function(){} }
-    if (!mode) { mode = postile.fx.modes.once; }
+    if (!mode) { mode = postile.fx.modes.ONCE; }
     var interval;
     var iter_status = 0;
     var iter_step = postile.fx.period/duration_or_period;

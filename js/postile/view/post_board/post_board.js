@@ -142,9 +142,9 @@ postile.view.post_board.handlers.mask_mousemove = function(e){ //mouse key not d
     this.preview.style.top = this.rel_data.yPosTo(this.position.coord_y) + this.rel_data.canvasCoord[1] + 'px';
     this.preview.style.width = this.rel_data.widthTo(this.position.span_x) + 'px';
     this.preview.style.height = this.rel_data.heightTo(this.position.span_y) + 'px';
-    this.preview.style.backgroundColor = intersect ? '#F00' : '#0F0';
+    this.legal = (!intersect) && this.position.span_x > 1 && this.position.span_y > 1;
+    this.preview.style.backgroundColor = this.legal ? '#e4eee4': '#f4dcdc';
     this.preview.style.display = 'block';
-    this.legal = !intersect;
 };
 
 postile.view.post_board.handlers.mask_mouseup = function(e){

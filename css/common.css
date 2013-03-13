@@ -89,6 +89,7 @@ MIC: postile.toast
     position: absolute;
     left: 25%;
     top: 25%;
+    background-position: center;
 }
 
 .busy_wrap {

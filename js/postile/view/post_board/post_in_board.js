@@ -80,7 +80,9 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
     
     if (this.post.user_id == localStorage.postile_user_id) { //created by current user
         goog.events.listen(addIcon("edit"), goog.events.EventType.CLICK, function() { instance.edit(); });
-        goog.events.listen(addIcon("delete"), goog.events.EventType.CLICK, function() { instance.remove(); });
+        goog.events.listen(addIcon("delete"), goog.events.EventType.CLICK, function() { 
+            new postile.view.confirm_delete.ConfirmDelete(instance).open(this);
+        });
     }
 
     if (animation) {
@@ -131,16 +133,6 @@ postile.view.post_in_board.Post.prototype.submitEdit = function(to_submit) {
             }
         }]);
     });
-}
-
-postile.view.post_in_board.Post.prototype.remove = function() {
-    var instance = this;
-    if (window.confirm('Sure to delete?')) {
-        postile.ajax(['post','delete'], { post_id: this.post.id }, function(data) {
-            new postile.toast.Toast(5, "The post is successfully deleted. Please refresh.");
-            instance.removeFromBoard();
-        });
-    }
 }
 
 postile.view.post_in_board.Post.prototype.removeFromBoard = function() {
