@@ -24,6 +24,9 @@ postile = { //the base of posTile frontend framework
     dynamicResource: function(input) {
         return "http://"+postile.dhost+":"+postile.dport+"/"+input.join("/");
     },
+    uploadsResource: function(input) {
+        return "http://"+postile.dhost.replace('www', 'static-uploads')+"/"+input.join("/");
+    },
     cssResource: function(input) {
         return "/css/" + input.join("/");
     },
