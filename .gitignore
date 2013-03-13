@@ -6,3 +6,5 @@ third_party
 *.swp
 
 *.sass*
+
+.DS_Store
