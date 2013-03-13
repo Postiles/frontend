@@ -65,7 +65,8 @@ html, body {
   margin-right: 10px; }
 
 #username_text {
-  float: right; }
+  float: right;
+  cursor: pointer; }
 
 #settings_logout_buttons_container {
   clear: right; }

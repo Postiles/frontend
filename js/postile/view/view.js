@@ -67,6 +67,11 @@ postile.view.PopView = function() {
     goog.dom.appendChild(this.container_wrap, this.container);
     this.mask = goog.dom.createDom('div', 'pop_mask');
 
+    /* handle outside click event */
+    goog.events.listen(this.mask, goog.events.EventType.CLICK, function(e) {
+        console.log(e.target);
+    });
+
     this.mask.style.position = 'absolute';
     this.mask.style.top = '0px';
 

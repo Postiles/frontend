@@ -8,6 +8,8 @@ postile.view.profile.ProfileView = function(id) { // constructor
     postile.view.PopView.call(this);
     postile.ui.load(this.container, postile.staticResource(['_profile_preview.html']));
 
+    this.profile_el = goog.dom.getElementByClass('profile-preview', this.container);
+
     this.user_id = id;
 
     postile.ajax([ 'user', 'get_profile' ], { target_user_id: this.user_id }, function(data) {
@@ -15,7 +17,7 @@ postile.view.profile.ProfileView = function(id) { // constructor
 
         this.initItems();
         this.initExitButton();
-        this.open();
+        this.open(710);
     }.bind(this));
 }
 

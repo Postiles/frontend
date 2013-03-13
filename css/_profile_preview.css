@@ -1,63 +1,66 @@
 .profile-preview {
   font-family: RobotoRegular;
   font-size: 10pt;
-  width: 710px;
-  height: 400px;
-  margin: 0 auto; }
-  .profile-preview .image-container .left-fold {
-    position: absolute;
-    margin-left: -30px;
-    margin-top: 20px;
-    width: 30px;
-    height: 100px; }
-    .profile-preview .image-container .left-fold .back-page {
-      position: absolute;
-      width: inherit;
-      height: inherit;
-      background: #024d61;
+  display: table-cell;
+  margin-left: 50%; }
+  .profile-preview .image-container {
+    float: left;
+    margin-top: -120px; }
+    .profile-preview .image-container .left-fold {
+      position: relative;
+      top: 18px;
+      margin-left: -30px;
+      margin-top: 20px;
+      width: 30px;
+      height: 100px; }
+      .profile-preview .image-container .left-fold .back-page {
+        position: relative;
+        top: 100px;
+        width: inherit;
+        height: inherit;
+        background: #024d61;
+        box-shadow: 0px 0px 8px #024d61; }
+      .profile-preview .image-container .left-fold .front-page {
+        position: relative;
+        width: 50px;
+        height: inherit;
+        margin-top: 9px;
+        background: #024d61;
+        z-index: 2;
+        -webkit-transform: skewY(20deg);
+        box-shadow: 0px 0px 6px black; }
+    .profile-preview .image-container .picture {
+      position: relative;
+      width: 200px;
+      height: 200px;
+      -webkit-border-radius: 10px;
+      border: 5px #024d61 solid;
       box-shadow: 0px 0px 8px #024d61; }
-    .profile-preview .image-container .left-fold .front-page {
-      position: absolute;
-      width: 50px;
-      height: inherit;
-      margin-top: 9px;
-      background: #024d61;
-      z-index: 2;
-      -webkit-transform: skewY(20deg);
-      box-shadow: 0px 0px 6px black; }
-  .profile-preview .image-container .picture {
-    position: relative;
-    width: 200px;
-    height: 200px;
-    -webkit-border-radius: 10px;
-    border: 5px #024d61 solid;
-    box-shadow: 0px 0px 8px #024d61; }
-    .profile-preview .image-container .picture img {
-      width: inherit;
-      height: inherit;
-      -webkit-border-radius: 5px; }
-    .profile-preview .image-container .picture .edit {
-      position: absolute;
-      width: 100%;
-      background: black;
-      bottom: 0;
-      color: white;
-      opacity: 0;
-      text-align: center;
-      padding: 5px 0px;
-      cursor: pointer;
-      -webkit-border-bottom-left-radius: 5px;
-      -webkit-border-bottom-right-radius: 5px;
-      -webkit-transition: opacity 0.3s; }
-      .profile-preview .image-container .picture .edit:hover {
-        text-decoration: underline; }
-    .profile-preview .image-container .picture:hover .edit {
-      opacity: 0.7; }
+      .profile-preview .image-container .picture img {
+        width: inherit;
+        height: inherit;
+        -webkit-border-radius: 5px; }
+      .profile-preview .image-container .picture .edit {
+        position: absolute;
+        width: 100%;
+        background: black;
+        bottom: 0;
+        color: white;
+        opacity: 0;
+        text-align: center;
+        padding: 5px 0px;
+        cursor: pointer;
+        -webkit-border-bottom-left-radius: 5px;
+        -webkit-border-bottom-right-radius: 5px;
+        -webkit-transition: opacity 0.3s; }
+        .profile-preview .image-container .picture .edit:hover {
+          text-decoration: underline; }
+      .profile-preview .image-container .picture:hover .edit {
+        opacity: 0.7; }
   .profile-preview .info-container {
     width: 500px;
     position: relative;
-    left: 210px;
-    top: -210px; }
+    float: left; }
     .profile-preview .info-container .exit-button {
       position: relative;
       left: 490px;
