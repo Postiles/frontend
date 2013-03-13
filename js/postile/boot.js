@@ -19,10 +19,16 @@ postile = { //the base of posTile frontend framework
     fayeLocation: null,
     wrapper: null,
     staticResource: function(input) {
-        return "/" + input.join("/");
+        return "/templates/" + input.join("/");
     },
     dynamicResource: function(input) {
         return "http://"+postile.dhost+":"+postile.dport+"/"+input.join("/");
+    },
+    cssResource: function(input) {
+        return "/css/" + input.join("/");
+    },
+    imageResource: function(input) {
+        return "/images/" + input.join("/");
     },
     getGlobalKeyHandler: function() {
         if(!postile.getGlobalKeyHandler.handler) { postile.getGlobalKeyHandler.handler = new goog.events.KeyHandler(document); }
