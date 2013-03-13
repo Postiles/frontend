@@ -26,10 +26,6 @@ postile.view.board_more_pop.OtherBoard = function(input_instance) {
     this.container.id = 'other_boards';
     this.container.style.top = '0px';
     this.container.style.left = '0px';
-
-
-
-    
 }
 
 goog.inherits(postile.view.board_more_pop.OtherBoard, postile.view.TipView);

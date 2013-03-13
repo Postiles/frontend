@@ -27,3 +27,8 @@
     font-family: PlayBold;
     src: url('../fonts/Play-Bold.ttf');
 }
+
+@font-face  {
+    font-family: HelveticaNeue;
+    src: url('../fonts/HelveticaNeue-Light.otf');
+}

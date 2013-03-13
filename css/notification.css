@@ -1,0 +1,102 @@
+/* layout */
+#notifications_pop_up {
+  font-family: OxygenLight;
+  width: 360px;
+  line-height: 100%;
+  position: fixed !important;
+  top: 38px !important;
+  right: 55px !important;
+  left: auto !important;
+  background: #f2f7f7;
+  box-shadow: 3px 3px 20px 1px #888888; }
+  #notifications_pop_up p {
+    margin: 0px;
+    padding: 0px; }
+  #notifications_pop_up .notifications_header {
+    background: #024d61;
+    height: 30px;
+    font-size: 13px;
+    color: #fff; }
+    #notifications_pop_up .notifications_header p {
+      float: left;
+      margin: 7px;
+      margin-left: 15px; }
+    #notifications_pop_up .notifications_header .mark_read {
+      margin: 7px;
+      cursor: pointer;
+      display: block;
+      float: right;
+      margin-right: 15px; }
+      #notifications_pop_up .notifications_header .mark_read p {
+        margin: 0px; }
+      #notifications_pop_up .notifications_header .mark_read:hover p {
+        text-decoration: underline; }
+    #notifications_pop_up .notifications_header .arrow_up {
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      border-bottom: 10px solid #024d61;
+      position: absolute;
+      top: -10px;
+      left: 320px; }
+  #notifications_pop_up #notification_list .notification {
+    height: 80px;
+    position: relative; }
+    #notifications_pop_up #notification_list .notification img.notification_profile {
+      float: left;
+      width: 40px;
+      height: 40px;
+      margin: 10px;
+      background: #024d61; }
+    #notifications_pop_up #notification_list .notification .title {
+      padding-top: 10px; }
+      #notifications_pop_up #notification_list .notification .title p {
+        display: inline;
+        font-size: 13px; }
+      #notifications_pop_up #notification_list .notification .title p.name {
+        cursor: pointer;
+        color: #5e84c2; }
+        #notifications_pop_up #notification_list .notification .title p.name:hover {
+          text-decoration: underline; }
+      #notifications_pop_up #notification_list .notification .title p.post_text_link {
+        cursor: pointer;
+        color: #5e84c2; }
+        #notifications_pop_up #notification_list .notification .title p.post_text_link:hover {
+          text-decoration: underline; }
+    #notifications_pop_up #notification_list .notification p.notification_content {
+      margin-top: 3px;
+      font-size: 11px;
+      line-height: 120%;
+      cursor: default; }
+    #notifications_pop_up #notification_list .notification .notification_footer {
+      position: absolute;
+      bottom: 4px;
+      width: 300px; }
+      #notifications_pop_up #notification_list .notification .notification_footer p.message_time {
+        font-size: 11px;
+        color: #777;
+        float: left;
+        margin-left: 60px; }
+      #notifications_pop_up #notification_list .notification .notification_footer p.ignore {
+        font-size: 11px;
+        cursor: pointer;
+        color: #5e84c2;
+        margin-left: 300px;
+        opacity: 0; }
+        #notifications_pop_up #notification_list .notification .notification_footer p.ignore:hover {
+          text-decoration: underline; }
+    #notifications_pop_up #notification_list .notification:hover {
+      background: #cedadd; }
+      #notifications_pop_up #notification_list .notification:hover .notification_footer p.ignore {
+        opacity: 1; }
+  #notifications_pop_up .notification_more {
+    border-top: 1px solid #024d61;
+    height: 30px;
+    cursor: pointer; }
+    #notifications_pop_up .notification_more p {
+      margin: 0px auto;
+      width: 70px;
+      font-size: 13px;
+      padding-top: 7px;
+      color: #024d61; }
+    #notifications_pop_up .notification_more:hover {
+      background: #cedadd; }
