@@ -120,6 +120,9 @@ html, body {
   background-position: center;
   cursor: pointer; }
 
+#switch_board_button {
+  background-color: #222 }
+
 #message_button {
   background-image: url("../images/message_icon.png"); }
 

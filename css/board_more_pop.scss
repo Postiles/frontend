@@ -1,9 +1,9 @@
 /* layout */
 
 $main-color:    #024d61;
-$second-color:  #ccc;
-$third-color:	#aaa;
-$fourth-color:  #bbb; 
+$second-color:  #B2D08D;
+$third-color:	#C2D6AD;
+$fourth-color:  #A1CB69; 
 
 
 body {
@@ -45,10 +45,13 @@ body {
 #other_boards {
 	margin-top: 35px;
 	width: 240px;
-	position: fixed;
-	right: 45px;
+	position: fixed !important;
+	top: 5px !important;
+	right: 50px !important;
+	left: auto !important;
 	background-color: $third-color;
 	box-shadow: 3px 3px 20px 1px #888888;
+	line-height: 100%;
 
 	.other_header {
 		background-color: $main-color;
@@ -72,13 +75,13 @@ body {
 			}
 		}
 
-		#arrow_right {
-			border-top: 10px solid transparent;
-    		border-bottom: 10px solid transparent;
-    		border-left: 10px solid $main-color;
+		#arrow_up {
+    		border-left: 10px solid transparent;
+    		border-right: 10px solid transparent;
+    		border-bottom: 10px solid $main-color;
     		position: absolute;
-    		left: 240px;
-    		top: 10px;
+    		left: 165px;
+    		top: -10px;
 		}
 	}
 
@@ -89,7 +92,7 @@ body {
 			cursor: pointer;
 
 			&:hover {
-				background-color: #fff;
+				background-color: $fourth-color;
 			}
 
 			.list_prev {
@@ -109,7 +112,7 @@ body {
 			cursor: pointer;
 
 			&:hover {
-				background-color: #fff;
+				background-color: $fourth-color;
 			}
 
 			.list_next {
@@ -129,8 +132,8 @@ body {
 			padding-bottom: 10px;
 			height: 50px;
 			cursor: pointer;
-			border-top: 1px solid $main-color;
-			border-bottom: 1px solid $main-color;
+			border-top: 1px solid $second-color;
+			border-bottom: 1px solid $second-color;
 
 			h3.board_title {
 				font-size: 14px;
