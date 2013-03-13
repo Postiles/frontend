@@ -16,6 +16,7 @@ goog.require('goog.events.KeyHandler');
 goog.require('postile.WYSIWYF');
 goog.require('postile.debbcode');
 goog.require('postile.fx.effects');
+goog.require('postile.view.post');
 
 postile.view.post_in_board.Post = function(object, board) {
     this.board = board;
@@ -48,6 +49,11 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
     this.post_title_el.innerHTML = this.post.title;
     goog.dom.appendChild(this.post_top_el, this.post_title_el);
 
+    // post title clicked, should display post expanded
+    goog.events.listen(this.post_title_el, goog.events.EventType.CLICK, function(e) {
+        var postExpand = new postile.view.post.PostExpand(this.post);
+    });
+
     this.post_author_el = goog.dom.createDom("span", "post_author");
     this.post_author_el.innerHTML = this.username;
     goog.dom.appendChild(this.post_top_el, this.post_author_el);
@@ -55,7 +61,7 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
     // username clicked, should display user profile
     goog.events.listen(this.post_author_el, goog.events.EventType.CLICK, function(e) {
         var id = 1; // temporary hack
-        profileView = new postile.view.profile.ProfileView(id);
+        var profileView = new postile.view.profile.ProfileView(id);
     }.bind(this));
 
     this.post_content_el = goog.dom.createDom("div", "post_content");

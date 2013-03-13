@@ -58,7 +58,7 @@ postile.view.View = function() { //Do not use this class directly (this is an ab
     this.unloadedStylesheets = [];
 }
 
-postile.view.PopView = function() {
+postile.view.PopView = function() { // constructor
     postile.view.View.call(this);
     this.container = goog.dom.createDom('div', 'pop_container');
 
@@ -70,7 +70,7 @@ postile.view.PopView = function() {
     /* handle outside click event */
     goog.events.listen(this.mask, goog.events.EventType.CLICK, function(e) {
         console.log(e.target);
-    });
+    }.bind(this));
 
     this.mask.style.position = 'absolute';
     this.mask.style.top = '0px';
@@ -81,7 +81,11 @@ postile.view.PopView = function() {
 goog.inherits(postile.view.PopView, postile.view.View);
 
 postile.view.PopView.prototype.open = function(width) {
-    this.container.style.width = (width || document.body.clientWidth) + 'px';
+    if (!width || width > document.body.clientWidth) { // not specified or too large for screen
+        this.container.style.width = document.body.clientWidth + 'px';
+    } else {
+        this.container.style.width = width + 'px';
+    }
 
     goog.dom.appendChild(document.body, this.mask);
     postile.fx.effects.resizeIn(this.container);

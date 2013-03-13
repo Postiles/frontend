@@ -17,7 +17,7 @@ postile.view.profile.ProfileView = function(id) { // constructor
 
         this.initItems();
         this.initExitButton();
-        this.open(710);
+        this.open(710); // magic width
     }.bind(this));
 }
 
@@ -40,7 +40,6 @@ postile.view.profile.ProfileView.prototype.initExitButton = function() {
 }
 
 postile.view.profile.ProfileView.prototype.initItems = function() {
-    console.log(this.profile);
     /* init a container for all the editable profile items */
     this.profileItems = [ ];
 
