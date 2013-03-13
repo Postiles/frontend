@@ -7,10 +7,9 @@ body {
 #board_more {
   position: fixed;
   right: 0px;
-  top: 0px;
   width: 40px;
   height: 100%;
-  background-color: #cccccc; }
+  background-color: #b2d08d; }
   #board_more .more_icon {
     height: 30px;
     padding: 0px;
@@ -30,10 +29,13 @@ body {
 #other_boards {
   margin-top: 35px;
   width: 240px;
-  position: fixed;
-  right: 45px;
-  background-color: #aaaaaa;
-  box-shadow: 3px 3px 20px 1px #888888; }
+  position: fixed !important;
+  top: 5px !important;
+  right: 50px !important;
+  left: auto !important;
+  background-color: #c2d6ad;
+  box-shadow: 3px 3px 20px 1px #888888;
+  line-height: 100%; }
   #other_boards .other_header {
     background-color: #024d61;
     height: 40px;
@@ -51,19 +53,19 @@ body {
       cursor: pointer; }
       #other_boards .other_header p:hover {
         color: #FF8C00; }
-    #other_boards .other_header #arrow_right {
-      border-top: 10px solid transparent;
-      border-bottom: 10px solid transparent;
-      border-left: 10px solid #024d61;
+    #other_boards .other_header #arrow_up {
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      border-bottom: 10px solid #024d61;
       position: absolute;
-      left: 240px;
-      top: 10px; }
+      left: 165px;
+      top: -10px; }
   #other_boards #board_list .up_roll {
     height: 10px;
-    background-color: #cccccc;
+    background-color: #b2d08d;
     cursor: pointer; }
     #other_boards #board_list .up_roll:hover {
-      background-color: #fff; }
+      background-color: #a1cb69; }
     #other_boards #board_list .up_roll .list_prev {
       position: absolute;
       left: 115px;
@@ -75,10 +77,10 @@ body {
       border-bottom: 5px solid #024d61; }
   #other_boards #board_list .down_roll {
     height: 10px;
-    background-color: #cccccc;
+    background-color: #b2d08d;
     cursor: pointer; }
     #other_boards #board_list .down_roll:hover {
-      background-color: #fff; }
+      background-color: #a1cb69; }
     #other_boards #board_list .down_roll .list_next {
       position: absolute;
       left: 115px;
@@ -93,8 +95,8 @@ body {
     padding-bottom: 10px;
     height: 50px;
     cursor: pointer;
-    border-top: 1px solid #024d61;
-    border-bottom: 1px solid #024d61; }
+    border-top: 1px solid #b2d08d;
+    border-bottom: 1px solid #b2d08d; }
     #other_boards #board_list .listed_board h3.board_title {
       font-size: 14px;
       margin-top: 0px;
@@ -116,7 +118,7 @@ body {
       background: url(../images/featured_board.png) no-repeat; }
     #other_boards #board_list .listed_board:hover {
       background: #024d61;
-      color: #aaaaaa;
+      color: #c2d6ad;
       position: relative; }
       #other_boards #board_list .listed_board:hover h3.board_title {
         font-size: 14px;
@@ -127,7 +129,7 @@ body {
         opacity: 1; }
   #other_boards #board_list .selected_board {
     background: #024d61;
-    color: #aaaaaa;
+    color: #c2d6ad;
     position: relative; }
     #other_boards #board_list .selected_board h3.board_title {
       font-size: 14px;
