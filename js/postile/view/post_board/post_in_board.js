@@ -51,8 +51,8 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
 
     // post title clicked, should display post expanded
     goog.events.listen(this.post_title_el, goog.events.EventType.CLICK, function(e) {
-        var postExpand = new postile.view.post.PostExpand(this.post);
-    });
+        var postExpand = new postile.view.post.PostExpand(this.post, this.username);
+    }.bind(this));
 
     this.post_author_el = goog.dom.createDom("span", "post_author");
     this.post_author_el.innerHTML = this.username;
