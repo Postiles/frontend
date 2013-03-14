@@ -1,4 +1,5 @@
 goog.provide('postile.debbcode');
+
 goog.require('goog.string');
 
 postile.parseBBcode = function(input) {

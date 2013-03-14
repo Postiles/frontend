@@ -90,10 +90,20 @@ postile.view.PopView.prototype.open = function(width) {
     goog.dom.appendChild(document.body, this.mask);
     postile.fx.effects.resizeIn(this.container);
     postile.fx.Animate(function(i) { this.mask.style.opacity = i; }.bind(this), 400);
+
+    this.esc = this.escPressed.bind(this); // create a binded function for removing events
+    goog.events.listen(document, goog.events.EventType.KEYUP, this.esc);
 }
     
 postile.view.PopView.prototype.close = function() {
     goog.dom.removeNode(this.mask);
+    goog.events.unlisten(document, goog.events.EventType.KEYUP, this.esc);
+}
+
+postile.view.PopView.prototype.escPressed = function(e) {
+    if (e.keyCode == 27) { // esc pressed
+        this.close();
+    }
 }
 
 postile.view.FullScreenView = function() {

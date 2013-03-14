@@ -22,13 +22,13 @@ goog.require('goog.events');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.ui.Textarea');
 goog.require('goog.events.KeyHandler');
-goog.require('postile.toast');
 goog.require('postile.events');
 goog.require('postile.view.post_in_board');
 goog.require('postile.view.board_more_pop');
 goog.require('postile.view.confirm_delete');
 goog.require('postile.view.profile');
 goog.require('postile.view.notification');
+goog.require('postile.view.search_box');
 
 postile.view.post_board.handlers.canvas_mousedown = function(e) {
     if (!e.isButton(0)) { return; }
@@ -152,10 +152,11 @@ postile.view.post_board.handlers.mask_mouseup = function(e){
     this.rel_data.disableMovingCanvas = false;
     this.rel_data.newPostStartCoord = null;
     this.post_preview_origin_spot.style.display = 'none';
+    this.preview.style.display = 'none';
     if (!this.legal) {
+        new postile.toast.Toast(5, postile._('post_zone_illegal'), [], 'red');
         return;
     }
-    this.preview.style.display = 'none';
     this.legal = false;
     this.rel_data.createPost(this.position);
 };
@@ -226,126 +227,6 @@ postile.view.post_board.handlers.keypress = function(instance, e){
     }    
 }
 
-postile.view.post_board.handlers.search = function(instance) {
-    // people search result
-    var search_result_people = goog.dom.getElement("search_result_people");
-    var people_list = goog.dom.getElementByClass("search_result_content_list", search_result_people);
-    people_list.innerHTML = "";
-
-    // topic search result
-    var search_result_topic = goog.dom.getElement("search_result_topic");
-    var topic_list = goog.dom.getElementByClass("search_result_content_list", search_result_topic);
-    topic_list.innerHTML = "";
-
-    // post search result
-    var search_result_post = goog.dom.getElement("search_result_post");
-    var post_list = goog.dom.getElementByClass("search_result_content_list", search_result_post);
-    post_list.innerHTML = "";
-
-    var search_value = goog.dom.getElement("search_input_field").value;
-
-    if (search_value) {
-        postile.ajax(['search','search_user'], { search: search_value }, function(data) {
-            user_arr = JSON.parse(data.message);
-            if (user_arr.length == 0) {
-                goog.style.showElement(search_result_people, false);
-            } else {
-                goog.style.showElement(search_result_people, true);
-            }
-            for (i in user_arr) {
-                user = user_arr[i];
-
-                // people item
-                var people_result = goog.dom.createDom("div", "search_result_item search_result_people");
-                goog.dom.appendChild(people_list, people_result);
-
-                // profile image
-                var result_image = goog.dom.createDom("div", "search_result_image");
-                goog.dom.appendChild(people_result, result_image);
-
-                // right container
-                var result_right_container = goog.dom.createDom("div", "search_result_right_container");
-                goog.dom.appendChild(people_result, result_right_container);
-
-                // title (username)
-                var result_item_title = goog.dom.createDom("div", "search_result_item_title");
-                result_item_title.innerHTML = user.username;
-                goog.dom.appendChild(result_right_container, result_item_title);
-
-                // info (email)
-                var result_item_info = goog.dom.createDom("div", "search_result_item_info");
-                result_item_info.innerHTML = user.email;
-                goog.dom.appendChild(result_right_container, result_item_info);
-            }
-        });
-
-        postile.ajax(['search','search_topic'], { search: search_value }, function(data) {
-            topic_arr = JSON.parse(data.message);
-            if (topic_arr.length == 0) {
-                goog.style.showElement(search_result_topic, false);
-            } else {
-                goog.style.showElement(search_result_topic, true);
-            }
-            for (i in topic_arr) {
-                topic = topic_arr[i];
-                console.log(topic);
-
-                // topic item
-                var topic_result = goog.dom.createDom("div", "search_result_item search_result_topic");
-                goog.dom.appendChild(topic_list, topic_result);
-
-                // profile image
-                var result_image = goog.dom.createDom("div", "search_result_image");
-                goog.dom.appendChild(topic_result, result_image);
-
-                // right container
-                var result_right_container = goog.dom.createDom("div", "search_result_right_container");
-                goog.dom.appendChild(topic_result, result_right_container);
-
-                // title (name)
-                var result_item_title = goog.dom.createDom("div", "search_result_item_title");
-                result_item_title.innerHTML = topic.name;
-                goog.dom.appendChild(result_right_container, result_item_title);
-
-                // info (description)
-                var result_item_info = goog.dom.createDom("div", "search_result_item_info");
-                result_item_info.innerHTML = topic.description;
-                goog.dom.appendChild(result_right_container, result_item_info);
-            }
-        });
-
-        postile.ajax(['search','search_post'], { search: search_value }, function(data) {
-            post_arr = JSON.parse(data.message); // not sure why here I need one more level of parsing
-            if (post_arr.length == 0) {
-                goog.style.showElement(search_result_post, false);
-            } else {
-                goog.style.showElement(search_result_post, true);
-            }
-            for (i in post_arr) {
-                post = post_arr[i];
-
-                var post_result = goog.dom.createDom("div", "search_result_item search_result_post");
-                goog.dom.appendChild(post_list, post_result);
-
-                var item_title = goog.dom.createDom("div", "search_result_item_title");
-                item_title.innerHTML = post.title;
-                goog.dom.appendChild(post_result, item_title);
-            }
-        });
-    } else {
-        /* hides all the search result containers */
-        this.search_result_containers = goog.dom.getElementsByClass("search_result_category");
-        for (i = 0; i < this.search_result_containers.length; i++) {
-            goog.style.showElement(this.search_result_containers[i], false);
-        }
-    }
-}
-
-
-
-
-
-
 postile.view.post_board.PostBoard = function(topic_id) { //constructor
     var i;
     var keyHandler;
@@ -381,11 +262,34 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
 
     goog.dom.appendChild(goog.dom.getElement("wrapper"), this.viewport);
 
+    this.topicTitle_el = goog.dom.getElement('topic_title');
+
+    postile.ajax([ 'topic', 'get_topic' ], { topic_id: this.topic_id }, function(data) {
+        this.topic = data.message;
+        this.topicTitle_el.innerHTML = this.topic.name;
+    }.bind(this));
+
+    this.usernameText_el = goog.dom.getElement('username_text');
+
+    this.profileImageContainer_el = goog.dom.getElement('profile_image_container');
+    this.profileImageContainerImg_el = goog.dom.getElementByClass('image', this.profileImageContainer_el);
+
+    postile.ajax([ 'user', 'get_profile' ], { }, function(data) {
+        this.selfUser = data.message.user;
+        this.selfProfile = data.message.profile;
+
+        this.usernameText_el.innerHTML = this.selfUser.username;
+
+        var url = postile.uploadsResource([ this.selfProfile.image_url ]); // to be changed to small image url
+        this.profileImageContainerImg_el.src = url;
+    }.bind(this));
+
     this.function_buttons = goog.dom.getElementsByClass('function_button');
     for (var i = 0; i < this.function_buttons.length; i++) {
         new postile.view.post_board.FunctionButton(this.function_buttons[i]);
     }
 
+    /*
     this.search_input_field = goog.dom.getElement("search_input_field");
     goog.events.listen(this.search_input_field, goog.events.EventType.KEYUP, postile.view.post_board.handlers.search);
 
@@ -398,17 +302,18 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
     goog.events.listen(this.search_button, goog.events.EventType.CLICK, function(e) {
         this.search_box.style.display = "block";
 
-        /*
-        this.search_button.style.backgroundColor = '#024d61'
-        this.search_button_img.style.webkitFilter = 'brightness(100%)';
-        */
-
-        /* hides all the search result containers */
+        // hides all the search result containers
         this.search_result_containers = goog.dom.getElementsByClass("search_result_category");
         for (i = 0; i < this.search_result_containers.length; i++) {
             goog.style.showElement(this.search_result_containers[i], false);
         }
     }.bind(this));
+    */
+
+    var search_button = goog.dom.getElement("search_button");
+    goog.events.listen(search_button, goog.events.EventType.CLICK, function(e) {
+        (new postile.view.search_box.SearchBox(search_button)).open(search_button);
+    });
 
     var switch_board_button = goog.dom.getElement("switch_board_button");
     goog.events.listen(switch_board_button, goog.events.EventType.CLICK, function(e) {
@@ -417,7 +322,6 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
 
     var message_button = goog.dom.getElement("message_button");
     goog.events.listen(message_button, goog.events.EventType.CLICK, function(e) {
-        console.log("at main called");
         (new postile.view.notification.Notification(message_button)).open(message_button);
     });
 
