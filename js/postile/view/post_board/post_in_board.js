@@ -96,19 +96,21 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
 }
 
 postile.view.post_in_board.Post.prototype.disable = function() {
+    if(this.disabled) { return; }
     this.disabled = true;
     postile.ui.startLoading(this.wrap_el);
 }
 
 postile.view.post_in_board.Post.prototype.enable = function() {
+    if(!this.disabled) { return; }
     this.disabled = false;
     postile.ui.stopLoading(this.wrap_el);
 }
 
 postile.view.post_in_board.Post.prototype.submitEdit = function(to_submit) {
     var instance = this;
-    var original_title = instance.title;
-    var original_value = instance.text_content;
+    var original_title = instance.post.title;
+    var original_value = instance.post.text_content;
     if (postile.string.empty(to_submit.content)) { 
         var the_id = instance.id;
         if (confirm("Leaving a post blank will effectively delete this post. Confirm to proceed?")) {
@@ -131,7 +133,7 @@ postile.view.post_in_board.Post.prototype.submitEdit = function(to_submit) {
                 instance.disable();
                 var revert_submit_waiting = new postile.toast.Toast(0, "Please wait... We're submitting reversion... Be ready for 36s.");
                 revert_waiting.abort();
-                postile.ajax(['post','submit_change'], { post_id: data.message.id, content: original_value, title: original_title }, function(data) {
+                postile.ajax(['post','submit_change'], { post_id: data.message.post.id, content: original_value, title: original_title }, function(data) {
                     revert_submit_waiting.abort();
                     instance.render(data.message);
                 });
