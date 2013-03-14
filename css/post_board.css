@@ -214,6 +214,16 @@ html, body {
 .post_like_icon {
   background-image: url("../images/like_icon.png"); }
 
+.post_like_count {
+  float: left;
+  margin: 0 6px 0 -14px;
+  padding: 1px 5px 1px 9px;
+  height: 11px;
+  font-size: 9px;
+  line-height: 11px;
+  background: #c0d7dd;
+}
+  
 .post_share_icon {
   background-image: url("../images/share_icon.png"); }
 
