@@ -43,6 +43,10 @@ postile.view.profile.ProfileView.prototype.initItems = function() {
     /* init a container for all the editable profile items */
     this.profileItems = [ ];
 
+    this.picture_el = goog.dom.getElementByClass('picture', this.container);
+    this.pictureImg_el = goog.dom.getElementsByTagNameAndClass('img', null, this.picture_el)[0];
+    this.pictureImg_el.src = postile.uploadsResource([ this.profile.image_url ]);
+
     this.name_el = goog.dom.getElementByClass('name', this.container);
     this.name_el.innerHTML = this.profile.first_name + ' ' + this.profile.last_name;
 
