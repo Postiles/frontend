@@ -1,0 +1,153 @@
+/* layout */
+
+$main-color:    #024d61;
+$second-color:  #f2f7f7;
+$third-color:	#C2D6AD;
+$hover-background-color:  #cedadd; 
+$link-color: 	#5e84c2;
+
+#notifications_pop_up {
+	font-family: OxygenLight;
+	width: 360px;
+	line-height: 100%;
+	position: fixed !important;
+	top: 38px !important;
+	right: 55px !important;
+	left: auto !important;
+	background: $second-color;
+	box-shadow: 3px 3px 20px 1px #888888;
+	p {
+		margin: 0px;
+		padding: 0px;
+	}
+	.notifications_header {
+		background: $main-color;
+		height: 30px;
+		font-size: 13px;
+		color: #fff;
+		p {
+			float: left;
+			margin: 7px;
+			margin-left: 15px;
+		}
+		.mark_read {
+			margin: 7px;
+			cursor: pointer;
+			display: block;
+			float: right;
+			margin-right: 15px;
+			p {
+				margin: 0px;
+			}
+			&:hover {
+				p {
+					text-decoration: underline;
+				}
+			}
+		}
+		.arrow_up {
+			border-left: 10px solid transparent;
+    		border-right: 10px solid transparent;
+    		border-bottom: 10px solid $main-color;
+    		position: absolute;
+    		top: -10px;
+    		left: 320px;
+		}
+	}
+
+	#notification_list {
+
+		.notification {
+			height: 80px;
+			position: relative;
+			img.notification_profile {
+				float: left;
+				width: 40px;
+				height: 40px;
+				margin: 10px;
+				background: $main-color;
+			}
+			.title {
+				padding-top: 10px;
+				p {
+					display: inline;
+					font-size: 13px;
+				}
+				p.name {
+					cursor: pointer;
+					color: $link-color;
+					&:hover {
+						text-decoration: underline;
+					}
+				}
+				p.post_text_link {
+					cursor: pointer;
+					color: $link-color;
+					&:hover {
+						text-decoration: underline;
+					}
+
+				}
+			}
+
+			p.notification_content {
+				margin-top: 3px;
+				font-size: 11px;
+				line-height: 120%;
+				cursor: default;
+			}
+
+			.notification_footer {
+				position: absolute;
+				bottom: 4px;
+				width: 300px;
+
+				p.message_time {
+					font-size: 11px;
+					color: #777;
+					float:left;
+					margin-left: 60px;
+				}
+
+				p.ignore {
+					font-size: 11px;
+					cursor: pointer;
+					color: $link-color;
+					margin-left: 300px;
+					opacity: 0;
+					&:hover {
+						text-decoration: underline;
+					}
+				}
+			}
+
+			&:hover {
+				background: $hover-background-color;
+				.notification_footer {
+					p.ignore {
+						opacity: 1;
+					}
+				}
+			}
+			
+		}
+
+	}
+
+	.notification_more {
+		border-top: 1px solid $main-color;
+		height: 30px;
+		p {
+			margin: 0px auto;
+			width: 70px;
+			font-size: 13px;
+			padding-top: 7px;
+			color: $main-color;
+		}
+		&:hover {
+			background: $hover-background-color;
+		}
+	}
+
+
+}
