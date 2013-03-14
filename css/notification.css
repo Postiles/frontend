@@ -90,7 +90,8 @@
         opacity: 1; }
   #notifications_pop_up .notification_more {
     border-top: 1px solid #024d61;
-    height: 30px; }
+    height: 30px;
+    cursor: pointer; }
     #notifications_pop_up .notification_more p {
       margin: 0px auto;
       width: 70px;
