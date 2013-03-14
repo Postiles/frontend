@@ -216,11 +216,12 @@ html, body {
 
 .post_like_count {
   float: left;
-  margin: 1px 8px 1px -14px;
-  padding: 1px 0px 1px 10px;
-  height: 9px;
+  margin: 0 6px 0 -14px;
+  padding: 1px 5px 1px 9px;
+  height: 11px;
   font-size: 9px;
-  line-height: 9px;
+  line-height: 11px;
+  background: #c0d7dd;
 }
   
 .post_share_icon {
