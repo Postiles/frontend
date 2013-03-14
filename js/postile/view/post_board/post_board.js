@@ -328,7 +328,7 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
     goog.dom.appendChild(this.viewport, this.canvas);
     goog.dom.appendChild(this.viewport, this.mask);
     goog.dom.appendChild(this.mask, this.mask_notice);
-    this.mask_notice.innerHTML = 'Click & Drag to add a post<br />Double click again to quit';
+    this.mask_notice.innerHTML = postile._('mask_for_creating_post');
     this.viewport.rel_data = this;
     this.canvas.rel_data = this;
     this.mask.rel_data = this;

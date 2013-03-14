@@ -81,7 +81,13 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
         return icon;
     }
     
-    addIcon("like"); addIcon("share"); addIcon("link"); 
+    addIcon("like");
+    
+    this.like_count = goog.dom.createDom("div", "post_like_count");
+    goog.dom.appendChild(instance.post_icon_container_el, this.like_count);
+    this.like_count.innerHTML = object.post.likes_count;
+    
+    addIcon("share"); addIcon("link"); 
     
     goog.events.listen(addIcon("comment"), goog.events.EventType.CLICK, function() { instance.inline_comments_block = new postile.view.post_in_board.InlineCommentsBlock(instance); });
     
