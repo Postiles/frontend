@@ -60,8 +60,7 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
 
     // username clicked, should display user profile
     goog.events.listen(this.post_author_el, goog.events.EventType.CLICK, function(e) {
-        var id = 1; // temporary hack
-        var profileView = new postile.view.profile.ProfileView(id);
+        var profileView = new postile.view.profile.ProfileView(this.post.user_id);
     }.bind(this));
 
     this.post_content_el = goog.dom.createDom("div", "post_content");
