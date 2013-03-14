@@ -104,6 +104,7 @@ postile.view.post_board.handlers.canvas_mousemove = function(e) {
 //mouseevents for the mask
 postile.view.post_board.handlers.mask_mousedown = function(e){ //find the closest grid point
     this.rel_data.newPostStartCoord = [Math.round(this.rel_data.xPosFrom(e.clientX - this.rel_data.canvasCoord[0])), Math.round(this.rel_data.yPosFrom(e.clientY - this.rel_data.canvasCoord[1]))]; //record current coordinate in the unit of "grid unit" //TODO: detect if the start point is legal (if there is available space around it)
+    this.rel_data.newPostStartCoordInPx = [e.clientX, e.clientY]; //used to disable warning when double clicking
     this.post_preview_origin_spot.style.left = this.rel_data.xPosTo(this.rel_data.newPostStartCoord[0])+this.rel_data.canvasCoord[0]-17+'px';
     this.post_preview_origin_spot.style.top = this.rel_data.yPosTo(this.rel_data.newPostStartCoord[1])+this.rel_data.canvasCoord[1]-17+'px';
     this.post_preview_origin_spot.style.display = 'block';
@@ -154,15 +155,20 @@ postile.view.post_board.handlers.mask_mouseup = function(e){
     this.post_preview_origin_spot.style.display = 'none';
     this.preview.style.display = 'none';
     if (!this.legal) {
-        new postile.toast.Toast(5, postile._('post_zone_illegal'), [], 'red');
+        if (this.rel_data.newPostStartCoordInPx && Math.abs(this.rel_data.newPostStartCoordInPx[0] - e.clientX) > 3 && Math.abs(this.rel_data.newPostStartCoordInPx[1] - e.clientY) > 3) { //do not show when dbl clicking
+            new postile.toast.Toast(5, postile._('post_zone_illegal'), [], 'red');
+        }
+        this.rel_data.newPostStartCoordInPx = null;
         return;
     }
     this.legal = false;
+    this.rel_data.newPostStartCoordInPx = null;
     this.rel_data.createPost(this.position);
 };
 
 //activated double click event for creating new boxes
 postile.view.post_board.handlers.canvas_dblclick = function(e){
+    if(this.rel_data.disableMovingCanvas) { return; }
     this.rel_data.disableMovingCanvas = true;
     this.rel_data.mask.style.display = 'block';
 };
@@ -328,7 +334,7 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
 
     var more_button = goog.dom.getElement("popup_button");
     goog.events.listen(more_button, goog.events.EventType.CLICK, function(e) {
-        (new postile.view.board_more_pop.BoardMorePop(more_button)).open(more_button);
+        (new postile.view.board_more_pop.BoardMorePop(more_button));
     });
 
 
