@@ -120,17 +120,22 @@ goog.inherits(postile.view.FullScreenView, postile.view.View);
 
 postile.view.TipView = function() {
     var instance = this;
+    var should_close = false;
     postile.view.View.call(this);
     this.container = goog.dom.createDom('div');
     this.container.style.position = 'absolute';
     this.container_wrap = goog.dom.createDom('div');
     this.container_wrap.style.position = 'absolute';
     goog.dom.appendChild(this.container_wrap, this.container);
-    this.global_click_handler = new postile.events.EventHandler(document.body, goog.events.EventType.CLICK, function(evt){
+    this.global_msd_handler = new postile.events.EventHandler(document.body, goog.events.EventType.MOUSEDOWN, function(){
+        should_close = true;
         instance.close();
+    });
+    this.global_click_handler = new postile.events.EventHandler(document.body, goog.events.EventType.CLICK, function(evt){
+        if (should_close) { instance.global_click_handler.unlisten(); }
         evt.stopPropagation();
     }, true);
-    this.container_click_handler = new postile.events.EventHandler(this.container, goog.events.EventType.CLICK, function(evt){
+    this.container_msd_handler = new postile.events.EventHandler(this.container, goog.events.EventType.MOUSEDOWN, function(evt){
         evt.stopPropagation();
     });
 }
@@ -142,13 +147,14 @@ postile.view.TipView.prototype.open = function(reference, parent) {
     var coord = goog.style.getRelativePosition(reference, parent);
     goog.style.setPosition(this.container_wrap, coord);
     goog.dom.appendChild(parent, this.container_wrap);
+    this.global_msd_handler.listen();
     this.global_click_handler.listen();
-    this.container_click_handler.listen();
+    this.container_msd_handler.listen();
 }
 
-postile.view.TipView.prototype.close = function() { 
-    this.global_click_handler.unlisten();
-    this.container_click_handler.unlisten();
+postile.view.TipView.prototype.close = function() {
+    this.global_msd_handler.unlisten();
+    this.container_msd_handler.unlisten();
     goog.dom.removeNode(this.container_wrap);
 }
 
