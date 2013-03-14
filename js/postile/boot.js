@@ -25,7 +25,7 @@ postile = { //the base of posTile frontend framework
         return "http://"+postile.dhost+":"+postile.dport+"/"+input.join("/");
     },
     uploadsResource: function(input) {
-        return "http://"+postile.dhost.replace('www', 'static-uploads')+"/"+input.join("/");
+        return "http://"+postile.dhost.replace('www', 'static-uploads')+"/"+input.join("/"); // kind of hack
     },
     cssResource: function(input) {
         return "/css/" + input.join("/");

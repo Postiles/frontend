@@ -27,9 +27,18 @@ postile.view.post.PostExpand = function(post, username) { // constructor
         this.close();
     }.bind(this));
 
+    this.initComments();
+
     this.open(1165);
 }
 
 goog.inherits(postile.view.post.PostExpand, postile.view.PopView);
 
 postile.view.post.PostExpand.prototype.unloaded_stylesheets = ['_post_expand.css'];
+
+postile.view.post.PostExpand.prototype.initComments = function() {
+    this.commentBox_el = goog.dom.getElementByClass('comment-box', this.post_el);
+    this.commentProfileImg = goog.dom.getElementsByTagNameAndClass('img', null, this.commentBox_el);
+    console.log(this.postData);
+    this.commentProfileImg.src = this.postData.image_url;
+}
