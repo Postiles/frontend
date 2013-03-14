@@ -46,13 +46,15 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
     this.post_top_el = goog.dom.createDom("div", "post_top");
     goog.dom.appendChild(this.container_el, this.post_top_el);
     this.post_title_el = goog.dom.createDom("span", "post_title");
-    this.post_title_el.innerHTML = this.post.title;
+    this.post_title_el.innerHTML = postile.escapeString(this.post.title);
     goog.dom.appendChild(this.post_top_el, this.post_title_el);
 
     // post title clicked, should display post expanded
-    goog.events.listen(this.post_title_el, goog.events.EventType.CLICK, function(e) {
-        var postExpand = new postile.view.post.PostExpand(this.post, this.username);
-    }.bind(this));
+    this.post_expand_listener = new postile.events.EventHandler(this.post_title_el, goog.events.EventType.CLICK, function(e) {
+        var postExpand = new postile.view.post.PostExpand(instance.post, instance.username);
+    });
+    
+    this.post_expand_listener.listen();
 
     this.post_author_el = goog.dom.createDom("span", "post_author");
     this.post_author_el.innerHTML = this.username;
@@ -158,10 +160,8 @@ postile.view.post_in_board.Post.prototype.edit = function() {
     var start_waiting = new postile.toast.Toast(0, "Please wait... We're starting editing... Be ready for 36s.");
     this.disable();
     var go_editing = function() {
-        //var title = new goog.ui.LabelInput(postile._('post_title_prompt'));
-        //goog.dom.removeChildren(instance.container_el);
-        //title.render(instance.container_el);
-        instance.post_title_el.contentEditable = true;
+        instance.post_expand_listener.unlisten();
+        postile.ui.makeLabeledInput(instance.post_title_el, postile._('post_title_prompt'));
         goog.dom.classes.add(instance.post_title_el, 'selectable');
         //hide the original bottom bar
         goog.dom.removeChildren(instance.post_icon_container_el);
@@ -173,7 +173,7 @@ postile.view.post_in_board.Post.prototype.edit = function() {
         var blurHandler = function() {
             instance.blur_timeout = setTimeout(function(){ 
                 //instance.board.mask.style.display = 'none'; //close mask, if any
-                instance.submitEdit({ post_id: instance.post.id, content: y_editor.getBbCode(), title: instance.post_title_el.innerHTML });}, 400);
+                instance.submitEdit({ post_id: instance.post.id, content: y_editor.getBbCode(), title: instance.post_title_el.innerHTML ==  postile._('post_title_prompt') ? '' : postile.string.stripString(instance.post_title_el.innerHTML) });}, 400);
         };
         var focusHandler = function() {
             clearTimeout(instance.blur_timeout);
@@ -216,7 +216,7 @@ postile.view.post_in_board.InlineCommentsBlock = function(postObj) {
         }
     });
     goog.events.listen(this.text_input, goog.events.EventType.BLUR, function(){
-        if (goog.string.trim(postile.string.strip_tags(instance.text_input.innerHTML)) == '') {
+        if (postile.string.stripString(instance.text_input.innerHTML) == '') {
             text_input_init();
         }
     });
