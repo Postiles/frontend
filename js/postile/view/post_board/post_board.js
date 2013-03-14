@@ -28,6 +28,7 @@ goog.require('postile.view.post_in_board');
 goog.require('postile.view.board_more_pop');
 goog.require('postile.view.confirm_delete');
 goog.require('postile.view.profile');
+goog.require('postile.view.notification');
 
 postile.view.post_board.handlers.canvas_mousedown = function(e) {
     if (!e.isButton(0)) { return; }
@@ -414,6 +415,11 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
         (new postile.view.board_more_pop.OtherBoard(switch_board_button)).open(switch_board_button);
     });
 
+    var message_button = goog.dom.getElement("message_button");
+    goog.events.listen(message_button, goog.events.EventType.CLICK, function(e) {
+        console.log("at main called");
+        (new postile.view.notification.Notification(message_button)).open(message_button);
+    });
 
     goog.dom.appendChild(this.viewport, this.canvas);
     goog.dom.appendChild(this.viewport, this.mask);
