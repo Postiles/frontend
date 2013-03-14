@@ -101,7 +101,7 @@ postile.WYSIWYF = {
             editor.buttons[i].className = 'post_icon';
             editor.buttons[i].setAttribute('type', 'button');
             editor.buttons[i].style.border = '0 none';
-            editor.buttons[i].style.backgroundImage = 'url('+postile.staticResource(['images', 'edtior_sprite.png'])+')';
+            editor.buttons[i].style.backgroundImage = 'url('+postile.imageResource(['editor_sprite.png'])+')';
             editor.buttons[i].style.width = '13px';
             editor.buttons[i].style.height = '13px';
             editor.buttons[i].style.padding = '0';
