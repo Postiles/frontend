@@ -315,6 +315,7 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
         (new postile.view.search_box.SearchBox(search_button)).open(search_button);
     });
 
+    /* Buttons on the right up corner */
     var switch_board_button = goog.dom.getElement("switch_board_button");
     goog.events.listen(switch_board_button, goog.events.EventType.CLICK, function(e) {
         (new postile.view.board_more_pop.OtherBoard(switch_board_button)).open(switch_board_button);
@@ -325,10 +326,20 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
         (new postile.view.notification.Notification(message_button)).open(message_button);
     });
 
+    var more_button = goog.dom.getElement("popup_button");
+    console.log(more_button);
+    goog.events.listen(more_button, goog.events.EventType.CLICK, function(e) {
+        console.log("popup called");
+        (new postile.view.board_more_pop.BoardMorePop(more_button)).open(more_button);
+    });
+
+
+    /* Button function ended */
+
     goog.dom.appendChild(this.viewport, this.canvas);
     goog.dom.appendChild(this.viewport, this.mask);
     goog.dom.appendChild(this.mask, this.mask_notice);
-    this.mask_notice.innerHTML = 'Click & Drag to add a post<br />Double click again to quit';
+    this.mask_notice.innerHTML = postile._('mask_for_creating_post');
     this.viewport.rel_data = this;
     this.canvas.rel_data = this;
     this.mask.rel_data = this;

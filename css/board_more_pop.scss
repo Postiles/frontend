@@ -15,28 +15,41 @@ body {
 
 #board_more {
 	position: fixed;
+	top: 40px;
 	right: 0px;
 	width: 40px;
 	height: 100%;
-	background-color: $second-color;
+	background-color: $main-color;
 
-	.more_icon {
+	.board_more_icon {
 		height: 30px;
 		padding: 0px;
 		margin: 8px;
 		margin-top: 10px;
 		margin-bottom: 10px;
 		margin-left: 14px;
+		cursor: pointer;
 	}
 
-	#board_switch {
-		background: url(../images/board_list.png) no-repeat;
+	#prev_location {
+		background: url(../images/move_left.png) no-repeat;
 	}
+
+	#next_location {
+		background: url(../images/move_right.png) no-repeat;
+	}
+
+	#hot_location {
+		background: url(../images/hot.png) no-repeat;
+	}
+
 	#place {
 		margin-left: 15px;
+		margin-top: 17px;
 		background: url(../images/board_place.png) no-repeat;
 	}
 	#star {
+		margin-top: 13px;
 		margin-left: 13px;
 		background: url(../images/board_star.png) no-repeat;
 	}
@@ -47,7 +60,7 @@ body {
 	width: 240px;
 	position: fixed !important;
 	top: 5px !important;
-	right: 50px !important;
+	right: 75px !important;
 	left: auto !important;
 	background-color: $third-color;
 	box-shadow: 3px 3px 20px 1px #888888;
