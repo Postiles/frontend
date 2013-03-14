@@ -22,7 +22,6 @@ goog.require('goog.events');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.ui.Textarea');
 goog.require('goog.events.KeyHandler');
-goog.require('postile.toast');
 goog.require('postile.events');
 goog.require('postile.view.post_in_board');
 goog.require('postile.view.board_more_pop');
@@ -153,10 +152,11 @@ postile.view.post_board.handlers.mask_mouseup = function(e){
     this.rel_data.disableMovingCanvas = false;
     this.rel_data.newPostStartCoord = null;
     this.post_preview_origin_spot.style.display = 'none';
+    this.preview.style.display = 'none';
     if (!this.legal) {
+        new postile.toast.Toast(5, postile._('post_zone_illegal'), [], 'red');
         return;
     }
-    this.preview.style.display = 'none';
     this.legal = false;
     this.rel_data.createPost(this.position);
 };

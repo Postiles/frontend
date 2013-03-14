@@ -33,7 +33,7 @@ postile.ui.stopLoading = function(target_el){
 
 postile.ui.makeLabeledInput = function(target_el, placeholder) {
     var blurHandler = function() {
-        if(postile.string.empty(target_el.innerHTML)) {
+        if(!postile.string.stripString(target_el.innerHTML).length) {
             target_el.innerHTML = placeholder;
             target_el.style.opacity = 0.5;
         }
@@ -46,5 +46,5 @@ postile.ui.makeLabeledInput = function(target_el, placeholder) {
             target_el.innerHTML = '';
             target_el.style.opacity = 1;
         }
-    });
+    }).listen();
 }
