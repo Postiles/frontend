@@ -4,7 +4,8 @@ goog.provide('postile.locale.zh_TW');
 
 postile.locale.en.text = {
     inline_comment_prompt: 'Enter your comment here...',
-    post_title_prompt: 'Title (optional)'
+    post_title_prompt: 'Title (optional)',
+    post_zone_illegal: 'The zone you choosed was illegal. Please reselect one.'
 };
 
 postile.locale.en.date = {
@@ -14,7 +15,8 @@ postile.locale.en.date = {
 
 postile.locale.zh_CN.text = {
     inline_comment_prompt: '在此输入评论...',
-    post_title_prompt: '标题（选填）'
+    post_title_prompt: '标题（选填）',
+    post_zone_illegal: '您选择的区域不合法。请重新选择'
 };
 
 postile.locale.zh_CN.date = {
@@ -23,7 +25,8 @@ postile.locale.zh_CN.date = {
 
 postile.locale.zh_TW.text = {
     inline_comment_prompt: '在此鍵入評論...',
-    post_title_prompt: '標題（可選）'
+    post_title_prompt: '標題（可選）',
+    post_zone_illegal: '這尼瑪不可以的……重新選擇區域去！'
 };
 
 postile.locale.zh_TW.date = {

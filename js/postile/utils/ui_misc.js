@@ -1,6 +1,7 @@
 goog.provide('postile.ui');
 
 goog.require('goog.dom');
+goog.require('goog.events');
 goog.require('postile.fx');
 
 postile.syncGet = function(url) {
@@ -28,4 +29,22 @@ postile.ui.startLoading = function(target_el) {
 postile.ui.stopLoading = function(target_el){
     target_el._postile_spinner_animation.stop();
     goog.dom.removeNode(target_el._postile_spinner_wrap);
+}
+
+postile.ui.makeLabeledInput = function(target_el, placeholder) {
+    var blurHandler = function() {
+        if(!postile.string.stripString(target_el.innerHTML).length) {
+            target_el.innerHTML = placeholder;
+            target_el.style.opacity = 0.5;
+        }
+    }
+    target_el.contentEditable = true;
+    blurHandler();
+    new postile.events.EventHandler(target_el, goog.events.EventType.BLUR, blurHandler).listen();
+    new postile.events.EventHandler(new goog.events.KeyHandler(target_el), goog.events.KeyHandler.EventType.KEY, function() {
+        if (target_el.innerHTML == placeholder) {
+            target_el.innerHTML = '';
+            target_el.style.opacity = 1;
+        }
+    }).listen();
 }
