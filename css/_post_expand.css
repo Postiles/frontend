@@ -54,8 +54,7 @@
           .post-expand .container .right .comment-box .form .profile-image {
             float: left;
             width: 60px;
-            height: 60px;
-            background: red; }
+            height: 60px; }
             .post-expand .container .right .comment-box .form .profile-image img {
               width: inherit;
               height: inherit; }
@@ -70,7 +69,8 @@
               color: whitesmoke;
               border-top: 1px solid whitesmoke;
               border-bottom: 1px solid whitesmoke;
-              outline: none; }
+              outline: none;
+              font-size: 10pt; }
       .post-expand .container .right .comment-container {
         width: inherit;
         margin-top: 10px;
@@ -96,7 +96,11 @@
             float: left;
             padding-top: 4px; }
             .post-expand .container .right .comment-container .comment .comment-right .username {
-              color: #024d62; }
+              color: #024d62;
+              font-size: 11pt; }
+            .post-expand .container .right .comment-container .comment .comment-right .content {
+              margin-top: 2px;
+              font-size: 10pt; }
   .post-expand .footer {
     width: 100%; }
     .post-expand .footer .close-button {

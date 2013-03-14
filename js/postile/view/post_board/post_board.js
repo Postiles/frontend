@@ -380,21 +380,35 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
 
     goog.dom.appendChild(goog.dom.getElement("wrapper"), this.viewport);
 
+    this.function_buttons = goog.dom.getElementsByClass('function_button');
+    for (var i = 0; i < this.function_buttons.length; i++) {
+        new postile.view.post_board.FunctionButton(this.function_buttons[i]);
+    }
+
     this.search_input_field = goog.dom.getElement("search_input_field");
     goog.events.listen(this.search_input_field, goog.events.EventType.KEYUP, postile.view.post_board.handlers.search);
 
+    // search button container
     this.search_button = goog.dom.getElement("search_button");
 
+    // popup search box
+    this.search_box = goog.dom.getElement("search_box");
+
     goog.events.listen(this.search_button, goog.events.EventType.CLICK, function(e) {
-        this.search_box = goog.dom.getElement("search_box");
         this.search_box.style.display = "block";
+
+        /*
+        this.search_button.style.backgroundColor = '#024d61'
+        this.search_button_img.style.webkitFilter = 'brightness(100%)';
+        */
 
         /* hides all the search result containers */
         this.search_result_containers = goog.dom.getElementsByClass("search_result_category");
         for (i = 0; i < this.search_result_containers.length; i++) {
             goog.style.showElement(this.search_result_containers[i], false);
         }
-    });
+    }.bind(this));
+
     var switch_board_button = goog.dom.getElement("switch_board_button");
     goog.events.listen(switch_board_button, goog.events.EventType.CLICK, function(e) {
         (new postile.view.board_more_pop.OtherBoard(switch_board_button)).open(switch_board_button);
@@ -642,6 +656,34 @@ postile.view.post_board.PostBoard.prototype.createPost = function(info) {
 postile.view.post_board.PostBoard.prototype.removePost = function(id) {
     if (this.currentPosts[id].wrap_el) { goog.dom.removeNode(this.currentPosts[id].wrap_el); } //remove original element
     delete this.currentPosts[id];
+}
+
+/* define the function buttons class */
+postile.view.post_board.FunctionButton = function(dom) { // constructor
+    this.body_el = dom;
+    this.image_el = goog.dom.getElementsByTagNameAndClass('img', null, this.body_el)[0];
+
+    this.id = this.body_el.id;
+
+    goog.events.listen(this.body_el, goog.events.EventType.CLICK, function(e) {
+        this.open();
+
+        if (this.id == 'switch_board_button') {
+        } else if (this.id == 'message_button') {
+        } else if (this.id == 'search_button') {
+        } else if (this.id == 'popup_button') {
+        }
+    }.bind(this));
+}
+
+postile.view.post_board.FunctionButton.prototype.open = function() {
+    this.body_el.style.backgroundColor = '#024d61'
+    this.image_el.style.webkitFilter = 'brightness(95%)';
+}
+
+postile.view.post_board.FunctionButton.prototype.close = function() {
+    this.body_el.style.backgroundColor = '#f1f1f1';
+    this.image_el.style.webkitFilter = '';
 }
 
 postile.view.post_board.faye_status = {
