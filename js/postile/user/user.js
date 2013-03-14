@@ -8,17 +8,13 @@ postile.user.login_window = null;
 
 postile.user.login = function(username, password, onsuccess, onfail) {
     postile.ajax(['user', 'login'], {'username': username, 'password': password}, function(data) {
-        console.log(data);
-        if (data.status == 'ok') {
-            localStorage.postile_user_id = data.message.user_id;
-            localStorage.postile_user_session_key = data.message.session_key;
-            postile.user.current_username = username;
-            onsuccess();
-        } else {
-            alert('cao');
-            onfail(data.message);
-        }
-    }, false, 'Please wait for logging in...');
+        localStorage.postile_user_id = data.message.user_id;
+        localStorage.postile_user_session_key = data.message.session_key;
+        postile.user.current_username = username;
+        onsuccess();
+    }, function(re) {
+        onfail(re.message);
+    }, 'Please wait for logging in...');
 }
 
 postile.user.openLoginBox = function() {

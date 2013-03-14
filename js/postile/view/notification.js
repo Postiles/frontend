@@ -7,7 +7,7 @@ goog.require('goog.events');
 postile.view.notification.Notification = function(input_instance) {
     var instance = input_instance;
     postile.view.TipView.call(this);
-    postile.ui.load(this.container, postile.staticResource(['notification.html']));
+    postile.ui.load(this.container, postile.staticResource(['_notification.html']));
     this.container.id = 'notifications_pop_up';
     console.log("notification called");
     this.container.style.top = '0px';
