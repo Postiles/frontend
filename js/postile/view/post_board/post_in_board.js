@@ -15,6 +15,7 @@ goog.require('postile.string');
 goog.require('goog.events.KeyHandler');
 goog.require('postile.WYSIWYF');
 goog.require('postile.debbcode');
+goog.require('postile.fx');
 goog.require('postile.fx.effects');
 goog.require('postile.view.post');
 
@@ -81,11 +82,31 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
         return icon;
     }
     
-    addIcon("like");
+    goog.events.listen(addIcon("like"), goog.events.EventType.CLICK, function() {
+        var like_icon = this;
+        var new_like_icon = goog.dom.createDom('div', 'post_liked_icon');
+        var new_counts = goog.dom.createDom('div', 'post_like_new_count');
+        new_like_icon.style.width = '13px';
+        new_like_icon.style.height = '13px';
+        new_like_icon.style.position = 'absolute'; //so taht "clip" can make effect
+        new_counts.innerHTML = ++instance.post.likes_count;
+        goog.dom.appendChild(like_icon, new_like_icon);
+        goog.dom.appendChild(instance.likes_count_el, new_counts);
+        new postile.fx.Animate(function(i){ 
+            new_like_icon.style.clip = 'rect('+Math.round(13*(1-i))+'px 13px 13px 0px)';
+            new_counts.style.top = - Math.round(13 * i) + 'px';
+        }, 400, postile.fx.ease.cubic_ease_out, function() {
+            goog.dom.classes.remove(like_icon, 'post_like_icon');
+            goog.dom.classes.add(like_icon, 'post_liked_icon');
+            goog.dom.removeNode(new_like_icon);
+            goog.dom.removeNode(new_counts);
+            instance.likes_count_el.innerHTML = instance.post.likes_count;
+        });
+    });
     
-    this.like_count = goog.dom.createDom("div", "post_like_count");
-    goog.dom.appendChild(instance.post_icon_container_el, this.like_count);
-    this.like_count.innerHTML = object.post.likes_count;
+    this.likes_count_el = goog.dom.createDom("div", "post_like_count");
+    goog.dom.appendChild(instance.post_icon_container_el, this.likes_count_el);
+    this.likes_count_el.innerHTML = object.post.likes_count;
     
     addIcon("share"); addIcon("link"); 
     
