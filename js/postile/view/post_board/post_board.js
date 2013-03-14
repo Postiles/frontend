@@ -262,6 +262,28 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
 
     goog.dom.appendChild(goog.dom.getElement("wrapper"), this.viewport);
 
+    this.topicTitle_el = goog.dom.getElement('topic_title');
+
+    postile.ajax([ 'topic', 'get_topic' ], { topic_id: this.topic_id }, function(data) {
+        this.topic = data.message;
+        this.topicTitle_el.innerHTML = this.topic.name;
+    }.bind(this));
+
+    this.usernameText_el = goog.dom.getElement('username_text');
+
+    this.profileImageContainer_el = goog.dom.getElement('profile_image_container');
+    this.profileImageContainerImg_el = goog.dom.getElementByClass('image', this.profileImageContainer_el);
+
+    postile.ajax([ 'user', 'get_profile' ], { }, function(data) {
+        this.selfUser = data.message.user;
+        this.selfProfile = data.message.profile;
+
+        this.usernameText_el.innerHTML = this.selfUser.username;
+
+        var url = postile.uploadsResource([ this.selfProfile.image_url ]); // to be changed to small image url
+        this.profileImageContainerImg_el.src = url;
+    }.bind(this));
+
     this.function_buttons = goog.dom.getElementsByClass('function_button');
     for (var i = 0; i < this.function_buttons.length; i++) {
         new postile.view.post_board.FunctionButton(this.function_buttons[i]);
