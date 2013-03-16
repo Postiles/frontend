@@ -188,7 +188,9 @@ postile.view.post_in_board.Post.prototype.edit = function() {
     this.disable();
     var go_editing = function() {
         instance.post_expand_listener.unlisten();
-        postile.ui.makeLabeledInput(instance.post_title_el, postile._('post_title_prompt'));
+        postile.ui.makeLabeledInput(instance.post_title_el, postile._('post_title_prompt'), 'half_opaque', function(){
+            instance.post_content_el.focus();
+        });
         goog.dom.classes.add(instance.post_title_el, 'selectable');
         //hide the original bottom bar
         goog.dom.removeChildren(instance.post_icon_container_el);
@@ -222,31 +224,17 @@ postile.view.post_in_board.InlineCommentsBlock = function(postObj) {
     goog.dom.appendChild(this.container, goog.dom.createDom("div", "input_up"));
     this.text_input = goog.dom.createDom("div", "input_main selectable");
     goog.dom.appendChild(this.container, this.text_input);
-    var text_input_init = function() {
-        instance.text_input.innerHTML = postile._('inline_comment_prompt');
-        goog.dom.classes.add(instance.text_input, 'inactive');
-    }
-    text_input_init();
-    goog.events.listen(new goog.events.KeyHandler(this.text_input), goog.events.KeyHandler.EventType.KEY, function(e) {
-        if (instance.text_input.innerHTML == postile._('inline_comment_prompt')) {
-            instance.text_input.innerHTML = '';
-            goog.dom.classes.remove(instance.text_input, 'inactive');
-        } else if (e.keyCode == goog.events.KeyCodes.ENTER) {
-            postile.ajax(['post','inline_comment'], { post_id: postObj.post.id, content: instance.text_input.innerHTML }, function(data) {
-                if (data.status == postile.ajax.status.OK) {
-                    postile.fx.effects.verticalExpand((new postile.view.post_in_board.InlineComment(instance, data.message)).comment_container);
-                    postile.ui.stopLoading(instance.text_input);
-                    text_input_init();
-                }
-            });
-            postile.ui.startLoading(instance.text_input);
-        }
+    postile.ui.makeLabeledInput(this.text_input, postile._('inline_comment_prompt'), 'inactive', function(){
+        postile.ajax(['post','inline_comment'], { post_id: postObj.post.id, content: instance.text_input.innerHTML }, function(data) {
+            if (data.status == postile.ajax.status.OK) {
+                postile.fx.effects.verticalExpand((new postile.view.post_in_board.InlineComment(instance, data.message)).comment_container);
+                postile.ui.stopLoading(instance.text_input);
+                instance.text_input.blur();
+            }
+        });
+        postile.ui.startLoading(instance.text_input);
     });
-    goog.events.listen(this.text_input, goog.events.EventType.BLUR, function(){
-        if (postile.string.stripString(instance.text_input.innerHTML) == '') {
-            text_input_init();
-        }
-    });
+    
     this.text_input.contentEditable = "true";
     tmp_el = goog.dom.createDom("div", "input_low");
     goog.dom.appendChild(this.container, tmp_el);

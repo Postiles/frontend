@@ -10,9 +10,11 @@ postile.string.empty = function(input) {
 }
 
 postile.string.stripString = function(input) {
+    if (!input) { return ''; }
     return goog.string.trim(input.replace(/<\/?([a-z][a-z0-9]*)\b[^>]*>/gi, ''));
 }
 
 postile.escapeString = function(input) {
+    if (!input) { return ''; }
     return goog.string.whitespaceEscape(goog.string.htmlEscape(input + ''));
 }
