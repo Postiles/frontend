@@ -24,6 +24,27 @@ postile.view.post_in_board.Post = function(object, board) {
     this.board = board;
     this.blur_timeout = null;
     this.disabled = false;
+    this.wrap_el = goog.dom.createDom('div', 'post_wrap');
+    this.container_el = goog.dom.createDom('div', 'post_container');
+    this.post_top_el = goog.dom.createDom("div", "post_top");
+    this.post_title_el = goog.dom.createDom("span", "post_title");
+    this.wrap_el.rel_data = this;
+    goog.dom.appendChild(this.wrap_el, this.container_el);
+    goog.dom.appendChild(this.board.canvas, this.wrap_el);
+    goog.dom.appendChild(this.container_el, this.post_top_el);
+    // post title clicked, should display post expanded
+    this.post_expand_listener = new postile.events.EventHandler(this.post_title_el, goog.events.EventType.CLICK, function(e) {
+        var postExpand = new postile.view.post.PostExpand(instance.post, instance.username);
+    });
+    this.post_expand_listener.listen();
+    this.post_author_el = goog.dom.createDom("span", "post_author");
+    this.post_author_el.innerHTML = this.username;
+    goog.dom.appendChild(this.post_top_el, this.post_author_el);
+    // username clicked, should display user profile
+    goog.events.listen(this.post_author_el, goog.events.EventType.CLICK, function(e) {
+        var profileView = new postile.view.profile.ProfileView(this.post.user_id);
+    }.bind(this));    
+    
     this.render(object, true);
 }
 
@@ -34,38 +55,12 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
     if (object) { goog.object.extend(this, object); }
     this.post.coord_x_end = this.post.coord_x + this.post.span_x; //precalculate this two so that future intersect test will be faster
     this.post.coord_y_end = this.post.coord_y + this.post.span_y;
-    if (this.wrap_el) { goog.dom.removeNode(this.wrap_el); } //remove original element
-    this.wrap_el = goog.dom.createDom('div', 'post_wrap');
-    this.wrap_el.rel_data = this;
-    this.container_el = goog.dom.createDom('div', 'post_container');
-    goog.dom.appendChild(this.wrap_el, this.container_el);
-    goog.dom.appendChild(this.board.canvas, this.wrap_el);
     this.wrap_el.style.left = this.board.xPosTo(this.post.coord_x) + 'px';
     this.wrap_el.style.top = this.board.yPosTo(this.post.coord_y) + 'px';
     this.wrap_el.style.width = this.board.widthTo(this.post.span_x) + 'px';
     this.wrap_el.style.height = this.board.heightTo(this.post.span_y) + 'px';
-
-    this.post_top_el = goog.dom.createDom("div", "post_top");
-    goog.dom.appendChild(this.container_el, this.post_top_el);
-    this.post_title_el = goog.dom.createDom("span", "post_title");
     this.post_title_el.innerHTML = postile.escapeString(this.post.title);
     goog.dom.appendChild(this.post_top_el, this.post_title_el);
-
-    // post title clicked, should display post expanded
-    this.post_expand_listener = new postile.events.EventHandler(this.post_title_el, goog.events.EventType.CLICK, function(e) {
-        var postExpand = new postile.view.post.PostExpand(instance.post, instance.username);
-    });
-    
-    this.post_expand_listener.listen();
-
-    this.post_author_el = goog.dom.createDom("span", "post_author");
-    this.post_author_el.innerHTML = this.username;
-    goog.dom.appendChild(this.post_top_el, this.post_author_el);
-
-    // username clicked, should display user profile
-    goog.events.listen(this.post_author_el, goog.events.EventType.CLICK, function(e) {
-        var profileView = new postile.view.profile.ProfileView(this.post.user_id);
-    }.bind(this));
 
     this.post_content_el = goog.dom.createDom("div", "post_content");
     this.post_content_el.innerHTML = postile.parseBBcode(this.post.text_content);
