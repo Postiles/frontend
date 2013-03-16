@@ -434,9 +434,13 @@ html, body {
 /* end */
 
 .canvas_viewport {
-  overflow: hidden;
+  overflow: scroll;
   -webkit-user-select: none;
   position: relative; 
+}
+
+.canvas_viewport::-webkit-scrollbar {
+  display: none;
 }
 
 .canvas {

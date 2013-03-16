@@ -93,10 +93,21 @@ postile.view.post_board.handlers.canvas_mouseup = function(e) {
     }
 
     //update display status of dirction control arrows
-    if (post_board.shadowCoord[1] <= 0) { post_board.direction_controllers['up'].style.display = 'block'; }
-    if (post_board.shadowCoord[0] >= 0) { post_board.direction_controllers['right'].style.display = 'block'; }
-    if (post_board.shadowCoord[1] >= 0) { post_board.direction_controllers['down'].style.display = 'block'; }
-    if (post_board.shadowCoord[0] <= 0) { post_board.direction_controllers['left'].style.display = 'block'; }
+    if (post_board.shadowCoord[1] <= 0) { 
+        post_board.direction_controllers['up'].style.display = 'block'; 
+    }
+
+    if (post_board.shadowCoord[0] >= 0) {
+        post_board.direction_controllers['right'].style.display = 'block';
+    }
+
+    if (post_board.shadowCoord[1] >= 0) {
+        post_board.direction_controllers['down'].style.display = 'block';
+    }
+
+    if (post_board.shadowCoord[0] <= 0) {
+        post_board.direction_controllers['left'].style.display = 'block';
+    }
 
     //update subscribe area
     post_board.updateSubsribeArea();
@@ -128,10 +139,8 @@ postile.view.post_board.handlers.canvas_mousemove = function(e) {
         topTarget -= bottomTarget;
     }
 
-    if (!postiles.isMacOsX()) {
-        this.style.left = leftTarget + 'px';
-        this.style.top = topTarget + 'px'; //apply the shadow boundout effect
-    }
+    this.style.left = leftTarget + 'px';
+    this.style.top = topTarget + 'px'; //apply the shadow boundout effect
 
     this.rel_data.canvasOutBoundAnimation();
 };
@@ -286,6 +295,10 @@ postile.view.post_board.handlers.resize = function(instance){ //called on window
     instance.viewport.style.width = new_viewport_size[0] + 'px'; 
     instance.viewport.style.height = new_viewport_size[1] + 'px';
 
+    /*
+    instance.canvas.style.left = instance.canvasCoord[0] + 'px'; 
+    instance.canvas.style.top = instance.canvasCoord[1] + 'px';   
+    */
     if (postile.isMacOsX()) {
         instance.viewport.scrollLeft = - instance.canvasCoord[0];
         instance.viewport.scrollTop = - instance.canvasCoord[1];
@@ -479,7 +492,8 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
     });
 
     /* handling mac os x trackpad scrolling */
-    if (postile.isMacOsX()) {
+    if (!postile.isMacOsX()) {
+        this.viewport.style.overflow = 'hidden';
     }
 
     for (i in postile.view.post_board.direction_norm_to_css) {
