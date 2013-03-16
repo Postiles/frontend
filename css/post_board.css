@@ -149,7 +149,8 @@ html, body {
 #popup_button img {
   width: 4px;
   height: 18px;
-  margin: 11px 20px
+  margin: 11px 20px;
+  margin-right: 4px;
 }
 
 #topic_board {
