@@ -132,6 +132,8 @@ postile.WYSIWYF = {
                 elm.innerHTML = '[Linked to "'+post.post.text_content+'"]';
             });
             */
+            document.execCommand('InsertImage', false, postile.imageResource(['link_icon.png']));
+            img_el = postile.dom.getDescendantByCondition(editor.editor_el, function(el) { return el.tagName.toUpperCase() == 'IMG' && el.src.indexOf(postile.imageResource(['link_icon.png'])) > -1; });
             picker.open(function(post){ 
                 if (post) { 
                     var span_el = goog.dom.createDom('span', 'inline_reference_preview');
@@ -139,10 +141,7 @@ postile.WYSIWYF = {
                     goog.dom.replaceNode(span_el, img_el);
                 } else { goog.dom.removeNode(img_el); }
                 editor.editor_el.focus();
-            });
-            document.execCommand('InsertImage', false, postile.imageResource(['link_icon.png']));
-            img_el = postile.dom.getDescendantByCondition(editor.editor_el, function(el) { return el.tagName.toUpperCase() == 'IMG' && el.src.indexOf(postile.imageResource(['link_icon.png'])) > -1; });
-            picker.promote(editor.post);
+            }, editor.post);
             editor.editor_el.focus();
         },
         display: [true, true]

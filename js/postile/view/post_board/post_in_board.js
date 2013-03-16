@@ -198,11 +198,13 @@ postile.view.post_in_board.Post.prototype.edit = function() {
         instance.enable();
         start_waiting.abort();
         var blurHandler = function(e) {
+            console.trace();
             instance.blur_timeout = setTimeout(function(){ 
                 //instance.board.mask.style.display = 'none'; //close mask, if any
                 instance.submitEdit({ post_id: instance.post.id, content: y_editor.getBbCode(), title: instance.post_title_el.innerHTML ==  postile._('post_title_prompt') ? '' : postile.string.stripString(instance.post_title_el.innerHTML) });}, 1200);
         };
         var focusHandler = function(e) {
+            console.trace();
             clearTimeout(instance.blur_timeout);
         };
         goog.events.listen(y_editor.editor_el, goog.events.EventType.BLUR, blurHandler);

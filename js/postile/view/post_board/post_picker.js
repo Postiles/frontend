@@ -18,9 +18,11 @@ postile.view.post_board.PostPicker = function(post_board_obj) {
     goog.dom.appendChild(this.board.canvas, this.ghost_board_el);
 }
 
-postile.view.post_board.PostPicker.prototype.open = function(post_board_obj) {
+postile.view.post_board.PostPicker.prototype.open = function(post_board_obj, post) {
     this.done_callback = post_board_obj;
+    this.permanent_post = post;
     this.ghost_board_el.style.display = 'block';
+    goog.dom.appendChild(this.ghost_board_el, post.wrap_el);
 }
 
 postile.view.post_board.PostPicker.prototype.close = function() {
@@ -31,12 +33,14 @@ postile.view.post_board.PostPicker.prototype.close = function() {
         if (instance.lkd_el) { instance.lkd_el.style.clip = 'rect('+Math.round(21*(1-i))+'px '+width+'px 21px 0px)'; }
     }, 500, postile.fx.ease.cubic_ease_out, function() {
         instance.demote();
+        goog.dom.appendChild(instance.board.canvas, instance.permanent_post);
         instance.ghost_board_el.style.display = 'none';
+        instance.done_callback(instance.active_post);
     });
 }
 
 postile.view.post_board.PostPicker.prototype.promote = function(post) {
-    if (post == this.active_post) { return; }
+    if (post == this.active_post || post == this.permanent_post) { return; }
     this.demote();
     this.active_post = post;
     goog.dom.appendChild(this.ghost_board_el, post.wrap_el);
@@ -66,5 +70,4 @@ postile.view.post_board.PostPicker.prototype.clkHandler = function() {
         goog.dom.appendChild(this.active_post.wrap_el, this.lkd_el);
     }
     this.close();
-    this.done_callback(this.active_post);
 }
