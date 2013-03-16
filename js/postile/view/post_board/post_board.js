@@ -1,13 +1,3 @@
-/**
-
-Some notice for the current demo:
-
-The minimum unit of the grid is set to 75*50px, plus a margin of 14px and padding of 8px
-
-TODO: implement realclick event which will not be triggered if dragging is activated
-
-**/
-
 goog.provide('postile.view.post_board');
 goog.provide('postile.view.post_board.handlers');
 
@@ -29,6 +19,10 @@ goog.require('postile.view.confirm_delete');
 goog.require('postile.view.profile');
 goog.require('postile.view.notification');
 goog.require('postile.view.search_box');
+
+postile.view.post_board.POST_WIDTH = 75;
+postile.view.post_board.POST_HEIGHT = 50;
+postile.view.post_board.POST_MARGIN = 14;
 
 postile.view.post_board.handlers.canvas_mousedown = function(e) {
     if (!e.isButton(0)) { return; }
@@ -103,7 +97,7 @@ postile.view.post_board.handlers.canvas_mousemove = function(e) {
 
 //mouseevents for the mask
 postile.view.post_board.handlers.mask_mousedown = function(e){ //find the closest grid point
-    this.rel_data.newPostStartCoord = [Math.round(this.rel_data.xPosFrom(e.clientX - this.rel_data.canvasCoord[0])), Math.round(this.rel_data.yPosFrom(e.clientY - this.rel_data.canvasCoord[1]))]; //record current coordinate in the unit of "grid unit" //TODO: detect if the start point is legal (if there is available space around it)
+    this.rel_data.newPostStartCoord = [Math.round(this.rel_data.xPosFrom(e.clientX - this.rel_data.viewport_position.x - this.rel_data.canvasCoord[0])), Math.round(this.rel_data.yPosFrom(e.clientY - this.rel_data.viewport_position.y -  this.rel_data.canvasCoord[1]))]; //record current coordinate in the unit of "grid unit" //TODO: detect if the start point is legal (if there is available space around it)
     this.rel_data.newPostStartCoordInPx = [e.clientX, e.clientY]; //used to disable warning when double clicking
     this.post_preview_origin_spot.style.left = this.rel_data.xPosTo(this.rel_data.newPostStartCoord[0])+this.rel_data.canvasCoord[0]-17+'px';
     this.post_preview_origin_spot.style.top = this.rel_data.yPosTo(this.rel_data.newPostStartCoord[1])+this.rel_data.canvasCoord[1]-17+'px';
@@ -112,7 +106,7 @@ postile.view.post_board.handlers.mask_mousedown = function(e){ //find the closes
 
 postile.view.post_board.handlers.mask_mousemove = function(e){ 
     if (!this.rel_data.newPostStartCoord) { return; } //mouse key not down yet
-    var current = [this.rel_data.xPosFrom(e.clientX - this.rel_data.canvasCoord[0]), this.rel_data.yPosFrom(e.clientY - this.rel_data.canvasCoord[1])];
+    var current = [this.rel_data.xPosFrom(e.clientX - this.rel_data.viewport_position.x - this.rel_data.canvasCoord[0]), this.rel_data.yPosFrom(e.clientY - this.rel_data.viewport_position.y - this.rel_data.canvasCoord[1])];
     var delta = [0, 0];
     var end = [0, 0];
     var i;
@@ -213,6 +207,7 @@ postile.view.post_board.handlers.resize = function(instance){ //called on window
     }
     instance.viewport.style.width = new_viewport_size[0] + 'px'; instance.viewport.style.height = new_viewport_size[1] + 'px';
     instance.canvas.style.left = instance.canvasCoord[0] + 'px'; instance.canvas.style.top = instance.canvasCoord[1] + 'px';   
+    instance.viewport_position = goog.style.getRelativePosition(instance.viewport, document.body); //or document.documentElement perhaps?
     instance.updateSubsribeArea(); //update according to the new subscribe area
 }
 
@@ -255,6 +250,7 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
     this.canvas = goog.dom.createDom('div', 'canvas'); //the canvas being dragged
     this.mask = goog.dom.createDom('div', 'canvas_mask'); //the mask used when creating new post
     this.mask_notice = goog.dom.createDom('div', 'mask_notice'); //text
+    this.viewport_position = null; //viewport's position relative to the window
     this.direction_controllers = {}; //the control arrows
     this.direction_controllers_animation = null;
     this.right = goog.dom.createDom('div', 'right_clicker'); //right click display
@@ -481,13 +477,13 @@ postile.view.post_board.PostBoard.prototype.moveCanvas = function(dx, dy) { //re
 }
 
 //convent length from "unit length" of the grid to pixel.
-postile.view.post_board.PostBoard.prototype.widthTo = function(u) { return (u*(75+14) - 14); };
-postile.view.post_board.PostBoard.prototype.heightTo = function(u) { return (u*(50+14) - 14); };
-postile.view.post_board.PostBoard.prototype.xPosTo = function(u) { return (u*(75+14) + this.canvasSize[0]/2); };
-postile.view.post_board.PostBoard.prototype.yPosTo = function(u) { return (u*(50+14) + this.canvasSize[1]/2); };
+postile.view.post_board.PostBoard.prototype.widthTo = function(u) { return (u*(postile.view.post_board.POST_WIDTH+postile.view.post_board.POST_MARGIN) - postile.view.post_board.POST_MARGIN); };
+postile.view.post_board.PostBoard.prototype.heightTo = function(u) { return (u*(postile.view.post_board.POST_HEIGHT+postile.view.post_board.POST_MARGIN) - postile.view.post_board.POST_MARGIN); };
+postile.view.post_board.PostBoard.prototype.xPosTo = function(u) { return (u*(postile.view.post_board.POST_WIDTH+postile.view.post_board.POST_MARGIN) + this.canvasSize[0]/2); };
+postile.view.post_board.PostBoard.prototype.yPosTo = function(u) { return (u*(postile.view.post_board.POST_HEIGHT+postile.view.post_board.POST_MARGIN) + this.canvasSize[1]/2); };
 //convent length to "unit length" of the grid from pixel. it is from the center grid points so margins and paddings are ignored.
-postile.view.post_board.PostBoard.prototype.xPosFrom = function(px) { return ((px - 7 - this.canvasSize[0]/2)/(75+14)); };
-postile.view.post_board.PostBoard.prototype.yPosFrom = function(px) { return ((px - 7 - this.canvasSize[1]/2)/(50+14)); };
+postile.view.post_board.PostBoard.prototype.xPosFrom = function(px) { return ((px + postile.view.post_board.POST_MARGIN/2 - this.canvasSize[0]/2)/(postile.view.post_board.POST_WIDTH+postile.view.post_board.POST_MARGIN)); };
+postile.view.post_board.PostBoard.prototype.yPosFrom = function(px) { return ((px + postile.view.post_board.POST_MARGIN/2 - this.canvasSize[1]/2)/(postile.view.post_board.POST_HEIGHT+postile.view.post_board.POST_MARGIN)); };
 postile.view.post_board.direction_norm_to_css = { up: 'top', down: 'bottom', left: 'left', right: 'right' };
 
 postile.view.post_board.PostBoard.prototype.getVisibleArea = function(source) { // //get visible area in the unit of "grid unit" //source is expected to be this.canvasCoord or [parseInt(this.canvas.style.left), parseInt(this.canvas.style.top)]

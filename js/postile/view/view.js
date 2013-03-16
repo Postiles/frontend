@@ -5,6 +5,7 @@ goog.provide('postile.view');
 goog.require('goog.dom');
 goog.require('postile.events');
 goog.require('postile.fx.effects');
+goog.require('goog.style');
 
 /*
 === How to create a normal view ===
