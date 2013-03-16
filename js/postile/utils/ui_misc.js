@@ -2,6 +2,7 @@ goog.provide('postile.ui');
 
 goog.require('goog.dom');
 goog.require('goog.events');
+goog.require('goog.dom.classes');
 goog.require('postile.fx');
 
 postile.syncGet = function(url) {
@@ -31,20 +32,25 @@ postile.ui.stopLoading = function(target_el){
     goog.dom.removeNode(target_el._postile_spinner_wrap);
 }
 
-postile.ui.makeLabeledInput = function(target_el, placeholder) {
+postile.ui.makeLabeledInput = function(target_el, placeholder, inactive_classname, enter_handler) {
     var blurHandler = function() {
         if(!postile.string.stripString(target_el.innerHTML).length) {
             target_el.innerHTML = placeholder;
-            target_el.style.opacity = 0.5;
+            goog.dom.classes.add(target_el, inactive_classname);
         }
     }
     target_el.contentEditable = true;
     blurHandler();
     new postile.events.EventHandler(target_el, goog.events.EventType.BLUR, blurHandler).listen();
-    new postile.events.EventHandler(new goog.events.KeyHandler(target_el), goog.events.KeyHandler.EventType.KEY, function() {
+    new postile.events.EventHandler(new goog.events.KeyHandler(target_el), goog.events.KeyHandler.EventType.KEY, function(e) {
         if (target_el.innerHTML == placeholder) {
             target_el.innerHTML = '';
-            target_el.style.opacity = 1;
+            goog.dom.classes.remove(target_el, inactive_classname);
+        } else if (e.keyCode == goog.events.KeyCodes.ENTER) {
+            e.preventDefault();
+            target_el.innerHTML = postile.string.stripString(target_el.innerHTML);
+            enter_handler();
+            target_el.blur();
         }
     }).listen();
 }

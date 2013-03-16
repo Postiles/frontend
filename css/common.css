@@ -104,3 +104,7 @@ MIC: postile.toast
     height: 100%;
     z-index: 19520;
 }
+
+.half_opaque {
+    opacity: 0.5;
+}
