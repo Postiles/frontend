@@ -459,7 +459,7 @@ html, body {
   z-index: 19520;
   left: 0;
   top: 0;
-  background-color: rgba(0, 0, 0, 0.3); }
+  background-color: rgba(0, 0, 0, 0.3); } /* the magic number is also referneced in postile.view.post_board.post_picker */
 
 .mask_notice {
   margin-top: 5%;
@@ -570,3 +570,19 @@ html, body {
 
 .arrow_detect.right .arrow_button div {
   background: url(/images/arrow_sm_right_hover.png); }
+
+/* linked_post */
+
+.post_mark_linked {
+    position: absolute;
+    top: -21px;
+    height: 21px;
+    right: 0;
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+    color: #F6F6F6;
+    background: #024d61 url(/images/link.png) 4px 4px no-repeat;
+    padding: 0 4px 0 21px;
+    line-height: 21px;
+    font-size: 10pt;
+}

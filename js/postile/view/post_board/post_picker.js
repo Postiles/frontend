@@ -2,19 +2,31 @@ goog.provide('postile.view.post_board.post_picker');
 
 goog.require('goog.events');
 goog.require('goog.dom');
+goog.require('postile.fx');
 goog.require('postile.view.post_board');
 
-postile.view.post_board.PostPicker = function(post_board_obj) {
+postile.view.post_board.PostPicker = function(post_board_obj, doneCallback) {
     var instance = this;
     this.board = post_board_obj;
     this.active_post = null;
+    this.lkd_el = null;
+    this.done_callback = doneCallback;
     this.ghost_board_el = goog.dom.createDom('div', 'canvas_mask');
     goog.events.listen(this.ghost_board_el, goog.events.EventType.MOUSEMOVE, function(e){ instance.mmHandler(e) });
+    goog.events.listen(this.ghost_board_el, goog.events.EventType.CLICK, function(e){ e.stopPropagation(); instance.clkHandler(); }, true);
     goog.dom.appendChild(this.board.canvas, this.ghost_board_el);
 }
 
 postile.view.post_board.PostPicker.prototype.close = function() {
-    goog.dom.removeNode(this.ghost_board_el);
+    var instance = this;
+    if (instance.lkd_el) { var width = instance.lkd_el.offsetWidth; }
+    new postile.fx.Animate(function(i){
+        instance.ghost_board_el.style.backgroundColor = 'rgba(0, 0, 0, '+(0.3 * (1 - i))+')';
+        if (instance.lkd_el) { instance.lkd_el.style.clip = 'rect('+Math.round(21*(1-i))+'px '+width+'px 21px 0px)'; }
+    }, 500, postile.fx.ease.cubic_ease_out, function() {
+        instance.demote();
+        goog.dom.removeNode(instance.ghost_board_el);
+    });
 }
 
 postile.view.post_board.PostPicker.prototype.promote = function(post) {
@@ -39,4 +51,14 @@ postile.view.post_board.PostPicker.prototype.mmHandler = function(e) {
         }
     }
     this.demote();
+}
+
+postile.view.post_board.PostPicker.prototype.clkHandler = function() {
+    if (this.active_post) {
+        this.lkd_el = goog.dom.createDom('div', 'post_mark_linked');
+        this.lkd_el.innerHTML = postile._('linked');
+        goog.dom.appendChild(this.active_post.wrap_el, this.lkd_el);
+    }
+    this.close();
+    done_callback(this.active_post);
 }
