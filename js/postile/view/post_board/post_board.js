@@ -110,8 +110,8 @@ postile.view.post_board.handlers.mask_mousedown = function(e){ //find the closes
     this.post_preview_origin_spot.style.display = 'block';
 };
 
-postile.view.post_board.handlers.mask_mousemove = function(e){ //mouse key not down yet
-    if (!this.rel_data.newPostStartCoord) { return; }
+postile.view.post_board.handlers.mask_mousemove = function(e){ 
+    if (!this.rel_data.newPostStartCoord) { return; } //mouse key not down yet
     var current = [this.rel_data.xPosFrom(e.clientX - this.rel_data.canvasCoord[0]), this.rel_data.yPosFrom(e.clientY - this.rel_data.canvasCoord[1])];
     var delta = [0, 0];
     var end = [0, 0];
@@ -170,7 +170,7 @@ postile.view.post_board.handlers.mask_mouseup = function(e){
 postile.view.post_board.handlers.canvas_dblclick = function(e){
     if(this.rel_data.disableMovingCanvas) { return; }
     this.rel_data.disableMovingCanvas = true;
-    this.rel_data.mask.style.display = 'block';
+    goog.dom.appendChild(this.rel_data.viewport, this.rel_data.mask);
 };
 
 postile.view.post_board.handlers.arrow_control_click = function() { //in chrome, mouseout will automatically be called
@@ -237,6 +237,7 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
     var i;
     var keyHandler;
     var instance = this;
+    window.pb = this;
     postile.view.FullScreenView.call(this);
 
     /* BEGINNING OF MEMBER DEFINITION */
@@ -341,7 +342,6 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
     /* Button function ended */
 
     goog.dom.appendChild(this.viewport, this.canvas);
-    goog.dom.appendChild(this.viewport, this.mask);
     goog.dom.appendChild(this.mask, this.mask_notice);
     this.mask_notice.innerHTML = postile._('mask_for_creating_post');
     this.viewport.rel_data = this;
@@ -390,7 +390,7 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
     goog.events.listen(this.mask, goog.events.EventType.MOUSEDOWN, postile.view.post_board.handlers.mask_mousedown);
     goog.events.listen(this.mask, goog.events.EventType.MOUSEMOVE, postile.view.post_board.handlers.mask_mousemove);
     goog.events.listen(this.mask, goog.events.EventType.MOUSEUP, postile.view.post_board.handlers.mask_mouseup);
-    goog.events.listen(this.mask, goog.events.EventType.DBLCLICK, function(e){ e.preventDefault(); this.style.display = 'none'; });
+    goog.events.listen(this.mask, goog.events.EventType.DBLCLICK, function(e){ instance.viewport.removeChild(instance.mask); });
     //initialize according to topic_id
     postile.ajax(['topic','enter_topic'], { topic_id: topic_id }, function(data) {
         instance.channel_str = data.message.channel_str;
@@ -490,7 +490,7 @@ postile.view.post_board.PostBoard.prototype.xPosFrom = function(px) { return ((p
 postile.view.post_board.PostBoard.prototype.yPosFrom = function(px) { return ((px - 7 - this.canvasSize[1]/2)/(50+14)); };
 postile.view.post_board.direction_norm_to_css = { up: 'top', down: 'bottom', left: 'left', right: 'right' };
 
-postile.view.post_board.PostBoard.prototype.getVisibleArea = function(source) { //get visible area in the unit of "grid unit" //source is esxpected to be this.canvasCoord or [parseInt(this.canvas.style.left), parseInt(this.canvas.style.top)]
+postile.view.post_board.PostBoard.prototype.getVisibleArea = function(source) { // //get visible area in the unit of "grid unit" //source is expected to be this.canvasCoord or [parseInt(this.canvas.style.left), parseInt(this.canvas.style.top)]
     return { left: Math.floor(this.xPosFrom(-source[0])), top: Math.floor(this.yPosFrom(-source[1])), right: Math.ceil(this.xPosFrom(this.viewport.offsetWidth - source[0])), bottom: Math.ceil(this.yPosFrom(this.viewport.offsetHeight - source[1]))};
 }
 

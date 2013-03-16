@@ -458,8 +458,7 @@ html, body {
   z-index: 19520;
   left: 0;
   top: 0;
-  background-color: rgba(0, 0, 0, 0.3);
-  display: none; }
+  background-color: rgba(0, 0, 0, 0.3); }
 
 .mask_notice {
   margin-top: 5%;
