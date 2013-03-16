@@ -2,6 +2,7 @@ goog.provide('postile.ui');
 
 goog.require('goog.dom');
 goog.require('goog.events');
+goog.require('goog.dom.classes');
 goog.require('postile.fx');
 
 postile.syncGet = function(url) {

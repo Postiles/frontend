@@ -18,6 +18,7 @@ goog.require('postile.debbcode');
 goog.require('postile.fx');
 goog.require('postile.fx.effects');
 goog.require('postile.view.post');
+goog.require('postile.view.post_board.post_picker');
 
 postile.view.post_in_board.Post = function(object, board) {
     this.board = board;

@@ -271,9 +271,9 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
     this.topicTitle_el = goog.dom.getElement('topic_title');
 
     postile.ajax([ 'topic', 'get_topic' ], { topic_id: this.topic_id }, function(data) {
-        this.topic = data.message;
-        this.topicTitle_el.innerHTML = this.topic.name;
-    }.bind(this));
+        instance.topic = data.message;
+        instance.topicTitle_el.innerHTML = instance.topic.name;
+    });
 
     this.usernameText_el = goog.dom.getElement('username_text');
 
@@ -281,14 +281,14 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
     this.profileImageContainerImg_el = goog.dom.getElementByClass('image', this.profileImageContainer_el);
 
     postile.ajax([ 'user', 'get_profile' ], { }, function(data) {
-        this.selfUser = data.message.user;
-        this.selfProfile = data.message.profile;
+        instance.selfUser = data.message.user;
+        instance.selfProfile = data.message.profile;
 
-        this.usernameText_el.innerHTML = this.selfUser.username;
+        instance.usernameText_el.innerHTML = instance.selfUser.username;
 
-        var url = postile.uploadsResource([ this.selfProfile.image_url ]); // to be changed to small image url
-        this.profileImageContainerImg_el.src = url;
-    }.bind(this));
+        var url = postile.uploadsResource([ instance.selfProfile.image_url ]); // to be changed to small image url
+        instance.profileImageContainerImg_el.src = url;
+    });
 
     this.function_buttons = goog.dom.getElementsByClass('function_button');
     for (var i = 0; i < this.function_buttons.length; i++) {
