@@ -19,6 +19,7 @@ goog.require('postile.view.confirm_delete');
 goog.require('postile.view.profile');
 goog.require('postile.view.notification');
 goog.require('postile.view.search_box');
+goog.require('postile.view.post_board.post_picker');
 
 postile.view.post_board.POST_WIDTH = 75;
 postile.view.post_board.POST_HEIGHT = 50;
@@ -232,7 +233,6 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
     var i;
     var keyHandler;
     var instance = this;
-    window.pb = this;
     postile.view.FullScreenView.call(this);
 
     /* BEGINNING OF MEMBER DEFINITION */
@@ -260,6 +260,7 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
     this.keyboard_event_handler = new postile.events.EventHandler(postile.getGlobalKeyHandler(), goog.events.KeyHandler.EventType.KEY, function(e) { postile.view.post_board.handlers.keypress(instance, e); });
     this.keyboard_event_handler.listen();
     this.maxZIndex = 0; //max zIndex of posts currently
+    this.picker = new postile.view.post_board.PostPicker(this);
     /* END OF MEMBER DEFINITION */
     goog.events.listen(this.viewport, goog.events.EventType.SELECTSTART, function(){ return false; }); //disable text selecting, for ie
 
@@ -568,7 +569,7 @@ postile.view.post_board.PostBoard.prototype.createPost = function(info) {
     ret.text_content = '';
     postile.ajax(['post','new'], req, function(data) {
         ret.id = data.message;
-        instance.mask.style.display = 'none';
+        instance.viewport.removeChild(instance.mask);
         instance.renderArray([{post: ret, username: ''}]);
         instance.currentPosts[ret.id].edit();
     });

@@ -2,7 +2,7 @@ html, body {
   margin: 0;
   width: 100%;
   height: 100%;
-  background: whitesmoke; }
+}
 
 #wrapper {
   width: 100%;
@@ -243,9 +243,6 @@ html, body {
 .post_share_icon {
   background-image: url("../images/share_icon.png"); }
 
-.post_link_icon {
-  background-image: url("../images/link_icon.png"); }
-
 .post_comment_icon {
   background-image: url("../images/comment_icon.png"); }
   
@@ -443,6 +440,7 @@ html, body {
   width: 3872px;
   height: 2592px;
   position: absolute;
+  background: url(/images/paper_bg.png);
   display: none; }
 
 .post_content {
@@ -585,4 +583,9 @@ html, body {
     padding: 0 4px 0 21px;
     line-height: 21px;
     font-size: 10pt;
+}
+
+.inline_reference_preview {
+    background: url(/images/link_icon.png) left center no-repeat;
+    padding-left: 13px; 
 }

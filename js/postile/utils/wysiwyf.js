@@ -1,5 +1,8 @@
 goog.provide('postile.WYSIWYF');
 
+goog.require('postile.dom');
+goog.require('goog.dom');
+
 /*******************************************************
 Note: content below does not use ANY Google Closure code
 *******************************************************/
@@ -74,23 +77,9 @@ postile.WYSIWYF = {
             }
         }
     },
-    getRange: function (docDocument, docWindow) {
-        var userSelectionRange;
-        if (docWindow.getSelection) {
-            var userSelection = docWindow.getSelection();
-            if (userSelection.toString().length < 1) {
-                return false;
-            }
-        } else if (docDocument.selection) {
-            userSelectionRange = docDocument.selection.createRange();
-            if (userSelectionRange.text.length < 1) {
-                return false;
-            }
-        }
-        return true;
-    },
-    Editor: function(editor_el, icon_container_el) { //can use the "container" property of this.
+    Editor: function(editor_el, icon_container_el, post) { //can use the "container" property of this.
         var editor = this;
+        editor.post = post;
         editor.editor_el = editor_el;
         editor_el.contentEditable = true;
         //Placing buttons
@@ -107,7 +96,7 @@ postile.WYSIWYF = {
             editor.buttons[i].style.padding = '0';
             editor.buttons[i].style.backgroundPosition = postile.WYSIWYF.editButtons[i].bgPos;
             editor.buttons[i].addEventListener('mousedown', function(evt) { evt.preventDefault(); });
-            editor.buttons[i].onclick = function() { editor.buttonOperate(this.style.backgroundPosition.toLowerCase()); editor_el.focus(); }
+            editor.buttons[i].onclick = function() { editor.buttonOperate(this.style.backgroundPosition.toLowerCase()); }
             icon_container_el.appendChild(editor.buttons[i]);
         }
         editor.toDisplayMode(0);
@@ -119,6 +108,42 @@ postile.WYSIWYF = {
         callback: function (editor) {
             //Link
             document.execCommand('CreateLink', false, prompt('Enter link address (URL)', 'http://'));
+        },
+        display: [true, true]
+    }, {
+        bgPos: '-' + (13 * 8) + 'px 0px',
+        callback: function (editor) {
+            var picker = editor.post.board.picker;
+            var img_el;
+            /*
+            var sel = window.getSelection();
+            if (sel.rangeCount) {
+                sel = sel.getRangeAt(0);
+                //sel.collapse();
+            } else { sel = null; }
+            picker.open(function(post){ 
+                if (!post) { return; }
+                var elm = document.createElement('span');
+                if (sel) {
+                    sel.insertNode(elm);
+                } else {
+                    editor.editor_el.appendChild(elm);
+                }
+                elm.innerHTML = '[Linked to "'+post.post.text_content+'"]';
+            });
+            */
+            picker.open(function(post){ 
+                if (post) { 
+                    var span_el = goog.dom.createDom('span', 'inline_reference_preview');
+                    span_el.innerHTML = '[Linked to "'+post.post.text_content+'"]';
+                    goog.dom.replaceNode(span_el, img_el);
+                } else { goog.dom.removeNode(img_el); }
+                editor.editor_el.focus();
+            });
+            document.execCommand('InsertImage', false, postile.imageResource(['link_icon.png']));
+            img_el = postile.dom.getDescendantByCondition(editor.editor_el, function(el) { return el.tagName.toUpperCase() == 'IMG' && el.src.indexOf(postile.imageResource(['link_icon.png'])) > -1; });
+            picker.promote(editor.post);
+            editor.editor_el.focus();
         },
         display: [true, true]
     }, {

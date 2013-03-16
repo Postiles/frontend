@@ -18,33 +18,13 @@ goog.require('postile.debbcode');
 goog.require('postile.fx');
 goog.require('postile.fx.effects');
 goog.require('postile.view.post');
-goog.require('postile.view.post_board.post_picker');
 
 postile.view.post_in_board.Post = function(object, board) {
     this.board = board;
     this.blur_timeout = null;
     this.disabled = false;
     this.wrap_el = goog.dom.createDom('div', 'post_wrap');
-    this.container_el = goog.dom.createDom('div', 'post_container');
-    this.post_top_el = goog.dom.createDom("div", "post_top");
-    this.post_title_el = goog.dom.createDom("span", "post_title");
-    this.wrap_el.rel_data = this;
-    goog.dom.appendChild(this.wrap_el, this.container_el);
     goog.dom.appendChild(this.board.canvas, this.wrap_el);
-    goog.dom.appendChild(this.container_el, this.post_top_el);
-    // post title clicked, should display post expanded
-    this.post_expand_listener = new postile.events.EventHandler(this.post_title_el, goog.events.EventType.CLICK, function(e) {
-        var postExpand = new postile.view.post.PostExpand(instance.post, instance.username);
-    });
-    this.post_expand_listener.listen();
-    this.post_author_el = goog.dom.createDom("span", "post_author");
-    this.post_author_el.innerHTML = this.username;
-    goog.dom.appendChild(this.post_top_el, this.post_author_el);
-    // username clicked, should display user profile
-    goog.events.listen(this.post_author_el, goog.events.EventType.CLICK, function(e) {
-        var profileView = new postile.view.profile.ProfileView(this.post.user_id);
-    }.bind(this));    
-    
     this.render(object, true);
 }
 
@@ -59,19 +39,45 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
     this.wrap_el.style.top = this.board.yPosTo(this.post.coord_y) + 'px';
     this.wrap_el.style.width = this.board.widthTo(this.post.span_x) + 'px';
     this.wrap_el.style.height = this.board.heightTo(this.post.span_y) + 'px';
-    this.post_title_el.innerHTML = postile.escapeString(this.post.title);
+    
+    if(this.container_el) { goog.dom.removeNode(this.container_el); }
+    this.container_el = goog.dom.createDom('div', 'post_container');
+    this.post_top_el = goog.dom.createDom("div", "post_top");
+    this.post_title_el = goog.dom.createDom("span", "post_title");
+    this.wrap_el.rel_data = this;
+    goog.dom.appendChild(this.wrap_el, this.container_el);
+    goog.dom.appendChild(this.container_el, this.post_top_el);
     goog.dom.appendChild(this.post_top_el, this.post_title_el);
-
+    // post title clicked, should display post expanded
+    this.post_expand_listener = new postile.events.EventHandler(this.post_title_el, goog.events.EventType.CLICK, function(e) {
+        var postExpand = new postile.view.post.PostExpand(instance.post, instance.username);
+    });
+    this.post_expand_listener.listen();
+    this.post_author_el = goog.dom.createDom("span", "post_author");
+    goog.dom.appendChild(this.post_top_el, this.post_author_el);
+    // username clicked, should display user profile
+    goog.events.listen(this.post_author_el, goog.events.EventType.CLICK, function(e) {
+        var profileView = new postile.view.profile.ProfileView(this.post.user_id);
+    }.bind(this));    
     this.post_content_el = goog.dom.createDom("div", "post_content");
-    this.post_content_el.innerHTML = postile.parseBBcode(this.post.text_content);
     goog.dom.appendChild(this.container_el, this.post_content_el);
-
     this.post_bottom_el = goog.dom.createDom("div", "post_bottom");
     goog.dom.appendChild(this.container_el, this.post_bottom_el);
-
     this.post_icon_container_el = goog.dom.createDom("div", "post_icon_container");
     goog.dom.appendChild(this.post_bottom_el, this.post_icon_container_el);
+    
+    this.post_title_el.innerHTML = postile.escapeString(this.post.title);
+    this.post_author_el.innerHTML = this.username;
+    this.post_content_el.innerHTML = postile.parseBBcode(this.post.text_content);
+    this.post_icon_container_init();
+    if (animation) {
+        postile.fx.effects.resizeIn(this.wrap_el);
+    }  
+}
 
+postile.view.post_in_board.Post.prototype.post_icon_container_init = function() {
+    var instance = this;
+    
     var addIcon = function(name) {
         var icon = goog.dom.createDom("div", "post_icon post_"+name+"_icon");
         goog.dom.appendChild(instance.post_icon_container_el, icon);
@@ -102,9 +108,9 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
     
     this.likes_count_el = goog.dom.createDom("div", "post_like_count");
     goog.dom.appendChild(instance.post_icon_container_el, this.likes_count_el);
-    this.likes_count_el.innerHTML = object.post.likes_count;
+    this.likes_count_el.innerHTML = this.post.likes_count;
     
-    addIcon("share"); addIcon("link"); 
+    addIcon("share");
     
     goog.events.listen(addIcon("comment"), goog.events.EventType.CLICK, function() { instance.inline_comments_block = new postile.view.post_in_board.InlineCommentsBlock(instance); });
     
@@ -114,10 +120,6 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
             new postile.view.confirm_delete.ConfirmDelete(instance).open(this);
         });
     }
-
-    if (animation) {
-        postile.fx.effects.resizeIn(this.wrap_el);
-    }  
 }
 
 postile.view.post_in_board.Post.prototype.disable = function() {
@@ -184,23 +186,23 @@ postile.view.post_in_board.Post.prototype.edit = function() {
     this.disable();
     var go_editing = function() {
         instance.post_expand_listener.unlisten();
+        goog.dom.classes.add(instance.post_title_el, 'selectable');
+        goog.dom.classes.add(instance.post_content_el, 'selectable');
         postile.ui.makeLabeledInput(instance.post_title_el, postile._('post_title_prompt'), 'half_opaque', function(){
             instance.post_content_el.focus();
         });
-        goog.dom.classes.add(instance.post_title_el, 'selectable');
         //hide the original bottom bar
         goog.dom.removeChildren(instance.post_icon_container_el);
-        var y_editor = new postile.WYSIWYF.Editor(instance.post_content_el, instance.post_icon_container_el);
-        goog.dom.classes.add(instance.post_content_el, 'selectable');
+        var y_editor = new postile.WYSIWYF.Editor(instance.post_content_el, instance.post_icon_container_el, instance);
         instance.board.disableMovingCanvas = true; //disable moving
         instance.enable();
         start_waiting.abort();
-        var blurHandler = function() {
+        var blurHandler = function(e) {
             instance.blur_timeout = setTimeout(function(){ 
                 //instance.board.mask.style.display = 'none'; //close mask, if any
-                instance.submitEdit({ post_id: instance.post.id, content: y_editor.getBbCode(), title: instance.post_title_el.innerHTML ==  postile._('post_title_prompt') ? '' : postile.string.stripString(instance.post_title_el.innerHTML) });}, 400);
+                instance.submitEdit({ post_id: instance.post.id, content: y_editor.getBbCode(), title: instance.post_title_el.innerHTML ==  postile._('post_title_prompt') ? '' : postile.string.stripString(instance.post_title_el.innerHTML) });}, 1200);
         };
-        var focusHandler = function() {
+        var focusHandler = function(e) {
             clearTimeout(instance.blur_timeout);
         };
         goog.events.listen(y_editor.editor_el, goog.events.EventType.BLUR, blurHandler);
