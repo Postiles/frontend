@@ -1,0 +1,94 @@
+$main-color: #024d61;
+$hover-background-color:  #cedadd; 
+
+#star_pup_up {
+	width:170px;
+	position: fixed;
+	right: 30px;
+	top: 300px;
+	padding: 0px;
+	margin: 0px;
+	box-shadow: 3px 3px 20px 1px #888888;
+
+	#star_header {
+		background: $main-color;
+		color: #fff;
+		height: 25px;
+
+		p {
+			padding: 0px;
+			margin: 0px;
+			float: left;
+			padding-top: 2px;
+			padding-left: 7px;
+		}
+
+		#star_search_module {
+
+			.search_icon {
+				float: left;
+				margin-top: 5px;
+				height: 16px;
+				width: 16px;
+				background: #fff;
+				margin-left: 15px;
+			}
+
+			input.search_input_field {
+				float:left;
+				margin-left:1px;
+				width: 80px;
+				border: 0px none;
+				margin-top: 5px;
+				&:focus {
+					outline: none;
+				}
+			}
+
+		}
+
+	}
+
+	#star_list {
+
+		.star_item {
+			height: 50px;
+			
+
+			.star_upper {
+				p {
+					float:left;
+					padding: 0px;
+					margin: 0px;
+					font-size: 11px;
+				}
+			}
+
+			.star_lower {
+				p {
+					float:left;
+					padding: 0px;
+					margin: 0px;
+					font-size: 11px;
+				}
+			}
+
+		}
+	}
+
+	.star_list_see_more {
+		border-top: 1px solid $main-color;
+		height: 30px;
+		cursor: pointer;
+		p {
+			margin: 0px auto;
+			width: 70px;
+			font-size: 13px;
+			padding-top: 7px;
+			color: $main-color;
+		}
+		&:hover {
+			background: $hover-background-color;
+		}
+	}
+}
