@@ -93,7 +93,15 @@ body {
     		border-right: 10px solid transparent;
     		border-bottom: 10px solid $main-color;
     		position: absolute;
-    		left: 165px;
+    		left: 164px;
+    		top: -8px;
+		}
+		#arrow_up_back {
+    		border-left: 12px solid transparent;
+    		border-right: 12px solid transparent;
+    		border-bottom: 12px solid #fff;
+    		position: absolute;
+    		left: 162px;
     		top: -10px;
 		}
 	}
