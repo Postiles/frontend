@@ -109,6 +109,7 @@ postile.faye.subscribe = function(channel, listener) {
     var faye_action = function() {
         postile.faye.client.subscribe('/faye/'+channel, function(data) {
             var json = data.data.message;
+            console.log(data);
             /*
             var json = null;       
             try {

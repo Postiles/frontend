@@ -460,7 +460,7 @@ html, body {
 .canvas_mask {
   width: 100%;
   height: 100%;
-  position: absolute;
+  position: fixed;
   z-index: 19520;
   left: 0;
   top: 0;

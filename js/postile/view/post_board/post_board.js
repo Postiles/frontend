@@ -26,7 +26,11 @@ postile.view.post_board.POST_HEIGHT = 50;
 postile.view.post_board.POST_MARGIN = 14;
 
 postile.view.post_board.handlers.canvas_mousedown = function(e) {
-    if (!e.isButton(0)) { 
+    if (postile.isMacOsX()) { // for mac os, disable mouse drag
+        return;
+    }
+
+    if (!e.isButton(0)) { // not left mouse button
         return; 
     }
 
@@ -49,11 +53,15 @@ postile.view.post_board.handlers.canvas_mousedown = function(e) {
 };
 
 postile.view.post_board.handlers.canvas_mouseup = function(e) { 
-    var post_board = this.rel_data;
+    if (postile.isMacOsX()) { // for mac os, disable drag
+        return;
+    }
 
     if (!e.isButton(0)) { 
         return; 
     }
+
+    var post_board = this.rel_data;
 
     if (!this.rel_data.mousedownCoord) { 
         return; 
@@ -114,7 +122,13 @@ postile.view.post_board.handlers.canvas_mouseup = function(e) {
 };
 
 postile.view.post_board.handlers.canvas_mousemove = function(e) {
-    if (!this.rel_data.mousedownCoord) { return; } //mouse key not down yet
+    if (postile.isMacOsX()) { // for mac os, disable drag
+        return;
+    }
+
+    if (!this.rel_data.mousedownCoord) { //mouse key not down yet
+        return;
+    }
 
     var leftTarget = e.clientX - this.rel_data.mousedownCoord[0] + this.rel_data.canvasCoord[0];
     var topTarget = e.clientY - this.rel_data.mousedownCoord[1] + this.rel_data.canvasCoord[1];
@@ -145,6 +159,16 @@ postile.view.post_board.handlers.canvas_mousemove = function(e) {
     this.rel_data.canvasOutBoundAnimation();
 };
 
+//activated double click event for creating new boxes
+postile.view.post_board.handlers.canvas_dblclick = function(e){
+    if(this.rel_data.disableMovingCanvas) { 
+        return; 
+    }
+
+    this.rel_data.disableMovingCanvas = true;
+    goog.dom.appendChild(this.rel_data.viewport, this.rel_data.mask);
+};
+
 //mouseevents for the mask
 postile.view.post_board.handlers.mask_mousedown = function(e){ //find the closest grid point
     this.rel_data.newPostStartCoord = [ 
@@ -152,6 +176,8 @@ postile.view.post_board.handlers.mask_mousedown = function(e){ //find the closes
                             - this.rel_data.canvasCoord[0])), 
             Math.round(this.rel_data.yPosFrom(e.clientY - this.rel_data.viewport_position.y 
                             - this.rel_data.canvasCoord[1])) ]; //record current coordinate in the unit of "grid unit" //TODO: detect if the start point is legal (if there is available space around it)
+
+    console.log(this.rel_data.newPostStartCoord);
 
     this.rel_data.newPostStartCoordInPx = [e.clientX, e.clientY]; //used to disable warning when double clicking
 
@@ -245,16 +271,6 @@ postile.view.post_board.handlers.mask_mouseup = function(e){
     this.rel_data.createPost(this.position);
 };
 
-//activated double click event for creating new boxes
-postile.view.post_board.handlers.canvas_dblclick = function(e){
-    if(this.rel_data.disableMovingCanvas) { 
-        return; 
-    }
-
-    this.rel_data.disableMovingCanvas = true;
-    goog.dom.appendChild(this.rel_data.viewport, this.rel_data.mask);
-};
-
 postile.view.post_board.handlers.arrow_control_click = function() { //in chrome, mouseout will automatically be called
     this.parentNode.rel_data.preMoveCanvas(this.direction);
 }
@@ -316,12 +332,13 @@ postile.view.post_board.handlers.resize = function(instance){ //called on window
     if (postile.isMacOsX()) {
         instance.viewport.scrollLeft = - instance.canvasCoord[0];
         instance.viewport.scrollTop = - instance.canvasCoord[1];
+        instance.viewport_position = new goog.math.Coordinate(instance.viewport.scrollLeft, instance.viewport.scrollTop);
     } else { 
         instance.canvas.style.left = instance.canvasCoord[0] + 'px'; 
         instance.canvas.style.top = instance.canvasCoord[1] + 'px';   
+        instance.viewport_position = goog.style.getRelativePosition(instance.viewport, document.body); //or document.documentElement perhaps?
     }
 
-    instance.viewport_position = goog.style.getRelativePosition(instance.viewport, document.body); //or document.documentElement perhaps?
     instance.updateSubsribeArea(); //update according to the new subscribe area
 }
 
@@ -699,12 +716,12 @@ postile.view.post_board.PostBoard.prototype.yPosTo = function(u) {
 //convent length to "unit length" of the grid from pixel. it is from the center grid points so margins and paddings are ignored.
 postile.view.post_board.PostBoard.prototype.xPosFrom = function(px) { 
     return ((px + postile.view.post_board.POST_MARGIN / 2 - this.canvasSize[0] / 2) 
-            / (postile.view.post_board.POST_WIDTH+postile.view.post_board.POST_MARGIN)); 
+            / (postile.view.post_board.POST_WIDTH + postile.view.post_board.POST_MARGIN)); 
 };
 
 postile.view.post_board.PostBoard.prototype.yPosFrom = function(px) { 
     return ((px + postile.view.post_board.POST_MARGIN / 2 - this.canvasSize[1] / 2) 
-            / (postile.view.post_board.POST_HEIGHT+postile.view.post_board.POST_MARGIN)); 
+            / (postile.view.post_board.POST_HEIGHT + postile.view.post_board.POST_MARGIN)); 
 };
 
 postile.view.post_board.direction_norm_to_css = { up: 'top', down: 'bottom', left: 'left', right: 'right' };
