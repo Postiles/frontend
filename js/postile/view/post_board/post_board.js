@@ -147,8 +147,11 @@ postile.view.post_board.handlers.canvas_mousemove = function(e) {
 
 //mouseevents for the mask
 postile.view.post_board.handlers.mask_mousedown = function(e){ //find the closest grid point
-    this.rel_data.newPostStartCoord = 
-        [Math.round(this.rel_data.xPosFrom(e.clientX - this.rel_data.viewport_position.x - this.rel_data.canvasCoord[0])), Math.round(this.rel_data.yPosFrom(e.clientY - this.rel_data.viewport_position.y -  this.rel_data.canvasCoord[1]))]; //record current coordinate in the unit of "grid unit" //TODO: detect if the start point is legal (if there is available space around it)
+    this.rel_data.newPostStartCoord = [ 
+            Math.round(this.rel_data.xPosFrom(e.clientX - this.rel_data.viewport_position.x 
+                            - this.rel_data.canvasCoord[0])), 
+            Math.round(this.rel_data.yPosFrom(e.clientY - this.rel_data.viewport_position.y 
+                            - this.rel_data.canvasCoord[1])) ]; //record current coordinate in the unit of "grid unit" //TODO: detect if the start point is legal (if there is available space around it)
 
     this.rel_data.newPostStartCoordInPx = [e.clientX, e.clientY]; //used to disable warning when double clicking
 
@@ -164,7 +167,11 @@ postile.view.post_board.handlers.mask_mousemove = function(e){
         return; 
     } //mouse key not down yet
 
-    var current = [this.rel_data.xPosFrom(e.clientX - this.rel_data.viewport_position.x - this.rel_data.canvasCoord[0]), this.rel_data.yPosFrom(e.clientY - this.rel_data.viewport_position.y - this.rel_data.canvasCoord[1])];
+    var current = [ 
+        this.rel_data.xPosFrom(e.clientX - this.rel_data.viewport_position.x 
+                - this.rel_data.canvasCoord[0]), 
+        this.rel_data.yPosFrom(e.clientY - this.rel_data.viewport_position.y 
+                - this.rel_data.canvasCoord[1])];
 
     var delta = [0, 0];
     var end = [0, 0];
@@ -198,7 +205,12 @@ postile.view.post_board.handlers.mask_mousemove = function(e){
     }
 
     //draw on the canvas
-    this.position = { coord_x: current[0], coord_y: current[1], span_x: Math.abs(delta[0]), span_y: Math.abs(delta[1]) };
+    this.position = { 
+        coord_x: current[0], 
+        coord_y: current[1], 
+        span_x: Math.abs(delta[0]), 
+        span_y: Math.abs(delta[1]) 
+    };
 
     /*
     this.preview.style.left = this.rel_data.xPosTo(this.position.coord_x) + this.rel_data.canvasCoord[0] + 'px';
@@ -285,7 +297,9 @@ postile.view.post_board.handlers.resize = function(instance){ //called on window
     var new_viewport_size = [window.innerWidth,  window.innerHeight - 45]; //45 is the menu bar height
 
     if (!instance.canvasCoord) { //first time (initialize)
-        instance.canvasCoord = [(new_viewport_size[0] - instance.canvasSize[0])/2, (new_viewport_size[1] - instance.canvasSize[1])/2];
+        instance.canvasCoord = [
+            (new_viewport_size[0] - instance.canvasSize[0]) / 2, 
+            (new_viewport_size[1] - instance.canvasSize[1]) / 2 ];
     } else { //window resize
         //keep the center in the same position
         instance.canvasCoord[0] += (new_viewport_size[0] - parseInt(instance.viewport.style.width))/2;
@@ -371,7 +385,9 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
     this.maxZIndex = 0; //max zIndex of posts currently
     this.picker = new postile.view.post_board.PostPicker(this);
     /* END OF MEMBER DEFINITION */
-    goog.events.listen(this.viewport, goog.events.EventType.SELECTSTART, function(){ return false; }); //disable text selecting, for ie
+    goog.events.listen(this.viewport, goog.events.EventType.SELECTSTART, function() {
+        return false; 
+    }); //disable text selecting, for ie
 
     goog.dom.appendChild(goog.dom.getElement("wrapper"), this.viewport);
 
@@ -405,7 +421,8 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
 
     /*
     this.search_input_field = goog.dom.getElement("search_input_field");
-    goog.events.listen(this.search_input_field, goog.events.EventType.KEYUP, postile.view.post_board.handlers.search);
+    goog.events.listen(this.search_input_field, goog.events.EventType.KEYUP, 
+            postile.view.post_board.handlers.search);
 
     // search button container
     this.search_button = goog.dom.getElement("search_button");
@@ -488,7 +505,8 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
         var dx = e.clientX - this.rel_data.right._start_point[0];
         var length = Math.sqrt(Math.pow(dx, 2)+Math.pow(dy, 2));
 
-        this.rel_data.moveCanvas(dx / 2 / length * this.offsetWidth, dy / 2 / length * this.offsetHeight);
+        this.rel_data.moveCanvas(dx / 2 / length * this.offsetWidth, 
+                dy / 2 / length * this.offsetHeight);
     });
 
     /* handling mac os x trackpad scrolling */
@@ -519,18 +537,25 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
 
     goog.events.listen(this.canvas, goog.events.EventType.MOUSEDOWN, 
             postile.view.post_board.handlers.canvas_mousedown);
+
     goog.events.listen(this.canvas, goog.events.EventType.MOUSEMOVE, 
             postile.view.post_board.handlers.canvas_mousemove);
+
     goog.events.listen(this.canvas, goog.events.EventType.MOUSEUP, 
             postile.view.post_board.handlers.canvas_mouseup);
+
     goog.events.listen(this.canvas, goog.events.EventType.DBLCLICK, 
             postile.view.post_board.handlers.canvas_dblclick);
+
     goog.events.listen(this.mask, goog.events.EventType.MOUSEDOWN, 
             postile.view.post_board.handlers.mask_mousedown);
+
     goog.events.listen(this.mask, goog.events.EventType.MOUSEMOVE, 
             postile.view.post_board.handlers.mask_mousemove);
+
     goog.events.listen(this.mask, goog.events.EventType.MOUSEUP, 
             postile.view.post_board.handlers.mask_mouseup);
+
     goog.events.listen(this.mask, goog.events.EventType.DBLCLICK, 
             function(e){ instance.viewport.removeChild(instance.mask); });
 
@@ -719,7 +744,10 @@ postile.view.post_board.PostBoard.prototype.updateSubsribeArea = function() { //
 }
 
 postile.view.post_board.PostBoard.prototype.isAreaFullInside = function(parent, child) {
-    return (parent.left <= child.left && parent.right >= child.right && parent.top <= child.top && parent.bottom >= child.bottom);
+    return (parent.left <= child.left 
+            && parent.right >= child.right 
+            && parent.top <= child.top 
+            && parent.bottom >= child.bottom);
 }
 
 /**
@@ -784,7 +812,9 @@ postile.view.post_board.PostBoard.prototype.createPost = function(info) {
 }
 
 postile.view.post_board.PostBoard.prototype.removePost = function(id) {
-    if (this.currentPosts[id].wrap_el) { goog.dom.removeNode(this.currentPosts[id].wrap_el); } //remove original element
+    if (this.currentPosts[id].wrap_el) {
+        goog.dom.removeNode(this.currentPosts[id].wrap_el); //remove original element
+    }
     delete this.currentPosts[id];
 }
 
