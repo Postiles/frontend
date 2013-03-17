@@ -59,6 +59,7 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
     goog.events.listen(this.post_author_el, goog.events.EventType.CLICK, function(e) {
         var profileView = new postile.view.profile.ProfileView(this.post.user_id);
     }.bind(this));    
+
     this.post_content_el = goog.dom.createDom("div", "post_content");
     goog.dom.appendChild(this.container_el, this.post_content_el);
     this.post_bottom_el = goog.dom.createDom("div", "post_bottom");
@@ -67,7 +68,10 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
     goog.dom.appendChild(this.post_bottom_el, this.post_icon_container_el);
     
     this.post_title_el.innerHTML = postile.escapeString(this.post.title);
-    this.post_author_el.innerHTML = this.username;
+    if (!this.post.title) {
+        this.post_author_el.style.marginLeft = '0px';
+    }
+    this.post_author_el.innerHTML = 'By ' + this.user.username;
     this.post_content_el.innerHTML = postile.parseBBcode(this.post.text_content);
     this.post_icon_container_init();
     if (animation) {
