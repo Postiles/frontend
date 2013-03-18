@@ -5,9 +5,10 @@ body {
   font-family: OxygenLight; }
 
 #board_more {
-  position: fixed;
-  top: 40px;
-  right: 0px;
+  position: fixed !important;
+  top: 40px !important;
+  right: 0px !important;
+  left: auto !important;
   width: 40px;
   height: 100%;
   background-color: #024d61; }

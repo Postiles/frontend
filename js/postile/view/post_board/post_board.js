@@ -467,6 +467,7 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
     var switch_board_button = goog.dom.getElement("switch_board_button");
     goog.events.listen(switch_board_button, goog.events.EventType.CLICK, function(e) {
         (new postile.view.board_more_pop.OtherBoard(switch_board_button)).open(switch_board_button);
+
     });
 
     var message_button = goog.dom.getElement("message_button");
@@ -476,7 +477,7 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
 
     var more_button = goog.dom.getElement("popup_button");
     goog.events.listen(more_button, goog.events.EventType.CLICK, function(e) {
-        (new postile.view.board_more_pop.BoardMorePop(more_button));
+        (new postile.view.board_more_pop.BoardMorePop(more_button)).open(more_button);
     });
     /* Button function ended */
 
