@@ -74,12 +74,12 @@ postile.view.post_board.handlers.resize = function(instance){ //called on window
             (new_viewport_size[1] - instance.canvasSize[1]) / 2 ];
     } else { //window resize
         //keep the center in the same position
-        instance.canvasCoord[0] += (new_viewport_size[0] - parseInt(instance.viewport.style.width))/2;
-        instance.canvasCoord[1] += (new_viewport_size[1] - parseInt(instance.viewport.style.height))/2;
+        instance.canvasCoord[0] += (new_viewport_size[0] - parseInt(instance.catchall.style.width))/2;
+        instance.canvasCoord[1] += (new_viewport_size[1] - parseInt(instance.catchall.style.height))/2;
     }
 
-    instance.viewport.style.width = new_viewport_size[0] + 'px'; 
-    instance.viewport.style.height = new_viewport_size[1] + 'px';
+    instance.catchall.style.width = new_viewport_size[0] + 'px'; 
+    instance.catchall.style.height = new_viewport_size[1] + 'px';
 
     instance.viewport.scrollLeft = - instance.canvasCoord[0];
     instance.viewport.scrollTop = - instance.canvasCoord[1];
@@ -120,6 +120,7 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
     this.canva_shadow_animation = null; //the animation for the outbound shadow
     this.disableMovingCanvas = false; //when true, moving canvas is disabled temporarily
     this.currentPosts = {}; //an object containing all posts, as key = post_id and value = Post object
+    this.catchall = goog.dom.createDom('div', 'viewport_container'); //disable text selecting
     this.viewport = goog.dom.createDom('div', 'canvas_viewport'); //disable text selecting
     this.canvas = goog.dom.createDom('div', 'canvas'); //the canvas being dragged
     this.viewport_position = null; //viewport's position relative to the window
@@ -142,6 +143,7 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
     this.keyboard_event_handler.listen();
     this.maxZIndex = 0; //max zIndex of posts currently
     this.picker = new postile.view.post_board.PostPicker(this);
+    goog.dom.appendChild(this.catchall, this.viewport);
     goog.dom.appendChild(this.viewport, this.canvas);
     /* END OF MEMBER DEFINITION */
     goog.events.listen(this.viewport, goog.events.EventType.SELECTSTART, function() {
@@ -152,7 +154,7 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
         instance.canvasCoord[1] = - instance.viewport.scrollTop;
     }) 
 
-    goog.dom.appendChild(goog.dom.getElement("wrapper"), this.viewport);
+    goog.dom.appendChild(goog.dom.getElement("wrapper"), this.catchall);
 
     this.topicTitle_el = goog.dom.getElement('topic_title');
 
@@ -182,28 +184,6 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
         new postile.view.post_board.FunctionButton(this.function_buttons[i]);
     }
 
-    /*
-    this.search_input_field = goog.dom.getElement("search_input_field");
-    goog.events.listen(this.search_input_field, goog.events.EventType.KEYUP, 
-            postile.view.post_board.handlers.search);
-
-    // search button container
-    this.search_button = goog.dom.getElement("search_button");
-
-    // popup search box
-    this.search_box = goog.dom.getElement("search_box");
-
-    goog.events.listen(this.search_button, goog.events.EventType.CLICK, function(e) {
-        this.search_box.style.display = "block";
-
-        // hides all the search result containers
-        this.search_result_containers = goog.dom.getElementsByClass("search_result_category");
-        for (i = 0; i < this.search_result_containers.length; i++) {
-            goog.style.showElement(this.search_result_containers[i], false);
-        }
-    }.bind(this));
-    */
-
     var search_button = goog.dom.getElement("search_button");
     goog.events.listen(search_button, goog.events.EventType.CLICK, function(e) {
         (new postile.view.search_box.SearchBox(search_button)).open(search_button);
@@ -230,17 +210,18 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
     /**
      * main viewport and canvas
      */
+    this.catchall.rel_data = this;
     this.viewport.rel_data = this;
     this.canvas.rel_data = this;
 
     /* start: controllers for moving the viewport */
-    goog.dom.appendChild(this.viewport, this.right);
+    goog.dom.appendChild(this.catchall, this.right);
 
-    goog.events.listen(this.viewport, goog.events.EventType.CONTEXTMENU, function(e) {
+    goog.events.listen(this.catchall, goog.events.EventType.CONTEXTMENU, function(e) {
         e.preventDefault(); 
     });
 
-    goog.events.listen(this.viewport, goog.events.EventType.MOUSEDOWN, function(e) {
+    goog.events.listen(this.catchall, goog.events.EventType.MOUSEDOWN, function(e) {
         if (!e.isButton(2)) { // right mouse button
             return; 
         }
@@ -251,7 +232,7 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
         this.rel_data.right._start_point = [e.clientX, e.clientY];
     });
 
-    goog.events.listen(this.viewport, goog.events.EventType.MOUSEUP, function(e) {
+    goog.events.listen(this.catchall, goog.events.EventType.MOUSEUP, function(e) {
         if (!e.isButton(2)) {  // right mouse button
             return; 
         }
@@ -273,7 +254,7 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
         goog.dom.appendChild(this.direction_controllers[i], this.direction_controllers[i].button);
         goog.dom.appendChild(this.direction_controllers[i].button, goog.dom.createDom('div'));
         goog.dom.appendChild(this.direction_controllers[i], goog.dom.createDom('div', 'arrow_covering'));
-        goog.dom.appendChild(this.viewport, this.direction_controllers[i]);
+        goog.dom.appendChild(this.catchall, this.direction_controllers[i]);
 
         goog.events.listen(this.direction_controllers[i], goog.events.EventType.CLICK, 
                 postile.view.post_board.handlers.arrow_control_click);

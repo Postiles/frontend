@@ -433,7 +433,14 @@ html, body {
 
 /* end */
 
+.viewport_container {
+  overflow: hidden;
+  position: relative;   
+}
+
 .canvas_viewport {
+  width: 100%;
+  height: 100%;
   overflow: scroll;
   -webkit-user-select: none;
   position: relative; 
@@ -501,11 +508,14 @@ html, body {
 
 .arrow_detect.up, .arrow_detect.down {
   width: 100%;
+  left: 0;
   height: 50px; }
 
 .arrow_detect.left, .arrow_detect.right {
   height: 100%;
+  top: 0;
   width: 50px; }
+  
 
 .arrow_detect.up, .arrow_detect.down .arrow_button {
   top: 0; }
