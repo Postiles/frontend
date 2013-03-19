@@ -115,7 +115,6 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
     this.topic_id = topic_id;
     this.channel_str = null;
     this.canvasCoord = null; //current canvas position relative to the canvas viewport
-    this.shadowCoord = [0, 0]; //current shadow (the boundary-out(boundout) effect)
     this.canvasSize = [3872, 2592]; //the size of the canvas currently
     this.canva_shadow_animation = null; //the animation for the outbound shadow
     this.disableMovingCanvas = false; //when true, moving canvas is disabled temporarily
@@ -305,13 +304,6 @@ postile.view.post_board.PostBoard.prototype.close = function() {
         }
     });
 }
-
-postile.view.post_board.PostBoard.prototype.canvasOutBoundAnimation = function(){ //called while the animation iteration
-    // what the hell is this???
-    this.canvas.style.boxShadow = this.shadowCoord[0]/10+'px ' + 
-            this.shadowCoord[1] / 10 + 'px ' + Math.sqrt(Math.pow(this.shadowCoord[0], 2) + 
-            Math.pow(this.shadowCoord[1], 2)) / 10 + 'px 0 rgba(153, 153, 153, 0.75) inset';
-};
 
 postile.view.post_board.PostBoard.prototype.preMoveCanvas = function(direction) { //return true only when it's movable
     switch(direction) {
