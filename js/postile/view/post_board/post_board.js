@@ -26,23 +26,20 @@ postile.view.post_board.POST_WIDTH = 75;
 postile.view.post_board.POST_HEIGHT = 50;
 postile.view.post_board.POST_MARGIN = 14;
 
-postile.view.post_board.handlers.canvas_mousedown = function(e) {
-    if (postile.browser_compat.isMacOsX()) { // for mac os, disable mouse drag
-        return;
-    }
-
+postile.view.post_board.handlers.viewport_mousedown = function(e) {
     if (!e.isButton(0)) { // not left mouse button
         return; 
     }
 
-    var i;
-
     if(this.rel_data.disableMovingCanvas) { 
         return; 
     }
+    
+    var i;
 
     this.rel_data.disableMovingCanvas = true;
     this.rel_data.mousedownCoord = [e.clientX, e.clientY];
+    this.rel_data.originCanvasCoord = [this.rel_data.canvasCoord[0], this.rel_data.canvasCoord[1]];
 
     for(i in this.rel_data.direction_controllers) { //hide all dirction control arrows
         this.rel_data.direction_controllers[i].style.display = 'none';
@@ -53,11 +50,7 @@ postile.view.post_board.handlers.canvas_mousedown = function(e) {
     }
 };
 
-postile.view.post_board.handlers.canvas_mouseup = function(e) { 
-    if (postile.browser_compat.isMacOsX()) { // for mac os, disable drag
-        return;
-    }
-
+postile.view.post_board.handlers.viewport_mouseup = function(e) { 
     if (!e.isButton(0)) { 
         return; 
     }
@@ -74,7 +67,7 @@ postile.view.post_board.handlers.canvas_mouseup = function(e) {
     }
 
     post_board.mousedownCoord = null;
-    post_board.canvasCoord = [parseFloat(this.style.left),parseFloat(this.style.top)];
+    post_board.canvasCoord = [- post_board.viewport.scrollLeft, - post_board.viewport.scrollTop];
 
     //animation of outbound shadow
     var init = post_board.shadowCoord.slice();
@@ -122,19 +115,15 @@ postile.view.post_board.handlers.canvas_mouseup = function(e) {
     post_board.updateSubsribeArea();
 };
 
-postile.view.post_board.handlers.canvas_mousemove = function(e) {
-    if (postile.browser_compat.isMacOsX()) { // for mac os, disable drag
-        return;
-    }
-
+postile.view.post_board.handlers.viewport_mousemove = function(e) {
     if (!this.rel_data.mousedownCoord) { //mouse key not down yet
         return;
     }
 
-    var leftTarget = e.clientX - this.rel_data.mousedownCoord[0] + this.rel_data.canvasCoord[0];
-    var topTarget = e.clientY - this.rel_data.mousedownCoord[1] + this.rel_data.canvasCoord[1];
-    var rightTarget = leftTarget - this.parentNode.offsetWidth + this.offsetWidth;
-    var bottomTarget = topTarget - this.parentNode.offsetHeight + this.offsetHeight;
+    var leftTarget = e.clientX - this.rel_data.mousedownCoord[0] + this.rel_data.originCanvasCoord[0];
+    var topTarget = e.clientY - this.rel_data.mousedownCoord[1] + this.rel_data.originCanvasCoord[1];
+    var rightTarget = leftTarget - this.offsetWidth + this.rel_data.canvas.offsetWidth;
+    var bottomTarget = topTarget - this.offsetHeight + this.rel_data.canvas.offsetHeight;
 
     this.rel_data.shadowCoord[0] = 0;
     this.rel_data.shadowCoord[1] = 0;
@@ -154,8 +143,8 @@ postile.view.post_board.handlers.canvas_mousemove = function(e) {
         topTarget -= bottomTarget;
     }
 
-    this.style.left = leftTarget + 'px';
-    this.style.top = topTarget + 'px'; //apply the shadow boundout effect
+    this.rel_data.viewport.scrollLeft = - leftTarget;
+    this.rel_data.viewport.scrollTop = - topTarget; //apply the shadow boundout effect
 
     this.rel_data.canvasOutBoundAnimation();
 };
@@ -214,15 +203,9 @@ postile.view.post_board.handlers.resize = function(instance){ //called on window
     instance.viewport.style.width = new_viewport_size[0] + 'px'; 
     instance.viewport.style.height = new_viewport_size[1] + 'px';
 
-    if (postile.browser_compat.isMacOsX()) {
-        instance.viewport.scrollLeft = - instance.canvasCoord[0];
-        instance.viewport.scrollTop = - instance.canvasCoord[1];
-        instance.viewport_position = new goog.math.Coordinate(instance.viewport.scrollLeft, instance.viewport.scrollTop);
-    } else { 
-        instance.canvas.style.left = instance.canvasCoord[0] + 'px'; 
-        instance.canvas.style.top = instance.canvasCoord[1] + 'px';   
-        instance.viewport_position = goog.style.getRelativePosition(instance.viewport, document.body); //or document.documentElement perhaps?
-    }
+    instance.viewport.scrollLeft = - instance.canvasCoord[0];
+    instance.viewport.scrollTop = - instance.canvasCoord[1];
+    instance.viewport_position = goog.style.getRelativePosition(instance.viewport, document.body); //or document.documentElement perhaps?
 
     instance.updateSubsribeArea(); //update according to the new subscribe area
 }
@@ -273,14 +256,12 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
             goog.events.EventType.RESIZE, function() { 
                 postile.view.post_board.handlers.resize(instance); 
             });
-
     this.window_resize_event_handler.listen();
 
     this.keyboard_event_handler = new postile.events.EventHandler(postile.getGlobalKeyHandler(), 
             goog.events.KeyHandler.EventType.KEY, function(e) { 
                 postile.view.post_board.handlers.keypress(instance, e); 
             });
-
     this.keyboard_event_handler.listen();
     this.maxZIndex = 0; //max zIndex of posts currently
     this.picker = new postile.view.post_board.PostPicker(this);
@@ -289,6 +270,10 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
     goog.events.listen(this.viewport, goog.events.EventType.SELECTSTART, function() {
         return false; 
     }); //disable text selecting, for ie
+    goog.events.listen(this.viewport, goog.events.EventType.SCROLL, function() {
+        instance.canvasCoord[0] = - instance.viewport.scrollLeft;
+        instance.canvasCoord[1] = - instance.viewport.scrollTop;
+    }) 
 
     goog.dom.appendChild(goog.dom.getElement("wrapper"), this.viewport);
 
@@ -403,11 +388,6 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
                 dy / 2 / length * this.offsetHeight);
     });
 
-    /* handling mac os x trackpad scrolling */
-    if (!postile.browser_compat.isMacOsX()) {
-        this.viewport.style.overflow = 'hidden';
-    }
-
     for (i in postile.view.post_board.direction_norm_to_css) {
         this.direction_controllers[i] = goog.dom.createDom('div', ['arrow_detect', i]);
         this.direction_controllers[i].direction = i;
@@ -429,14 +409,16 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
     }
     /*end*/
 
-    goog.events.listen(this.canvas, goog.events.EventType.MOUSEDOWN, 
-            postile.view.post_board.handlers.canvas_mousedown);
+    if(!postile.browser_compat.isMacOsX()) {
+        goog.events.listen(this.viewport, goog.events.EventType.MOUSEDOWN, 
+                postile.view.post_board.handlers.viewport_mousedown);
 
-    goog.events.listen(this.canvas, goog.events.EventType.MOUSEMOVE, 
-            postile.view.post_board.handlers.canvas_mousemove);
+        goog.events.listen(this.viewport, goog.events.EventType.MOUSEMOVE, 
+                postile.view.post_board.handlers.viewport_mousemove);
 
-    goog.events.listen(this.canvas, goog.events.EventType.MOUSEUP, 
-            postile.view.post_board.handlers.canvas_mouseup);
+        goog.events.listen(this.viewport, goog.events.EventType.MOUSEUP, 
+                postile.view.post_board.handlers.viewport_mouseup);
+    }
 
     goog.events.listen(this.canvas, goog.events.EventType.DBLCLICK, 
             function(){ instance.creator.open(); });
@@ -533,8 +515,8 @@ postile.view.post_board.PostBoard.prototype.moveCanvas = function(dx, dy) { //re
         }
 
         new postile.fx.Animate(function(iter) {
-           instance.canvas.style.left = instance.canvasCoord[0]*(1-iter) + leftTarget*iter + 'px';
-           instance.canvas.style.top = instance.canvasCoord[1]*(1-iter) + topTarget*iter + 'px';
+           instance.viewport.scrollLeft = - (instance.canvasCoord[0]*(1-iter) + leftTarget*iter);
+           instance.viewport.scrollTop = - (instance.canvasCoord[1]*(1-iter) + topTarget*iter);
         }, 600, postile.fx.ease.sin_ease, function() {
             instance.canvasCoord[0] = leftTarget;
             instance.canvasCoord[1] = topTarget;
@@ -549,7 +531,7 @@ postile.view.post_board.PostBoard.prototype.moveCanvas = function(dx, dy) { //re
     } else {
         for (i in arrow_hide) {
             if (arrow_hide[i]) {
-                instance.direction_controllers[i].style.display = 'none';
+                instance.direction_controllers[i].style.display = 'block';
             }
         }
     }
