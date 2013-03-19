@@ -2,6 +2,7 @@ goog.provide('postile.view.post_board');
 goog.provide('postile.view.post_board.handlers');
 
 goog.require('postile.view.post_board.mask');
+goog.require('postile.view.post_board.MouseMoveScroll');
 goog.require('postile.view');
 goog.require('postile.fx');
 goog.require('postile.fx.effects');
@@ -25,129 +26,6 @@ goog.require('postile.view.post_board.post_picker');
 postile.view.post_board.POST_WIDTH = 75;
 postile.view.post_board.POST_HEIGHT = 50;
 postile.view.post_board.POST_MARGIN = 14;
-
-postile.view.post_board.handlers.viewport_mousedown = function(e) {
-    if (!e.isButton(0)) { // not left mouse button
-        return; 
-    }
-
-    if(this.rel_data.disableMovingCanvas) { 
-        return; 
-    }
-    
-    var i;
-
-    this.rel_data.disableMovingCanvas = true;
-    this.rel_data.mousedownCoord = [e.clientX, e.clientY];
-    this.rel_data.originCanvasCoord = [this.rel_data.canvasCoord[0], this.rel_data.canvasCoord[1]];
-
-    for(i in this.rel_data.direction_controllers) { //hide all dirction control arrows
-        this.rel_data.direction_controllers[i].style.display = 'none';
-    }
-
-    if (this.rel_data.canva_shadow_animation) {
-        this.rel_data.canva_shadow_animation.stop(); //stop current animation
-    }
-};
-
-postile.view.post_board.handlers.viewport_mouseup = function(e) { 
-    if (!e.isButton(0)) { 
-        return; 
-    }
-
-    var post_board = this.rel_data;
-
-    if (!this.rel_data.mousedownCoord) { 
-        return; 
-    } //not legally mouse-downed
-
-    post_board.disableMovingCanvas = false;
-    if (e.clientX == post_board.mousedownCoord[0] && e.clientY == post_board.mousedownCoord[1]) { 
-        post_board.mousedownCoord = null; return; 
-    }
-
-    post_board.mousedownCoord = null;
-    post_board.canvasCoord = [- post_board.viewport.scrollLeft, - post_board.viewport.scrollTop];
-
-    //animation of outbound shadow
-    var init = post_board.shadowCoord.slice();
-    var total = Math.max(Math.abs(post_board.shadowCoord[0]),Math.abs(post_board.shadowCoord[1]));
-
-    if (post_board.shadowCoord[0] || post_board.shadowCoord[1]) {
-        post_board.canva_shadow_animation = new postile.fx.Animate(function(i) {
-            var now = i * total;
-
-            if (init[0] < 0) { 
-                post_board.shadowCoord[0] = now > -init[0] ? 0 : init[0] + now; 
-            } else if (init[0] > 0) { 
-                post_board.shadowCoord[0] = now > init[0] ? 0 : init[0] - now; 
-            }
-
-            if (init[1] < 0) { 
-                post_board.shadowCoord[1] = now > -init[1] ? 0 : init[1] + now; 
-            }
-            else if (init[1] > 0) { 
-                post_board.shadowCoord[1] = now > init[1] ? 0 : init[1] - now; 
-            }
-
-            post_board.canvasOutBoundAnimation();
-        }, 800, postile.fx.ease.cubic_ease_out);
-    }
-
-    //update display status of dirction control arrows
-    if (post_board.shadowCoord[1] <= 0) { 
-        post_board.direction_controllers['up'].style.display = 'block'; 
-    }
-
-    if (post_board.shadowCoord[0] >= 0) {
-        post_board.direction_controllers['right'].style.display = 'block';
-    }
-
-    if (post_board.shadowCoord[1] >= 0) {
-        post_board.direction_controllers['down'].style.display = 'block';
-    }
-
-    if (post_board.shadowCoord[0] <= 0) {
-        post_board.direction_controllers['left'].style.display = 'block';
-    }
-
-    //update subscribe area
-    post_board.updateSubsribeArea();
-};
-
-postile.view.post_board.handlers.viewport_mousemove = function(e) {
-    if (!this.rel_data.mousedownCoord) { //mouse key not down yet
-        return;
-    }
-
-    var leftTarget = e.clientX - this.rel_data.mousedownCoord[0] + this.rel_data.originCanvasCoord[0];
-    var topTarget = e.clientY - this.rel_data.mousedownCoord[1] + this.rel_data.originCanvasCoord[1];
-    var rightTarget = leftTarget - this.offsetWidth + this.rel_data.canvas.offsetWidth;
-    var bottomTarget = topTarget - this.offsetHeight + this.rel_data.canvas.offsetHeight;
-
-    this.rel_data.shadowCoord[0] = 0;
-    this.rel_data.shadowCoord[1] = 0;
-
-    if (leftTarget > 0) { //test left boundout(attempt to drag out of the boundary)
-        this.rel_data.shadowCoord[0] = leftTarget;
-        leftTarget = 0;
-    } else if (rightTarget < 0) { //test right boundout
-        this.rel_data.shadowCoord[0] = rightTarget;
-        leftTarget -= rightTarget;
-    }
-    if (topTarget > 0) { //test top boundout
-        this.rel_data.shadowCoord[1] = topTarget;
-        topTarget = 0;
-    } else if (bottomTarget < 0) { //test bottom boundout
-        this.rel_data.shadowCoord[1] = bottomTarget;
-        topTarget -= bottomTarget;
-    }
-
-    this.rel_data.viewport.scrollLeft = - leftTarget;
-    this.rel_data.viewport.scrollTop = - topTarget; //apply the shadow boundout effect
-
-    this.rel_data.canvasOutBoundAnimation();
-};
 
 postile.view.post_board.handlers.arrow_control_click = function() { //in chrome, mouseout will automatically be called
     this.parentNode.rel_data.preMoveCanvas(this.direction);
@@ -236,7 +114,6 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
     /* BEGINNING OF MEMBER DEFINITION */
     this.topic_id = topic_id;
     this.channel_str = null;
-    this.mousedownCoord = null; //record the mouse position when mousedown triggered
     this.canvasCoord = null; //current canvas position relative to the canvas viewport
     this.shadowCoord = [0, 0]; //current shadow (the boundary-out(boundout) effect)
     this.canvasSize = [3872, 2592]; //the size of the canvas currently
@@ -410,14 +287,7 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
     /*end*/
 
     if(!postile.browser_compat.isMacOsX()) {
-        goog.events.listen(this.viewport, goog.events.EventType.MOUSEDOWN, 
-                postile.view.post_board.handlers.viewport_mousedown);
-
-        goog.events.listen(this.viewport, goog.events.EventType.MOUSEMOVE, 
-                postile.view.post_board.handlers.viewport_mousemove);
-
-        goog.events.listen(this.viewport, goog.events.EventType.MOUSEUP, 
-                postile.view.post_board.handlers.viewport_mouseup);
+        new postile.view.post_board.MouseMoveScroll(this);
     }
 
     goog.events.listen(this.canvas, goog.events.EventType.DBLCLICK, 
