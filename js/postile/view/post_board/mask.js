@@ -13,13 +13,13 @@ postile.view.post_board.PostCreator = function(post_board_obj) {
     this.post_preview_origin_spot = goog.dom.createDom('div', 'post_preview_origin_spot');
     goog.dom.appendChild(this.ghost_board_el, this.post_preview_origin_spot);
     goog.dom.appendChild(this.board.canvas, this.ghost_board_el);
+    goog.events.listen(this.ghost_board_el, goog.events.EventType.DBLCLICK, function(e) { e.stopPropagation(); instance.close(); });
     goog.events.listen(this.ghost_board_el, goog.events.EventType.MOUSEDOWN, function(e) { e.stopPropagation(); instance.mousedown(e); });
     goog.events.listen(this.ghost_board_el, goog.events.EventType.MOUSEMOVE, function(e) { e.stopPropagation(); instance.mousemove(e); });
     goog.events.listen(this.ghost_board_el, goog.events.EventType.MOUSEUP, function(e) { e.stopPropagation(); instance.mouseup(e); });
-    goog.events.listen(this.ghost_board_el, goog.events.EventType.DBLCLICK, function(e){ e.stopPropagation(); instance.close(); });
 }
 
-postile.view.post_board.PostCreator.prototype.open = function(dcb, post) {
+postile.view.post_board.PostCreator.prototype.open = function() {
     if(this.board.disableMovingCanvas) { 
         return; 
     }
@@ -28,14 +28,14 @@ postile.view.post_board.PostCreator.prototype.open = function(dcb, post) {
     this.ghost_board_el.id ='fuckll';
 }
 
-postile.view.post_board.PostCreator.prototype.close = function(dcb, post) {
-    this.board.disableMovingCanvas = false;
+postile.view.post_board.PostCreator.prototype.close = function() {
     this.ghost_board_el.style.display = 'none';
+    this.board.disableMovingCanvas = false;
 }
 
 //mouseevents for the mask
 postile.view.post_board.PostCreator.prototype.mousedown = function(e) { //find the closest grid point
-    this.start_mouse_coord = [this.board.xPosFrom(e.clientX - this.board.viewport_position.x - this.board.canvasCoord[0]), this.board.yPosFrom(e.clientY - this.board.viewport_position.y - this.board.canvasCoord[1])];
+    this.start_mouse_coord = [Math.round(this.board.xPosFrom(e.clientX - this.board.viewport_position.x - this.board.canvasCoord[0])), Math.round(this.board.yPosFrom(e.clientY - this.board.viewport_position.y - this.board.canvasCoord[1]))];
     this.new_post_start_coord_in_px = [e.clientX, e.clientY]; //used to disable warning when double clicking
 
     this.post_preview_origin_spot.style.left = this.board.xPosTo(this.start_mouse_coord[0])-17+'px';
