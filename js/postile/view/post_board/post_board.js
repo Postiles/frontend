@@ -1,6 +1,7 @@
 goog.provide('postile.view.post_board');
 goog.provide('postile.view.post_board.handlers');
 
+goog.require('postile.view.post_board.mask');
 goog.require('postile.view');
 goog.require('postile.fx');
 goog.require('postile.fx.effects');
@@ -26,7 +27,7 @@ postile.view.post_board.POST_HEIGHT = 50;
 postile.view.post_board.POST_MARGIN = 14;
 
 postile.view.post_board.handlers.canvas_mousedown = function(e) {
-    if (postile.isMacOsX()) { // for mac os, disable mouse drag
+    if (postile.browser_compat.isMacOsX()) { // for mac os, disable mouse drag
         return;
     }
 
@@ -53,7 +54,7 @@ postile.view.post_board.handlers.canvas_mousedown = function(e) {
 };
 
 postile.view.post_board.handlers.canvas_mouseup = function(e) { 
-    if (postile.isMacOsX()) { // for mac os, disable drag
+    if (postile.browser_compat.isMacOsX()) { // for mac os, disable drag
         return;
     }
 
@@ -122,7 +123,7 @@ postile.view.post_board.handlers.canvas_mouseup = function(e) {
 };
 
 postile.view.post_board.handlers.canvas_mousemove = function(e) {
-    if (postile.isMacOsX()) { // for mac os, disable drag
+    if (postile.browser_compat.isMacOsX()) { // for mac os, disable drag
         return;
     }
 
@@ -157,118 +158,6 @@ postile.view.post_board.handlers.canvas_mousemove = function(e) {
     this.style.top = topTarget + 'px'; //apply the shadow boundout effect
 
     this.rel_data.canvasOutBoundAnimation();
-};
-
-//activated double click event for creating new boxes
-postile.view.post_board.handlers.canvas_dblclick = function(e){
-    if(this.rel_data.disableMovingCanvas) { 
-        return; 
-    }
-
-    this.rel_data.disableMovingCanvas = true;
-    goog.dom.appendChild(this.rel_data.viewport, this.rel_data.mask);
-};
-
-//mouseevents for the mask
-postile.view.post_board.handlers.mask_mousedown = function(e){ //find the closest grid point
-    this.rel_data.newPostStartCoord = [ 
-            Math.round(this.rel_data.xPosFrom(e.clientX - this.rel_data.viewport_position.x 
-                            - this.rel_data.canvasCoord[0])), 
-            Math.round(this.rel_data.yPosFrom(e.clientY - this.rel_data.viewport_position.y 
-                            - this.rel_data.canvasCoord[1])) ]; //record current coordinate in the unit of "grid unit" //TODO: detect if the start point is legal (if there is available space around it)
-
-    console.log(this.rel_data.newPostStartCoord);
-
-    this.rel_data.newPostStartCoordInPx = [e.clientX, e.clientY]; //used to disable warning when double clicking
-
-    /*
-    this.post_preview_origin_spot.style.left = this.rel_data.xPosTo(this.rel_data.newPostStartCoord[0])+this.rel_data.canvasCoord[0]-17+'px';
-    this.post_preview_origin_spot.style.top = this.rel_data.yPosTo(this.rel_data.newPostStartCoord[1])+this.rel_data.canvasCoord[1]-17+'px';
-    */
-    this.post_preview_origin_spot.style.display = 'block';
-};
-
-postile.view.post_board.handlers.mask_mousemove = function(e){ 
-    if (!this.rel_data.newPostStartCoord) { 
-        return; 
-    } //mouse key not down yet
-
-    var current = [ 
-        this.rel_data.xPosFrom(e.clientX - this.rel_data.viewport_position.x 
-                - this.rel_data.canvasCoord[0]), 
-        this.rel_data.yPosFrom(e.clientY - this.rel_data.viewport_position.y 
-                - this.rel_data.canvasCoord[1])];
-
-    var delta = [0, 0];
-    var end = [0, 0];
-    var i;
-
-    for (i = 0; i < 2; i++) {
-        delta[i] = current[i] - this.rel_data.newPostStartCoord[i]; //calculate the expected width/height in the unit of "grid unit"
-        if (delta[i] < 0) { //if in doubt, use brute force
-            if (delta[i] > -1) { delta[i] = -1; } else { delta[i] = Math.round(delta[i]); }
-            current[i] = this.rel_data.newPostStartCoord[i] + delta[i];
-            end[i] = this.rel_data.newPostStartCoord[i];
-        } else {
-            if (delta[i] < 1) { delta[i] = 1; } else { delta[i] = Math.round(delta[i]); }
-            current[i] = this.rel_data.newPostStartCoord[i];
-            end[i] = this.rel_data.newPostStartCoord[i] + delta[i];
-        }
-    }
-
-    //now "current" saves the smaller value and "end" saves the larger one
-    //check if available
-    var intersect = false;
-    for (i in this.rel_data.currentPosts) {
-        //from http://stackoverflow.com/questions/2752349/fast-rectangle-to-rectangle-intersection
-        if(!(current[0] >= this.rel_data.currentPosts[i].post.coord_x_end 
-                    || end[0] <= this.rel_data.currentPosts[i].post.coord_x 
-                    || current[1] >=this.rel_data.currentPosts[i].post.coord_y_end 
-                    || end[1] <= this.rel_data.currentPosts[i].post.coord_y)) { 
-            intersect = true;
-            break;
-        }
-    }
-
-    //draw on the canvas
-    this.position = { 
-        coord_x: current[0], 
-        coord_y: current[1], 
-        span_x: Math.abs(delta[0]), 
-        span_y: Math.abs(delta[1]) 
-    };
-
-    /*
-    this.preview.style.left = this.rel_data.xPosTo(this.position.coord_x) + this.rel_data.canvasCoord[0] + 'px';
-    this.preview.style.top = this.rel_data.yPosTo(this.position.coord_y) + this.rel_data.canvasCoord[1] + 'px';
-    */
-
-    this.preview.style.width = this.rel_data.widthTo(this.position.span_x) + 'px';
-    this.preview.style.height = this.rel_data.heightTo(this.position.span_y) + 'px';
-
-    this.legal = (!intersect) && this.position.span_x > 1 && this.position.span_y > 1;
-
-    this.preview.style.backgroundColor = this.legal ? '#e4eee4': '#f4dcdc';
-    this.preview.style.display = 'block';
-};
-
-postile.view.post_board.handlers.mask_mouseup = function(e){
-    this.rel_data.disableMovingCanvas = false;
-    this.rel_data.newPostStartCoord = null;
-    this.post_preview_origin_spot.style.display = 'none';
-    this.preview.style.display = 'none';
-    if (!this.legal) {
-        if (this.rel_data.newPostStartCoordInPx 
-                && Math.abs(this.rel_data.newPostStartCoordInPx[0] - e.clientX) > 3 
-                && Math.abs(this.rel_data.newPostStartCoordInPx[1] - e.clientY) > 3) { //do not show when dbl clicking
-            new postile.toast.Toast(5, postile._('post_zone_illegal'), [], 'red');
-        }
-        this.rel_data.newPostStartCoordInPx = null;
-        return;
-    }
-    this.legal = false;
-    this.rel_data.newPostStartCoordInPx = null;
-    this.rel_data.createPost(this.position);
 };
 
 postile.view.post_board.handlers.arrow_control_click = function() { //in chrome, mouseout will automatically be called
@@ -325,11 +214,7 @@ postile.view.post_board.handlers.resize = function(instance){ //called on window
     instance.viewport.style.width = new_viewport_size[0] + 'px'; 
     instance.viewport.style.height = new_viewport_size[1] + 'px';
 
-    /*
-    instance.canvas.style.left = instance.canvasCoord[0] + 'px'; 
-    instance.canvas.style.top = instance.canvasCoord[1] + 'px';   
-    */
-    if (postile.isMacOsX()) {
+    if (postile.browser_compat.isMacOsX()) {
         instance.viewport.scrollLeft = - instance.canvasCoord[0];
         instance.viewport.scrollTop = - instance.canvasCoord[1];
         instance.viewport_position = new goog.math.Coordinate(instance.viewport.scrollLeft, instance.viewport.scrollTop);
@@ -375,16 +260,14 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
     this.canva_shadow_animation = null; //the animation for the outbound shadow
     this.disableMovingCanvas = false; //when true, moving canvas is disabled temporarily
     this.currentPosts = {}; //an object containing all posts, as key = post_id and value = Post object
-    this.newPostStartCoord = null; //hold the starting point of a new post in an array with the unit of "grid unit"
     this.viewport = goog.dom.createDom('div', 'canvas_viewport'); //disable text selecting
     this.canvas = goog.dom.createDom('div', 'canvas'); //the canvas being dragged
-    this.mask = goog.dom.createDom('div', 'canvas_mask'); //the mask used when creating new post
-    this.mask_notice = goog.dom.createDom('div', 'mask_notice'); //text
     this.viewport_position = null; //viewport's position relative to the window
     this.direction_controllers = {}; //the control arrows
     this.direction_controllers_animation = null;
     this.right = goog.dom.createDom('div', 'right_clicker'); //right click display
     this.currentSubscribeArea = null; //a valid area for which we've got all data we need and keep refreshing from the server
+    this.creator = new postile.view.post_board.PostCreator(this);
 
     this.window_resize_event_handler = new postile.events.EventHandler(window, 
             goog.events.EventType.RESIZE, function() { 
@@ -401,6 +284,7 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
     this.keyboard_event_handler.listen();
     this.maxZIndex = 0; //max zIndex of posts currently
     this.picker = new postile.view.post_board.PostPicker(this);
+    goog.dom.appendChild(this.viewport, this.canvas);
     /* END OF MEMBER DEFINITION */
     goog.events.listen(this.viewport, goog.events.EventType.SELECTSTART, function() {
         return false; 
@@ -484,16 +368,8 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
     /**
      * main viewport and canvas
      */
-    goog.dom.appendChild(this.viewport, this.canvas);
-    goog.dom.appendChild(this.mask, this.mask_notice);
-    this.mask_notice.innerHTML = postile._('mask_for_creating_post');
     this.viewport.rel_data = this;
     this.canvas.rel_data = this;
-    this.mask.rel_data = this;
-    this.mask.preview = goog.dom.createDom('div', 'post_preview');
-    goog.dom.appendChild(this.mask, this.mask.preview);
-    this.mask.post_preview_origin_spot = goog.dom.createDom('div', {'class': 'post_preview_origin_spot'});
-    goog.dom.appendChild(this.mask, this.mask.post_preview_origin_spot);
 
     /* start: controllers for moving the viewport */
     goog.dom.appendChild(this.viewport, this.right);
@@ -528,7 +404,7 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
     });
 
     /* handling mac os x trackpad scrolling */
-    if (!postile.isMacOsX()) {
+    if (!postile.browser_compat.isMacOsX()) {
         this.viewport.style.overflow = 'hidden';
     }
 
@@ -563,19 +439,7 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
             postile.view.post_board.handlers.canvas_mouseup);
 
     goog.events.listen(this.canvas, goog.events.EventType.DBLCLICK, 
-            postile.view.post_board.handlers.canvas_dblclick);
-
-    goog.events.listen(this.mask, goog.events.EventType.MOUSEDOWN, 
-            postile.view.post_board.handlers.mask_mousedown);
-
-    goog.events.listen(this.mask, goog.events.EventType.MOUSEMOVE, 
-            postile.view.post_board.handlers.mask_mousemove);
-
-    goog.events.listen(this.mask, goog.events.EventType.MOUSEUP, 
-            postile.view.post_board.handlers.mask_mouseup);
-
-    goog.events.listen(this.mask, goog.events.EventType.DBLCLICK, 
-            function(e){ instance.viewport.removeChild(instance.mask); });
+            function(){ instance.creator.open(); });
 
     //initialize according to topic_id
     postile.ajax(['topic','enter_topic'], { topic_id: topic_id }, function(data) {
@@ -823,7 +687,6 @@ postile.view.post_board.PostBoard.prototype.createPost = function(info) {
 
     postile.ajax(['post','new'], req, function(data) {
         ret.id = data.message;
-        instance.viewport.removeChild(instance.mask);
         instance.renderArray([{post: ret, username: ''}]);
         instance.currentPosts[ret.id].edit();
     });

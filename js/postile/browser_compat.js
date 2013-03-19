@@ -6,6 +6,10 @@ postile.browser_compat.uas = navigator.userAgent;
 
 postile.browser_compat.css_prefix = '';
 
+postile.browser_compat.isMacOsX = function() {
+    return navigator.appVersion.indexOf('Mac') != -1;
+};
+
 postile.browser_compat.walkarounds = { //determine if we have to use some tricks to simulate the new features in old browsers
     xhr: 2, //level of xmlhttprequest
     xdr: false //require XDomainRequest

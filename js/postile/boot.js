@@ -33,9 +33,6 @@ postile = { //the base of posTile frontend framework
     imageResource: function(input) {
         return "/images/" + input.join("/");
     },
-    isMacOsX: function() {
-        return navigator.appVersion.indexOf('Mac') != -1;
-    },
     getGlobalKeyHandler: function() {
         if(!postile.getGlobalKeyHandler.handler) { postile.getGlobalKeyHandler.handler = new goog.events.KeyHandler(document); }
         return postile.getGlobalKeyHandler.handler;
