@@ -68,6 +68,10 @@ postile.WYSIWYF = {
                 b[a.length] += '[url]' + cont.href + '[/url]';
                 return; //does not allow "A" to have children
             }
+            if (t == 'DIV' && cont.className == 'inline_reference_preview') {
+                b[a.length] += '[link]'+cont.getAttribute('link-to-post-id')+'[/link]';
+                return;
+            }
             if (t == 'P' || t == 'DIV' || t == 'BR') {
                 b[a.length] += "\r\n";
             }
@@ -115,28 +119,12 @@ postile.WYSIWYF = {
         callback: function (editor) {
             var picker = editor.post.board.picker;
             var img_el;
-            /*
-            var sel = window.getSelection();
-            if (sel.rangeCount) {
-                sel = sel.getRangeAt(0);
-                //sel.collapse();
-            } else { sel = null; }
-            picker.open(function(post){ 
-                if (!post) { return; }
-                var elm = document.createElement('span');
-                if (sel) {
-                    sel.insertNode(elm);
-                } else {
-                    editor.editor_el.appendChild(elm);
-                }
-                elm.innerHTML = '[Linked to "'+post.post.text_content+'"]';
-            });
-            */
             document.execCommand('InsertImage', false, postile.imageResource(['link_icon.png']));
             img_el = postile.dom.getDescendantByCondition(editor.editor_el, function(el) { return el.tagName.toUpperCase() == 'IMG' && el.src.indexOf(postile.imageResource(['link_icon.png'])) > -1; });
             picker.open(function(post){ 
                 if (post) { 
-                    var span_el = goog.dom.createDom('span', 'inline_reference_preview');
+                    var span_el = goog.dom.createDom('div', 'inline_reference_preview');
+                    span_el.setAttribute('link-to-post-id', post.post.id);
                     span_el.innerHTML = '[Linked to "'+post.post.text_content+'"]';
                     goog.dom.replaceNode(span_el, img_el);
                 } else { goog.dom.removeNode(img_el); }

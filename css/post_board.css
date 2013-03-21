@@ -633,5 +633,6 @@ html, body {
 
 .inline_reference_preview {
     background: url(/images/link_icon.png) left center no-repeat;
+    display: inline-block;
     padding-left: 13px; 
 }

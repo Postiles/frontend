@@ -156,7 +156,6 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
     }) 
 
     goog.dom.appendChild(goog.dom.getElement("wrapper"), this.header.container);
-    this.header.init();
     goog.dom.appendChild(goog.dom.getElement("wrapper"), this.catchall);
 
     /**
