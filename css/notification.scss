@@ -1,20 +1,21 @@
 /* layout */
 
 $main-color:    #024d61;
-$second-color:  #f2f7f7;
+$background-color:  #f2f7f7;
 $third-color:	#C2D6AD;
 $hover-background-color:  #cedadd; 
 $link-color: 	#5e84c2;
+$time-color:    #777;
 
 #notifications_pop_up {
 	font-family: OxygenLight;
-	width: 360px;
+	width: 280px;
 	line-height: 100%;
 	position: fixed !important;
-	top: 40px !important;
+	top: 43px !important;
 	right: 70px !important;
 	left: auto !important;
-	background: $second-color;
+	background: $background-color;
 	box-shadow: 3px 3px 20px 1px #888888;
 	p {
 		margin: 0px;
@@ -50,14 +51,22 @@ $link-color: 	#5e84c2;
     		border-right: 10px solid transparent;
     		border-bottom: 10px solid $main-color;
     		position: absolute;
-    		top: -10px;
-    		left: 320px;
+    		top: -9px;
+    		left: 240px;
+		}
+		.arrow_up_back {
+			border-left: 12px solid transparent;
+    		border-right: 12px solid transparent;
+    		border-bottom: 12px solid #fff;
+    		position: absolute;
+    		top: -11px;
+    		left: 238px;
 		}
 	}
 
 	#notification_list {
 		.notification {
-			height: 80px;
+			height: 60px;
 			position: relative;
 			img.notification_profile {
 				float: left;
@@ -85,20 +94,13 @@ $link-color: 	#5e84c2;
 					&:hover {
 						text-decoration: underline;
 					}
-
 				}
-			}
 
-			p.notification_content {
-				margin-top: 3px;
-				font-size: 11px;
-				line-height: 120%;
-				cursor: default;
 			}
 
 			.notification_footer {
 				position: absolute;
-				bottom: 4px;
+				bottom: 8px;
 				width: 300px;
 
 				p.message_time {
@@ -112,7 +114,19 @@ $link-color: 	#5e84c2;
 					font-size: 11px;
 					cursor: pointer;
 					color: $link-color;
-					margin-left: 300px;
+					margin-left: 220px;
+					opacity: 0;
+					&:hover {
+						text-decoration: underline;
+					}
+				}
+
+				p.friend_accept {
+					float: left;
+					font-size: 11px;
+					cursor: pointer;
+					color: $link-color;
+					margin-left: 60px;
 					opacity: 0;
 					&:hover {
 						text-decoration: underline;
@@ -124,6 +138,9 @@ $link-color: 	#5e84c2;
 				background: $hover-background-color;
 				.notification_footer {
 					p.ignore {
+						opacity: 1;
+					}
+					p.friend_accept {
 						opacity: 1;
 					}
 				}

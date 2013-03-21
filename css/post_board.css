@@ -395,18 +395,54 @@ html, body {
   margin-left: 10px;
   width: 110px;
   height: 15px;
-  float: left; }
+  float: left;
+  cursor: pointer;
+  background: #c8e5ed; }
+
+  .inl_comment-wrapper .input_low .nav_up .arrow_up {
+    width: 0px;
+    height: 0px;
+    position: relative;
+    top:5px;
+    left:53px;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 5px solid #024d61;
+  }
+
+  .inl_comment-wrapper .input_low .nav_up:hover {
+    background: #c8f5ed;
+  }
   
 .inl_comment-wrapper .input_low .nav_down {
   margin-top: 11px;
   width: 110px;
   height: 15px;
-  float: right; }
-  
+  float: right;
+  cursor: pointer;
+  background: #c8e5ed; }
+
+  .inl_comment-wrapper .input_low .nav_down .arrow_down {
+    width: 0px;
+    height: 0px;
+    position: relative;
+    top:5px;
+    left:53px;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid #024d61;
+  }
+
+  .inl_comment-wrapper .input_low .nav_down:hover {
+    background: #c8f5ed;
+  }
+
 .inl_comment-wrapper .inl_comment {
+  margin-top: -1px;
   margin-left: 10px;
   width: 220px;
   background: #c8e5ed; }
+
 
 .inl_comment-wrapper .inl_comment .past_comment {
   overflow: hidden;
@@ -417,15 +453,18 @@ html, body {
   color: #024d61;
   float: left;
   margin-top: 6px;
+  padding: 0px;
   margin-bottom: 6px; }
 
 .inl_comment-wrapper .inl_comment .past_comment .time {
   float: right;
   color: #000;
-  margin-top: 6px; }
+  margin-top: 6px; 
+  margin-bottom: 0px;}
 
 .inl_comment-wrapper .inl_comment .past_comment .comment {
   clear: both;
+  margin: 0px;
   padding-bottom: 6px; }
 
 .inl_comment-wrapper .inl_comment .past_comment .main-color {
@@ -433,7 +472,14 @@ html, body {
 
 /* end */
 
+.viewport_container {
+  overflow: hidden;
+  position: relative;   
+}
+
 .canvas_viewport {
+  width: 100%;
+  height: 100%;
   overflow: scroll;
   -webkit-user-select: none;
   position: relative; 
@@ -465,16 +511,6 @@ html, body {
   left: 0;
   top: 0;
   background-color: rgba(0, 0, 0, 0.3); } /* the magic number is also referneced in postile.view.post_board.post_picker */
-
-.mask_notice {
-  margin-top: 5%;
-  text-align: center;
-  height: 88px;
-  font-size: 32px;
-  line-height: 44px;
-  color: white;
-  font-weight: bold;
-  z-index: 0; }
 
 .post_preview {
   position: absolute;
@@ -511,11 +547,14 @@ html, body {
 
 .arrow_detect.up, .arrow_detect.down {
   width: 100%;
+  left: 0;
   height: 50px; }
 
 .arrow_detect.left, .arrow_detect.right {
   height: 100%;
+  top: 0;
   width: 50px; }
+  
 
 .arrow_detect.up, .arrow_detect.down .arrow_button {
   top: 0; }
@@ -594,5 +633,6 @@ html, body {
 
 .inline_reference_preview {
     background: url(/images/link_icon.png) left center no-repeat;
+    display: inline-block;
     padding-left: 13px; 
 }

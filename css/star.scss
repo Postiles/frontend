@@ -1,0 +1,167 @@
+$main-color:  #024d61;
+$hover-background-color:  #cedadd; 
+$link-color:  #5e84c2;
+$time-color:     #777;
+$news-color:  #c82031;
+$post-color:  #024d61;
+$topic-color: #03a661;
+
+#star_pup_up {
+	width:210px;
+	position: fixed !important;
+	right: 60px !important;
+	left: auto !important;
+	top: 300px !important;
+	padding: 0px;
+	margin: 0px;
+	box-shadow: 3px 3px 20px 1px #888888;
+
+
+	.star_arror_right {
+		border-bottom: 10px solid transparent;
+		border-top: 10px solid transparent;
+		border-left: 10px solid $post-color;
+		position: absolute;
+		left: 210px;
+		top: 2px;
+	}
+
+	#star_header {
+		background: $main-color;
+		color: #fff;
+		height: 25px;
+
+		p {
+			padding: 0px;
+			margin: 0px;
+			float: left;
+			padding-top: 5px;
+			padding-left: 7px;
+			font-size: 13px;
+		}
+
+		#star_search_module {
+
+			.search_icon {
+				float: left;
+				margin-top: 5px;
+				height: 16px;
+				width: 16px;
+				background: url(../images/search_icon_white.png) no-repeat;
+				margin-left: 40px;
+			}
+
+			input.search_input_field {
+				float:right;
+				margin-right: 5px;
+				width: 100px;
+				background: $main-color;
+				color: #fff;
+				border: 0px none;
+				border-bottom: 1px solid #fff;
+				margin-top: 5px;
+				&:focus {
+					outline: none;
+				}
+			}
+
+		}
+
+	}
+
+	#star_list {
+		.star_item {
+			height: 50px;
+			padding-top:6px;
+			
+			&:hover {
+				background: $hover-background-color;
+			}
+			.main_div {
+				margin-left: 10px;
+				clear: both;
+				span {
+					float:left;
+					padding: 0px;
+					margin: 0px;
+					margin-top:1px;
+					margin-bottom:1px;
+					font-size: 11px;
+				}
+			}	
+
+			.star_upper {
+				span.star_post_name {
+					cursor: pointer;
+					font-size: 13px;
+
+					&:hover {
+						text-decoration: underline;
+					}
+				}
+
+				span.news_in_starred {
+					padding: 2px;
+					padding-left: 3px;
+					padding-right: 3px;
+					background: $news-color;
+					margin-right: 10px;
+					float:right;
+					color: #fff;
+				}
+				span.star_type {
+					font-size:9px;
+					margin-left: 10px;
+					padding: 2px;
+					color: #fff;
+				}
+				.post {
+					background: $post-color;
+				}
+				.topic {
+					background: $topic-color;
+				}
+			}
+
+			.star_middle {
+				margin-top:2px;
+				font-size: 11px;
+			}
+
+			.star_lower {
+				color: $main-color;
+				span.author {
+					color: $link-color;
+					padding-left: 10px;
+					cursor: pointer;
+
+					&:hover {
+						text-decoration: underline;
+					}
+				}
+				span.star_time {
+					color: $time-color;
+					float: right;
+					margin-right: 8px;
+				}
+			}
+
+		}
+	}
+
+	.star_list_see_more {
+		border-top: 1px solid $main-color;
+		height: 30px;
+		cursor: pointer;
+		p {
+			margin: 0px auto;
+			width: 70px;
+			font-size: 13px;
+			padding-top: 7px;
+			color: $main-color;
+		}
+		&:hover {
+			background: $hover-background-color;
+		}
+	}
+}

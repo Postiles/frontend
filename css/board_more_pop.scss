@@ -1,6 +1,8 @@
 /* layout */
 
 $main-color:    #024d61;
+$background-color:  #f2f7f7;
+$hover-background-color:  #cedadd; 
 $second-color:  #B2D08D;
 $third-color:	#C2D6AD;
 $fourth-color:  #A1CB69; 
@@ -14,9 +16,10 @@ body {
 }
 
 #board_more {
-	position: fixed;
-	top: 40px;
-	right: 0px;
+	position: fixed !important;
+	top: 40px !important;
+	right: 0px !important;
+	left: auto !important;
 	width: 40px;
 	height: 100%;
 	background-color: $main-color;
@@ -62,7 +65,7 @@ body {
 	top: 5px !important;
 	right: 75px !important;
 	left: auto !important;
-	background-color: $third-color;
+	background-color: $background-color;
 	box-shadow: 3px 3px 20px 1px #888888;
 	line-height: 100%;
 
@@ -91,9 +94,17 @@ body {
 		#arrow_up {
     		border-left: 10px solid transparent;
     		border-right: 10px solid transparent;
-    		border-bottom: 10px solid $main-color;
+    		border-bottom: 10px solid $background-color;
     		position: absolute;
-    		left: 165px;
+    		left: 164px;
+    		top: -8px;
+		}
+		#arrow_up_back {
+    		border-left: 12px solid transparent;
+    		border-right: 12px solid transparent;
+    		border-bottom: 12px solid #fff;
+    		position: absolute;
+    		left: 162px;
     		top: -10px;
 		}
 	}
@@ -101,11 +112,12 @@ body {
 	#board_list {
 		.up_roll {
 			height: 10px;
-			background-color: $second-color;
+			background-color: $background-color;
 			cursor: pointer;
+			border-bottom: 1px solid $hover-background-color;
 
 			&:hover {
-				background-color: $fourth-color;
+				background-color: $hover-background-color;
 			}
 
 			.list_prev {
@@ -121,11 +133,12 @@ body {
 		}
 		.down_roll {
 			height: 10px;
-			background-color: $second-color;
+			background-color: $background-color;
 			cursor: pointer;
+			border-top: 1px solid $hover-background-color;
 
 			&:hover {
-				background-color: $fourth-color;
+				background-color: $hover-background-color;
 			}
 
 			.list_next {
@@ -145,8 +158,6 @@ body {
 			padding-bottom: 10px;
 			height: 50px;
 			cursor: pointer;
-			border-top: 1px solid $second-color;
-			border-bottom: 1px solid $second-color;
 
 			h3.board_title {
 				font-size: 14px;
@@ -174,15 +185,13 @@ body {
 			}
 
 			&:hover {
-				background: $main-color;
-				color: $third-color;
+				background: $hover-background-color;
 				position: relative;
 
 				h3.board_title {
 					font-size: 14px;
 					margin-bottom: 0px;
 					margin-left: 14px;
-					color: #fff !important;
 				}
 
 				.selected_icon {

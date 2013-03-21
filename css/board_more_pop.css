@@ -5,9 +5,10 @@ body {
   font-family: OxygenLight; }
 
 #board_more {
-  position: fixed;
-  top: 40px;
-  right: 0px;
+  position: fixed !important;
+  top: 40px !important;
+  right: 0px !important;
+  left: auto !important;
   width: 40px;
   height: 100%;
   background-color: #024d61; }
@@ -41,7 +42,7 @@ body {
   top: 5px !important;
   right: 75px !important;
   left: auto !important;
-  background-color: #c2d6ad;
+  background-color: #f2f7f7;
   box-shadow: 3px 3px 20px 1px #888888;
   line-height: 100%; }
   #other_boards .other_header {
@@ -64,16 +65,24 @@ body {
     #other_boards .other_header #arrow_up {
       border-left: 10px solid transparent;
       border-right: 10px solid transparent;
-      border-bottom: 10px solid #024d61;
+      border-bottom: 10px solid #f2f7f7;
       position: absolute;
-      left: 165px;
+      left: 164px;
+      top: -8px; }
+    #other_boards .other_header #arrow_up_back {
+      border-left: 12px solid transparent;
+      border-right: 12px solid transparent;
+      border-bottom: 12px solid #fff;
+      position: absolute;
+      left: 162px;
       top: -10px; }
   #other_boards #board_list .up_roll {
     height: 10px;
-    background-color: #b2d08d;
-    cursor: pointer; }
+    background-color: #f2f7f7;
+    cursor: pointer;
+    border-bottom: 1px solid #cedadd; }
     #other_boards #board_list .up_roll:hover {
-      background-color: #a1cb69; }
+      background-color: #cedadd; }
     #other_boards #board_list .up_roll .list_prev {
       position: absolute;
       left: 115px;
@@ -85,10 +94,11 @@ body {
       border-bottom: 5px solid #024d61; }
   #other_boards #board_list .down_roll {
     height: 10px;
-    background-color: #b2d08d;
-    cursor: pointer; }
+    background-color: #f2f7f7;
+    cursor: pointer;
+    border-top: 1px solid #cedadd; }
     #other_boards #board_list .down_roll:hover {
-      background-color: #a1cb69; }
+      background-color: #cedadd; }
     #other_boards #board_list .down_roll .list_next {
       position: absolute;
       left: 115px;
@@ -102,9 +112,7 @@ body {
     padding-top: 10px;
     padding-bottom: 10px;
     height: 50px;
-    cursor: pointer;
-    border-top: 1px solid #b2d08d;
-    border-bottom: 1px solid #b2d08d; }
+    cursor: pointer; }
     #other_boards #board_list .listed_board h3.board_title {
       font-size: 14px;
       margin-top: 0px;
@@ -125,14 +133,12 @@ body {
       height: 20px;
       background: url(../images/featured_board.png) no-repeat; }
     #other_boards #board_list .listed_board:hover {
-      background: #024d61;
-      color: #c2d6ad;
+      background: #cedadd;
       position: relative; }
       #other_boards #board_list .listed_board:hover h3.board_title {
         font-size: 14px;
         margin-bottom: 0px;
-        margin-left: 14px;
-        color: #fff !important; }
+        margin-left: 14px; }
       #other_boards #board_list .listed_board:hover .selected_icon {
         opacity: 1; }
   #other_boards #board_list .selected_board {
