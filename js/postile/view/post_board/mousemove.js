@@ -42,7 +42,8 @@ postile.view.post_board.MouseMoveScroll.prototype.viewport_mousedown = function(
 };
 
 postile.view.post_board.MouseMoveScroll.prototype.viewport_mouseup = function(e) { 
-    if (!e.isButton(0)) { 
+    
+    if (!e.isButton(0)) {
         return; 
     }
 
@@ -55,9 +56,9 @@ postile.view.post_board.MouseMoveScroll.prototype.viewport_mouseup = function(e)
     
     this.board.disableMovingCanvas = false;
     if (e.clientX == this.mousedownCoord[0] && e.clientY == this.mousedownCoord[1]) { 
-        post_board.mousedownCoord = null; return; 
+        this.mousedownCoord = null; return; 
     }
-
+    
     this.mousedownCoord = null;
     //post_board.canvasCoord = [- post_board.viewport.scrollLeft, - post_board.viewport.scrollTop]; //no longer needed after supporting touchpad
 
