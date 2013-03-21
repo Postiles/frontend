@@ -17,10 +17,12 @@ postile.view.post_board.Header = function(board) {
     
     this.topicTitle_el = postile.dom.getDescendantById(instance.container, 'topic_title');
 
+    /*
     postile.ajax([ 'topic', 'get_topic' ], { topic_id: this.board.topic_id }, function(data) {
         instance.board.topic = data.message;
         instance.topicTitle_el.innerHTML = instance.board.topic.name;
     });
+    */
 
     this.usernameText_el = postile.dom.getDescendantById(instance.container, 'username_text');
 
@@ -28,6 +30,7 @@ postile.view.post_board.Header = function(board) {
     this.profileImageContainerImg_el = goog.dom.getElementByClass('image', this.profileImageContainer_el);
 
     /* get user profile */
+    /*
     postile.ajax([ 'user', 'get_profile' ], { }, function(data) {
         instance.board.selfUser = data.message.user;
         instance.board.selfProfile = data.message.profile;
@@ -37,6 +40,7 @@ postile.view.post_board.Header = function(board) {
         var url = postile.uploadsResource([ instance.board.selfProfile.image_url ]); // to be changed to small image url
         instance.profileImageContainerImg_el.src = url;
     });
+    */
 
     this.function_buttons = goog.dom.getElementsByClass('function_button');
     for (var i = 0; i < this.function_buttons.length; i++) {

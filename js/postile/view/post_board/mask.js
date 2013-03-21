@@ -74,9 +74,9 @@ postile.view.post_board.PostCreator.prototype.mousemove = function(e) {
     for (i in this.board.currentPosts) {
         //from http://stackoverflow.com/questions/2752349/fast-rectangle-to-rectangle-intersection
         if(!(current[0] >= this.board.currentPosts[i].post.coord_x_end 
-                    || end[0] <= this.board.currentPosts[i].post.coord_x 
+                    || end[0] <= this.board.currentPosts[i].post.pos_x 
                     || current[1] >=this.board.currentPosts[i].post.coord_y_end 
-                    || end[1] <= this.board.currentPosts[i].post.coord_y)) { 
+                    || end[1] <= this.board.currentPosts[i].post.pos_y)) { 
             intersect = true;
             break;
         }
@@ -84,14 +84,14 @@ postile.view.post_board.PostCreator.prototype.mousemove = function(e) {
 
     //draw on the canvas
     this.position = { 
-        coord_x: current[0], 
-        coord_y: current[1], 
+        pos_x: current[0], 
+        pos_y: current[1], 
         span_x: Math.abs(delta[0]), 
         span_y: Math.abs(delta[1]) 
     };
 
-    this.preview.style.left = this.board.xPosTo(this.position.coord_x) + 'px';
-    this.preview.style.top = this.board.yPosTo(this.position.coord_y) + 'px';
+    this.preview.style.left = this.board.xPosTo(this.position.pos_x) + 'px';
+    this.preview.style.top = this.board.yPosTo(this.position.pos_y) + 'px';
 
     this.preview.style.width = this.board.widthTo(this.position.span_x) + 'px';
     this.preview.style.height = this.board.heightTo(this.position.span_y) + 'px';

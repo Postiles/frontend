@@ -106,14 +106,14 @@ postile.view.post_board.handlers.keypress = function(instance, e){
     }    
 }
 
-postile.view.post_board.PostBoard = function(topic_id) { //constructor
+postile.view.post_board.PostBoard = function(board_id) { //constructor
     var i;
     var keyHandler;
     var instance = this;
     postile.view.FullScreenView.call(this);
 
     /* BEGINNING OF MEMBER DEFINITION */
-    this.topic_id = topic_id;
+    this.board_id = board_id;
     this.channel_str = null;
     this.canvasCoord = null; //current canvas position relative to the canvas viewport
     this.canvasSize = [3872, 2592]; //the size of the canvas currently
@@ -225,10 +225,12 @@ postile.view.post_board.PostBoard = function(topic_id) { //constructor
     goog.events.listen(this.canvas, goog.events.EventType.DBLCLICK, 
             function(){ instance.creator.open(); });
 
-    //initialize according to topic_id
-    postile.ajax(['topic','enter_topic'], { topic_id: topic_id }, function(data) {
-        instance.channel_str = data.message.channel_str;
-        postile.faye.subscribe(data.message.channel_str, function(status, data) {
+    //initialize according to board_id
+    postile.ajax(['board','enter_board'], { board_id: board_id }, function(data) {
+        instance.boardData = data.message.board;
+        instance.channel_str = instance.boardData.id;
+
+        postile.faye.subscribe(instance.channel_str, function(status, data) {
             instance.fayeHandler(status, data);
         });
 
@@ -250,11 +252,13 @@ postile.view.post_board.PostBoard.prototype.close = function() {
     this.keyboard_event_handler.unlisten();
     //informing the server that I'm fucking leaving
     var instance = this;
+    /*
     postile.ajax(['topic','leave_topic'], { channel_str: this.channel_str }, function(data){
-        if (data.message != instance.topic_id) {
+        if (data.message != instance.board_id) {
             alert("Some error occured when leaving the topic.");
         }
     });
+    */
 }
 
 postile.view.post_board.PostBoard.prototype.preMoveCanvas = function(direction) { //return true only when it's movable
@@ -396,9 +400,9 @@ postile.view.post_board.PostBoard.prototype.updateSubsribeArea = function() { //
         //TODO: display loading
     }
     */
-    to_subscribe.channel_str = this.channel_str;
-    postile.ajax(['topic', 'move_to'], to_subscribe, function(data) {
-        instance.renderArray(data.message);
+    to_subscribe.board_id = instance.board_id;
+    postile.ajax(['board', 'move_to'], to_subscribe, function(data) {
+        instance.renderArray(data.message.posts);
     }, 'Loading posts...', true);
 }
 
@@ -459,13 +463,12 @@ postile.view.post_board.PostBoard.prototype.createPost = function(info) {
     var req = goog.object.clone(info);
     var ret = goog.object.clone(info);
     var instance = this;
-    req.topic_id = this.topic_id;
+    req.board_id = this.board_id;
     ret.text_content = '';
 
     postile.ajax(['post','new'], req, function(data) {
-        ret.id = data.message;
-        instance.renderArray([{post: ret, username: ''}]);
-        instance.currentPosts[ret.id].edit();
+        instance.renderArray([ { post: data.message.post, creator: data.message.creator } ]);
+        instance.currentPosts[data.message.post.id].edit();
     });
 }
 
