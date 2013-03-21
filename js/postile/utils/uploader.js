@@ -4,6 +4,8 @@ goog.require('goog.dom');
 goog.provide('postile.uploader');
 
 
+/* How to handle these global variables ? */
+
 var formData;
 
 var tests = {
@@ -30,14 +32,9 @@ postile.uploader.dragUpload = function(evt){
         
         // handling the upload event
   	    var file = files[0]; // get the photo
-  	    console.log(formData);
         formData = tests.formdata ? new FormData() : null;
-        console.log(formData);
-        console.log(file);
         formData.append('image', file); // NOTICE: always use "image" as the name, need to change
-        console.log(formData);
         // TODO: Give Feedback to the user 
-        //document.getElementById("droplabel").innerHTML = "Processing " + file.name;
 
         var reader = new FileReader();
 
@@ -45,11 +42,7 @@ postile.uploader.dragUpload = function(evt){
         reader.onload = handleReaderLoad;
         // begin the read operation
         reader.readAsDataURL(file);
-        
-  	    console.log('uploading file');
-  	    console.log(formData);
-  	    
-	    }
+    }
 };
 
 postile.uploader.iframeInit = function(){
@@ -117,8 +110,11 @@ var dragBoxRenderer = {
     }
 };
 
-function handleReaderLoad(evt){
-    
+var handleReaderLoad = function(){ 
+    var upload_preview_wrapper = goog.dom.getElementByClassName('upload_preview_wrapper');
+    var img_preview = goog.dom.createDom('img','img_preview');
+    img_preview.src = this.result;
+    goog.dom.appendChild(upload_preview_wrapper, img_preview);
 }
 
 
