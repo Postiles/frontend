@@ -128,32 +128,42 @@ postile.view.post_board.PostBoard = function(board_id) { //constructor
     this.direction_controllers_animation = null;
     this.right = goog.dom.createDom('div', 'right_clicker'); //right click display
     this.currentSubscribeArea = null; //a valid area for which we've got all data we need and keep refreshing from the server
-    this.creator = new postile.view.post_board.PostCreator(this);
-
-    this.window_resize_event_handler = new postile.events.EventHandler(window, 
-            goog.events.EventType.RESIZE, function() { 
-                postile.view.post_board.handlers.resize(instance); 
-            });
-    this.window_resize_event_handler.listen();
-
-    this.keyboard_event_handler = new postile.events.EventHandler(postile.getGlobalKeyHandler(), 
-            goog.events.KeyHandler.EventType.KEY, function(e) { 
-                postile.view.post_board.handlers.keypress(instance, e); 
-            });
-    this.keyboard_event_handler.listen();
     this.maxZIndex = 0; //max zIndex of posts currently
+
+    //initialize according to board_id
+    postile.ajax(['board','enter_board'], { board_id: board_id }, function(data) {
+        instance.boardData = data.message.board;
+        instance.channel_str = instance.boardData.id;
+
+        postile.faye.subscribe(instance.channel_str, function(status, data) {
+            instance.fayeHandler(status, data);
+        });
+
+        instance.initView();
+        instance.initEvents();
+
+        //initialize viewport size
+        postile.view.post_board.handlers.resize(instance);
+    });
+
+}
+
+goog.inherits(postile.view.post_board.PostBoard, postile.view.FullScreenView);
+
+//postile.view.View required component
+postile.view.post_board.PostBoard.prototype.unloaded_stylesheets = ['fonts.css', 'post_board.css'];
+
+postile.view.post_board.PostBoard.prototype.html_segment = postile.staticResource(['post_board.html']);
+
+postile.view.post_board.PostBoard.prototype.initView = function() {
+    var instance = this;
+
     this.picker = new postile.view.post_board.PostPicker(this);
     this.header = new postile.view.post_board.Header(this);
+    this.postCreator = new postile.view.post_board.PostCreator(this);
+
     goog.dom.appendChild(this.catchall, this.viewport);
     goog.dom.appendChild(this.viewport, this.canvas);
-    /* END OF MEMBER DEFINITION */
-    goog.events.listen(this.viewport, goog.events.EventType.SELECTSTART, function() {
-        return false; 
-    }); //disable text selecting, for ie
-    goog.events.listen(this.viewport, goog.events.EventType.SCROLL, function() {
-        instance.canvasCoord[0] = - instance.viewport.scrollLeft;
-        instance.canvasCoord[1] = - instance.viewport.scrollTop;
-    }) 
 
     goog.dom.appendChild(goog.dom.getElement("wrapper"), this.header.container);
     goog.dom.appendChild(goog.dom.getElement("wrapper"), this.catchall);
@@ -164,6 +174,51 @@ postile.view.post_board.PostBoard = function(board_id) { //constructor
     this.catchall.rel_data = this;
     this.viewport.rel_data = this;
     this.canvas.rel_data = this;
+
+    if (!postile.browser_compat.isMacOsX()) { // is not mac os
+        new postile.view.post_board.MouseMoveScroll(this);
+    }
+}
+
+postile.view.post_board.PostBoard.prototype.initEvents = function() {
+    var instance = this;
+
+    this.bindWindowEvents();
+    this.bindMouseEvents();
+    this.bindKeyEvents();
+
+    for (i in postile.view.post_board.direction_norm_to_css) {
+        this.direction_controllers[i] = goog.dom.createDom('div', ['arrow_detect', i]);
+        this.direction_controllers[i].direction = i;
+        this.direction_controllers[i].button = goog.dom.createDom('div', 'arrow_button'); //each one has a .button property pointing to the child
+
+        goog.dom.appendChild(this.direction_controllers[i], this.direction_controllers[i].button);
+        goog.dom.appendChild(this.direction_controllers[i].button, goog.dom.createDom('div'));
+        goog.dom.appendChild(this.direction_controllers[i], goog.dom.createDom('div', 'arrow_covering'));
+        goog.dom.appendChild(this.catchall, this.direction_controllers[i]);
+
+        goog.events.listen(this.direction_controllers[i], goog.events.EventType.CLICK, 
+                postile.view.post_board.handlers.arrow_control_click);
+        goog.events.listen(this.direction_controllers[i], goog.events.EventType.MOUSEMOVE, 
+                postile.view.post_board.handlers.arrow_control_mousemove);
+        goog.events.listen(this.direction_controllers[i], goog.events.EventType.MOUSEOVER, 
+                postile.view.post_board.handlers.arrow_control_mouseover);
+        goog.events.listen(this.direction_controllers[i], goog.events.EventType.MOUSEOUT, 
+                postile.view.post_board.handlers.arrow_control_mouseout);
+    }
+}
+
+postile.view.post_board.PostBoard.prototype.bindMouseEvents = function() {
+    var instance = this;
+
+    goog.events.listen(this.viewport, goog.events.EventType.SELECTSTART, function() {
+        return false; 
+    }); //disable text selecting, for ie
+
+    goog.events.listen(this.viewport, goog.events.EventType.SCROLL, function() {
+        instance.canvasCoord[0] = - instance.viewport.scrollLeft;
+        instance.canvasCoord[1] = - instance.viewport.scrollTop;
+    }) 
 
     /* start: controllers for moving the viewport */
     goog.dom.appendChild(this.catchall, this.right);
@@ -197,54 +252,27 @@ postile.view.post_board.PostBoard = function(board_id) { //constructor
                 dy / 2 / length * this.offsetHeight);
     });
 
-    for (i in postile.view.post_board.direction_norm_to_css) {
-        this.direction_controllers[i] = goog.dom.createDom('div', ['arrow_detect', i]);
-        this.direction_controllers[i].direction = i;
-        this.direction_controllers[i].button = goog.dom.createDom('div', 'arrow_button'); //each one has a .button property pointing to the child
-
-        goog.dom.appendChild(this.direction_controllers[i], this.direction_controllers[i].button);
-        goog.dom.appendChild(this.direction_controllers[i].button, goog.dom.createDom('div'));
-        goog.dom.appendChild(this.direction_controllers[i], goog.dom.createDom('div', 'arrow_covering'));
-        goog.dom.appendChild(this.catchall, this.direction_controllers[i]);
-
-        goog.events.listen(this.direction_controllers[i], goog.events.EventType.CLICK, 
-                postile.view.post_board.handlers.arrow_control_click);
-        goog.events.listen(this.direction_controllers[i], goog.events.EventType.MOUSEMOVE, 
-                postile.view.post_board.handlers.arrow_control_mousemove);
-        goog.events.listen(this.direction_controllers[i], goog.events.EventType.MOUSEOVER, 
-                postile.view.post_board.handlers.arrow_control_mouseover);
-        goog.events.listen(this.direction_controllers[i], goog.events.EventType.MOUSEOUT, 
-                postile.view.post_board.handlers.arrow_control_mouseout);
-    }
-    /*end*/
-
-    if(!postile.browser_compat.isMacOsX()) {
-        new postile.view.post_board.MouseMoveScroll(this);
-    }
-
     goog.events.listen(this.canvas, goog.events.EventType.DBLCLICK, 
-            function(){ instance.creator.open(); });
-
-    //initialize according to board_id
-    postile.ajax(['board','enter_board'], { board_id: board_id }, function(data) {
-        instance.boardData = data.message.board;
-        instance.channel_str = instance.boardData.id;
-
-        postile.faye.subscribe(instance.channel_str, function(status, data) {
-            instance.fayeHandler(status, data);
-        });
-
-        //initialize viewport size
-        postile.view.post_board.handlers.resize(instance);
-    });
+            function(){ instance.postCreator.open(); });
 }
 
-goog.inherits(postile.view.post_board.PostBoard, postile.view.FullScreenView);
+postile.view.post_board.PostBoard.prototype.bindKeyEvents = function() {
+    var instance = this;
 
-//postile.view.View required component
-postile.view.post_board.PostBoard.prototype.unloaded_stylesheets = ['fonts.css', 'post_board.css'];
+    this.keyboard_event_handler = new postile.events.EventHandler(postile.getGlobalKeyHandler(), 
+            goog.events.KeyHandler.EventType.KEY, function(e) { 
+                postile.view.post_board.handlers.keypress(instance, e); 
+            });
+    this.keyboard_event_handler.listen();
+}
 
-postile.view.post_board.PostBoard.prototype.html_segment = postile.staticResource(['post_board.html']);
+postile.view.post_board.PostBoard.prototype.bindWindowEvents = function() {
+    this.window_resize_event_handler = new postile.events.EventHandler(window, 
+            goog.events.EventType.RESIZE, function() { 
+                postile.view.post_board.handlers.resize(instance);
+            });
+    this.window_resize_event_handler.listen();
+}
 
 //postile.view.View required component
 postile.view.post_board.PostBoard.prototype.close = function() {

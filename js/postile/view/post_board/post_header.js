@@ -4,7 +4,6 @@ goog.require('goog.events');
 goog.require('postile.dom');
 
 postile.view.post_board.Header = function(board) {
-
     postile.view.NormalView.call(this);
     
     var instance = this;
@@ -17,12 +16,7 @@ postile.view.post_board.Header = function(board) {
     
     this.topicTitle_el = postile.dom.getDescendantById(instance.container, 'topic_title');
 
-    /*
-    postile.ajax([ 'topic', 'get_topic' ], { topic_id: this.board.topic_id }, function(data) {
-        instance.board.topic = data.message;
-        instance.topicTitle_el.innerHTML = instance.board.topic.name;
-    });
-    */
+    instance.topicTitle_el.innerHTML = board.name;
 
     this.usernameText_el = postile.dom.getDescendantById(instance.container, 'username_text');
 
