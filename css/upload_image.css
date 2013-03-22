@@ -1,6 +1,7 @@
 /* tis file is for css of upload_image page */
 #upload_image_pop {
   background: #aaaaaa;
+  height: 240px;
   width: 280px;
   border: 4px solid #aaaaaa;
   -moz-border-radius: 4px;
@@ -38,6 +39,16 @@
         width: 80px;
         padding: 3px 8px;
         background: #024d61; }
+    #upload_image_pop .upload_drag_board .upload_preview_wrapper {
+      position: relative;
+      /*
+      width: 280px;
+      height: 240px;
+      background: url(../images/hot.png);
+      */
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center center; }
   #upload_image_pop .upload_confirm_pop {
     display: none;
     height: 0px;

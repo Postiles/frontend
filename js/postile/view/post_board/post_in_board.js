@@ -59,11 +59,9 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
     goog.dom.appendChild(this.post_top_el, this.post_author_el);
 
     // username clicked, should display user profile
-    /*
     goog.events.listen(this.post_author_el, goog.events.EventType.CLICK, function(e) {
-        var profileView = new postile.view.profile.ProfileView(this.post.user_id);
+        var profileView = new postile.view.profile.ProfileView(this.creator.id);
     }.bind(this));    
-    */
 
     this.post_content_el = goog.dom.createDom("div", "post_content");
     goog.dom.appendChild(this.container_el, this.post_content_el);
@@ -97,12 +95,15 @@ postile.view.post_in_board.Post.prototype.post_icon_container_init = function() 
         var like_icon = this;
         var new_like_icon = goog.dom.createDom('div', 'post_liked_icon');
         var new_counts = goog.dom.createDom('div', 'post_like_new_count');
+
         new_like_icon.style.width = '13px';
         new_like_icon.style.height = '13px';
         new_like_icon.style.position = 'absolute'; //so taht "clip" can make effect
-        new_counts.innerHTML = ++instance.post.likes_count;
+        new_counts.innerHTML = ++instance.likes.length;
+
         goog.dom.appendChild(like_icon, new_like_icon);
         goog.dom.appendChild(instance.likes_count_el, new_counts);
+
         new postile.fx.Animate(function(i){ 
             new_like_icon.style.clip = 'rect('+Math.round(13*(1-i))+'px 13px 13px 0px)';
             new_counts.style.top = - Math.round(13 * i) + 'px';
@@ -111,14 +112,18 @@ postile.view.post_in_board.Post.prototype.post_icon_container_init = function() 
             goog.dom.classes.add(like_icon, 'post_liked_icon');
             goog.dom.removeNode(new_like_icon);
             goog.dom.removeNode(new_counts);
-            instance.likes_count_el.innerHTML = instance.post.likes_count;
+            instance.likes_count_el.innerHTML = instance.likes.length;
+        });
+
+        postile.ajax([ 'post', 'like' ], { post_id: instance.post.id }, function(data) {
+            // seems nothing to do
         });
     });
     
     this.likes_count_el = goog.dom.createDom("div", "post_like_count");
     goog.dom.appendChild(instance.post_icon_container_el, this.likes_count_el);
-    this.likes_count_el.innerHTML = this.post.likes_count;
-    
+    this.likes_count_el.innerHTML = this.likes.length;
+
     addIcon("share");
     
     goog.events.listen(addIcon("comment"), goog.events.EventType.CLICK, function() { instance.inline_comments_block = new postile.view.post_in_board.InlineCommentsBlock(instance); });
@@ -233,13 +238,15 @@ postile.view.post_in_board.InlineCommentsBlock = function(postObj) {
     goog.dom.appendChild(this.container, goog.dom.createDom("div", "input_up"));
     this.text_input = goog.dom.createDom("div", "input_main selectable");
     goog.dom.appendChild(this.container, this.text_input);
-    postile.ui.makeLabeledInput(this.text_input, postile._('inline_comment_prompt'), 'inactive', function(){
-        postile.ajax(['post','inline_comment'], { post_id: postObj.post.id, content: instance.text_input.innerHTML }, function(data) {
-            if (data.status == postile.ajax.status.OK) {
-                postile.fx.effects.verticalExpand((new postile.view.post_in_board.InlineComment(instance, data.message)).comment_container);
-                postile.ui.stopLoading(instance.text_input);
-                instance.text_input.blur();
-            }
+
+    postile.ui.makeLabeledInput(this.text_input, postile._('inline_comment_prompt'), 'inactive', function() {
+        postile.ajax(['inline_comment','new'], { post_id: postObj.post.id, 
+                content: instance.text_input.innerHTML }, function(data) {
+                    if (data.status == postile.ajax.status.OK) {
+                        postile.fx.effects.verticalExpand((new postile.view.post_in_board.InlineComment(instance, data.message)).comment_container);
+                        postile.ui.stopLoading(instance.text_input);
+                        instance.text_input.blur();
+                    }
         });
         postile.ui.startLoading(instance.text_input);
     });
@@ -262,13 +269,13 @@ postile.view.post_in_board.InlineCommentsBlock = function(postObj) {
 
     goog.dom.appendChild(this.container, this.comments_container);
 
-    postile.ajax(['post','get_inline_comments'], { post_id: postObj.post.id }, function(data) {
-        for (var i in data.message) { 
-            new postile.view.post_in_board.InlineComment(instance, data.message[i]); 
+    postile.ajax(['inline_comment','get_inline_comments'], { post_id: postObj.post.id }, function(data) {
+        for (var i in data.message.inline_comments) { 
+            new postile.view.post_in_board.InlineComment(instance, data.message.inline_comments[i]); 
         }
         instance.open(postile.dom.getDescendantByClass(postObj.container_el, 'post_comment_icon'), postObj.wrap_el);
         instance.container.style.left = '18px';
-        instance.container.style.top = '-12px'; //magic number based on 目测       
+        instance.container.style.top = '-12px'; //magic number based on 目测
         postObj.wrap_el.style.zIndex = (++postObj.board.maxZIndex);
     });
 }
@@ -280,14 +287,14 @@ postile.view.post_in_board.InlineComment = function(icb, single_comment_data) {
     this.comment_container = goog.dom.createDom("div", "past_comment");
     var tmp_el;
     tmp_el = goog.dom.createDom("p", "name");
-    tmp_el.innerHTML = single_comment_data.username + ' says: ';
+    tmp_el.innerHTML = single_comment_data.creator.username + ' says: ';
 
     goog.dom.appendChild(this.comment_container, tmp_el);
     tmp_el = goog.dom.createDom("p", "time");
     tmp_el.innerHTML = postile.date(single_comment_data.inline_comment.created_at, 'inline');
     goog.dom.appendChild(this.comment_container, tmp_el);
     tmp_el = goog.dom.createDom("p", "comment");
-    tmp_el.innerHTML = (single_comment_data.reply_to ? '<span class="main-color">' + single_comment_data.reply_to + '</span>' : '') + single_comment_data.inline_comment.content;
+    tmp_el.innerHTML = single_comment_data.inline_comment.content;
     goog.dom.appendChild(this.comment_container, tmp_el);
     goog.dom.appendChild(icb.comments_container, this.comment_container);
 }

@@ -4,7 +4,7 @@
   width: 280px;
   line-height: 100%;
   position: fixed !important;
-  top: 43px !important;
+  top: 45px !important;
   right: 70px !important;
   left: auto !important;
   background: #f2f7f7;
@@ -43,7 +43,7 @@
       border-right: 12px solid transparent;
       border-bottom: 12px solid #fff;
       position: absolute;
-      top: -11px;
+      top: -13px;
       left: 238px; }
   #notifications_pop_up #notification_list .notification {
     height: 60px;
