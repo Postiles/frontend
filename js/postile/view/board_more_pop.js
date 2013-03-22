@@ -1,6 +1,7 @@
 goog.provide('postile.view.board_more_pop');
 
 goog.require('postile.view');
+goog.require('postile.view.star');
 goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('postile.fx.effects');
@@ -12,16 +13,14 @@ postile.view.board_more_pop.BoardMorePop = function(input_instance) {
     this.container.id = 'board_more';
     this.container.style.top = '0px';
     this.container.style.left = '0px';
-}
-postile.view.board_more_pop.BoardMorePop.prototype.addListeners = function() {
-    var star_button = goog.dom.getElement('star');
-    console.log(star_button);
-//    var star_button = input_instance;
-    goog.events.listen(star_button, goog.events.EventType.CLICK, function(e) {
-        (new postile.view.star.Star(star_button)).open(star_button);
-    });
-}
 
+    this.star_bt = postile.dom.getDescendantByClass(this.container, 'star');
+
+    goog.events.listen(this.star_bt, goog.events.EventType.CLICK, function(e) {
+        new postile.view.star.Star(this);
+    }.bind(this));  
+
+}
 
 goog.inherits(postile.view.board_more_pop.BoardMorePop, postile.view.TipView);
 postile.view.board_more_pop.BoardMorePop.prototype.unloaded_stylesheets = ['board_more_pop.css'];
