@@ -231,8 +231,10 @@ postile.view.post_in_board.InlineCommentsBlock = function(postObj) {
     goog.dom.appendChild(this.container, goog.dom.createDom("div", "input_up"));
     this.text_input = goog.dom.createDom("div", "input_main selectable");
     goog.dom.appendChild(this.container, this.text_input);
-    postile.ui.makeLabeledInput(this.text_input, postile._('inline_comment_prompt'), 'inactive', function(){
-        postile.ajax(['post','inline_comment'], { post_id: postObj.post.id, content: instance.text_input.innerHTML }, function(data) {
+
+    postile.ui.makeLabeledInput(this.text_input, postile._('inline_comment_prompt'), 'inactive', function() {
+        postile.ajax(['inline_comment','new'], { post_id: postObj.post.id, 
+                content: instance.text_input.innerHTML }, function(data) {
             if (data.status == postile.ajax.status.OK) {
                 postile.fx.effects.verticalExpand((new postile.view.post_in_board.InlineComment(instance, data.message)).comment_container);
                 postile.ui.stopLoading(instance.text_input);
@@ -260,7 +262,7 @@ postile.view.post_in_board.InlineCommentsBlock = function(postObj) {
 
     goog.dom.appendChild(this.container, this.comments_container);
 
-    postile.ajax(['post','get_inline_comments'], { post_id: postObj.post.id }, function(data) {
+    postile.ajax(['inline_comment','get_inline_comments'], { post_id: postObj.post.id }, function(data) {
         for (var i in data.message) { 
             new postile.view.post_in_board.InlineComment(instance, data.message[i]); 
         }
@@ -278,14 +280,14 @@ postile.view.post_in_board.InlineComment = function(icb, single_comment_data) {
     this.comment_container = goog.dom.createDom("div", "past_comment");
     var tmp_el;
     tmp_el = goog.dom.createDom("p", "name");
-    tmp_el.innerHTML = single_comment_data.username + ' says: ';
+    tmp_el.innerHTML = single_comment_data.creator.username + ' says: ';
 
     goog.dom.appendChild(this.comment_container, tmp_el);
     tmp_el = goog.dom.createDom("p", "time");
     tmp_el.innerHTML = postile.date(single_comment_data.inline_comment.created_at, 'inline');
     goog.dom.appendChild(this.comment_container, tmp_el);
     tmp_el = goog.dom.createDom("p", "comment");
-    tmp_el.innerHTML = (single_comment_data.reply_to ? '<span class="main-color">' + single_comment_data.reply_to + '</span>' : '') + single_comment_data.inline_comment.content;
+    tmp_el.innerHTML = single_comment_data.inline_comment.content;
     goog.dom.appendChild(this.comment_container, tmp_el);
     goog.dom.appendChild(icb.comments_container, this.comment_container);
 }

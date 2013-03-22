@@ -133,6 +133,9 @@ postile.view.post_board.PostBoard = function(board_id) { //constructor
     //initialize according to board_id
     postile.ajax(['board','enter_board'], { board_id: board_id }, function(data) {
         instance.boardData = data.message.board;
+        instance.creatorData = data.message.creator;
+        instance.creatorProfileData = data.message.profile;
+
         instance.channel_str = instance.boardData.id;
 
         postile.faye.subscribe(instance.channel_str, function(status, data) {
@@ -145,7 +148,6 @@ postile.view.post_board.PostBoard = function(board_id) { //constructor
         //initialize viewport size
         postile.view.post_board.handlers.resize(instance);
     });
-
 }
 
 goog.inherits(postile.view.post_board.PostBoard, postile.view.FullScreenView);
@@ -181,31 +183,9 @@ postile.view.post_board.PostBoard.prototype.initView = function() {
 }
 
 postile.view.post_board.PostBoard.prototype.initEvents = function() {
-    var instance = this;
-
     this.bindWindowEvents();
     this.bindMouseEvents();
     this.bindKeyEvents();
-
-    for (i in postile.view.post_board.direction_norm_to_css) {
-        this.direction_controllers[i] = goog.dom.createDom('div', ['arrow_detect', i]);
-        this.direction_controllers[i].direction = i;
-        this.direction_controllers[i].button = goog.dom.createDom('div', 'arrow_button'); //each one has a .button property pointing to the child
-
-        goog.dom.appendChild(this.direction_controllers[i], this.direction_controllers[i].button);
-        goog.dom.appendChild(this.direction_controllers[i].button, goog.dom.createDom('div'));
-        goog.dom.appendChild(this.direction_controllers[i], goog.dom.createDom('div', 'arrow_covering'));
-        goog.dom.appendChild(this.catchall, this.direction_controllers[i]);
-
-        goog.events.listen(this.direction_controllers[i], goog.events.EventType.CLICK, 
-                postile.view.post_board.handlers.arrow_control_click);
-        goog.events.listen(this.direction_controllers[i], goog.events.EventType.MOUSEMOVE, 
-                postile.view.post_board.handlers.arrow_control_mousemove);
-        goog.events.listen(this.direction_controllers[i], goog.events.EventType.MOUSEOVER, 
-                postile.view.post_board.handlers.arrow_control_mouseover);
-        goog.events.listen(this.direction_controllers[i], goog.events.EventType.MOUSEOUT, 
-                postile.view.post_board.handlers.arrow_control_mouseout);
-    }
 }
 
 postile.view.post_board.PostBoard.prototype.bindMouseEvents = function() {
@@ -264,6 +244,27 @@ postile.view.post_board.PostBoard.prototype.bindKeyEvents = function() {
                 postile.view.post_board.handlers.keypress(instance, e); 
             });
     this.keyboard_event_handler.listen();
+
+    for (i in postile.view.post_board.direction_norm_to_css) {
+        this.direction_controllers[i] = goog.dom.createDom('div', ['arrow_detect', i]);
+        this.direction_controllers[i].direction = i;
+        this.direction_controllers[i].button = goog.dom.createDom('div', 'arrow_button'); //each one has a .button property pointing to the child
+
+        goog.dom.appendChild(this.direction_controllers[i], this.direction_controllers[i].button);
+        goog.dom.appendChild(this.direction_controllers[i].button, goog.dom.createDom('div'));
+        goog.dom.appendChild(this.direction_controllers[i], goog.dom.createDom('div', 'arrow_covering'));
+        goog.dom.appendChild(this.catchall, this.direction_controllers[i]);
+
+        goog.events.listen(this.direction_controllers[i], goog.events.EventType.CLICK, 
+                postile.view.post_board.handlers.arrow_control_click);
+        goog.events.listen(this.direction_controllers[i], goog.events.EventType.MOUSEMOVE, 
+                postile.view.post_board.handlers.arrow_control_mousemove);
+        goog.events.listen(this.direction_controllers[i], goog.events.EventType.MOUSEOVER, 
+                postile.view.post_board.handlers.arrow_control_mouseover);
+        goog.events.listen(this.direction_controllers[i], goog.events.EventType.MOUSEOUT, 
+                postile.view.post_board.handlers.arrow_control_mouseout);
+    }
+
 }
 
 postile.view.post_board.PostBoard.prototype.bindWindowEvents = function() {
