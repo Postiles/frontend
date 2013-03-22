@@ -59,11 +59,9 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
     goog.dom.appendChild(this.post_top_el, this.post_author_el);
 
     // username clicked, should display user profile
-    /*
     goog.events.listen(this.post_author_el, goog.events.EventType.CLICK, function(e) {
-        var profileView = new postile.view.profile.ProfileView(this.post.user_id);
+        var profileView = new postile.view.profile.ProfileView(this.creator.id);
     }.bind(this));    
-    */
 
     this.post_content_el = goog.dom.createDom("div", "post_content");
     goog.dom.appendChild(this.container_el, this.post_content_el);

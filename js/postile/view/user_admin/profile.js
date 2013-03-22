@@ -12,7 +12,8 @@ postile.view.profile.ProfileView = function(id) { // constructor
 
     this.user_id = id;
 
-    postile.ajax([ 'user', 'get_profile' ], { target_user_id: this.user_id }, function(data) {
+    postile.ajax([ 'profile', 'get_profile' ], { target_user_id: this.user_id }, function(data) {
+        console.log(data);
         this.profile = data.message.profile;
 
         this.initItems();
@@ -30,6 +31,7 @@ postile.view.profile.ProfileView.prototype.displayableItems = [
     [ 'location', 'Lives in ', 'profile-preview/work-icon.png' ], 
     [ 'work', 'Works at ', 'profile-preview/work-icon.png' ],
     [ 'education', 'Attends ', 'profile-preview/work-icon.png' ],
+    [ 'hometown', 'Comes from ', 'profile-preview/work-icon.png' ],
 ];
 
 postile.view.profile.ProfileView.prototype.initExitButton = function() {
@@ -57,7 +59,7 @@ postile.view.profile.ProfileView.prototype.initItems = function() {
 
     this.selfIntro_el = goog.dom.getElementByClass('self-intro', this.container);
     this.selfIntroData_el = goog.dom.getElementByClass('data', this.selfIntro_el);
-    this.selfIntroData_el.innerHTML = this.profile.self_intro;
+    this.selfIntroData_el.innerHTML = this.profile.personal_description;
     this.profileItems.push(this.selfIntro_el); // editable
 
     /* display the valid data items available in the profile */
