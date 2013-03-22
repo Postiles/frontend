@@ -1,0 +1,49 @@
+/* I am writing this again */
+#upload_video_pop {
+  width: 400px;
+  font-family: OxygenLight; }
+  #upload_video_pop .video_button {
+    font-size: 14px;
+    background: #024d61;
+    width: 68px;
+    height: 17px;
+    color: #fff;
+    display: inline-block;
+    text-align: center; }
+  #upload_video_pop .upload_video_upper {
+    background: #e5e5e5;
+    width: 400px;
+    height: 130px; }
+    #upload_video_pop .upload_video_upper .info_part {
+      margin-top: 15px;
+      font-size: 13px;
+      color: #024d61;
+      margin-left: 30px; }
+      #upload_video_pop .upload_video_upper .info_part .link_part {
+        margin-left: 15px;
+        margin-top: 10px;
+        margin-bottom: 10px; }
+        #upload_video_pop .upload_video_upper .info_part .link_part input.text {
+          width: 270px; }
+    #upload_video_pop .upload_video_upper .button_part {
+      margin-top: 10px; }
+      #upload_video_pop .upload_video_upper .button_part .preview_button {
+        float: right;
+        margin-right: 15px; }
+  #upload_video_pop .upload_video_lower {
+    background: #b5b5b5;
+    width: 400px;
+    height: 290px; }
+    #upload_video_pop .upload_video_lower .video_preview {
+      width: 300px;
+      margin: 15px auto; }
+    #upload_video_pop .upload_video_lower .button_part .reset_button {
+      margin-left: 110px; }
+    #upload_video_pop .upload_video_lower .button_part .cancel_button {
+      float: right;
+      margin-right: 15px;
+      margin-left: 10px; }
+    #upload_video_pop .upload_video_lower .button_part .ok_button {
+      float: right; }
+  #upload_video_pop .du {
+    height: 1px; }

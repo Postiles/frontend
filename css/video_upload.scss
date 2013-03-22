@@ -1,0 +1,77 @@
+/* I am writing this again */
+
+$main-color: #024d61;
+$upper-background: #e5e5e5;
+$lower-background: #b5b5b5;
+
+#upload_video_pop {
+	width: 400px;
+	font-family: OxygenLight;
+
+	.video_button {
+		font-size: 14px;
+		background: $main-color;
+		width: 68px;
+		height: 17px;
+		color: #fff;
+		display: inline-block;
+		text-align: center;
+	}
+
+	.upload_video_upper {
+		background: $upper-background;
+		width: 400px;
+		height: 130px;
+		.info_part {
+			margin-top: 15px;
+			font-size: 13px;
+			color: $main-color;
+			margin-left: 30px;
+			.link_part {
+				margin-left: 15px;
+				margin-top: 10px;
+				margin-bottom: 10px;
+				input.text {
+					width: 270px;
+				}
+			}
+		}
+
+		.button_part {
+			margin-top: 10px;
+			.preview_button {
+				float: right;
+				margin-right: 15px;
+			}
+		}
+	}
+
+	.upload_video_lower {
+		background: $lower-background;
+		width: 400px;
+		height: 290px;
+		.video_preview{
+			width: 300px;
+			margin: 15px auto;
+		}
+
+		.button_part {
+			.reset_button {
+				margin-left:110px;
+			}
+			.cancel_button{
+				float: right;
+				margin-right: 15px;
+				margin-left: 10px;
+			}
+			.ok_button{
+				float: right;
+			}
+		}
+	}
+
+	.du {
+		height: 1px;
+	}
+
+}
