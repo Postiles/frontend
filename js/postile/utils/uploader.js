@@ -32,7 +32,7 @@ postile.uploader.dragUpload = function(evt){
         // handling the upload event
         postile.uploader.formData = null;
   	    var file = files[0]; // get the photo
-        postile.uploader.formData = positle.uploader.tests.formdata ? new FormData() : null;
+        postile.uploader.formData = postile.uploader.tests.formdata ? new FormData() : null;
         postile.uploader.formData.append('image', file); // NOTICE: always use "image" as the name, need to change
         // TODO: Give Feedback to the user 
 
@@ -51,7 +51,7 @@ postile.uploader.dragUpload = function(evt){
 
 postile.uploader.clickUpload = function(instance_el) {
     var files = instance_el.files;
-    postile.uploader.formData = positle.uploader.tests.formdata ? new FormData() : null;
+    postile.uploader.formData = postile.uploader.tests.formdata ? new FormData() : null;
     postile.uploader.formData.append('image', files[0]);
 
     postile.uploader.submit();

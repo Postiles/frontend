@@ -20,9 +20,7 @@ postile.view.post_board.Header = function(board) {
 
     this.usernameText_el = postile.dom.getDescendantById(instance.container, 'username_text');
 
-<<<<<<< HEAD
     this.usernameText_el.innerHTML = this.board.userData.username;
-=======
 
     /* Fei Pure for testing */
     goog.events.listen(this.usernameText_el , goog.events.EventType.CLICK, function(e) {
@@ -30,10 +28,6 @@ postile.view.post_board.Header = function(board) {
     });
 
     /* testing end */
-
-
-    this.usernameText_el.innerHTML = this.board.creatorData.username;
->>>>>>> Not done yet， Syn commit
 
     this.profileImageContainer_el = postile.dom.getDescendantById(instance.container, 'profile_image_container');
     this.profileImageContainerImg_el = goog.dom.getElementByClass('image', this.profileImageContainer_el);

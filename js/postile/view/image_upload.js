@@ -28,22 +28,21 @@ postile.view.image_upload.ImageUploadBlock = function(input_instance) {
 	this.uploadWord = goog.dom.createDom('div', 'upload_word');
 	goog.dom.appendChild(this.uploadContent, this.uploadWord);
 	this.selectBt = goog.dom.createDom('div', 'upload_select_file', 'Select File')
-	goog.dom.appendChild(this.upload_content, this.selectBt);
+	goog.dom.appendChild(this.uploadContent, this.selectBt);
 
 	goog.dom.appendChild(this.uploadWord, goog.dom.createDom('div', 'upload_drag_here', 'Drag Here'));
 	goog.dom.appendChild(this.uploadWord, goog.dom.createDom('div', 'upload_or', 'OR'));
 
 
 	/* do not have logic in view, give everything for js to uploader to handle */
-	var fileInput = goog.dom.createDom('input', 'upload_select_file',{ 'name': 'image', 'type':'file', 'size':'60'});
-
+	var fileInput = goog.dom.createDom('input', { 'name': 'image', 'type':'file', 'size':'60'});
+	goog.dom.appendChild(this.uploadContent, fileInput);
 	goog.events.listen(fileInput, goog.events.EventType.CHANGE, function(e) {
 		postile.uploader.clickUpload(this);
 	});
 
-
-    
-    goog.dom.appendChild(this.uploadContent, input_name);
+   	this.open(300); 
 }
+goog.inherits(postile.view.image_upload.ImageUploadBlock, postile.view.PopView);
 
 postile.view.image_upload.ImageUploadBlock.prototype.unloaded_stylesheets = ['upload_image.css'];
