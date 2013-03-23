@@ -123,6 +123,8 @@ body {
 	}
 
 	#board_list {
+		max-height: 400px;
+		overflow: scroll;
 		.up_roll {
 			height: 10px;
 			background-color: $background-color;
