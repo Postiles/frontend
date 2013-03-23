@@ -46,15 +46,10 @@ $testing: #aaa;
 				display:block;
 			}
 
-			div.upload_select_file {
-				cursor: pointer;
-				margin: 10px auto;
-				font-size: 18px;
-				color: #fff;
-				width: 80px;
-				padding: 3px 8px;
-				background: $main-color;
-
+			#upload_target {
+				width: 0px;
+				height: 0px;
+				border: 0px solid #fff;
 			}
 		}
 

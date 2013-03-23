@@ -1,24 +1,23 @@
+goog.provide('postile.uploader');
+
 goog.require('postile.ajax');
 //goog.require('postile.fx');
 goog.require('goog.dom');
-goog.provide('postile.uploader');
+goog.require('postile.view.image_upload');
 
 
 /* How to handle these global variables ? */
-
-var formData;
-
-var tests = {
-    formdata: !!window.FormData
-};
-
-postile.uploader.dragInit = function(){
-    var dragBox = dragBoxRenderer.renderBox('drag');
+postile.uploader.dragInit = function(instance){
+    postile.uploader.tests = {formdata: !!window.FormData};
+    var dragBox = instance;
     dragBox.addEventListener("dragenter", dragEnter, false);
     dragBox.addEventListener("dragexit", dragExit, false);
     dragBox.addEventListener("dragover", dragOver, false);
     dragBox.addEventListener("drop", this.dragUpload, false); 
+    delete postile.uploader.formData;
 };
+
+
     
 postile.uploader.dragUpload = function(evt){
     evt.stopPropagation();
@@ -31,19 +30,32 @@ postile.uploader.dragUpload = function(evt){
     if (count !== 0){
         
         // handling the upload event
+        postile.uploader.formData = null;
   	    var file = files[0]; // get the photo
-        formData = tests.formdata ? new FormData() : null;
-        formData.append('image', file); // NOTICE: always use "image" as the name, need to change
+        postile.uploader.formData = positle.uploader.tests.formdata ? new FormData() : null;
+        postile.uploader.formData.append('image', file); // NOTICE: always use "image" as the name, need to change
         // TODO: Give Feedback to the user 
 
+        /*
         var reader = new FileReader();
-
         // init the reader event handlers
         reader.onload = handleReaderLoad;
         // begin the read operation
         reader.readAsDataURL(file);
+        */
+
+        postile.uploader.submit();
     }
 };
+
+
+postile.uploader.clickUpload = function(instance_el) {
+    var files = instance_el.files;
+    postile.uploader.formData = positle.uploader.tests.formdata ? new FormData() : null;
+    postile.uploader.formData.append('image', files[0]);
+
+    postile.uploader.submit();
+}
 
 postile.uploader.iframeInit = function(){
     // /var frameDiv = goog.dom.getElement("iframe");    
@@ -69,12 +81,12 @@ postile.uploader.iframeUpload = function(){ // How to call this function?
 };
     
     // This function is for drog only
-postile.uploader.dragSubmit = function(){ //  TODO check if browser is good
-    if(/*this.xhr2supported() &&*/ this.formData !== null){
+postile.uploader.submit = function(){ //  TODO check if browser is good
+    if(/*this.xhr2supported() &&*/ postile.uploader.formData !== null){
         //postile.ajax('upload.php', formData);
         var xhr = new XMLHttpRequest();
-        xhr.open('POST', 'upload.php');
-        xhr.send(formData);
+        xhr.open('POST', 'http://localhost:8080/js/postile/utils/upload.php');
+        xhr.send(postile.uploader.formData);
         //alert('send');
         console.log('Ajax_sent');
     }
@@ -111,10 +123,12 @@ var dragBoxRenderer = {
 };
 
 var handleReaderLoad = function(){ 
+    /*
     var upload_preview_wrapper = goog.dom.getElementByClassName('upload_preview_wrapper');
     var img_preview = goog.dom.createDom('img','img_preview');
     img_preview.src = this.result;
     goog.dom.appendChild(upload_preview_wrapper, img_preview);
+    */
 }
 
 
