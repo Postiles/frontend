@@ -132,9 +132,10 @@ postile.view.post_board.PostBoard = function(board_id) { //constructor
 
     //initialize according to board_id
     postile.ajax(['board','enter_board'], { board_id: board_id }, function(data) {
+        console.log(data.message);
         instance.boardData = data.message.board;
-        instance.creatorData = data.message.creator;
-        instance.creatorProfileData = data.message.profile;
+        instance.userData = data.message.user;
+        instance.profileData = data.message.profile;
 
         instance.channel_str = instance.boardData.id;
 
@@ -268,6 +269,7 @@ postile.view.post_board.PostBoard.prototype.bindKeyEvents = function() {
 }
 
 postile.view.post_board.PostBoard.prototype.bindWindowEvents = function() {
+    var instance = this;
     this.window_resize_event_handler = new postile.events.EventHandler(window, 
             goog.events.EventType.RESIZE, function() { 
                 postile.view.post_board.handlers.resize(instance);
@@ -277,10 +279,15 @@ postile.view.post_board.PostBoard.prototype.bindWindowEvents = function() {
 
 //postile.view.View required component
 postile.view.post_board.PostBoard.prototype.close = function() {
-    this.window_resize_event_handler.unlisten();
-    this.keyboard_event_handler.unlisten();
-    //informing the server that I'm fucking leaving
     var instance = this;
+
+    if (this.window_resize_event_handler) {
+        this.window_resize_event_handler.unlisten();
+    }
+    if (this.keyboard_event_handler) {
+        this.keyboard_event_handler.unlisten();
+    }
+
     /*
     postile.ajax(['topic','leave_topic'], { channel_str: this.channel_str }, function(data){
         if (data.message != instance.board_id) {

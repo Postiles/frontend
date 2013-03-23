@@ -20,11 +20,11 @@ postile.view.post_board.Header = function(board) {
 
     this.usernameText_el = postile.dom.getDescendantById(instance.container, 'username_text');
 
-    this.usernameText_el.innerHTML = this.board.creatorData.username;
+    this.usernameText_el.innerHTML = this.board.userData.username;
 
     this.profileImageContainer_el = postile.dom.getDescendantById(instance.container, 'profile_image_container');
     this.profileImageContainerImg_el = goog.dom.getElementByClass('image', this.profileImageContainer_el);
-    this.profileImageContainerImg_el.src = this.board.creatorProfileData.image_small_url;
+    this.profileImageContainerImg_el.src = this.board.profileData.image_small_url;
 
     this.function_buttons = goog.dom.getElementsByClass('function_button');
     for (var i = 0; i < this.function_buttons.length; i++) {
