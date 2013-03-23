@@ -23,11 +23,11 @@ postile.view.board_more_pop.BoardMorePop = function(input_instance) {
 
     goog.events.listen(place, goog.events.EventType.CLICK, function(e) {
         console.log("star button called");
-        (new postile.view.star.Star(this)).open(this.star_bt);
+        (new postile.view.star.Star(this)).open(star_bt);
     });  
     goog.events.listen(star_bt, goog.events.EventType.CLICK, function(e) {
-        console.log("star button called");
-        (new postile.view.star.Star(this)).open(this.star_bt);
+        //console.log("star button called");
+        (new postile.view.star.Star(this)).open(star_bt);
     });  
 
 }
@@ -75,8 +75,8 @@ postile.view.board_more_pop.OtherBoard.prototype.renderBoardListItem = function(
         window.location="/test/" + nextBoardId + "/" + postile.dport;
     });
 
-    this.listedTitile = goog.dom.createDom('h3', 'board_title', boardName);
-    goog.dom.appendChild(this.listedBoard, this.listedTitile);
+    this.listedTitle = goog.dom.createDom('h3', 'board_title', boardName);
+    goog.dom.appendChild(this.listedBoard, this.listedTitle);
 
     this.listedDiscription = goog.dom.createDom('p', 'board_discription', boardDiscription);
     goog.dom.appendChild(this.listedBoard, this.listedDiscription);

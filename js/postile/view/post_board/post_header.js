@@ -2,6 +2,7 @@ goog.provide('postile.view.post_board.Header');
 
 goog.require('goog.events');
 goog.require('postile.dom');
+goog.require('postile.view.notification');
 
 postile.view.post_board.Header = function(board) {
     postile.view.NormalView.call(this);
@@ -59,11 +60,9 @@ postile.view.post_board.Header = function(board) {
     /* get hte number of new notifications from server */
     postile.ajax([ 'notification', 'get_notifications' ], {}, function(data) {
         /* handle the data return after getting the boards information back */
-        notificationList = data.message.notification;
+        notificationList = data.message.notifications;
         /* TODO add a notification to the mail box to notify user */
-
         console.log(data);
-
     }.bind(this));
 
     goog.events.listen(message_button, goog.events.EventType.CLICK, function(e) {
