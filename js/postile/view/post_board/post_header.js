@@ -15,11 +15,13 @@ postile.view.post_board.Header = function(board) {
     postile.ui.load(this.container, postile.staticResource(['post_board_title_bar.html']));
     
     this.topicTitle_el = postile.dom.getDescendantById(instance.container, 'topic_title');
+    instance.topicTitle_el.innerHTML = this.board.boardData.name;
 
-    instance.topicTitle_el.innerHTML = board.name;
+    this.topicImgContainer_el = postile.dom.getDescendantById(instance.container, 'topic_image_container');
+    this.topicImg_el = postile.dom.getDescendantByClass(this.topicImgContainer_el, 'topic_image');
+    this.topicImg_el.src = postile.uploadsResource( [this.board.boardData.image_small_url] );
 
     this.usernameText_el = postile.dom.getDescendantById(instance.container, 'username_text');
-
     this.usernameText_el.innerHTML = this.board.userData.username;
 
     /* Fei Pure for testing */
@@ -31,7 +33,7 @@ postile.view.post_board.Header = function(board) {
 
     this.profileImageContainer_el = postile.dom.getDescendantById(instance.container, 'profile_image_container');
     this.profileImageContainerImg_el = goog.dom.getElementByClass('image', this.profileImageContainer_el);
-    this.profileImageContainerImg_el.src = this.board.profileData.image_small_url;
+    this.profileImageContainerImg_el.src = postile.uploadsResource([ this.board.profileData.image_small_url ]);
 
     this.function_buttons = goog.dom.getElementsByClass('function_button');
     for (var i = 0; i < this.function_buttons.length; i++) {

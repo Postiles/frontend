@@ -16,8 +16,6 @@ postile.uploader.dragInit = function(instance){
     dragBox.addEventListener("drop", this.dragUpload, false); 
     delete postile.uploader.formData;
 };
-
-
     
 postile.uploader.dragUpload = function(evt){
     evt.stopPropagation();
@@ -84,11 +82,15 @@ postile.uploader.iframeUpload = function(){ // How to call this function?
 postile.uploader.submit = function(){ //  TODO check if browser is good
     if(/*this.xhr2supported() &&*/ postile.uploader.formData !== null){
         //postile.ajax('upload.php', formData);
+        /*
         var xhr = new XMLHttpRequest();
-        xhr.open('POST', 'http://localhost:8080/js/postile/utils/upload.php');
+        xhr.open('POST', 'http://localhost:3000/application/upload_image');
         xhr.send(postile.uploader.formData);
-        //alert('send');
-        console.log('Ajax_sent');
+        console.log(postile.uploader.formData);
+        */
+        postile.ajax.upload( ['application', 'upload_image' ], postile.uploader.formData, function(data) {
+            console.log(data);
+        });
     }
     //}
     /*
