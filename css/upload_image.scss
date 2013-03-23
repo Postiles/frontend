@@ -5,21 +5,21 @@ $upload-background-color: #f2f2f2;
 $testing: #aaa;
 
 #upload_image_pop {
-	background: $testing;
+	background: $upload-background-color;
 	height: 240px;
-	width: 280px;
+	width: 300px;
 	border: 4px solid $testing;
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
 
 	.upload_drag_board {
-		width: 280px;
+		width: 300px;
 		height: 240px;
 
 
 		.upload_dummy {
 			height: 1px;
-			width: 280px;
+			width: 300px;
 		}
 		.upload_content {
 			//opacity: 0;
@@ -44,6 +44,11 @@ $testing: #aaa;
 				font-size: 10px;
 				margin: 10px auto;
 				display:block;
+			}
+
+			input {
+				width: 75px;
+				margin-left: 22px;
 			}
 
 			#upload_target {

@@ -27,15 +27,13 @@ postile.view.image_upload.ImageUploadBlock = function(input_instance) {
 	/* upload indication main words */
 	this.uploadWord = goog.dom.createDom('div', 'upload_word');
 	goog.dom.appendChild(this.uploadContent, this.uploadWord);
-	this.selectBt = goog.dom.createDom('div', 'upload_select_file', 'Select File')
-	goog.dom.appendChild(this.uploadContent, this.selectBt);
 
-	goog.dom.appendChild(this.uploadWord, goog.dom.createDom('div', 'upload_drag_here', 'Drag Here'));
-	goog.dom.appendChild(this.uploadWord, goog.dom.createDom('div', 'upload_or', 'OR'));
+	goog.dom.appendChild(this.uploadWord, goog.dom.createDom('span', 'upload_drag_here', 'Drag Here'));
+	goog.dom.appendChild(this.uploadWord, goog.dom.createDom('span', 'upload_or', 'OR'));
 
 
 	/* do not have logic in view, give everything for js to uploader to handle */
-	var fileInput = goog.dom.createDom('input', { 'name': 'image', 'type':'file', 'size':'60'});
+	var fileInput = goog.dom.createDom('input', { 'name': 'image', 'type':'file'});
 	goog.dom.appendChild(this.uploadContent, fileInput);
 	goog.events.listen(fileInput, goog.events.EventType.CHANGE, function(e) {
 		postile.uploader.clickUpload(this);
