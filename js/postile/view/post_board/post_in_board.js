@@ -122,7 +122,9 @@ postile.view.post_in_board.Post.prototype.post_icon_container_init = function() 
     
     this.likes_count_el = goog.dom.createDom("div", "post_like_count");
     goog.dom.appendChild(instance.post_icon_container_el, this.likes_count_el);
-    this.likes_count_el.innerHTML = this.likes.length;
+    if (this.likes) {
+        this.likes_count_el.innerHTML = this.likes.length;
+    }
 
     addIcon("share");
     
