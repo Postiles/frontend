@@ -17,7 +17,7 @@ body {
 
 #board_more {
 	position: fixed !important;
-	top: 40px !important;
+	top: 43px !important;
 	right: 0px !important;
 	left: auto !important;
 	width: 40px;
@@ -46,6 +46,19 @@ body {
 		background: url(../images/hot.png) no-repeat;
 	}
 
+	#more_photo_button {
+		background: url(../images/photo_upload_icon.png) no-repeat;
+		height: 25px;
+		width: 22px;
+		margin-left:11px;
+		margin-top: 14px;
+	}
+
+	#more_video_button {
+		background: url(../images/video_upload_icon.png) no-repeat;
+		margin-top:17px;
+	}
+
 	#place {
 		margin-left: 15px;
 		margin-top: 17px;
@@ -62,7 +75,7 @@ body {
 	margin-top: 35px;
 	width: 240px;
 	position: fixed !important;
-	top: 5px !important;
+	top: 10px !important;
 	right: 75px !important;
 	left: auto !important;
 	background-color: $background-color;
@@ -91,21 +104,21 @@ body {
 			}
 		}
 
-		#arrow_up {
+		.arrow_up {
     		border-left: 10px solid transparent;
     		border-right: 10px solid transparent;
-    		border-bottom: 10px solid $background-color;
+    		border-bottom: 10px solid $main-color;
     		position: absolute;
     		left: 164px;
     		top: -8px;
 		}
-		#arrow_up_back {
+		.arrow_up_back {
     		border-left: 12px solid transparent;
     		border-right: 12px solid transparent;
     		border-bottom: 12px solid #fff;
     		position: absolute;
     		left: 162px;
-    		top: -10px;
+    		top: -12px;
 		}
 	}
 
