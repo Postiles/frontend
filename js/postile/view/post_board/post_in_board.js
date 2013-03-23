@@ -154,6 +154,11 @@ postile.view.post_in_board.Post.prototype.submitEdit = function(to_submit) {
     var instance = this;
     var original_title = instance.post.title;
     var original_value = instance.post.text_content;
+    var lels = instance.board.picker.all_lkd_el;
+    for (i in lels) {
+        goog.dom.removeNode(lels[i]);
+    }
+    lels = [];
     if (postile.string.empty(to_submit.content)) { 
         var the_id = instance.id;
         if (confirm("Leaving a post blank will effectively delete this post. Confirm to proceed?")) {

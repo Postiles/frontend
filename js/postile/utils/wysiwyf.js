@@ -142,6 +142,7 @@ postile.WYSIWYF = {
             img_el = postile.dom.getDescendantByCondition(editor.editor_el, function(el) { 
                 return el.tagName && el.tagName.toUpperCase() == 'IMG' && el.src.indexOf(postile.imageResource(['link_icon.png'])) > -1 && !el.getAttribute('link-to-post-id');
             });
+            if (!img_el) { return; }
             picker.open(function(post){ 
                 if (post) { 
                     img_el.setAttribute('link-to-post-id', post.post.id);

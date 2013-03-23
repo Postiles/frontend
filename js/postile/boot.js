@@ -46,6 +46,9 @@ postile = { //the base of posTile frontend framework
     },
     logError: function(e) {
         var err = e.getBrowserEvent();
+        if (postile.error_log.length > 40) {
+            postile.error_log.splice(0, 20);
+        }
         postile.error_log.push({ lineno: err.lineno, filename: err.filename, message: err.message });
     },
     load: function() {
