@@ -56,6 +56,48 @@ postile.ajax = function(url, data, onsuccess, onfail, notifier_text) {
    }
 };
 
+postile.ajax.upload = function(url, formData, onsuccess, onfail, notifier_text) {
+    if ("postile_user_id" in localStorage && "postile_user_session_key" in localStorage) {
+        formData.user_id = localStorage.postile_user_id;
+        formData.session_key = localStorage.postile_user_session_key;
+    }
+
+    if (url instanceof Array) {
+        url = postile.dynamicResource(url);
+    }
+    if (postile.browser_compat.walkarounds.xdr) {
+        xhr = new XDomainRequest();
+        xhr.onload = function() { postile.ajax.fetchedHandler(onsuccess, onfail, xhr.responseText); }
+        xhr.onerror = function() { postile.ajax.notifier.networkError("XDR unknwon error"); }
+    } else {
+        xhr = new XMLHttpRequest();
+    　  xhr.onreadystatechange = function(){
+    　　　　if (xhr.readyState == 4) {
+                if (xhr.status == 200) {
+                    postile.ajax.fetchedHandler(onsuccess, onfail, xhr.responseText);
+    　　　　    } else {
+    　　　　　　    postile.ajax.notifier.networkError("XHR unknown error"); //TODO
+    　　　　    }
+            }
+    　　};
+    }
+    xhr.timeout = 10000;
+    xhr.ontimeout = function(){ postile.ajax.notifier.networkError("request timeout"); };
+    if (postile.browser_compat.walkarounds.xhr >= 2) {
+        xhr.open('POST', url);
+        xhr.send(formData);
+    } else {
+        headers.set("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
+        formData = new Array();
+        for (i in data) {
+            formData.push(encodeURIComponent(i)+'='+encodeURIComponent(data[i]));
+        }
+        formData = formData.join('&');
+        xhr.open('POST', url);
+        xhr.send(formData);
+    }
+}
+
 postile.ajax.status = { //possible returning status from server
     ERROR: 'error',
     OK: 'ok'

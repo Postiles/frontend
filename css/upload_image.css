@@ -1,17 +1,17 @@
 /* tis file is for css of upload_image page */
 #upload_image_pop {
-  background: #aaaaaa;
+  background: #f2f2f2;
   height: 240px;
-  width: 280px;
+  width: 300px;
   border: 4px solid #aaaaaa;
   -moz-border-radius: 4px;
   -webkit-border-radius: 4px; }
   #upload_image_pop .upload_drag_board {
-    width: 280px;
+    width: 300px;
     height: 240px; }
     #upload_image_pop .upload_drag_board .upload_dummy {
       height: 1px;
-      width: 280px; }
+      width: 300px; }
     #upload_image_pop .upload_drag_board .upload_content {
       margin: 0px auto;
       width: 125px; }
@@ -31,14 +31,13 @@
         font-size: 10px;
         margin: 10px auto;
         display: block; }
-      #upload_image_pop .upload_drag_board .upload_content div.upload_select_file {
-        cursor: pointer;
-        margin: 10px auto;
-        font-size: 18px;
-        color: #fff;
-        width: 80px;
-        padding: 3px 8px;
-        background: #024d61; }
+      #upload_image_pop .upload_drag_board .upload_content input {
+        width: 75px;
+        margin-left: 22px; }
+      #upload_image_pop .upload_drag_board .upload_content #upload_target {
+        width: 0px;
+        height: 0px;
+        border: 0px solid #fff; }
     #upload_image_pop .upload_drag_board .upload_preview_wrapper {
       position: relative;
       /*

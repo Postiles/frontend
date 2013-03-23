@@ -21,6 +21,7 @@ goog.require('postile.view.board_more_pop');
 goog.require('postile.view.confirm_delete');
 goog.require('postile.view.profile');
 goog.require('postile.view.notification');
+goog.require('postile.view.image_upload');
 goog.require('postile.view.search_box');
 goog.require('postile.view.post_board.post_picker');
 
@@ -129,6 +130,7 @@ postile.view.post_board.PostBoard = function(board_id) { //constructor
     this.right = goog.dom.createDom('div', 'right_clicker'); //right click display
     this.currentSubscribeArea = null; //a valid area for which we've got all data we need and keep refreshing from the server
     this.maxZIndex = 0; //max zIndex of posts currently
+    this.click_start_point = null;
 
     //initialize according to board_id
     postile.ajax(['board','enter_board'], { board_id: board_id }, function(data) {
@@ -209,28 +211,37 @@ postile.view.post_board.PostBoard.prototype.bindMouseEvents = function() {
     });
 
     goog.events.listen(this.catchall, goog.events.EventType.MOUSEDOWN, function(e) {
+        instance.click_start_point = [e.clientX, e.clientY];
+    
         if (!e.isButton(2)) { // right mouse button
             return; 
         }
 
-        this.rel_data.right.style.left = e.clientX - 53 + 'px'; // TODO: replace the magic number
-        this.rel_data.right.style.top = e.clientY - 53 + 'px'; // TODO: replace the magic number
-        this.rel_data.right.style.display = 'block';
-        this.rel_data.right._start_point = [e.clientX, e.clientY];
+        instance.right.style.left = e.clientX - 53 + 'px'; // TODO: replace the magic number
+        instance.right.style.top = e.clientY - 53 + 'px'; // TODO: replace the magic number
+        instance.right.style.display = 'block';
     });
 
+    goog.events.listen(this.catchall, goog.events.EventType.CLICK, function(e) {
+        var dy = e.clientY - instance.click_start_point[1];
+        var dx = e.clientX - instance.click_start_point[0];
+        if (Math.abs(dy) > 2 && Math.abs(dx) > 2) { //left draging
+            e.stopPropagation();
+        }
+    }, true);
+    
     goog.events.listen(this.catchall, goog.events.EventType.MOUSEUP, function(e) {
-        if (!e.isButton(2)) {  // right mouse button
+        var dy = e.clientY - instance.click_start_point[1];
+        var dx = e.clientX - instance.click_start_point[0];
+    
+        if (!e.isButton(2) || Math.abs(dx) + Math.abs(dy) < 3) { // right mouse button
             return; 
         }
 
         this.rel_data.right.style.display = 'none';
-        var dy = e.clientY - this.rel_data.right._start_point[1];
-        var dx = e.clientX - this.rel_data.right._start_point[0];
         var length = Math.sqrt(Math.pow(dx, 2)+Math.pow(dy, 2));
 
-        this.rel_data.moveCanvas(dx / 2 / length * this.offsetWidth, 
-                dy / 2 / length * this.offsetHeight);
+        this.rel_data.moveCanvas(dx / 2 / length * this.offsetWidth, dy / 2 / length * this.offsetHeight);
     });
 
     goog.events.listen(this.canvas, goog.events.EventType.DBLCLICK, 

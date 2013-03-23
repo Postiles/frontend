@@ -32,7 +32,7 @@ postile.view.login.LoginView.prototype.enterPressed = function(e) {
 postile.view.login.LoginView.prototype.login = function() {
     var email = this.emailInput_el.value;
     var password = this.passwordInput_el.value;
-    postile.user.login(email, password, function() {
+    postile.user.login(email, password, function(data) {
         window.location.reload();
     }, function(e) {
         alert(e);

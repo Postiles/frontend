@@ -85,84 +85,87 @@ body {
       position: absolute;
       left: 162px;
       top: -12px; }
-  #other_boards #board_list .up_roll {
-    height: 10px;
-    background-color: #f2f7f7;
-    cursor: pointer;
-    border-bottom: 1px solid #cedadd; }
-    #other_boards #board_list .up_roll:hover {
-      background-color: #cedadd; }
-    #other_boards #board_list .up_roll .list_prev {
-      position: absolute;
-      left: 115px;
-      top: 43px;
-      width: 0px;
-      height: 0px;
-      border-left: 5px solid transparent;
-      border-right: 5px solid transparent;
-      border-bottom: 5px solid #024d61; }
-  #other_boards #board_list .down_roll {
-    height: 10px;
-    background-color: #f2f7f7;
-    cursor: pointer;
-    border-top: 1px solid #cedadd; }
-    #other_boards #board_list .down_roll:hover {
-      background-color: #cedadd; }
-    #other_boards #board_list .down_roll .list_next {
-      position: absolute;
-      left: 115px;
-      bottom: 3px;
-      width: 0px;
-      height: 0px;
-      border-left: 5px solid transparent;
-      border-right: 5px solid transparent;
-      border-top: 5px solid #024d61; }
-  #other_boards #board_list .listed_board {
-    padding-top: 10px;
-    padding-bottom: 10px;
-    height: 50px;
-    cursor: pointer; }
-    #other_boards #board_list .listed_board h3.board_title {
-      font-size: 14px;
-      margin-top: 0px;
-      margin-bottom: 0px;
-      margin-left: 14px;
-      color: #024d61; }
-    #other_boards #board_list .listed_board p.board_discription {
-      margin-left: 14px;
-      margin-top: 3px;
-      font-size: 10px;
-      width: 200px; }
-    #other_boards #board_list .listed_board .selected_icon {
-      opacity: 0;
-      position: absolute;
-      right: 10px;
-      top: 25px;
-      width: 20px;
-      height: 20px;
-      background: url(../images/featured_board.png) no-repeat; }
-    #other_boards #board_list .listed_board:hover {
-      background: #cedadd;
+  #other_boards #board_list {
+    max-height: 400px;
+    overflow: scroll; }
+    #other_boards #board_list .up_roll {
+      height: 10px;
+      background-color: #f2f7f7;
+      cursor: pointer;
+      border-bottom: 1px solid #cedadd; }
+      #other_boards #board_list .up_roll:hover {
+        background-color: #cedadd; }
+      #other_boards #board_list .up_roll .list_prev {
+        position: absolute;
+        left: 115px;
+        top: 43px;
+        width: 0px;
+        height: 0px;
+        border-left: 5px solid transparent;
+        border-right: 5px solid transparent;
+        border-bottom: 5px solid #024d61; }
+    #other_boards #board_list .down_roll {
+      height: 10px;
+      background-color: #f2f7f7;
+      cursor: pointer;
+      border-top: 1px solid #cedadd; }
+      #other_boards #board_list .down_roll:hover {
+        background-color: #cedadd; }
+      #other_boards #board_list .down_roll .list_next {
+        position: absolute;
+        left: 115px;
+        bottom: 3px;
+        width: 0px;
+        height: 0px;
+        border-left: 5px solid transparent;
+        border-right: 5px solid transparent;
+        border-top: 5px solid #024d61; }
+    #other_boards #board_list .listed_board {
+      padding-top: 10px;
+      padding-bottom: 10px;
+      height: 50px;
+      cursor: pointer; }
+      #other_boards #board_list .listed_board h3.board_title {
+        font-size: 14px;
+        margin-top: 0px;
+        margin-bottom: 0px;
+        margin-left: 14px;
+        color: #024d61; }
+      #other_boards #board_list .listed_board p.board_discription {
+        margin-left: 14px;
+        margin-top: 3px;
+        font-size: 10px;
+        width: 200px; }
+      #other_boards #board_list .listed_board .selected_icon {
+        opacity: 0;
+        position: absolute;
+        right: 10px;
+        top: 25px;
+        width: 20px;
+        height: 20px;
+        background: url(../images/featured_board.png) no-repeat; }
+      #other_boards #board_list .listed_board:hover {
+        background: #cedadd;
+        position: relative; }
+        #other_boards #board_list .listed_board:hover h3.board_title {
+          font-size: 14px;
+          margin-bottom: 0px;
+          margin-left: 14px; }
+        #other_boards #board_list .listed_board:hover .selected_icon {
+          opacity: 1; }
+    #other_boards #board_list .selected_board {
+      background: #024d61;
+      color: #c2d6ad;
       position: relative; }
-      #other_boards #board_list .listed_board:hover h3.board_title {
+      #other_boards #board_list .selected_board h3.board_title {
         font-size: 14px;
         margin-bottom: 0px;
-        margin-left: 14px; }
-      #other_boards #board_list .listed_board:hover .selected_icon {
-        opacity: 1; }
-  #other_boards #board_list .selected_board {
-    background: #024d61;
-    color: #c2d6ad;
-    position: relative; }
-    #other_boards #board_list .selected_board h3.board_title {
-      font-size: 14px;
-      margin-bottom: 0px;
-      margin-left: 14px;
-      color: #fff !important; }
-    #other_boards #board_list .selected_board .selected_icon {
-      position: absolute;
-      right: 10px;
-      top: 25px;
-      width: 20px;
-      height: 20px;
-      background: url(../images/featured_board.png) no-repeat; }
+        margin-left: 14px;
+        color: #fff !important; }
+      #other_boards #board_list .selected_board .selected_icon {
+        position: absolute;
+        right: 10px;
+        top: 25px;
+        width: 20px;
+        height: 20px;
+        background: url(../images/featured_board.png) no-repeat; }

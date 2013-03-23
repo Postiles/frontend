@@ -248,12 +248,25 @@ html, body {
 .post_comment_icon {
   background-image: url("../images/comment_icon.png"); }
   
+.post_remove_icon {
+  background-image: url("../images/new_delete.png");
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  right: -10px;
+  top: -10px;
+}
+  
+/*
+  
 .post_edit_icon {
   background-image: url("../images/edit_icon.png"); }
   
 .post_delete_icon {
   background-image: url("../images/delete_icon.png"); }
 
+*/
+  
 /*
   
 .post_box {
@@ -617,7 +630,7 @@ html, body {
 
 /* linked_post */
 
-.post_mark_linked {
+.post_mark_linked, .post_mark_linked_low {
     position: absolute;
     top: -21px;
     height: 21px;
@@ -631,8 +644,6 @@ html, body {
     font-size: 10pt;
 }
 
-.inline_reference_preview {
-    background: url(/images/link_icon.png) left center no-repeat;
-    display: inline-block;
-    padding-left: 13px; 
+.post_mark_linked_low {
+    background-color: #666;
 }

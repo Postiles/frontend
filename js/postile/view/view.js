@@ -57,6 +57,11 @@ postile.view.View = function() { //Do not use this class directly (this is an ab
         }
     }
     this.unloadedStylesheets = [];
+    /**** Function below is not activated yet
+    if (this.urlHash) {
+        window.location.hash = '#' + this.urlHash;
+    }
+    */
 }
 
 postile.view.PopView = function() { // constructor
@@ -134,7 +139,6 @@ postile.view.TipView = function() {
     });
     this.global_click_handler = new postile.events.EventHandler(document.body, goog.events.EventType.CLICK, function(evt){
         if (should_close) { instance.global_click_handler.unlisten(); }
-        evt.stopPropagation();
     }, true);
     this.container_msd_handler = new postile.events.EventHandler(this.container, goog.events.EventType.MOUSEDOWN, function(evt){
         evt.stopPropagation();
@@ -156,6 +160,7 @@ postile.view.TipView.prototype.open = function(reference, parent) {
 postile.view.TipView.prototype.close = function() {
     this.global_msd_handler.unlisten();
     this.container_msd_handler.unlisten();
+    if (this.onclose) { this.onclose(); }
     goog.dom.removeNode(this.container_wrap);
 }
 
