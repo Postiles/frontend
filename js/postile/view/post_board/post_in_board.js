@@ -206,6 +206,11 @@ postile.view.post_in_board.Post.prototype.edit = function() {
         instance.post_expand_listener.unlisten();
         goog.dom.classes.add(instance.post_title_el, 'selectable');
         goog.dom.classes.add(instance.post_content_el, 'selectable');
+        var delete_icon = goog.dom.createDom('div', 'post_remove_icon');
+        goog.dom.appendChild(instance.container_el, delete_icon);
+        goog.events.listen(delete_icon, goog.events.EventType.CLICK, function() {
+            new postile.view.confirm_delete.ConfirmDelete(instance).open(this);
+        });
         postile.ui.makeLabeledInput(instance.post_title_el, postile._('post_title_prompt'), 'half_opaque', function(){
             instance.post_content_el.focus();
         });

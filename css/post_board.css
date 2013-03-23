@@ -248,6 +248,15 @@ html, body {
 .post_comment_icon {
   background-image: url("../images/comment_icon.png"); }
   
+.post_remove_icon {
+  background-image: url("../images/new_delete.png");
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  right: -10px;
+  top: -10px;
+}
+  
 /*
   
 .post_edit_icon {

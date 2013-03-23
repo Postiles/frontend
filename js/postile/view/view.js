@@ -57,9 +57,11 @@ postile.view.View = function() { //Do not use this class directly (this is an ab
         }
     }
     this.unloadedStylesheets = [];
+    /**** Function below is not activated yet
     if (this.urlHash) {
         window.location.hash = '#' + this.urlHash;
     }
+    */
 }
 
 postile.view.PopView = function() { // constructor
