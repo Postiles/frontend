@@ -63,7 +63,7 @@ postile.WYSIWYF = {
             //END of [STYLING I]
             if (t == 'IMG') {
                 var ltid = cont.getAttribute('link-to-post-id');
-                if (ltd) {
+                if (ltid) {
                     b[a.length] += '[link]' + ltid + '[/link]';
                 } else {
                     b[a.length] += '[img]' + cont.src + '[/img]';
@@ -116,7 +116,11 @@ postile.WYSIWYF = {
                 lels[i].style.display = 'none';
             }
             for (i in links) {
-                lels[links[i].getAttribute('link-to-post-id')].style.display = 'block';
+                var id = links[i].getAttribute('link-to-post-id'); 
+                if (id) {
+                    console.log(id, lels);
+                    lels[id].style.display = 'block';
+                }
             }
         });
     },
@@ -141,12 +145,17 @@ postile.WYSIWYF = {
             picker.open(function(post){ 
                 if (post) { 
                     img_el.setAttribute('link-to-post-id', post.post.id);
-                    img_el.onclick = function() {
+                    img_el.onmouseover = function() {
                         var lels = editor.post.board.picker.all_lkd_el;
                         for (i in lels) {
                             lels[i].className = 'post_mark_linked_low';
                         }
                         lels[this.getAttribute('link-to-post-id')].className = 'post_mark_linked';
+                    }
+                    img_el.onmouseout = function() {
+                        for (i in lels) {
+                            lels[i].className = 'post_mark_linked';
+                        }
                     }
                 } else { goog.dom.removeNode(img_el); }
             }, editor.post);
