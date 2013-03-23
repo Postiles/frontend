@@ -14,11 +14,15 @@ postile.view.board_more_pop.BoardMorePop = function(input_instance) {
     this.container.style.top = '0px';
     this.container.style.left = '0px';
 
-    this.star_bt = postile.dom.getDescendantByClass(this.container, 'star');
+    this.star_bt = postile.dom.getDescendantById(this.container, 'place');
+
+    console.log(this.star_bt);
+    this.star_bt.style.background = "#fff";
 
     goog.events.listen(this.star_bt, goog.events.EventType.CLICK, function(e) {
-        new postile.view.star.Star(this);
-    }.bind(this));  
+        console.log("star button called");
+        new postile.view.star.Star(this).open(this.star_bt);
+    });  
 
 }
 

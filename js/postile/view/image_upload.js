@@ -36,18 +36,58 @@ postile.view.image_upload.ImageUploadBlock = function(input_instance) {
 	goog.dom.appendChild(this.dragBoard, this.preview_wrapper);
 
 	// Add event for drag or upload function 
-	goog.events.listen(this.star_bt, goog.events.EventType.CLICK, function(e) {
-        new postile.view.image_upload.ImageUploadConfirm(this.dragBoard);
-    }.bind(this));  
-	uploadWord()
+	goog.events.listen(this.selectBt, goog.events.EventType.CLICK, function(e) {
 
+		/* TODO get the image from input */
+		// Call a function in utils upload_image.js
+
+        new postile.view.image_upload.ImageUploadConfirm(this.dragBoard, image);
+    }.bind(this));  
 }
 
 postile.view.profile.ProfileView.prototype.unloaded_stylesheets = ['_profile_preview.css'];
 
 /* Constructor for the uppper part of image upload  */
-postile.view.image_upload.ImageUploadConfirm = function(icb) {
+postile.view.image_upload.ImageUploadConfirm = function(icb, image) {
+	var instance = icb;
+	postile.dom.getDescendantByClassName('upload_content').style.display = 'none';
 
+	/* for preview  
+		width: 280px;
+		height: 240px;
+		background: url(../images/hot.png);
+	*/
+	this.preview = postile.dom.getDescendantByClassName('upload_preview_wrapper');
+	this.preview.style.width = '280px';
+	this.preview.style.height = '240px';
+	//this.preview.style.background = 'url(' + image + ');';
+	this.preview.style.background = 'url(../images/hot.png)';
 
+	this.confirmPop = goog.dom.createDom('div', 'upload_confirm_pop');
+	goog.dom.appendChild(this, this.confirmPop);
+
+	this.resetBt = goog.dom.createDom('div', 'upload_confirm_button', {id:'upload_repick'});
+	goog.dom.appendChild(this.confirmPop, this.resetBt);
+
+	goog.events.listen(this.resetBt, goog.events.EventType.CLICK, function(e) {
+        /* TODO User want to reset the upload */
+    }.bind(this));  
+
+	this.uploadSubConfirmPop = goog.dom.createDom('div', 'upload_sub_confirm_pop');
+	goog.dom.appendChild(this.confirmPop, this.uploadSubConfirmPop);
+
+	this.uploadCancel = goog.dom.createDom('div', 'upload_confirm_button', {id:'upload_cancel'});
+	goog.dom.appendChild(this.uploadSubConfirmPop, this.uploadCancel);
+
+	goog.events.listen(this.uploadCancel, goog.events.EventType.CLICK, function(e) {
+        /* TODO User want to Cancel the upload */
+    }.bind(this));  
+
+	this.uploadOK = goog.dom.createDom('div', 'upload_confirm_button', {id:'upload_ok'});
+	goog.dom.appendChild(this.uploadSubConfirmPop, this.uploadOK);
+
+	goog.events.listen(this.uploadOK, goog.events.EventType.CLICK, function(e) {
+        /* TODO User want to Confirm the upload */
+    }.bind(this)); 
 
 }
