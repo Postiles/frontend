@@ -119,6 +119,7 @@ postile.view.post_board.PostCreator.prototype.mouseup = function(e){
     this.legal = false;
     this.new_post_start_coord_in_px = null;
     this.board.createPost(this.position);
+    this.close();
 };
 
 /****************************************************************

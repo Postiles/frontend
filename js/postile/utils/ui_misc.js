@@ -43,14 +43,16 @@ postile.ui.makeLabeledInput = function(target_el, placeholder, inactive_classnam
     blurHandler();
     new postile.events.EventHandler(target_el, goog.events.EventType.BLUR, blurHandler).listen();
     new postile.events.EventHandler(new goog.events.KeyHandler(target_el), goog.events.KeyHandler.EventType.KEY, function(e) {
+        if (e.keyCode != goog.events.KeyCodes.ENTER) { return; }
+        e.preventDefault();
+        target_el.innerHTML = postile.string.stripString(target_el.innerHTML);
+        enter_handler();
+        target_el.blur();
+    }).listen();
+    postile.events.valueChangeEvent(target_el, function(){
         if (target_el.innerHTML == placeholder) {
             target_el.innerHTML = '';
             goog.dom.classes.remove(target_el, inactive_classname);
-        } else if (e.keyCode == goog.events.KeyCodes.ENTER) {
-            e.preventDefault();
-            target_el.innerHTML = postile.string.stripString(target_el.innerHTML);
-            enter_handler();
-            target_el.blur();
         }
-    }).listen();
+    });
 }

@@ -199,10 +199,12 @@ postile.view.post_in_board.Post.prototype.removeFromBoard = function() {
 }
 
 postile.view.post_in_board.Post.prototype.edit = function() {
+    if (this.in_edit) { return; }
     var instance = this;
     var start_waiting = new postile.toast.Toast(0, "Please wait... We're starting editing... Be ready for 36s.");
     this.disable();
     var go_editing = function() {
+        instance.in_edit = true;
         instance.post_expand_listener.unlisten();
         goog.dom.classes.add(instance.post_title_el, 'selectable');
         goog.dom.classes.add(instance.post_content_el, 'selectable');
@@ -220,20 +222,17 @@ postile.view.post_in_board.Post.prototype.edit = function() {
         instance.board.disableMovingCanvas = true; //disable moving
         instance.enable();
         start_waiting.abort();
-        var blurHandler = function(e) {
-            console.trace();
-            instance.blur_timeout = setTimeout(function(){ 
-                //instance.board.mask.style.display = 'none'; //close mask, if any
-                instance.submitEdit({ post_id: instance.post.id, content: y_editor.getBbCode(), title: instance.post_title_el.innerHTML ==  postile._('post_title_prompt') ? '' : postile.string.stripString(instance.post_title_el.innerHTML) });}, 400);
-        };
-        var focusHandler = function(e) {
-            console.trace();
-            clearTimeout(instance.blur_timeout);
-        };
-        goog.events.listen(y_editor.editor_el, goog.events.EventType.BLUR, blurHandler);
-        goog.events.listen(instance.post_title_el, goog.events.EventType.BLUR, blurHandler);
-        goog.events.listen(y_editor.editor_el, goog.events.EventType.FOCUS, focusHandler);
-        goog.events.listen(instance.post_title_el, goog.events.EventType.FOCUS, focusHandler);
+        var bodyHandler = new postile.events.EventHandler(document.body, goog.events.EventType.CLICK, function(){
+            instance.submitEdit({ post_id: instance.post.id, content: y_editor.getBbCode(), title: instance.post_title_el.innerHTML ==  postile._('post_title_prompt') ? '' : postile.string.stripString(instance.post_title_el.innerHTML) });
+            bodyHandler.unlisten();
+            postHandler.unlisten();
+            instance.in_edit = false;
+        });
+        var postHandler = new postile.events.EventHandler(instance.container_el, goog.events.EventType.CLICK, function(evt){
+            evt.stopPropagation();
+        });
+        bodyHandler.listen();
+        postHandler.listen();
         y_editor.editor_el.focus();
     }
     postile.ajax(['post','start_edit'], { post_id: this.post.id }, go_editing);

@@ -11,7 +11,9 @@ postile.view.post_board.PostPicker = function(post_board_obj) {
     this.active_post = null;
     this.lkd_el = null;
     this.done_callback = null;
+    this.active = false;
     this.ghost_board_el = goog.dom.createDom('div', 'canvas_mask');
+    this.all_lkd_el = {};
     instance.ghost_board_el.style.display = 'none';
     goog.events.listen(this.ghost_board_el, goog.events.EventType.MOUSEMOVE, function(e){ instance.mmHandler(e) });
     goog.events.listen(this.ghost_board_el, goog.events.EventType.CLICK, function(e){ e.stopPropagation(); instance.clkHandler(); }, true);
@@ -21,22 +23,29 @@ postile.view.post_board.PostPicker = function(post_board_obj) {
 postile.view.post_board.PostPicker.prototype.open = function(dcb, post) {
     this.done_callback = dcb;
     this.permanent_post = post;
+    this.active = true;
     this.ghost_board_el.style.display = 'block';
+    this.ghost_board_el.style.backgroundColor = 'rgba(0, 0, 0, 0.3)';
     goog.dom.appendChild(this.ghost_board_el, post.wrap_el);
 }
 
 postile.view.post_board.PostPicker.prototype.close = function() {
     var instance = this;
-    if (instance.lkd_el) { var width = instance.lkd_el.offsetWidth; }
+    if (!instance.active) { return; } //attempt to close again?
+    instance.active = false;
+    if (instance.lkd_el) {
+        instance.all_lkd_el[this.active_post.post.post_id] = instance.lkd_el;
+        var width = instance.lkd_el.offsetWidth;
+    }
     new postile.fx.Animate(function(i){
         instance.ghost_board_el.style.backgroundColor = 'rgba(0, 0, 0, '+(0.3 * (1 - i))+')';
         if (instance.lkd_el) { instance.lkd_el.style.clip = 'rect('+Math.round(21*(1-i))+'px '+width+'px 21px 0px)'; }
-    }, 500, postile.fx.ease.cubic_ease_out, function() {
+    }, 400, postile.fx.ease.cubic_ease_out, function() {
         goog.dom.appendChild(instance.board.canvas, instance.permanent_post.wrap_el);
         instance.ghost_board_el.style.display = 'none';
         instance.done_callback(instance.active_post);
         instance.demote();
-        instance.permanent_post = null;
+        instance.lkd_el = null;
     });
 }
 
@@ -54,14 +63,14 @@ postile.view.post_board.PostPicker.prototype.demote = function() {
 }
 
 postile.view.post_board.PostPicker.prototype.mmHandler = function(e) {
+    this.demote();
     var mouse_coord = [this.board.xPosFrom(e.clientX - this.board.viewport_position.x - this.board.canvasCoord[0]), this.board.yPosFrom(e.clientY - this.board.viewport_position.y - this.board.canvasCoord[1])];
     for (i in this.board.currentPosts) {
-        if(mouse_coord[0] <= this.board.currentPosts[i].post.coord_x_end && mouse_coord[0] >= this.board.currentPosts[i].post.coord_x && mouse_coord[1] <= this.board.currentPosts[i].post.coord_y_end && mouse_coord[1] >= this.board.currentPosts[i].post.coord_y) { 
+        if(mouse_coord[0] <= this.board.currentPosts[i].post.coord_x_end && mouse_coord[0] >= this.board.currentPosts[i].post.pos_x && mouse_coord[1] <= this.board.currentPosts[i].post.coord_y_end && mouse_coord[1] >= this.board.currentPosts[i].post.pos_y) { 
             this.promote(this.board.currentPosts[i]);
             return;
         }
     }
-    this.demote();
 }
 
 postile.view.post_board.PostPicker.prototype.clkHandler = function() {

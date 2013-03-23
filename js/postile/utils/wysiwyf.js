@@ -62,15 +62,17 @@ postile.WYSIWYF = {
             }
             //END of [STYLING I]
             if (t == 'IMG') {
-                b[a.length] += '[img]' + cont.src + '[/img]';
+                var ltid = cont.getAttribute('link-to-post-id');
+                if (ltd) {
+                    b[a.length] += '[link]' + ltid + '[/link]';
+                } else {
+                    b[a.length] += '[img]' + cont.src + '[/img]';
+                }
+                return;
             }
             if (t == 'A') {
                 b[a.length] += '[url]' + cont.href + '[/url]';
                 return; //does not allow "A" to have children
-            }
-            if (t == 'DIV' && cont.className == 'inline_reference_preview') {
-                b[a.length] += '[link]'+cont.getAttribute('link-to-post-id')+'[/link]';
-                return;
             }
             if (t == 'P' || t == 'DIV' || t == 'BR') {
                 b[a.length] += "\r\n";
@@ -104,6 +106,19 @@ postile.WYSIWYF = {
             icon_container_el.appendChild(editor.buttons[i]);
         }
         editor.toDisplayMode(0);
+        postile.events.valueChangeEvent(editor.editor_el, function(){
+            var i;
+            var links = postile.dom.getDescendantsByCondition(editor.editor_el, function(el) {
+                return el.tagName && el.tagName.toUpperCase() == 'IMG' && el.src.indexOf(postile.imageResource(['link_icon.png'])) > -1;
+            });
+            var lels = editor.post.board.picker.all_lkd_el;
+            for (i in lels) {
+                lels[i].style.display = 'none';
+            }
+            for (i in links) {
+                lels[links[i].getAttribute('link-to-post-id')].style.display = 'block';
+            }
+        });
     },
     /******Define buttons and corresponding operations******/
     editButtons: new Array(
@@ -120,17 +135,21 @@ postile.WYSIWYF = {
             var picker = editor.post.board.picker;
             var img_el;
             document.execCommand('InsertImage', false, postile.imageResource(['link_icon.png']));
-            img_el = postile.dom.getDescendantByCondition(editor.editor_el, function(el) { return el.tagName.toUpperCase() == 'IMG' && el.src.indexOf(postile.imageResource(['link_icon.png'])) > -1; });
+            img_el = postile.dom.getDescendantByCondition(editor.editor_el, function(el) { 
+                return el.tagName && el.tagName.toUpperCase() == 'IMG' && el.src.indexOf(postile.imageResource(['link_icon.png'])) > -1 && !el.getAttribute('link-to-post-id');
+            });
             picker.open(function(post){ 
                 if (post) { 
-                    var span_el = goog.dom.createDom('div', 'inline_reference_preview');
-                    span_el.setAttribute('link-to-post-id', post.post.id);
-                    span_el.innerHTML = '[Linked to "'+post.post.text_content+'"]';
-                    goog.dom.replaceNode(span_el, img_el);
+                    img_el.setAttribute('link-to-post-id', post.post.id);
+                    img_el.onclick = function() {
+                        var lels = editor.post.board.picker.all_lkd_el;
+                        for (i in lels) {
+                            lels[i].className = 'post_mark_linked_low';
+                        }
+                        lels[this.getAttribute('link-to-post-id')].className = 'post_mark_linked';
+                    }
                 } else { goog.dom.removeNode(img_el); }
-                editor.editor_el.focus();
             }, editor.post);
-            editor.editor_el.focus();
         },
         display: [true, true]
     }, {
