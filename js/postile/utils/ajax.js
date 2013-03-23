@@ -117,7 +117,9 @@ postile.ajax.fetchedHandler = function(onsuccess, onfail, receivedText) {
         } else if (typeof onfail == 'function') {
             onfail(received);
         }
-    } else if (typeof onsuccess == 'function') { onsuccess(received); }
+    } else if (typeof onsuccess == 'function') { 
+        onsuccess(received); 
+    }
     postile.ajax.notifier.hide();
 };
 
@@ -132,6 +134,10 @@ postile.ajax.notifier.networkError = function(error_string) { //network error
 }
 
 postile.ajax.expection_handlers = { //exception_string and corresponding handler functions.
+    USER_NOT_FOUND: function() {
+        postile.user.openLoginBox();
+        return false;
+    },
     USER_NOT_LOGGED_IN: function() {
         postile.user.openLoginBox();
         return false;
@@ -144,23 +150,16 @@ postile.ajax.expection_handlers = { //exception_string and corresponding handler
 postile.faye.client = null;
 
 postile.faye.init = function(callback) {
-    goog.net.jsloader.load(postile.fayeLocation+'/client.js').addCallback(function() { postile.faye.client = new Faye.Client(postile.fayeLocation); callback(); });
+    goog.net.jsloader.load(postile.fayeLocation + '/client.js').addCallback(function() {
+        postile.faye.client = new Faye.Client(postile.fayeLocation);
+        callback();
+    });
 }
 
 postile.faye.subscribe = function(channel, listener) {
     var faye_action = function() {
-        postile.faye.client.subscribe('/faye/'+channel, function(data) {
-            var json = data.data.message;
-            console.log(data);
-            /*
-            var json = null;       
-            try {
-                json = JSON.parse(data.data.message);
-            } catch(e) {
-                postile.ajax.notifier.networkError("Faye response data damaged"); //json parsing failed
-            }
-            */
-            listener(data.data.status, json);
+        postile.faye.client.subscribe('/faye/' + channel, function(data) {
+            listener(data.status, data.msg);
         });
     };
     if (!postile.faye.client) {

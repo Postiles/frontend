@@ -208,6 +208,7 @@ postile.view.post_in_board.Post.prototype.edit = function() {
     var instance = this;
     var start_waiting = new postile.toast.Toast(0, "Please wait... We're starting editing... Be ready for 36s.");
     this.disable();
+
     var go_editing = function() {
         instance.in_edit = true;
         instance.post_expand_listener.unlisten();
@@ -215,12 +216,14 @@ postile.view.post_in_board.Post.prototype.edit = function() {
         goog.dom.classes.add(instance.post_content_el, 'selectable');
         var delete_icon = goog.dom.createDom('div', 'post_remove_icon');
         goog.dom.appendChild(instance.container_el, delete_icon);
+
         goog.events.listen(delete_icon, goog.events.EventType.CLICK, function() {
             new postile.view.confirm_delete.ConfirmDelete(instance).open(this);
         });
         postile.ui.makeLabeledInput(instance.post_title_el, postile._('post_title_prompt'), 'half_opaque', function(){
             instance.post_content_el.focus();
         });
+
         //hide the original bottom bar
         goog.dom.removeChildren(instance.post_icon_container_el);
         var y_editor = new postile.WYSIWYF.Editor(instance.post_content_el, instance.post_icon_container_el, instance);
@@ -233,9 +236,11 @@ postile.view.post_in_board.Post.prototype.edit = function() {
             postHandler.unlisten();
             instance.in_edit = false;
         });
+
         var postHandler = new postile.events.EventHandler(instance.container_el, goog.events.EventType.CLICK, function(evt){
             evt.stopPropagation();
         });
+
         bodyHandler.listen();
         postHandler.listen();
         y_editor.editor_el.focus();

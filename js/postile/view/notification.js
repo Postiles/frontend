@@ -15,42 +15,40 @@ postile.view.notification.Notification = function(notificationList) {
 
     this.markRead = postile.dom.getDescendantByClass(this.container, 'mark_read');
     console.log(this.markRead);
-   
+
     this.numberOfNotification = postile.dom.getDescendantById(this.container, 'number_of_unread');
     this.numberOfNotification.innerHTML = notificationList.length;
     this.numberOfUnread = notificationList.length;
 
     goog.events.listen(this.markRead, goog.events.EventType.CLICK, function() {
-    	postile.ajax([ 'notification', 'dismiss_all' ], {}, function(data) {
-			// Nothing to do
-    	}.bind(this));
+        postile.ajax([ 'notification', 'dismiss_all' ], {}, function(data) {
+            // Nothing to do
+        }.bind(this));
 
-    	this.numberOfNotification.innerHTML = 0;
-    	/* how can I get thos notifications TODO */
+        this.numberOfNotification.innerHTML = 0;
+        /* how can I get thos notifications TODO */
 
     });
 
-	this.notificationListView = postile.dom.getDescendantById(this.container, 'notification_list');
+    this.notificationListView = postile.dom.getDescendantById(this.container, 'notification_list');
 
-    if(this.numberOfUnread > 6){
-    	for (var i = 0; i < 6; i++) {
-			var notificationType = notificationList[i].notification.notification_type;
-			(new postile.view.notification.InfoItem()).render(this.notificationListView, notificationList[i].notification, notificationList[i].from_user_profile);
-	    }
+    if(this.numberOfUnread > 6) {
+        for (var i = 0; i < 6; i++) {
+            var notificationType = notificationList[i].notification.notification_type;
+            (new postile.view.notification.InfoItem()).render(this.notificationListView, notificationList[i].notification, notificationList[i].from_user_profile);
+        }
 
-	}else {
-	    for(i in notificationList){
-			var notificationType = notificationList[i].notification.notification_type;
-			(new postile.view.notification.InfoItem()).render(this.notificationListView, notificationList[i].notification, notificationList[i].from_user_profile);
-	    }
-	}
-
+    } else {
+        for (i in notificationList) {
+            var notificationType = notificationList[i].notification.notification_type;
+            (new postile.view.notification.InfoItem()).render(this.notificationListView, notificationList[i].notification, notificationList[i].from_user_profile);
+        }
+    }
     // See more part more see more
-
 }
 
 postile.view.notification.Notification.prototype.seeMore = function() {
-	this.notificationMore = goog.dom.createDom('div', 'notification_more');
+    this.notificationMore = goog.dom.createDom('div', 'notification_more');
     goog.dom.appendChild(this.notificationListView, this.notificationMore);
 
     goog.dom.appendChild(this.notificationMore, goog.dom.createDom('p','','See More'));
@@ -62,84 +60,83 @@ postile.view.notification.Notification.prototype.seeMore = function() {
 postile.view.notification.NotificationItem = function() {
 }
 postile.view.notification.InfoItem = function() {
-	postile.view.notification.NotificationItem.call(this);
+    postile.view.notification.NotificationItem.call(this);
 }
 postile.view.notification.FriendItem = function() {
-	postile.view.notification.NotificationItem.call(this);
+    postile.view.notification.NotificationItem.call(this);
 }
 
 postile.view.notification.TypeMap = {'reply in post':'write on'};
 
-
 postile.view.notification.InfoItem.prototype.render = function(parent, data, fromUser) {
 
-	this.notification_id = data.id;
-	var time = data.create_at;
-	var notificationType = data.notification_type;
-	var fromUserId = data.from_user_id;
-	var targetId = data.targetId;
-	var fromUserName = fromUser.last_name + fromUser.first_name;
+    this.notification_id = data.id;
+    var time = data.create_at;
+    var notificationType = data.notification_type;
+    var fromUserId = data.from_user_id;
+    var targetId = data.targetId;
+    var fromUserName = fromUser.last_name + fromUser.first_name;
 
-	var profile_img_url = fromUser.image_small_url;
+    var profile_img_url = fromUser.image_small_url;
 
-	/* begins the rendering of notification item */
-	console.log(profile_img_url);
-	this.notificationItem = goog.dom.createDom('div', 'notification');
-	goog.dom.appendChild(parent, this.notificationItem);
+    /* begins the rendering of notification item */
+    console.log(profile_img_url);
+    this.notificationItem = goog.dom.createDom('div', 'notification');
+    goog.dom.appendChild(parent, this.notificationItem);
 
-	this.profile_img = goog.dom.createDom('img', {'class':'notification_profile', 'src': postile.uploadsResource([profile_img_url]) , 'alt': 'profile'});
-	goog.dom.appendChild(this.notificationItem, this.profile_img);
+    this.profile_img = goog.dom.createDom('img', {'class':'notification_profile', 'src': postile.uploadsResource([profile_img_url]) , 'alt': 'profile'});
+    goog.dom.appendChild(this.notificationItem, this.profile_img);
 
-	this.notificationTitle = goog.dom.createDom('div', 'title');
-	goog.dom.appendChild(this.notificationItem, this.notificationTitle);
+    this.notificationTitle = goog.dom.createDom('div', 'title');
+    goog.dom.appendChild(this.notificationItem, this.notificationTitle);
 
-	this.fromUser = goog.dom.createDom('p', 'name', fromUserName);
-	goog.dom.appendChild(this.notificationTitle, this.fromUser);
+    this.fromUser = goog.dom.createDom('p', 'name', fromUserName);
+    goog.dom.appendChild(this.notificationTitle, this.fromUser);
 
-	/* add a litener for watching poping profile */
-	goog.events.listen(this.fromUser, goog.events.EventType.CLICK, function(){
-		new postile.view.profile.ProfileView(fromUserId);
-	});
+    /* add a litener for watching poping profile */
+    goog.events.listen(this.fromUser, goog.events.EventType.CLICK, function(){
+        new postile.view.profile.ProfileView(fromUserId);
+    });
 
-	goog.dom.appendChild(this.notificationTitle, goog.dom.createDom('p','',' ' + postile.view.notification.TypeMap[notificationType] +' '));
-	this.targetPost = goog.dom.createDom('p', 'post_text_link', 'your post');
-	goog.dom.appendChild(this.notificationTitle, this.targetPost);
+    goog.dom.appendChild(this.notificationTitle, goog.dom.createDom('p','',' ' + postile.view.notification.TypeMap[notificationType] +' '));
+    this.targetPost = goog.dom.createDom('p', 'post_text_link', 'your post');
+    goog.dom.appendChild(this.notificationTitle, this.targetPost);
 
-	// TODO provide a link to the post
+    // TODO provide a link to the post
 
-	/* footer part */
-	this.notificationFooter = goog.dom.createDom('div','notification_footer');
-	goog.dom.appendChild(this.notificationItem, this.notificationFooter);
+    /* footer part */
+    this.notificationFooter = goog.dom.createDom('div','notification_footer');
+    goog.dom.appendChild(this.notificationItem, this.notificationFooter);
 
-	this.notificationTime = goog.dom.createDom('p','message_time', time);
-	goog.dom.appendChild(this.notificationFooter, this.notificationTime);
+    this.notificationTime = goog.dom.createDom('p','message_time', time);
+    goog.dom.appendChild(this.notificationFooter, this.notificationTime);
 
-	this.ignore = goog.dom.createDom('p','ignore', 'Ignore');
-	goog.dom.appendChild(this.notificationFooter, this.ignore);
-	goog.events.listen(this.ignore, goog.events.EventType.CLICK, function(){
-		this.userHandle();
-	}.bind(this));
+    this.ignore = goog.dom.createDom('p','ignore', 'Ignore');
+    goog.dom.appendChild(this.notificationFooter, this.ignore);
+    goog.events.listen(this.ignore, goog.events.EventType.CLICK, function(){
+        this.userHandle();
+    }.bind(this));
 }
 
 postile.view.notification.InfoItem.prototype.userHandle = function() {
-	postile.ajax([ 'notification', 'dismiss' ], {notification_id: this.notification_id}, function(data) {
-		this.removeFromList();
+    postile.ajax([ 'notification', 'dismiss' ], {notification_id: this.notification_id}, function(data) {
+        this.removeFromList();
     }.bind(this));
 }
 
 postile.view.notification.InfoItem.prototype.removeFromList = function() {
-	goog.dom.removeNode(this.notificationItem);
+    goog.dom.removeNode(this.notificationItem);
 
-	var numberOfNotification = goog.dom.getElement('number_of_unread');
-	var numberOfUnread = numberOfNotification.innerHTML;
-	numberOfUnread--;
+    var numberOfNotification = goog.dom.getElement('number_of_unread');
+    var numberOfUnread = numberOfNotification.innerHTML;
+    numberOfUnread--;
 
-	numberOfNotification.innerHTML = numberOfUnread;
+    numberOfNotification.innerHTML = numberOfUnread;
 }
 
 goog.inherits(postile.view.notification.Notification, postile.view.TipView);
-postile.view.notification.Notification.prototype.unloaded_stylesheets = ['notification.css'];
 
+postile.view.notification.Notification.prototype.unloaded_stylesheets = ['notification.css'];
 
 postile.view.notification.Notification.prototype.renderNotificationItem = function() {
 

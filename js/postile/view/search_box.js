@@ -11,8 +11,15 @@ postile.view.search_box.SearchBox = function(input_instance) {
 
     this.container.id = 'search_pop_up';
 
-    this.container.style.top = '0px';
-    this.container.style.left = '0px';
+    // people search result
+    this.search_result_people = postile.dom.getDescendantById(this.container, "search_result_people");
+    this.people_list = goog.dom.getElementByClass("search_result_content_list", this.search_result_people);
+    goog.style.showElement(this.search_result_people, false);
+
+    // post search result
+    this.search_result_post = postile.dom.getDescendantById(this.container, "search_result_post");
+    this.post_list = goog.dom.getElementByClass("search_result_content_list", this.search_result_post);
+    goog.style.showElement(this.search_result_post, false);
 
     this.search_input_field = postile.dom.getDescendantById(this.container, 'search_input_field');
     goog.events.listen(this.search_input_field, goog.events.EventType.KEYUP, this.search.bind(this));
@@ -23,32 +30,24 @@ goog.inherits(postile.view.search_box.SearchBox, postile.view.TipView);
 postile.view.search_box.SearchBox.prototype.unloaded_stylesheets = ['_search_box.css'];
 
 postile.view.search_box.SearchBox.prototype.search = function(instance) {
-    // people search result
-    var search_result_people = postile.dom.getDescendantById(this.container, "search_result_people");
-    var people_list = goog.dom.getElementByClass("search_result_content_list", search_result_people);
-
-    // topic search result
-    var search_result_topic = postile.dom.getDescendantById(this.container, "search_result_topic");
-    var topic_list = goog.dom.getElementByClass("search_result_content_list", search_result_topic);
-    topic_list.innerHTML = "";
-
-    // post search result
-    var search_result_post = postile.dom.getDescendantById(this.container, "search_result_post");
-    var post_list = goog.dom.getElementByClass("search_result_content_list", search_result_post);
-    post_list.innerHTML = "";
-
     var search_value = postile.dom.getDescendantById(this.container, "search_input_field").value;
 
-    if (search_value) {
-        postile.ajax(['search','search_user'], { keyword: search_value }, function(data) {
-            people_list.innerHTML = ""; // clear previous results
+    if (!search_value) { // search value is empty
+        /* hides all the search result containers */
+        this.search_result_containers = goog.dom.getElementsByClass("search_result_category");
+        for (i = 0; i < this.search_result_containers.length; i++) {
+            goog.style.showElement(this.search_result_containers[i], false);
+        }
+    } else {
+        postile.ajax([ 'search', 'search_user' ], { keyword: search_value }, function(data) {
+            this.people_list.innerHTML = ""; // clear previous results
 
             var user_arr = data.message.users;
 
             if (user_arr.length == 0) {
-                goog.style.showElement(search_result_people, false);
+                goog.style.showElement(this.search_result_people, false);
             } else {
-                goog.style.showElement(search_result_people, true);
+                goog.style.showElement(this.search_result_people, true);
             }
 
             for (i in user_arr) {
@@ -57,7 +56,7 @@ postile.view.search_box.SearchBox.prototype.search = function(instance) {
 
                 // people item
                 var people_result = goog.dom.createDom("div", "search_result_item search_result_people");
-                goog.dom.appendChild(people_list, people_result);
+                goog.dom.appendChild(this.people_list, people_result);
 
                 // profile image
                 var result_image_container = goog.dom.createDom("div", "search_result_image");
@@ -80,71 +79,36 @@ postile.view.search_box.SearchBox.prototype.search = function(instance) {
                 result_item_info.innerHTML = user.email;
                 goog.dom.appendChild(result_right_container, result_item_info);
             }
-        });
+        }.bind(this));
 
-        /*
-        postile.ajax(['search','search_topic'], { search: search_value }, function(data) {
-            topic_arr = JSON.parse(data.message);
-            if (topic_arr.length == 0) {
-                goog.style.showElement(search_result_topic, false);
+        postile.ajax(['search','search_post'], { keyword: search_value }, function(data) {
+            this.post_list.innerHTML = "";
+
+            post_arr = data.message.posts;
+
+            if (post_arr.length == 0) {
+                goog.style.showElement(this.search_result_post, false);
             } else {
-                goog.style.showElement(search_result_topic, true);
+                goog.style.showElement(this.search_result_post, true);
             }
-            for (i in topic_arr) {
-                topic = topic_arr[i];
-                console.log(topic);
+            for (i in post_arr) {
+                post = post_arr[i].post;
 
-                // topic item
-                var topic_result = goog.dom.createDom("div", "search_result_item search_result_topic");
-                goog.dom.appendChild(topic_list, topic_result);
+                var post_result = goog.dom.createDom("div", "search_result_item search_result_post");
+                goog.dom.appendChild(this.post_list, post_result);
 
-                // profile image
-                var result_image = goog.dom.createDom("div", "search_result_image");
-                goog.dom.appendChild(topic_result, result_image);
+                var result_item_title = goog.dom.createDom("div", "search_result_item_title");
+                result_item_title.innerHTML = post.title;
+                goog.dom.appendChild(post_result, result_item_title);
 
                 // right container
                 var result_right_container = goog.dom.createDom("div", "search_result_right_container");
-                goog.dom.appendChild(topic_result, result_right_container);
+                goog.dom.appendChild(post_result, result_right_container);
 
-                // title (name)
-                var result_item_title = goog.dom.createDom("div", "search_result_item_title");
-                result_item_title.innerHTML = topic.name;
-                goog.dom.appendChild(result_right_container, result_item_title);
-
-                // info (description)
                 var result_item_info = goog.dom.createDom("div", "search_result_item_info");
-                result_item_info.innerHTML = topic.description;
+                result_item_info.innerHTML = post.content;
                 goog.dom.appendChild(result_right_container, result_item_info);
             }
-        });
-
-        postile.ajax(['search','search_post'], { search: search_value }, function(data) {
-            post_arr = JSON.parse(data.message); // not sure why here I need one more level of parsing
-            if (post_arr.length == 0) {
-                goog.style.showElement(search_result_post, false);
-            } else {
-                goog.style.showElement(search_result_post, true);
-            }
-            for (i in post_arr) {
-                post = post_arr[i];
-
-                var post_result = goog.dom.createDom("div", "search_result_item search_result_post");
-                goog.dom.appendChild(post_list, post_result);
-
-                var item_title = goog.dom.createDom("div", "search_result_item_title");
-                item_title.innerHTML = post.title;
-                goog.dom.appendChild(post_result, item_title);
-            }
-        });
-        */
-    } else { // search value is empty
-        /* hides all the search result containers */
-        this.search_result_containers = goog.dom.getElementsByClass("search_result_category");
-        for (i = 0; i < this.search_result_containers.length; i++) {
-            goog.style.showElement(this.search_result_containers[i], false);
-        }
+        }.bind(this));
     }
 }
-
-
-
