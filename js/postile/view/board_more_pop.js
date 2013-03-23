@@ -25,7 +25,7 @@ postile.view.board_more_pop.BoardMorePop = function(input_instance) {
         console.log("star button called");
         (new postile.view.star.Star(this)).open(this.star_bt);
     });  
-        goog.events.listen(star_bt, goog.events.EventType.CLICK, function(e) {
+    goog.events.listen(star_bt, goog.events.EventType.CLICK, function(e) {
         console.log("star button called");
         (new postile.view.star.Star(this)).open(this.star_bt);
     });  

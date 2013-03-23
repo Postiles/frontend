@@ -53,8 +53,21 @@ postile.view.post_board.Header = function(board) {
     }.bind(this));
 
     var message_button = postile.dom.getDescendantById(instance.container, "message_button");
+
+
+    var notificationList;
+    /* get hte number of new notifications from server */
+    postile.ajax([ 'notification', 'get_notifications' ], {}, function(data) {
+        /* handle the data return after getting the boards information back */
+        notificationList = data.message.notification;
+        /* TODO add a notification to the mail box to notify user */
+
+        console.log(data);
+
+    }.bind(this));
+
     goog.events.listen(message_button, goog.events.EventType.CLICK, function(e) {
-        (new postile.view.notification.Notification(message_button)).open(message_button);
+        (new postile.view.notification.Notification(notificationList)).open(message_button);
     });
 
     var more_button = postile.dom.getDescendantById(instance.container, "popup_button");
