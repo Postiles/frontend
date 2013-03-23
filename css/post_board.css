@@ -248,12 +248,16 @@ html, body {
 .post_comment_icon {
   background-image: url("../images/comment_icon.png"); }
   
+/*
+  
 .post_edit_icon {
   background-image: url("../images/edit_icon.png"); }
   
 .post_delete_icon {
   background-image: url("../images/delete_icon.png"); }
 
+*/
+  
 /*
   
 .post_box {
