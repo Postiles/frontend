@@ -9,7 +9,8 @@ postile.view.post_board.Header = function(board) {
     var instance = this;
     
     this.board = board;
-    
+    console.log(instance.board.boardData);
+
     this.container.id = 'title_bar';
     
     postile.ui.load(this.container, postile.staticResource(['post_board_title_bar.html']));
@@ -48,9 +49,8 @@ postile.view.post_board.Header = function(board) {
     /* Buttons on the right up corner */
     var switch_board_button = postile.dom.getDescendantById(instance.container, "switch_board_button");
     goog.events.listen(switch_board_button, goog.events.EventType.CLICK, function(e) {
-        (new postile.view.board_more_pop.OtherBoard(switch_board_button)).open(switch_board_button);
-
-    });
+        (new postile.view.board_more_pop.OtherBoard(this.board)).open(switch_board_button);
+    }.bind(this));
 
     var message_button = postile.dom.getDescendantById(instance.container, "message_button");
     goog.events.listen(message_button, goog.events.EventType.CLICK, function(e) {
