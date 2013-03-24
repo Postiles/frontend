@@ -27,10 +27,10 @@ goog.inherits(postile.view.profile.ProfileView, postile.view.PopView);
 postile.view.profile.ProfileView.prototype.unloaded_stylesheets = ['_profile_preview.css'];
 
 postile.view.profile.ProfileView.prototype.displayableItems = [
-    [ 'location', 'Lives in ', 'profile-preview/work-icon.png' ], 
-    [ 'work', 'Works at ', 'profile-preview/work-icon.png' ],
-    [ 'education', 'Attends ', 'profile-preview/work-icon.png' ],
-    [ 'hometown', 'Comes from ', 'profile-preview/work-icon.png' ],
+    { name: 'location', description: 'Lives in ', icon: 'profile-preview/work-icon.png' }, 
+    { name: 'work', description: 'Works at ', icon: 'profile-preview/work-icon.png' },
+    { name: 'education', description: 'Attends ', icon: 'profile-preview/work-icon.png' },
+    { name: 'hometown', description: 'Comes from ', icon: 'profile-preview/work-icon.png' },
 ];
 
 postile.view.profile.ProfileView.prototype.initExitButton = function() {
@@ -54,12 +54,16 @@ postile.view.profile.ProfileView.prototype.initItems = function() {
     this.signiture_el = goog.dom.getElementByClass('signiture', this.container);
     this.signitureData_el = goog.dom.getElementByClass('data', this.signiture_el);
     this.signitureData_el.innerHTML = this.profile.signiture;
+
+    this.signiture_el.setAttribute('data-item', 'signiture');
     
     this.profileItems.push(this.signiture_el); // editable
 
     this.selfIntro_el = goog.dom.getElementByClass('self-intro', this.container);
     this.selfIntroData_el = goog.dom.getElementByClass('data', this.selfIntro_el);
     this.selfIntroData_el.innerHTML = this.profile.personal_description;
+
+    this.selfIntro_el.setAttribute('data-item', 'personal_description');
 
     this.profileItems.push(this.selfIntro_el); // editable
 
@@ -81,12 +85,9 @@ postile.view.profile.ProfileView.prototype.initItems = function() {
 
     for (i in this.displayableItems) {
         var item = this.displayableItems[i];
-        var itemName = item[0];
 
-        if (this.profile[itemName]) {
-            var itemDiscriptive = item[1];
-            var itemIcon = item[2];
-            var itemValue = this.profile[itemName];
+        if (this.profile[item.name]) {
+            var itemValue = this.profile[item.name];
 
             /* create new data item */
             var newItem = goog.dom.createDom('div', 'item');
@@ -96,16 +97,18 @@ postile.view.profile.ProfileView.prototype.initItems = function() {
             goog.dom.appendChild(newItem, newItemIcon);
 
             var newItemIconImg = goog.dom.createDom('img', null);
-            newItemIconImg.src = postile.imageResource([ itemIcon ]);
+            newItemIconImg.src = postile.imageResource([ item.icon ]);
             goog.dom.appendChild(newItemIcon, newItemIconImg);
 
             var newItemText = goog.dom.createDom('div', 'text');
-            newItemText.innerHTML = itemDiscriptive;
+            newItemText.innerHTML = item.description;
             goog.dom.appendChild(newItem, newItemText);
 
             var newItemTextData = goog.dom.createDom('span', 'data');
             newItemTextData.innerHTML = itemValue;
             goog.dom.appendChild(newItemText, newItemTextData);
+
+            newItem.setAttribute('data-item', item.name);
 
             if (this.isSelfProfile()) {
                 var newItemEditButton = goog.dom.createDom('div', 'edit');
@@ -119,7 +122,7 @@ postile.view.profile.ProfileView.prototype.initItems = function() {
 
     /* init edit function of data items */
     for (i in this.profileItems) {
-        item = new postile.view.profile.ProfileItem(this.profileItems[i], this);
+        new postile.view.profile.ProfileItem(this.profileItems[i], this);
     }
 }
 
@@ -160,13 +163,23 @@ postile.view.profile.ProfileItem.prototype.editClicked = function() {
     this.edit_el.innerHTML = 'Save';
 
     goog.events.removeAll(this.edit_el);
-    goog.events.listen(this.edit_el, goog.events.EventType.CLICK, this.saveClicked.bind(this));
+
+    goog.events.listen(this.edit_el, goog.events.EventType.CLICK, this.saveTriggered.bind(this));
+
+    /* save when enter key is pressed */
+    goog.events.listen(this.input_el, goog.events.EventType.KEYUP, function(e) {
+        if (e.keyCode == 13) { // enter pressed
+            this.saveTriggered();
+        }
+    }.bind(this));
 }
 
-postile.view.profile.ProfileItem.prototype.saveClicked = function() {
-    this.data_el.innerHTML = this.input_el.value;
+postile.view.profile.ProfileItem.prototype.saveTriggered = function() {
+    var item = this.baseDom.getAttribute('data-item');
+    postile.ajax([ 'profile', 'update_profile_item' ], { item: item, value: this.input_el.value }, function() {
+        this.data_el.innerHTML = this.input_el.value;
+        this.edit_el.innerHTML = 'Edit';
 
-    this.edit_el.innerHTML = 'Edit';
-
-    this.clearEvent();
+        this.clearEvent();
+    }.bind(this));
 }
