@@ -3,6 +3,7 @@ goog.provide('postile.view.search_box');
 goog.require('postile.view');
 goog.require('goog.dom');
 goog.require('goog.events');
+goog.require('goog.async.Throttle');
 
 postile.view.search_box.SearchBox = function(input_instance) {
     this.instance = input_instance;
@@ -22,7 +23,11 @@ postile.view.search_box.SearchBox = function(input_instance) {
     goog.style.showElement(this.search_result_post, false);
 
     this.search_input_field = postile.dom.getDescendantById(this.container, 'search_input_field');
-    goog.events.listen(this.search_input_field, goog.events.EventType.KEYUP, this.search.bind(this));
+    this.throttle = new goog.async.Throttle(this.search.bind(this), 1200, this.search_input_field);
+
+    goog.events.listen(this.search_input_field, goog.events.EventType.KEYUP, function(e) {
+        this.throttle.fire();
+    }.bind(this));
 }
 
 goog.inherits(postile.view.search_box.SearchBox, postile.view.TipView);
@@ -50,7 +55,7 @@ postile.view.search_box.SearchBox.prototype.search = function(instance) {
                 goog.style.showElement(this.search_result_people, true);
             }
 
-            for (i in user_arr) {
+            for (var i in user_arr) {
                 user = user_arr[i].user;
                 profile = user_arr[i].profile;
 

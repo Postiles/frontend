@@ -157,12 +157,17 @@ postile.view.profile.ProfileItem.prototype.editClicked = function() {
     } else {
         this.input_el = goog.dom.createDom('textarea', null);
     }
+
     this.input_el.value = this.data_val;
+
     goog.dom.appendChild(this.data_el, this.input_el);
 
     this.edit_el.innerHTML = 'Save';
 
     goog.events.removeAll(this.edit_el);
+
+    // set focus on the input field
+    this.input_el.focus();
 
     goog.events.listen(this.edit_el, goog.events.EventType.CLICK, this.saveTriggered.bind(this));
 
