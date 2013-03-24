@@ -13,33 +13,49 @@ postile.view.notification.Notification = function(notificationList) {
     this.container.style.top = '0px';
     this.container.style.left = '0px';
 
-    this.markRead = postile.dom.getDescendantById(this.container, 'mark_read');
+    this.markRead = postile.dom.getDescendantByClass(this.container, 'mark_read');
+    console.log(this.markRead);
+   
+    this.numberOfNotification = postile.dom.getDescendantById(this.container, 'number_of_unread');
+    this.numberOfNotification.innerHTML = notificationList.length;
+    this.numberOfUnread = notificationList.length;
+
     goog.events.listen(this.markRead, goog.events.EventType.CLICK, function() {
     	postile.ajax([ 'notification', 'dismiss_all' ], {}, function(data) {
 			// Nothing to do
     	}.bind(this));
+
+    	this.numberOfNotification.innerHTML = 0;
+    	/* how can I get thos notifications TODO */
+
     });
 
+	this.notificationListView = postile.dom.getDescendantById(this.container, 'notification_list');
 
-    this.numberOfNotification = postile.dom.getDescendantById(this.container, 'number_of_unread');
-    this.numberOfNotification.innerHTML = notificationList.length;
-
-    this.notificationListView = postile.dom.getDescendantById(this.container, 'notification_list');
-
-    for(i in notificationList){
-		var notificationType = notificationList[i].notification.notification_type;
-		console.log(notificationList[i]);
-		if(notificationType === 'write on') {
+    if(this.numberOfUnread > 6){
+    	for (var i = 0; i < 6; i++) {
+			var notificationType = notificationList[i].notification.notification_type;
 			(new postile.view.notification.InfoItem()).render(this.notificationListView, notificationList[i].notification, notificationList[i].from_user_profile);
-		}
-    }
+	    }
 
-    // See more part more see more 
-    this.notificationMore = goog.dom.createDom('div', 'notification_more');
+	}else {
+	    for(i in notificationList){
+			var notificationType = notificationList[i].notification.notification_type;
+			(new postile.view.notification.InfoItem()).render(this.notificationListView, notificationList[i].notification, notificationList[i].from_user_profile);
+	    }
+	}
+
+    // See more part more see more
+
+}
+
+postile.view.notification.Notification.prototype.seeMore = function() {
+	this.notificationMore = goog.dom.createDom('div', 'notification_more');
     goog.dom.appendChild(this.notificationListView, this.notificationMore);
 
     goog.dom.appendChild(this.notificationMore, goog.dom.createDom('p','','See More'));
 }
+
 
 
 /* base class and thier dummy subclasses */
@@ -51,6 +67,9 @@ postile.view.notification.InfoItem = function() {
 postile.view.notification.FriendItem = function() {
 	postile.view.notification.NotificationItem.call(this);
 }
+
+postile.view.notification.TypeMap = {'reply in post':'write on'};
+
 
 postile.view.notification.InfoItem.prototype.render = function(parent, data, fromUser) {
 
@@ -82,8 +101,7 @@ postile.view.notification.InfoItem.prototype.render = function(parent, data, fro
 		new postile.view.profile.ProfileView(fromUserId);
 	});
 
-	goog.dom.appendChild(this.notificationTitle, goog.dom.createDom('p','',' ' + notificationType +' '));
-
+	goog.dom.appendChild(this.notificationTitle, goog.dom.createDom('p','',' ' + postile.view.notification.TypeMap[notificationType] +' '));
 	this.targetPost = goog.dom.createDom('p', 'post_text_link', 'your post');
 	goog.dom.appendChild(this.notificationTitle, this.targetPost);
 
@@ -105,8 +123,18 @@ postile.view.notification.InfoItem.prototype.render = function(parent, data, fro
 
 postile.view.notification.InfoItem.prototype.userHandle = function() {
 	postile.ajax([ 'notification', 'dismiss' ], {notification_id: this.notification_id}, function(data) {
-		// Nothing to do
+		this.removeFromList();
     }.bind(this));
+}
+
+postile.view.notification.InfoItem.prototype.removeFromList = function() {
+	goog.dom.removeNode(this.notificationItem);
+
+	var numberOfNotification = goog.dom.getElement('number_of_unread');
+	var numberOfUnread = numberOfNotification.innerHTML;
+	numberOfUnread--;
+
+	numberOfNotification.innerHTML = numberOfUnread;
 }
 
 goog.inherits(postile.view.notification.Notification, postile.view.TipView);

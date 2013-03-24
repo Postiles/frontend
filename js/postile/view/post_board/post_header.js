@@ -77,4 +77,4 @@ postile.view.post_board.Header = function(board) {
     
 }
 
-goog.inherits(postile.view.post_board.Header, postile.view.FullScreenView);
+goog.inherits(postile.view.post_board.Header, postile.view.NormalView);
