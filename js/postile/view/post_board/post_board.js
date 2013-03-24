@@ -134,7 +134,6 @@ postile.view.post_board.PostBoard = function(board_id) { //constructor
 
     //initialize according to board_id
     postile.ajax(['board','enter_board'], { board_id: board_id }, function(data) {
-        console.log(data.message);
         instance.boardData = data.message.board;
         instance.userData = data.message.user;
         instance.profileData = data.message.profile;
@@ -486,6 +485,7 @@ postile.view.post_board.PostBoard.prototype.renderArray = function(array) { //ad
 postile.view.post_board.PostBoard.prototype.fayeHandler = function(status, data) {
     switch (status) {
         case postile.view.post_board.faye_status.FINISH:
+            console.log(data);
             this.currentPosts[data.post.id].enable();
             this.renderArray([data]);
             break;
@@ -555,10 +555,10 @@ postile.view.post_board.FunctionButton.prototype.close = function() {
 }
 
 postile.view.post_board.faye_status = {
-    START: 0,
-    DELETE: 1,
-    TERMINATE: 2,
-    FINISH: 3,
-    INLINE_COMMENT: 4,
-    LINK_TO: 5,
+    START: 'start',
+    DELETE: 'delete',
+    TERMINATE: 'terminate',
+    FINISH: 'finish',
+    INLINE_COMMENT: 'inline_comment',
+    NOTIFICATION: 'notification',
 }

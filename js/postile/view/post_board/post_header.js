@@ -10,7 +10,6 @@ postile.view.post_board.Header = function(board) {
     var instance = this;
     
     this.board = board;
-    console.log(instance.board.boardData);
 
     this.container.id = 'title_bar';
     
@@ -55,15 +54,18 @@ postile.view.post_board.Header = function(board) {
 
     var message_button = postile.dom.getDescendantById(instance.container, "message_button");
 
-
     var notificationList;
     /* get hte number of new notifications from server */
     postile.ajax([ 'notification', 'get_notifications' ], {}, function(data) {
         /* handle the data return after getting the boards information back */
         notificationList = data.message.notifications;
         /* TODO add a notification to the mail box to notify user */
-        console.log(data);
     }.bind(this));
+
+    console.log('/notification/' + instance.board.userData.id);
+    postile.faye.subscribe('notification/' + instance.board.userData.id, function(status, data) {
+        instance.notificationHandler(data);
+    });
 
     goog.events.listen(message_button, goog.events.EventType.CLICK, function(e) {
         (new postile.view.notification.Notification(notificationList)).open(message_button);
@@ -73,8 +75,10 @@ postile.view.post_board.Header = function(board) {
     goog.events.listen(more_button, goog.events.EventType.CLICK, function(e) {
         (new postile.view.board_more_pop.BoardMorePop(more_button)).open(more_button);
     });
-    
-    
 }
 
 goog.inherits(postile.view.post_board.Header, postile.view.NormalView);
+
+postile.view.post_board.Header.prototype.notificationHandler = function(data) {
+    alert('you have a new fucking notification!');
+}
