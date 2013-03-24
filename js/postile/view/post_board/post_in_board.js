@@ -252,6 +252,15 @@ postile.view.post_in_board.InlineCommentsBlock = function(postObj) {
         });
         postile.ui.startLoading(instance.text_input);
     });
+
+    var fullAtRe = /\@(.*)?\[(.*)?\]/;
+    goog.events.listen(this.text_input, goog.events.EventType.KEYUP, function() {
+        var innerHTML = instance.text_input.innerHTML;
+        var match = fullAtRe.exec(innerHTML);
+        if (match) {
+            console.log(match);
+        }
+    });
     
     this.text_input.contentEditable = "true";
 

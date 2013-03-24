@@ -16,7 +16,7 @@ postile.view.search_box.SearchBox = function(input_instance) {
 
     this.search_input_field = goog.dom.getElement("search_input_field");
     console.log(this.search_input_field);
-    // goog.events.listen(this.search_input_field, goog.events.EventType.KEYUP, this.search.bind(this));
+    goog.events.listen(this.search_input_field, goog.events.EventType.KEYUP, this.search.bind(this));
 }
 
 goog.inherits(postile.view.search_box.SearchBox, postile.view.TipView);
@@ -40,6 +40,7 @@ postile.view.search_box.SearchBox.prototype.search = function(instance) {
     post_list.innerHTML = "";
 
     var search_value = goog.dom.getElement("search_input_field").value;
+    console.log(search_value);
 
     if (search_value) {
         postile.ajax(['search','search_user'], { search: search_value }, function(data) {
