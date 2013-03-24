@@ -60,6 +60,7 @@
   border-right: 6px solid transparent; }
 
 #search_result_container {
+  display: hidden;
   width: 300px; }
 
 .search_result_category {
