@@ -13,7 +13,6 @@ postile.view.profile.ProfileView = function(id) { // constructor
     this.user_id = id;
 
     postile.ajax([ 'profile', 'get_profile' ], { target_user_id: this.user_id }, function(data) {
-        console.log(data);
         this.profile = data.message.profile;
 
         this.initItems();
@@ -55,13 +54,28 @@ postile.view.profile.ProfileView.prototype.initItems = function() {
     this.signiture_el = goog.dom.getElementByClass('signiture', this.container);
     this.signitureData_el = goog.dom.getElementByClass('data', this.signiture_el);
     this.signitureData_el.innerHTML = this.profile.signiture;
+    
     this.profileItems.push(this.signiture_el); // editable
 
     this.selfIntro_el = goog.dom.getElementByClass('self-intro', this.container);
     this.selfIntroData_el = goog.dom.getElementByClass('data', this.selfIntro_el);
     this.selfIntroData_el.innerHTML = this.profile.personal_description;
+
     this.profileItems.push(this.selfIntro_el); // editable
 
+    if (this.isSelfProfile()) {
+        this.pictureEdit_el = goog.dom.createDom('span', 'edit');
+        this.pictureEdit_el.innerHTML = 'Edit Profile Picture';
+        goog.dom.appendChild(this.picture_el, this.pictureEdit_el);
+
+        this.signitureEdit_el = goog.dom.createDom('span', 'edit');
+        this.signitureEdit_el.innerHTML = 'Edit';
+        goog.dom.appendChild(this.signiture_el, this.signitureEdit_el);
+
+        this.selfIntroEdit_el = goog.dom.createDom('span', 'edit');
+        this.selfIntroEdit_el.innerHTML = 'Edit';
+        goog.dom.appendChild(this.selfIntro_el, this.selfIntroEdit_el);
+    }
     /* display the valid data items available in the profile */
     this.itemContainer_el = goog.dom.getElementByClass('item-container', this.container);
 
@@ -93,9 +107,11 @@ postile.view.profile.ProfileView.prototype.initItems = function() {
             newItemTextData.innerHTML = itemValue;
             goog.dom.appendChild(newItemText, newItemTextData);
 
-            var newItemEditButton = goog.dom.createDom('div', 'edit');
-            newItemEditButton.innerHTML = 'edit';
-            goog.dom.appendChild(newItem, newItemEditButton);
+            if (this.isSelfProfile()) {
+                var newItemEditButton = goog.dom.createDom('div', 'edit');
+                newItemEditButton.innerHTML = 'edit';
+                goog.dom.appendChild(newItem, newItemEditButton);
+            }
 
             this.profileItems.push(newItem); // add item to container for editing
         }
@@ -103,18 +119,24 @@ postile.view.profile.ProfileView.prototype.initItems = function() {
 
     /* init edit function of data items */
     for (i in this.profileItems) {
-        item = new postile.view.profile.ProfileItem(this.profileItems[i]);
+        item = new postile.view.profile.ProfileItem(this.profileItems[i], this);
     }
 }
 
-postile.view.profile.ProfileItem = function(baseDom) { // constructor
+postile.view.profile.ProfileView.prototype.isSelfProfile = function() {
+    return this.user_id == localStorage.postile_user_id;
+}
+
+postile.view.profile.ProfileItem = function(baseDom, profileInstance) { // constructor
     this.baseDom = baseDom;
     this.className = goog.dom.classes.get(this.baseDom)[0];
 
     this.data_el = goog.dom.getElementByClass('data', this.baseDom);
     this.edit_el = goog.dom.getElementByClass('edit', this.baseDom);
 
-    this.clearEvent();
+    if (profileInstance.isSelfProfile()) {
+        this.clearEvent();
+    }
 }
 
 postile.view.profile.ProfileItem.prototype.clearEvent = function() {
