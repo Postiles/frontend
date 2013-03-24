@@ -23,6 +23,7 @@ postile.view.post_in_board.Post = function(object, board) {
     this.board = board;
     this.blur_timeout = null;
     this.disabled = false;
+    this.in_edit = false;
     this.wrap_el = goog.dom.createDom('div', 'post_wrap');
     goog.dom.appendChild(this.board.canvas, this.wrap_el);
     this.render(object, true);
@@ -76,6 +77,12 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
     }
     this.post_author_el.innerHTML = 'By ' + this.creator.username;
     this.post_content_el.innerHTML = postile.parseBBcode(this.post.content);
+    
+    if (this.post.creator_id == localStorage.postile_user_id) { //created by current user
+        goog.events.listen(this.post_content_el, goog.events.EventType.CLICK, function() {
+            instance.edit();
+        });
+    }
     this.post_icon_container_init();
     if (animation) {
         postile.fx.effects.resizeIn(this.wrap_el);
@@ -129,13 +136,6 @@ postile.view.post_in_board.Post.prototype.post_icon_container_init = function() 
     addIcon("share");
     
     goog.events.listen(addIcon("comment"), goog.events.EventType.CLICK, function() { instance.inline_comments_block = new postile.view.post_in_board.InlineCommentsBlock(instance); });
-    
-    if (this.post.user_id == localStorage.postile_user_id) { //created by current user
-        goog.events.listen(addIcon("edit"), goog.events.EventType.CLICK, function() { instance.edit(); });
-        goog.events.listen(addIcon("delete"), goog.events.EventType.CLICK, function() { 
-            new postile.view.confirm_delete.ConfirmDelete(instance).open(this);
-        });
-    }
 }
 
 postile.view.post_in_board.Post.prototype.disable = function() {
@@ -154,6 +154,11 @@ postile.view.post_in_board.Post.prototype.submitEdit = function(to_submit) {
     var instance = this;
     var original_title = instance.post.title;
     var original_value = instance.post.text_content;
+    var lels = instance.board.picker.all_lkd_el;
+    for (i in lels) {
+        goog.dom.removeNode(lels[i]);
+    }
+    lels = [];
     if (postile.string.empty(to_submit.content)) { 
         var the_id = instance.id;
         if (confirm("Leaving a post blank will effectively delete this post. Confirm to proceed?")) {
@@ -168,6 +173,7 @@ postile.view.post_in_board.Post.prototype.submitEdit = function(to_submit) {
     var submit_waiting = new postile.toast.Toast(0, "Please wait... We're submitting... Be ready for 36s.");
     instance.disable();
     postile.ajax(['post','submit_change'], to_submit, function(data) {
+        instance.enable();
         instance.render(data.message);
         submit_waiting.abort();
         var revert_waiting = new postile.toast.Toast(5, "Changes made. [Revert changes].", [function(){ 
@@ -178,6 +184,7 @@ postile.view.post_in_board.Post.prototype.submitEdit = function(to_submit) {
                 revert_waiting.abort();
                 postile.ajax(['post','submit_change'], { post_id: data.message.post.id, content: original_value, title: original_title }, function(data) {
                     revert_submit_waiting.abort();
+                    instance.enable();
                     instance.render(data.message);
                 });
             }
@@ -197,13 +204,20 @@ postile.view.post_in_board.Post.prototype.removeFromBoard = function() {
 }
 
 postile.view.post_in_board.Post.prototype.edit = function() {
+    if (this.in_edit) { return; }
     var instance = this;
     var start_waiting = new postile.toast.Toast(0, "Please wait... We're starting editing... Be ready for 36s.");
     this.disable();
     var go_editing = function() {
+        instance.in_edit = true;
         instance.post_expand_listener.unlisten();
         goog.dom.classes.add(instance.post_title_el, 'selectable');
         goog.dom.classes.add(instance.post_content_el, 'selectable');
+        var delete_icon = goog.dom.createDom('div', 'post_remove_icon');
+        goog.dom.appendChild(instance.container_el, delete_icon);
+        goog.events.listen(delete_icon, goog.events.EventType.CLICK, function() {
+            new postile.view.confirm_delete.ConfirmDelete(instance).open(this);
+        });
         postile.ui.makeLabeledInput(instance.post_title_el, postile._('post_title_prompt'), 'half_opaque', function(){
             instance.post_content_el.focus();
         });
@@ -213,19 +227,17 @@ postile.view.post_in_board.Post.prototype.edit = function() {
         instance.board.disableMovingCanvas = true; //disable moving
         instance.enable();
         start_waiting.abort();
-        var blurHandler = function(e) {
-            console.trace();
-            instance.blur_timeout = setTimeout(function(){ 
-                //instance.board.mask.style.display = 'none'; //close mask, if any
-                instance.submitEdit({ post_id: instance.post.id, content: y_editor.getBbCode(), title: instance.post_title_el.innerHTML ==  postile._('post_title_prompt') ? '' : postile.string.stripString(instance.post_title_el.innerHTML) });}, 1200);
-        };
-        var focusHandler = function(e) {
-            clearTimeout(instance.blur_timeout);
-        };
-        goog.events.listen(y_editor.editor_el, goog.events.EventType.BLUR, blurHandler);
-        goog.events.listen(instance.post_title_el, goog.events.EventType.BLUR, blurHandler);
-        goog.events.listen(y_editor.editor_el, goog.events.EventType.FOCUS, focusHandler);
-        goog.events.listen(instance.post_title_el, goog.events.EventType.FOCUS, focusHandler);
+        var bodyHandler = new postile.events.EventHandler(document.body, goog.events.EventType.CLICK, function(){
+            instance.submitEdit({ post_id: instance.post.id, content: y_editor.getBbCode(), title: instance.post_title_el.innerHTML ==  postile._('post_title_prompt') ? '' : postile.string.stripString(instance.post_title_el.innerHTML) });
+            bodyHandler.unlisten();
+            postHandler.unlisten();
+            instance.in_edit = false;
+        });
+        var postHandler = new postile.events.EventHandler(instance.container_el, goog.events.EventType.CLICK, function(evt){
+            evt.stopPropagation();
+        });
+        bodyHandler.listen();
+        postHandler.listen();
         y_editor.editor_el.focus();
     }
     postile.ajax(['post','start_edit'], { post_id: this.post.id }, go_editing);

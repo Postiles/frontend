@@ -16,3 +16,18 @@ postile.events.EventHandler.prototype.listen = function() {
 postile.events.EventHandler.prototype.unlisten = function() {
     goog.events.unlisten(this.subject, this.action, this.handler, this.usecapture);
 }
+
+postile.events.valueChangeEvent = function(subject, handler) {
+    var currentVal;
+    var myHandler = function() {
+        if (currentVal == subject.innerHTML) {
+            return;
+        }
+        handler();
+        currentVal = subject.innerHTML;
+    }
+    goog.events.listen(subject, goog.events.EventType.KEYUP, myHandler);
+    goog.events.listen(subject, goog.events.EventType.INPUT, myHandler);
+    goog.events.listen(subject, goog.events.EventType.CUT, myHandler);
+    goog.events.listen(subject, goog.events.EventType.PASTE, myHandler);
+}

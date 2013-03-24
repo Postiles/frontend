@@ -18,6 +18,7 @@ postile = { //the base of posTile frontend framework
     dport: 3000,
     fayeLocation: null,
     wrapper: null,
+    error_log: [],
     staticResource: function(input) {
         return "/templates/" + input.join("/");
     },
@@ -43,8 +44,16 @@ postile = { //the base of posTile frontend framework
         postile.router.rescue(function(){ alert('Bad route.'); });
         postile.router.dispatch(window.location.pathname);
     },
+    logError: function(e) {
+        var err = e.getBrowserEvent();
+        if (postile.error_log.length > 40) {
+            postile.error_log.splice(0, 20);
+        }
+        postile.error_log.push({ lineno: err.lineno, filename: err.filename, message: err.message });
+    },
     load: function() {
-        postile.browser_compat.load();
+        goog.events.listen(window, goog.events.EventType.ERROR, postile.logError);
+        postile.browser_compat.load(); //and that function will call postile.init
     },
     router_map: function() {
         postile.router.map('/test/:id/:port').to(function(){
