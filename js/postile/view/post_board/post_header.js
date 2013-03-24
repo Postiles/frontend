@@ -26,8 +26,17 @@ postile.view.post_board.Header = function(board) {
     this.usernameText_el.innerHTML = this.board.userData.username;
 
     /* Fei Pure for testing */
-    goog.events.listen(this.usernameText_el , goog.events.EventType.CLICK, function(e) {
+    goog.events.listen(this.usernameText_el, goog.events.EventType.CLICK, function(e) {
         new postile.view.image_upload.ImageUploadBlock(this);
+    });
+
+    /* settings button */
+    this.settingButton_el = postile.dom.getDescendantById(instance.container, 'setting_button');
+
+    /* logout button */
+    this.logoutButton_el = postile.dom.getDescendantById(instance.container, 'logout_button');
+    goog.events.listen(this.logoutButton_el, goog.events.EventType.CLICK, function(e) {
+        postile.user.logout();
     });
 
     /* testing end */

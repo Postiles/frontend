@@ -117,7 +117,9 @@ postile.ajax.fetchedHandler = function(onsuccess, onfail, receivedText) {
         } else if (typeof onfail == 'function') {
             onfail(received);
         }
-    } else if (typeof onsuccess == 'function') { onsuccess(received); }
+    } else if (typeof onsuccess == 'function') { 
+        onsuccess(received); 
+    }
     postile.ajax.notifier.hide();
 };
 
@@ -132,6 +134,10 @@ postile.ajax.notifier.networkError = function(error_string) { //network error
 }
 
 postile.ajax.expection_handlers = { //exception_string and corresponding handler functions.
+    USER_NOT_FOUND: function() {
+        postile.user.openLoginBox();
+        return false;
+    },
     USER_NOT_LOGGED_IN: function() {
         postile.user.openLoginBox();
         return false;
