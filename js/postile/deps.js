@@ -30,7 +30,7 @@ goog.addDependency('../postile/view/post_board/post_board.js', ['postile.view.po
 goog.addDependency('../postile/view/post_board/post_header.js', ['postile.view.post_board.Header'], ['goog.events', 'postile.dom', 'postile.view.notification']);
 goog.addDependency('../postile/view/post_board/post_in_board.js', ['postile.view.post_in_board'], ['goog.dom', 'goog.dom.classes', 'goog.events', 'goog.events.KeyHandler', 'goog.object', 'goog.string', 'goog.style', 'goog.ui.LabelInput', 'postile.WYSIWYF', 'postile.debbcode', 'postile.dom', 'postile.fx', 'postile.fx.effects', 'postile.i18n', 'postile.string', 'postile.toast', 'postile.ui', 'postile.view.post']);
 goog.addDependency('../postile/view/post_board/post_picker.js', ['postile.view.post_board.post_picker'], ['goog.dom', 'goog.events', 'postile.fx', 'postile.view.post_board']);
-goog.addDependency('../postile/view/search_box.js', ['postile.view.search_box'], ['goog.dom', 'goog.events', 'postile.view']);
+goog.addDependency('../postile/view/search_box.js', ['postile.view.search_box'], ['goog.async.Throttle', 'goog.dom', 'goog.events', 'postile.view']);
 goog.addDependency('../postile/view/star.js', ['postile.view.star'], ['goog.dom', 'goog.events', 'postile.view']);
 goog.addDependency('../postile/view/topic_list/topic_list.js', ['postile.view.topic_list'], ['postile.view']);
 goog.addDependency('../postile/view/user_admin/create_user.js', ['postile.view.create_user'], ['goog.dom', 'goog.events', 'postile.view']);
