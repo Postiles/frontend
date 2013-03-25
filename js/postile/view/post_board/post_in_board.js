@@ -252,7 +252,6 @@ postile.view.post_in_board.Post.prototype.edit = function() {
 }
 
 postile.view.post_in_board.resolveAtPerson = function(displayText) {
-    console.log(displayText);
     return displayText.replace(/<span[^<>]*at\-user="(\d+)"[^<>]*> @[^<]+ <\/span>/, '[at]$1[/at]');
 }
 

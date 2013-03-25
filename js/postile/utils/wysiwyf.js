@@ -2,6 +2,7 @@ goog.provide('postile.WYSIWYF');
 
 goog.require('postile.dom');
 goog.require('goog.dom');
+goog.require('postile.view.At');
 
 /*******************************************************
 Note: content below does not use ANY Google Closure code
@@ -44,6 +45,11 @@ postile.WYSIWYF = {
             } else if (t == 'U') {
                 cStyle.Underline = true;
             } else if (t == 'SPAN' || t == 'FONT') {
+                var ltid = cont.getAttribute('at-user');
+                if (ltid) {
+                    b[a.length] += '[at]' + ltid + '[/at]';
+                    return;
+                }
                 if (cont.style.fontWeight == 'normal') {
                     cStyle.Bold = false;
                 } else if (cont.style.fontWeight == 'bold') {
@@ -102,7 +108,7 @@ postile.WYSIWYF = {
             editor.buttons[i].style.padding = '0';
             editor.buttons[i].style.backgroundPosition = postile.WYSIWYF.editButtons[i].bgPos;
             editor.buttons[i].addEventListener('mousedown', function(evt) { evt.preventDefault(); });
-            editor.buttons[i].onclick = function() { editor.buttonOperate(this.style.backgroundPosition.toLowerCase()); }
+            editor.buttons[i].onclick = function() { if (!editor.selectionInEditor()) { return; } editor.buttonOperate(this.style.backgroundPosition.toLowerCase()); } 
             icon_container_el.appendChild(editor.buttons[i]);
         }
         editor.toDisplayMode(0);
@@ -124,19 +130,24 @@ postile.WYSIWYF = {
             }
         });
         editor.onEditListener.listen();
+        editor.at = new postile.view.At(this.editor_el);
     },
     /******Define buttons and corresponding operations******/
     editButtons: new Array(
     {
         bgPos: '-' + (13 * 3) + 'px 0px',
         callback: function (editor) {
-            //Link
-            document.execCommand('CreateLink', false, prompt('Enter link address (URL)', 'http://'));
+            //At
+            var range = window.getSelection().getRangeAt(0);
+            range.collapse();
+            range.insertNode(document.createTextNode('@'));
+            editor.at.open();
         },
         display: [true, true]
     }, {
         bgPos: '-' + (13 * 8) + 'px 0px',
         callback: function (editor) {
+            //Link to post
             var picker = editor.post.board.picker;
             var img_el;
             document.execCommand('InsertImage', false, postile.imageResource(['link_icon.png']));
@@ -327,3 +338,14 @@ postile.WYSIWYF.Editor.prototype.toDisplayMode = function (displayOptionIndex){
         }
     }
 };
+
+postile.WYSIWYF.Editor.prototype.selectionInEditor = function() {
+    var sel = window.getSelection();
+    if (!sel.rangeCount) { return; }
+    var range = sel.getRangeAt(0);
+    var temp = range.commonAncestorContainer;
+    do {
+        if (temp == this.editor_el) { return true; }
+    } while (temp = temp.parentNode);
+    return false;
+}
