@@ -485,21 +485,18 @@ postile.view.post_board.PostBoard.prototype.renderArray = function(array) { //ad
 postile.view.post_board.PostBoard.prototype.fayeHandler = function(status, data) {
     switch (status) {
         case postile.view.post_board.faye_status.FINISH:
-            console.log(data);
             this.currentPosts[data.post.id].enable();
             this.renderArray([data]);
             break;
         case postile.view.post_board.faye_status.START:
-            //waiting for lunba to give username
-            if (data.id in this.currentPosts) {
+            if (data.post.id in this.currentPosts) {
                 this.currentPosts[data.post.id].disable();
             } else {
                 this.renderArray([data]);
             }
             break;
         case postile.view.post_board.faye_status.DELETE:
-             //waiting for lunba to give username
-            if (data.id in this.currentPosts) {
+            if (data.post.id in this.currentPosts) {
                 this.currentPosts[data.post.id].removeFromBoard();
             }
             break;

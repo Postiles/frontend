@@ -41,25 +41,25 @@ goog.inherits(postile.view.post.PostExpand, postile.view.PopView);
 postile.view.post.PostExpand.prototype.unloaded_stylesheets = ['_post_expand.css'];
 
 postile.view.post.PostExpand.prototype.initComments = function() {
-    /*
-    this.commentBox_el = goog.dom.getElementByClass('comment-box', this.post_el);
-    this.commentProfileImg = goog.dom.getElementsByTagNameAndClass('img', null, this.commentBox_el);
+    this.commentBox_el = postile.dom.getDescendantByClass(this.post_el, 'comment-box');
+    this.commentProfileImg = postile.dom.getDescendantByClass(this.commentBox_el, 'img');
     this.commentProfileImg.src = postile.uploadsResource([ this.profileData.image_small_url ]);
-    */
 
     postile.ajax([ 'inline_comment', 'get_inline_comments' ], { post_id: this.postData.id }, function(data) {
         this.comments = data.message.inline_comments;
         for (var i in this.comments) {
             var cmt = this.comments[i];
+            console.log(cmt);
 
             var comment_el = goog.dom.createDom('div', 'comment');
             goog.dom.appendChild(this.commentContainer_el, comment_el);
 
-            var profileImageContainer_el = goog.dom.createDom('div', 'profile-img');
+            var profileImageContainer_el = goog.dom.createDom('div', 'profile-image');
             goog.dom.appendChild(comment_el, profileImageContainer_el);
 
             var profileImage_el = goog.dom.createDom('img', 'img');
             goog.dom.appendChild(profileImageContainer_el, profileImage_el);
+            profileImage_el.src = postile.uploadsResource([ cmt.profile.image_small_url ]);
 
             var commentRight_el = goog.dom.createDom('div', 'comment-right');
             goog.dom.appendChild(comment_el, commentRight_el);
