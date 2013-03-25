@@ -135,16 +135,6 @@ postile.WYSIWYF = {
     /******Define buttons and corresponding operations******/
     editButtons: new Array(
     {
-        bgPos: '-' + (13 * 3) + 'px 0px',
-        callback: function (editor) {
-            //At
-            var range = window.getSelection().getRangeAt(0);
-            range.collapse();
-            range.insertNode(document.createTextNode('@'));
-            editor.at.open();
-        },
-        display: [true, true]
-    }, {
         bgPos: '-' + (13 * 8) + 'px 0px',
         callback: function (editor) {
             //Link to post
