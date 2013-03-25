@@ -474,7 +474,7 @@ postile.view.post_board.PostBoard.prototype.renderArray = function(array) { //ad
     var animation = null;
     for (i in array) {
         if (!array[i].post.id) { return; }
-        if (array[i].post.id in this.currentPosts) { //if so
+        if (array[i].post.id in this.currentPosts) { //if so // so what?
             this.currentPosts[array[i].post.id].render(array[i]);
         } else {
             this.currentPosts[array[i].post.id] = new postile.view.post_in_board.Post(array[i], this);
@@ -485,18 +485,21 @@ postile.view.post_board.PostBoard.prototype.renderArray = function(array) { //ad
 postile.view.post_board.PostBoard.prototype.fayeHandler = function(status, data) {
     switch (status) {
         case postile.view.post_board.faye_status.FINISH:
+            console.log(data);
             this.currentPosts[data.post.id].enable();
             this.renderArray([data]);
             break;
         case postile.view.post_board.faye_status.START:
-            if (data.post.id in this.currentPosts) {
+            //waiting for lunba to give username
+            if (data.id in this.currentPosts) {
                 this.currentPosts[data.post.id].disable();
             } else {
                 this.renderArray([data]);
             }
             break;
         case postile.view.post_board.faye_status.DELETE:
-            if (data.post.id in this.currentPosts) {
+             //waiting for lunba to give username
+            if (data.id in this.currentPosts) {
                 this.currentPosts[data.post.id].removeFromBoard();
             }
             break;
