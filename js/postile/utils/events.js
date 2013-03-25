@@ -17,7 +17,7 @@ postile.events.EventHandler.prototype.unlisten = function() {
     goog.events.unlisten(this.subject, this.action, this.handler, this.usecapture);
 }
 
-postile.events.valueChangeEvent = function(subject, handler) {
+postile.events.ValueChangeEvent = function(subject, handler) {
     var currentVal;
     var myHandler = function() {
         if (currentVal == subject.innerHTML) {
@@ -26,8 +26,16 @@ postile.events.valueChangeEvent = function(subject, handler) {
         handler();
         currentVal = subject.innerHTML;
     }
-    goog.events.listen(subject, goog.events.EventType.KEYUP, myHandler);
-    goog.events.listen(subject, goog.events.EventType.INPUT, myHandler);
-    goog.events.listen(subject, goog.events.EventType.CUT, myHandler);
-    goog.events.listen(subject, goog.events.EventType.PASTE, myHandler);
+    this.listeners = [new postile.events.EventHandler(subject, goog.events.EventType.KEYUP, myHandler),
+    new postile.events.EventHandler(subject, goog.events.EventType.INPUT, myHandler),
+    new postile.events.EventHandler(subject, goog.events.EventType.CUT, myHandler),
+    new postile.events.EventHandler(subject, goog.events.EventType.PASTE, myHandler)];
+}
+
+postile.events.ValueChangeEvent.prototype.listen = function() {
+    for (var i in this.listeners) { this.listeners[i].listen(); }
+}
+
+postile.events.ValueChangeEvent.prototype.unlisten = function() {
+    for (var i in this.listeners) { this.listeners[i].unlisten(); }
 }

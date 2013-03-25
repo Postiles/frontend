@@ -106,7 +106,7 @@ postile.WYSIWYF = {
             icon_container_el.appendChild(editor.buttons[i]);
         }
         editor.toDisplayMode(0);
-        postile.events.valueChangeEvent(editor.editor_el, function(){
+        editor.onEditListener = new postile.events.ValueChangeEvent(editor.editor_el, function(){
             var i;
             var links = postile.dom.getDescendantsByCondition(editor.editor_el, function(el) {
                 return el.tagName && el.tagName.toUpperCase() == 'IMG' && el.src.indexOf(postile.imageResource(['link_icon.png'])) > -1;
@@ -123,6 +123,7 @@ postile.WYSIWYF = {
                 }
             }
         });
+        editor.onEditListener.listen();
     },
     /******Define buttons and corresponding operations******/
     editButtons: new Array(
