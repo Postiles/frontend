@@ -249,6 +249,11 @@ postile.view.post_in_board.Post.prototype.edit = function() {
     postile.ajax(['post','start_edit'], { post_id: this.post.id }, go_editing);
 }
 
+postile.view.post_in_board.resolveAtPerson = function(displayText) {
+    console.log(displayText);
+    return displayText.replace(/<span[^<>]*at\-user="(\d+)"[^<>]*> @[^<]+ <\/span>/, '[at]$1[/at]');
+}
+
 postile.view.post_in_board.InlineCommentsBlock = function(postObj) {
     var instance = this;
     var tmp_el;
@@ -261,7 +266,7 @@ postile.view.post_in_board.InlineCommentsBlock = function(postObj) {
 
     postile.ui.makeLabeledInput(this.text_input, postile._('inline_comment_prompt'), 'inactive', function() {
         postile.ajax(['inline_comment','new'], { post_id: postObj.post.id, 
-                content: instance.text_input.innerHTML }, function(data) {
+                content: postile.string.stripString(postile.view.post_in_board.resolveAtPerson(instance.text_input.innerHTML)) }, function(data) {
                     if (data.status == postile.ajax.status.OK) {
                         postile.fx.effects.verticalExpand((new postile.view.post_in_board.InlineComment(instance, data.message)).comment_container);
                         postile.ui.stopLoading(instance.text_input);
@@ -271,15 +276,6 @@ postile.view.post_in_board.InlineCommentsBlock = function(postObj) {
         postile.ui.startLoading(instance.text_input);
     });
 
-    var fullAtRe = /\@(.*)?\[(.*)?\]/;
-    goog.events.listen(this.text_input, goog.events.EventType.KEYUP, function() {
-        var innerHTML = instance.text_input.innerHTML;
-        var match = fullAtRe.exec(innerHTML);
-        if (match) {
-            console.log(match);
-        }
-    });
-    
     new postile.view.At(this.text_input);
     
     this.text_input.contentEditable = "true";
@@ -290,7 +286,6 @@ postile.view.post_in_board.InlineCommentsBlock = function(postObj) {
     tmp_el2 = goog.dom.createDom("div", "nav_up");
     goog.dom.appendChild(tmp_el, tmp_el2);
     goog.dom.appendChild(tmp_el2, goog.dom.createDom("div", "arrow_up"));
-
 
     tmp_el2 = goog.dom.createDom("div", "nav_down");
     goog.dom.appendChild(tmp_el, tmp_el2);

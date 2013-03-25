@@ -82,7 +82,13 @@ postile.view.At.prototype.open = function(e) {
     this.oRange = sel.getRangeAt(0);
     if (!this.oRange.collapsed) { return; }
     this.range = this.oRange.cloneRange();
-    this.oRange.setStart(this.oRange.endContainer, Math.max(this.oRange.endOffset - 1, 0));
+    console.log(this.oRange.startOffset, this.oRange.endOffset);
+    var start = this.oRange.startOffset - 1;
+    if (start >= 0) {
+        this.oRange.setStart(this.oRange.startContainer, start);
+    } else {
+        this.oRange.setStartBefore(this.oRange.startContainer);
+    }
     postile.view.TipView.prototype.open.call(this, this.ipel);
 }
 
