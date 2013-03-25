@@ -19,11 +19,11 @@ postile.events.EventHandler.prototype.unlisten = function() {
 
 postile.events.ValueChangeEvent = function(subject, handler) {
     var currentVal;
-    var myHandler = function() {
+    var myHandler = function(e) {
         if (currentVal == subject.innerHTML) {
             return;
         }
-        handler();
+        handler(e);
         currentVal = subject.innerHTML;
     }
     this.listeners = [new postile.events.EventHandler(subject, goog.events.EventType.KEYUP, myHandler),

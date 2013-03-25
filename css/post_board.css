@@ -125,6 +125,86 @@ html, body {
   cursor: pointer;
 }
 
+@keyframes notification_wrapper
+{
+  0% {transform: scale(0.8);}
+  80% {transform: scale(1.1);}
+  100% {transform: scale(1.0);}
+}
+@-webkit-keyframes notification_wrapper /* Safari and Chrome */
+{
+  0% {-webkit-transform: scale(0.8);}
+  80% {-webkit-transform: scale(1.1);}
+  100% {-webkit-transform: scale(1.0);}
+}
+@-moz-keyframes notification_wrapper /* Firefox */
+{
+  0% {-moz-transform: scale(0.8);}
+  80% {-moz-transform: scale(1.1);}
+  100% {-moz-transform: scale(1.0);}
+}
+@keyframes notification_number
+{
+  0% {transform: scale(0.8);}
+  80% {transform: scale(1.1);}
+  100% {transform: scale(1.0);}
+}
+@-webkit-keyframes notification_number /* Safari and Chrome */
+{
+  0% {-webkit-transform: scale(0.8);}
+  80% {-webkit-transform: scale(1.1);}
+  100% {-webkit-transform: scale(1.0);}
+}
+@-moz-keyframes notification_number /* Firefox */
+{
+  0% {-moz-transform: scale(0.8);}
+  80% {-moz-transform: scale(1.1);}
+  100% {-moz-transform: scale(1.0);}
+}
+
+
+.notificatoin_number_wrapper {
+  width: 12px;
+  height: 12px;
+  position: absolute;
+  top: 7px !important;
+  right: 83px !important;
+  left: auto !important;
+  -webkit-border-radius: 10px; 
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+  background: #fff;
+  display:none;
+}
+.notification_redCircle {
+  position: relative;
+  top: 1px;
+  left: 1px;
+  width: 10px;
+  height: 10px;
+  -webkit-border-radius: 10px; 
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+  background: #f00;
+  text-align: center;
+  color: #fff;
+  font-size: 10px;
+}
+
+.notification_number_pop_up_wraper_animiation {
+  animation: notification_wrapper 0.5s;
+  -webkit-animation: notification_wrapper 0.5s; /* Safari and Chrome */
+  -moz-animation: notification_wrapper 0.5; /* Firefox */
+  display: block;
+}
+
+.notification_number_pop_up_animiation {
+  animation: notification_number 0.2s;
+  -webkit-animation: notification_number 0.2s; /* Safari and Chrome */
+  -moz-animation: notification_number 0.2; /* Firefox */
+}
+
+
 .function_button img {
   /* -webkit-filter: brightness(100%); */
 }
@@ -456,6 +536,8 @@ html, body {
   margin-top: -1px;
   margin-left: 10px;
   width: 220px;
+  height: 300px;
+  overflow-y: scroll;
   background: #c8e5ed; }
 
 
@@ -685,4 +767,10 @@ html, body {
 
 .at_single:hover .at_name {
     color: #FFF;
+}
+
+.at-hint {
+    background: #FFF;
+    width: 150px;
+    padding: 6px;
 }

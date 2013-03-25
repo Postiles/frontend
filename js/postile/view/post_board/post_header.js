@@ -1,6 +1,7 @@
 goog.provide('postile.view.post_board.Header');
 
 goog.require('goog.events');
+goog.require('goog.dom');
 goog.require('postile.dom');
 goog.require('postile.view.notification');
 
@@ -45,6 +46,12 @@ postile.view.post_board.Header = function(board) {
     this.profileImageContainerImg_el = goog.dom.getElementByClass('image', this.profileImageContainer_el);
     this.profileImageContainerImg_el.src = postile.uploadsResource([ this.board.profileData.image_small_url ]);
 
+    this.alert_wrapper = goog.dom.createDom('div', 'notificatoin_number_wrapper');
+    goog.dom.appendChild(this.container, this.alert_wrapper);
+
+    this.redCircle = goog.dom.createDom('div', 'notification_redCircle');
+    goog.dom.appendChild(this.alert_wrapper, this.redCircle);
+
     this.function_buttons = goog.dom.getElementsByClass('function_button');
     for (var i = 0; i < this.function_buttons.length; i++) {
         new postile.view.post_board.FunctionButton(this.function_buttons[i]);
@@ -68,6 +75,9 @@ postile.view.post_board.Header = function(board) {
     postile.ajax([ 'notification', 'get_notifications' ], {}, function(data) {
         /* handle the data return after getting the boards information back */
         notificationList = data.message.notifications;
+        if(notificationList.length != 0 ) {
+            this.notificationHandler(data);
+        }
         /* TODO add a notification to the mail box to notify user */
     }.bind(this));
 
@@ -77,8 +87,10 @@ postile.view.post_board.Header = function(board) {
     });
 
     goog.events.listen(message_button, goog.events.EventType.CLICK, function(e) {
-        (new postile.view.notification.Notification(notificationList)).open(message_button);
-    });
+        this.notification = new postile.view.notification.Notification(this);
+        this.notification.open(message_button);
+        this.notificationHandlerClear();
+    }.bind(this));
 
     var more_button = postile.dom.getDescendantById(instance.container, "popup_button");
     goog.events.listen(more_button, goog.events.EventType.CLICK, function(e) {
@@ -89,5 +101,11 @@ postile.view.post_board.Header = function(board) {
 goog.inherits(postile.view.post_board.Header, postile.view.NormalView);
 
 postile.view.post_board.Header.prototype.notificationHandler = function(data) {
-    alert('you have a new fucking notification!');
+    this.notificationHandlerClear();
+    goog.dom.classes.add( this.alert_wrapper, 'notification_number_pop_up_wraper_animiation');
+    goog.dom.classes.add( this.redCircle, 'notification_number_pop_up_animiation');
+}
+postile.view.post_board.Header.prototype.notificationHandlerClear = function() {
+    goog.dom.classes.remove( this.alert_wrapper, 'notification_number_pop_up_wraper_animiation');
+    goog.dom.classes.remove( this.redCircle, 'notification_number_pop_up_animiation');
 }
