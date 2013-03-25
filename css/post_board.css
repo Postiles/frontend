@@ -392,6 +392,7 @@ html, body {
   outline: none;
   padding: 0 8px;
   color: #f5f5f5;
+  position: relative;
   width: 204px; }
   
 .inl_comment-wrapper .input_main.inactive {
@@ -511,6 +512,7 @@ html, body {
   display: none; }
 
 .post_content {
+  position: relative;
   width: 100%; }
 
 .selectable {
@@ -647,4 +649,40 @@ html, body {
 
 .post_mark_linked_low {
     background-color: #666;
+}
+
+/*
+@ (at)
+*/
+.at_box {
+    border: 3px solid #024d61;
+}
+
+.at_single {
+    width: 150px;
+    height: 45px;
+    padding: 6px;
+    background: #FFF;
+}
+
+.at_image {
+    float: left;
+    height: 45px;
+    width: 45px;
+}
+
+.at_name {
+    float: left;
+    color: #024d61;
+    height: 45px;
+    width: 100px;
+    padding-left: 5px;
+}
+
+.at_single:hover {
+    background: #024d61;
+}
+
+.at_single:hover .at_name {
+    color: #FFF;
 }

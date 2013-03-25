@@ -71,6 +71,7 @@ postile.view.post_board.Header = function(board) {
         /* TODO add a notification to the mail box to notify user */
     }.bind(this));
 
+    console.log('/notification/' + instance.board.userData.id);
     postile.faye.subscribe('notification/' + instance.board.userData.id, function(status, data) {
         instance.notificationHandler(data);
     });

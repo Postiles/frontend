@@ -48,7 +48,6 @@ postile.ui.makeLabeledInput = function(target_el, placeholder, inactive_classnam
             goog.dom.classes.remove(target_el, inactive_classname);
         } else if (e.keyCode == goog.events.KeyCodes.ENTER) {
             e.preventDefault();
-            target_el.innerHTML = postile.string.stripString(target_el.innerHTML);
             enter_handler();
             target_el.blur();
         }

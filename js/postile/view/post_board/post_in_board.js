@@ -16,6 +16,7 @@ goog.require('goog.events.KeyHandler');
 goog.require('postile.WYSIWYF');
 goog.require('postile.debbcode');
 goog.require('postile.fx');
+goog.require('postile.view.At');
 goog.require('postile.fx.effects');
 goog.require('postile.view.post');
 
@@ -93,63 +94,45 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
 postile.view.post_in_board.Post.prototype.post_icon_container_init = function() {
     var instance = this;
     
-    if (!instance.likes) { // likes not defined
-        instance.likes = [ ];
-    }
-    
     var addIcon = function(name) {
         var icon = goog.dom.createDom("div", "post_icon post_"+name+"_icon");
         goog.dom.appendChild(instance.post_icon_container_el, icon);
         return icon;
     }
     
-    instance.liked_user = instance.likes.map(function(like) {
-        return like.user_id;
-    });
+    goog.events.listen(addIcon("like"), goog.events.EventType.CLICK, function() {
+        var like_icon = this;
+        var new_like_icon = goog.dom.createDom('div', 'post_liked_icon');
+        var new_counts = goog.dom.createDom('div', 'post_like_new_count');
 
-    instance.likeButton_el = addIcon('like');
+        new_like_icon.style.width = '13px';
+        new_like_icon.style.height = '13px';
+        new_like_icon.style.position = 'absolute'; //so taht "clip" can make effect
+        new_counts.innerHTML = ++instance.likes.length;
 
-    instance.like_count = instance.likes.length;
+        goog.dom.appendChild(like_icon, new_like_icon);
+        goog.dom.appendChild(instance.likes_count_el, new_counts);
 
-    if (instance.liked_user.indexOf(parseInt(localStorage.postile_user_id)) == -1) { // not already liked
-        goog.events.listen(instance.likeButton_el, goog.events.EventType.CLICK, function() {
-            var like_icon = instance.likeButton_el;
-            var new_like_icon = goog.dom.createDom('div', 'post_liked_icon');
-            var new_counts = goog.dom.createDom('div', 'post_like_new_count');
-
-            new_like_icon.style.width = '13px';
-            new_like_icon.style.height = '13px';
-            new_like_icon.style.position = 'absolute'; //so that "clip" can make effect
-            new_counts.innerHTML = ++instance.like_count;
-
-            goog.dom.appendChild(like_icon, new_like_icon);
-            goog.dom.appendChild(instance.likes_count_el, new_counts);
-
-            new postile.fx.Animate(function(i){ 
-                new_like_icon.style.clip = 'rect('+Math.round(13*(1-i))+'px 13px 13px 0px)';
-                new_counts.style.top = - Math.round(13 * i) + 'px';
-            }, 400, postile.fx.ease.cubic_ease_out, function() {
-                goog.dom.classes.remove(like_icon, 'post_like_icon');
-                goog.dom.classes.add(like_icon, 'post_liked_icon');
-                goog.dom.removeNode(new_like_icon);
-                goog.dom.removeNode(new_counts);
-                instance.likes_count_el.innerHTML = instance.like_count;
-            });
-
-            postile.ajax([ 'post', 'like' ], { post_id: instance.post.id }, function(data) {
-                // seems nothing to do
-            });
+        new postile.fx.Animate(function(i){ 
+            new_like_icon.style.clip = 'rect('+Math.round(13*(1-i))+'px 13px 13px 0px)';
+            new_counts.style.top = - Math.round(13 * i) + 'px';
+        }, 400, postile.fx.ease.cubic_ease_out, function() {
+            goog.dom.classes.remove(like_icon, 'post_like_icon');
+            goog.dom.classes.add(like_icon, 'post_liked_icon');
+            goog.dom.removeNode(new_like_icon);
+            goog.dom.removeNode(new_counts);
+            instance.likes_count_el.innerHTML = instance.likes.length;
         });
-    } else {
-        goog.dom.classes.remove(instance.likeButton_el, 'post_like_icon');
-        goog.dom.classes.add(instance.likeButton_el, 'post_liked_icon');
-    }
+
+        postile.ajax([ 'post', 'like' ], { post_id: instance.post.id }, function(data) {
+            // seems nothing to do
+        });
+    });
     
     this.likes_count_el = goog.dom.createDom("div", "post_like_count");
     goog.dom.appendChild(instance.post_icon_container_el, this.likes_count_el);
-
     if (this.likes) {
-        this.likes_count_el.innerHTML = instance.like_count;
+        this.likes_count_el.innerHTML = this.likes.length;
     }
 
     addIcon("share");
@@ -268,11 +251,15 @@ postile.view.post_in_board.Post.prototype.edit = function() {
     postile.ajax(['post','start_edit'], { post_id: this.post.id }, go_editing);
 }
 
+postile.view.post_in_board.resolveAtPerson = function(displayText) {
+    console.log(displayText);
+    return displayText.replace(/<span[^<>]*at\-user="(\d+)"[^<>]*> @[^<]+ <\/span>/, '[at]$1[/at]');
+}
+
 postile.view.post_in_board.InlineCommentsBlock = function(postObj) {
     var instance = this;
     var tmp_el;
     var tmp_el2;
-
     postile.view.TipView.call(this);
     goog.dom.classes.add(this.container, "inl_comment-wrapper");
     goog.dom.appendChild(this.container, goog.dom.createDom("div", "input_up"));
@@ -281,7 +268,7 @@ postile.view.post_in_board.InlineCommentsBlock = function(postObj) {
 
     postile.ui.makeLabeledInput(this.text_input, postile._('inline_comment_prompt'), 'inactive', function() {
         postile.ajax(['inline_comment','new'], { post_id: postObj.post.id, 
-                content: instance.text_input.innerHTML }, function(data) {
+                content: postile.string.stripString(postile.view.post_in_board.resolveAtPerson(instance.text_input.innerHTML)) }, function(data) {
                     if (data.status == postile.ajax.status.OK) {
                         postile.fx.effects.verticalExpand((new postile.view.post_in_board.InlineComment(instance, data.message)).comment_container);
                         postile.ui.stopLoading(instance.text_input);
@@ -291,14 +278,7 @@ postile.view.post_in_board.InlineCommentsBlock = function(postObj) {
         postile.ui.startLoading(instance.text_input);
     });
 
-    var fullAtRe = /\@(.*)?\[(.*)?\]/;
-    goog.events.listen(this.text_input, goog.events.EventType.KEYUP, function() {
-        var innerHTML = instance.text_input.innerHTML;
-        var match = fullAtRe.exec(innerHTML);
-        if (match) {
-            console.log(match);
-        }
-    });
+    new postile.view.At(this.text_input);
     
     this.text_input.contentEditable = "true";
 
@@ -308,7 +288,6 @@ postile.view.post_in_board.InlineCommentsBlock = function(postObj) {
     tmp_el2 = goog.dom.createDom("div", "nav_up");
     goog.dom.appendChild(tmp_el, tmp_el2);
     goog.dom.appendChild(tmp_el2, goog.dom.createDom("div", "arrow_up"));
-
 
     tmp_el2 = goog.dom.createDom("div", "nav_down");
     goog.dom.appendChild(tmp_el, tmp_el2);
@@ -327,8 +306,6 @@ postile.view.post_in_board.InlineCommentsBlock = function(postObj) {
         instance.container.style.top = '-12px'; //magic number based on 目测
         postObj.wrap_el.style.zIndex = (++postObj.board.maxZIndex);
     });
-
-    this.text_input.focus();
 }
 
 goog.inherits(postile.view.post_in_board.InlineCommentsBlock, postile.view.TipView);
