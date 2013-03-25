@@ -53,8 +53,9 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
 
     // post title clicked, should display post expanded
     this.post_author_el = goog.dom.createDom("span", "post_author");
-    this.post_expand_listener = new postile.events.EventHandler(this.post_title_el, goog.events.EventType.CLICK, function(e) {
-        var postExpand = new postile.view.post.PostExpand(instance.post, instance.post.username);
+    this.post_expand_listener = new postile.events.EventHandler(this.post_title_el, 
+            goog.events.EventType.CLICK, function(e) {
+        var postExpand = new postile.view.post.PostExpand(instance);
     });
 
     this.post_expand_listener.listen();
@@ -205,9 +206,11 @@ postile.view.post_in_board.Post.prototype.removeFromBoard = function() {
 }
 
 postile.view.post_in_board.Post.prototype.edit = function() {
-    if (this.in_edit) { return; }
+    if (this.in_edit) {
+        return;
+    }
+
     var instance = this;
-    var start_waiting = new postile.toast.Toast(0, "Please wait... We're starting editing... Be ready for 36s.");
     this.disable();
 
     var go_editing = function() {
@@ -230,7 +233,6 @@ postile.view.post_in_board.Post.prototype.edit = function() {
         var y_editor = new postile.WYSIWYF.Editor(instance.post_content_el, instance.post_icon_container_el, instance);
         instance.board.disableMovingCanvas = true; //disable moving
         instance.enable();
-        start_waiting.abort();
         var bodyHandler = new postile.events.EventHandler(document.body, goog.events.EventType.CLICK, function(){
             instance.submitEdit({ post_id: instance.post.id, content: y_editor.getBbCode(), title: instance.post_title_el.innerHTML ==  postile._('post_title_prompt') ? '' : postile.string.stripString(instance.post_title_el.innerHTML) });
             bodyHandler.unlisten();
