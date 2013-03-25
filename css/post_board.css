@@ -686,3 +686,9 @@ html, body {
 .at_single:hover .at_name {
     color: #FFF;
 }
+
+.at-hint {
+    background: #FFF;
+    width: 150px;
+    padding: 6px;
+}

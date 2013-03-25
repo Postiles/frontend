@@ -13,8 +13,9 @@ postile.view.At = function(el) {
     var instance = this;
     this.ipel = el;
     this.container.className = 'at_box';
+    this.container.innerHTML = '<div class="at-hint">Enter a user name to @</div>';
     this.editlsnr = new postile.events.ValueChangeEvent(el, function(e){ instance.realPress(e); });
-    goog.events.listen(new goog.events.KeyHandler(el), goog.events.KeyHandler.EventType.KEY, function(e){ instance.keyHandler(e); });
+    goog.events.listen(el, goog.events.EventType.KEYUP, function(e){ instance.keyHandler(e); });
 }
 
 goog.inherits(postile.view.At, postile.view.TipView);
@@ -29,7 +30,7 @@ postile.view.At.prototype.keyHandler = function(e) {
 postile.view.At.prototype.realPress = function() {
     this.range.setEndAfter(this.range.startContainer);
     var tmpVal = this.range.toString();
-    if(tmpVal.charAt(0) != '@') {
+    if(tmpVal.charAt(0)!='@') {
         this.close(); return;
     }
     tmpVal = tmpVal.split(/\s/, 1)[0];
@@ -58,6 +59,10 @@ postile.view.At.prototype.renderUser = function(profile) {
         atNode.setAttribute('at-user', profile.user_id);
         instance.range.deleteContents();
         instance.range.insertNode(atNode);
+        instance.range.collapse();
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(instance.range);
         instance.close();
     });
     return tmpDiv;
@@ -75,24 +80,19 @@ postile.view.At.prototype.fetchAndRender = function(keyword) {
     });
 }
 
-postile.view.At.prototype.open = function(e) {
-    this.editlsnr.listen();
+postile.view.At.prototype.open = function() {
     var sel = window.getSelection();
     if (!sel.rangeCount) { return; }
     this.oRange = sel.getRangeAt(0);
     if (!this.oRange.collapsed) { return; }
-    this.range = this.oRange.cloneRange();
-    console.log(this.oRange.startOffset, this.oRange.endOffset);
     var start = this.oRange.startOffset - 1;
-    if (start >= 0) {
-        this.oRange.setStart(this.oRange.startContainer, start);
-    } else {
-        this.oRange.setStartBefore(this.oRange.startContainer);
-    }
+    this.oRange.setStart(this.oRange.startContainer, start);
+    this.range = this.oRange.cloneRange();
     postile.view.TipView.prototype.open.call(this, this.ipel);
+    this.editlsnr.listen();
 }
 
-postile.view.At.prototype.close = function(e) {
+postile.view.At.prototype.close = function() {
     this.editlsnr.unlisten();
     postile.view.TipView.prototype.close.call(this);
 }
