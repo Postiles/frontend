@@ -269,8 +269,8 @@ postile.view.post_in_board.Post.prototype.edit = function() {
     postile.ajax(['post','start_edit'], { post_id: this.post.id }, go_editing);
 }
 
-postile.view.post_in_board.resolveAtPerson = function(displayText) {
-    return displayText.replace(/<span[^<>]*at\-user="(\d+)"[^<>]*> @[^<]+ <\/span>/, '[at]$1[/at]');
+postile.view.post_in_board.resolveAtPerson = function(displayText) { //displayed -> shown
+    return displayText.replace(/<span[^<>]*at\-user="(\d+)"[^<>]*> @[^<]+ <\/span>/g, ' @$1 ');
 }
 
 postile.view.post_in_board.InlineCommentsBlock = function(postObj) {
@@ -339,7 +339,18 @@ postile.view.post_in_board.InlineComment = function(icb, single_comment_data) {
     tmp_el.innerHTML = postile.date(single_comment_data.inline_comment.created_at, 'inline');
     goog.dom.appendChild(this.comment_container, tmp_el);
     tmp_el = goog.dom.createDom("p", "comment");
-    tmp_el.innerHTML = single_comment_data.inline_comment.content;
+    tmp_el.innerHTML = postile.escapeString(single_comment_data.inline_comment.content).replace(/ @(\d+)/g, '<span class="at_person" at-person="$1">@[Username pending]</span>');
+    var all_atp = postile.dom.getDescendantsByCondition(tmp_el, function(el) { return el.tagName && el.tagName.toUpperCase() == 'SPAN' && el.className == 'at_person'; });
+    for (var i in all_atp) {
+        this.fetchUsername(all_atp[i]);
+    }
     goog.dom.appendChild(this.comment_container, tmp_el);
     goog.dom.appendChild(icb.comments_container, this.comment_container);
+}
+
+fetchUsername = function(el) {
+    postile.ajax(['user', 'get_user'], { user_id: el.getAttribute('at-person') }, function(r) {
+        var p = r.message.profile;
+        el.innerHTML = '@' + p.first_name + ' ' + p.last_name;
+    });
 }

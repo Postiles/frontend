@@ -13,6 +13,8 @@ postile.view.notification.Notification = function(header) {
     this.container.style.top = '0px';
     this.container.style.left = '0px';
 
+    this.currentIndex = 0;
+    this.currentMax = 6;
 
     postile.ajax([ 'notification', 'get_notifications' ], {}, function(data) {
         /* handle the data return after getting the boards information back */
@@ -39,23 +41,24 @@ postile.view.notification.Notification = function(header) {
         this.listedNotification = new Array();
         if(this.numberOfUnread > 6) {
             for (var i = 0; i < 6; i++) {
+                this.currentIndex++;
                 var notificationType = notificationList[i].notification.notification_type;
                 this.listedNotification[i] = new postile.view.notification.InfoItem();
-                this.listedNotification[i].render(this.notificationListView, notificationList[i].notification, notificationList[i].from_user_profile);
+                this.listedNotification[i].render(this, this.notificationListView, notificationList[i].notification, notificationList[i].from_user_profile);
             }
             this.seeMore();
 
         } else {
             for (i in notificationList) {
+                this.currentIndex++;
                 var notificationType = notificationList[i].notification.notification_type;
                 this.listedNotification[i] = new postile.view.notification.InfoItem();
-                this.listedNotification[i].render(this.notificationListView, notificationList[i].notification, notificationList[i].from_user_profile);
+                this.listedNotification[i].render(this, this.notificationListView, notificationList[i].notification, notificationList[i].from_user_profile);
             }
         }
 
         this.notificationList = notificationList;
 
-            /* TODO add a notification to the mail box to notify user */
     }.bind(this));
     // See more part more see more
 }
@@ -65,12 +68,26 @@ postile.view.notification.Notification.prototype.seeMore = function() {
     goog.dom.appendChild(this.notificationListView, this.notificationMore);
     goog.dom.appendChild(this.notificationMore, goog.dom.createDom('p','','See More'));
 
-    for (var i = 6; i < 9; i++) {
+    for (var i = this.currentMax; i < this.currentMax + 3; i++) {
         var notificationType = notificationList[i].notification.notification_type;
+        this.currentIndex++;
         this.listedNotification[i] = new postile.view.notification.InfoItem();
         this.listedNotification[i].render(this.notificationListView, this.notificationList[i].notification, this.notificationList[i].from_user_profile);
     }
+    this.currentMax = this.currentMax + 3;
 
+}
+
+postile.view.notification.Notification.prototype.appendOneMore = function() {
+    this.numberOfUnread--;
+    goog.dom.getElement('number_of_unread');
+    this.numberOfNotification.innerHTML = this.numberOfUnread;
+
+    if(this.numberOfUnread > this.currentMax) { // still can append
+        this.currentIndex++;
+        this.listedNotification[currentIndex] = new postile.view.notification.InfoItem();
+        this.listedNotification[currentIndex].render(this.notificationListView, this.notificationList[currentIndex].notification, this.notificationList[currentIndex].from_user_profile);
+    }
 }
 
 
@@ -91,7 +108,9 @@ postile.view.notification.FriendItem = function() {
 
 postile.view.notification.TypeMap = {'reply in post':'write on'};
 
-postile.view.notification.InfoItem.prototype.render = function(parent, data, fromUser) {
+postile.view.notification.InfoItem.prototype.render = function(parent, parent_el, data, fromUser) {
+
+    this.NotificationParent = parent;
 
     this.notification_id = data.id;
     var time = data.create_at;
@@ -150,12 +169,8 @@ postile.view.notification.InfoItem.prototype.userHandle = function() {
 postile.view.notification.InfoItem.prototype.removeFromList = function() {
     goog.dom.removeNode(this.notificationItem);
 
-    var numberOfNotification = goog.dom.getElement('number_of_unread');
-    var numberOfUnread = numberOfNotification.innerHTML;
-    numberOfUnread--;
-    numberOfNotification.innerHTML = numberOfUnread;
 
-
-
+    this.NotificationParent.appendOneMore();
+    // if there are other posts, we need to display them.
 
 }
