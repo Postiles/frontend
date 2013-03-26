@@ -55,6 +55,7 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
     this.post_author_el = goog.dom.createDom("span", "post_author");
     this.post_expand_listener = new postile.events.EventHandler(this.post_title_el, 
             goog.events.EventType.CLICK, function(e) {
+        console.log(instance);
         var postExpand = new postile.view.post.PostExpand(instance);
     });
 

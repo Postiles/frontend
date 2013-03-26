@@ -36,9 +36,8 @@ postile.view.login.LoginView.prototype.login = function() {
     var password = this.passwordInput_el.value;
 
     postile.user.login(email, password, function(data) {
-        window.location.reload();
+        window.location.reload(); // TODO change it
     }, function(e) {
-        console.log(this);
         this.incorrect_el.style.visibility = 'visible';
     }.bind(this));
 }
