@@ -26,6 +26,12 @@ postile.view.post_board.Header = function(board) {
     this.usernameText_el = postile.dom.getDescendantById(instance.container, 'username_text');
     this.usernameText_el.innerHTML = this.board.userData.username;
 
+    /* Fei Pure for testing */
+    this.imageUploadPop = new postile.view.image_upload.ImageUploadBlock(this);
+    goog.events.listen(this.usernameText_el, goog.events.EventType.CLICK, function(e) {
+        this.imageUploadPop.open(300);
+    }.bind(this));
+
     /* settings button */
     this.settingButton_el = postile.dom.getDescendantById(instance.container, 'setting_button');
 
@@ -53,14 +59,17 @@ postile.view.post_board.Header = function(board) {
     }
 
     var search_button = postile.dom.getDescendantById(instance.container, "search_button");
+    this.sBTip = new postile.view.search_box.SearchBox(search_button);
     goog.events.listen(search_button, goog.events.EventType.CLICK, function(e) {
-        (new postile.view.search_box.SearchBox(search_button)).open(search_button);
+        this.sBTip.open(search_button);
     });
 
     /* Buttons on the right up corner */
+    this.switchBoardTip = new postile.view.board_more_pop.OtherBoard(this.board);
     var switch_board_button = postile.dom.getDescendantById(instance.container, "switch_board_button");
     goog.events.listen(switch_board_button, goog.events.EventType.CLICK, function(e) {
-        (new postile.view.board_more_pop.OtherBoard(this.board)).open(switch_board_button);
+        e.stopPropagation();
+        this.switchBoardTip.open(switch_board_button);
     }.bind(this));
 
     var message_button = postile.dom.getDescendantById(instance.container, "message_button");
@@ -80,16 +89,17 @@ postile.view.post_board.Header = function(board) {
     postile.faye.subscribe('notification/' + instance.board.userData.id, function(status, data) {
         instance.notificationHandler(data);
     });
-
+    
+    this.notification = new postile.view.notification.Notification(this);
     goog.events.listen(message_button, goog.events.EventType.CLICK, function(e) {
-        this.notification = new postile.view.notification.Notification(this);
         this.notification.open(message_button);
         this.notificationHandlerClear();
     }.bind(this));
 
     var more_button = postile.dom.getDescendantById(instance.container, "popup_button");
+    this.moreButtonPop = new postile.view.board_more_pop.BoardMorePop(more_button);
     goog.events.listen(more_button, goog.events.EventType.CLICK, function(e) {
-        (new postile.view.board_more_pop.BoardMorePop(more_button)).open(more_button);
+        this.moreButtonPop.open(more_button);
     });
 }
 
