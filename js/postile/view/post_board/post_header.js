@@ -29,6 +29,7 @@ postile.view.post_board.Header = function(board) {
     /* Fei Pure for testing */
     this.imageUploadPop = new postile.view.image_upload.ImageUploadBlock(this);
     goog.events.listen(this.usernameText_el, goog.events.EventType.CLICK, function(e) {
+        e.stopPropagation();
         this.imageUploadPop.open(300);
     }.bind(this));
 
@@ -61,6 +62,7 @@ postile.view.post_board.Header = function(board) {
     var search_button = postile.dom.getDescendantById(instance.container, "search_button");
     this.sBTip = new postile.view.search_box.SearchBox(search_button);
     goog.events.listen(search_button, goog.events.EventType.CLICK, function(e) {
+        e.stopPropagation();
         this.sBTip.open(search_button);
     }.bind(this));
 
@@ -92,6 +94,7 @@ postile.view.post_board.Header = function(board) {
     
     this.notification = new postile.view.notification.Notification(this);
     goog.events.listen(message_button, goog.events.EventType.CLICK, function(e) {
+        e.stopPropagation();
         this.notification.open(message_button);
         this.notificationHandlerClear();
     }.bind(this));
@@ -99,6 +102,7 @@ postile.view.post_board.Header = function(board) {
     var more_button = postile.dom.getDescendantById(instance.container, "popup_button");
     this.moreButtonPop = new postile.view.board_more_pop.BoardMorePop(more_button);
     goog.events.listen(more_button, goog.events.EventType.CLICK, function(e) {
+        e.stopPropagation();
         this.moreButtonPop.open(more_button);
     }.bind(this));
 }
