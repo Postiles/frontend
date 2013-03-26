@@ -73,7 +73,7 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
     this.post_icon_container_el = goog.dom.createDom("div", "post_icon_container");
     goog.dom.appendChild(this.post_bottom_el, this.post_icon_container_el);
     
-    goog.dom.setTextContent(this.post_title_el, this.post.title);
+    this.post_title_el.innerHTML = this.post.title;
     if (!this.post.title) {
         this.post_author_el.style.marginLeft = '0px';
     }
@@ -252,7 +252,7 @@ postile.view.post_in_board.Post.prototype.edit = function() {
         instance.board.disableMovingCanvas = true; //disable moving
         instance.enable();
         var bodyHandler = new postile.events.EventHandler(document.body, goog.events.EventType.CLICK, function(){
-            instance.submitEdit({ post_id: instance.post.id, content: y_editor.getBbCode(), title: instance.post_title_el.innerHTML ==  postile._('post_title_prompt') ? '' : postile.string.stripString(instance.post_title_el.innerHTML) });
+            instance.submitEdit({ post_id: instance.post.id, content: y_editor.getBbCode(), title: instance.post_title_el.innerHTML ==  postile._('post_title_prompt') ? '' : instance.post_title_el.innerHTML });
             bodyHandler.unlisten();
             postHandler.unlisten();
             instance.in_edit = false;
@@ -339,7 +339,7 @@ postile.view.post_in_board.InlineComment = function(icb, single_comment_data) {
     tmp_el.innerHTML = postile.date(single_comment_data.inline_comment.created_at, 'inline');
     goog.dom.appendChild(this.comment_container, tmp_el);
     tmp_el = goog.dom.createDom("p", "comment");
-    goog.dom.setTextContent(tmp_el, single_comment_data.inline_comment.content.replace(/ @(\d+)/g, '<span class="at_person" at-person="$1">@[Username pending]</span>'));
+    tmp_el.innerHTML = single_comment_data.inline_comment.content.replace(/ @(\d+)/g, '<span class="at_person" at-person="$1">@[Username pending]</span>');
     var all_atp = postile.dom.getDescendantsByCondition(tmp_el, function(el) { return el.tagName && el.tagName.toUpperCase() == 'SPAN' && el.className == 'at_person'; });
     for (var i in all_atp) {
         this.fetchUsername(all_atp[i]);
