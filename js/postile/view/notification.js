@@ -13,6 +13,7 @@ postile.view.notification.Notification = function(header) {
     this.container.style.top = '0px';
     this.container.style.left = '0px';
 
+    this.currentIndex = 0;
     this.currentMax = 6;
 
     postile.ajax([ 'notification', 'get_notifications' ], {}, function(data) {
@@ -40,6 +41,7 @@ postile.view.notification.Notification = function(header) {
         this.listedNotification = new Array();
         if(this.numberOfUnread > 6) {
             for (var i = 0; i < 6; i++) {
+                this.currentIndex++;
                 var notificationType = notificationList[i].notification.notification_type;
                 this.listedNotification[i] = new postile.view.notification.InfoItem();
                 this.listedNotification[i].render(this, this.notificationListView, notificationList[i].notification, notificationList[i].from_user_profile);
@@ -48,6 +50,7 @@ postile.view.notification.Notification = function(header) {
 
         } else {
             for (i in notificationList) {
+                this.currentIndex++;
                 var notificationType = notificationList[i].notification.notification_type;
                 this.listedNotification[i] = new postile.view.notification.InfoItem();
                 this.listedNotification[i].render(this, this.notificationListView, notificationList[i].notification, notificationList[i].from_user_profile);
@@ -67,6 +70,7 @@ postile.view.notification.Notification.prototype.seeMore = function() {
 
     for (var i = this.currentMax; i < this.currentMax + 3; i++) {
         var notificationType = notificationList[i].notification.notification_type;
+        this.currentIndex++;
         this.listedNotification[i] = new postile.view.notification.InfoItem();
         this.listedNotification[i].render(this.notificationListView, this.notificationList[i].notification, this.notificationList[i].from_user_profile);
     }
@@ -79,7 +83,11 @@ postile.view.notification.Notification.prototype.appendOneMore = function() {
     goog.dom.getElement('number_of_unread');
     this.numberOfNotification.innerHTML = this.numberOfUnread;
 
-    
+    if(this.numberOfUnread > this.currentMax) { // still can append
+        this.currentIndex++;
+        this.listedNotification[currentIndex] = new postile.view.notification.InfoItem();
+        this.listedNotification[currentIndex].render(this.notificationListView, this.notificationList[currentIndex].notification, this.notificationList[currentIndex].from_user_profile);
+    }
 }
 
 
