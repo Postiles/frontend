@@ -62,7 +62,7 @@ postile.view.post_board.Header = function(board) {
     this.sBTip = new postile.view.search_box.SearchBox(search_button);
     goog.events.listen(search_button, goog.events.EventType.CLICK, function(e) {
         this.sBTip.open(search_button);
-    });
+    }.bind(this));
 
     /* Buttons on the right up corner */
     this.switchBoardTip = new postile.view.board_more_pop.OtherBoard(this.board);
@@ -100,7 +100,7 @@ postile.view.post_board.Header = function(board) {
     this.moreButtonPop = new postile.view.board_more_pop.BoardMorePop(more_button);
     goog.events.listen(more_button, goog.events.EventType.CLICK, function(e) {
         this.moreButtonPop.open(more_button);
-    });
+    }.bind(this));
 }
 
 goog.inherits(postile.view.post_board.Header, postile.view.NormalView);
