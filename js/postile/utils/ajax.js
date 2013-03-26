@@ -9,42 +9,48 @@ goog.require('goog.net.jsloader');
 
 postile.ajax = function(url, data, onsuccess, onfail, notifier_text) { 
     var xhr, formData, i;
-    if ("postile_user_id" in localStorage && "postile_user_session_key" in localStorage) {
-        data.user_id = localStorage.postile_user_id;
-        data.session_key = localStorage.postile_user_session_key;
-    }
+
+    data.user_id = localStorage.postile_user_id;
+    data.session_key = localStorage.postile_user_session_key;
+
     if (url instanceof Array) {
         url = postile.dynamicResource(url);
     }
+
     if (notifier_text && notifier_text.length) {
         postile.ajax.notifier.show(notifier_text);
     }
+
     if (postile.browser_compat.walkarounds.xdr) {
         xhr = new XDomainRequest();
         xhr.onload = function() { postile.ajax.fetchedHandler(onsuccess, onfail, xhr.responseText); }
         xhr.onerror = function() { postile.ajax.notifier.networkError("XDR unknwon error"); }
     } else {
         xhr = new XMLHttpRequest();
-    　  xhr.onreadystatechange = function(){
-    　　　　if (xhr.readyState == 4) {
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState == 4) {
                 if (xhr.status == 200) {
                     postile.ajax.fetchedHandler(onsuccess, onfail, xhr.responseText);
-    　　　　    } else {
-    　　　　　　    postile.ajax.notifier.networkError("XHR unknown error"); //TODO
-    　　　　    }
+                } else {
+                    postile.ajax.notifier.networkError("XHR unknown error"); //TODO
+                }
             }
-    　　};
+        };
     }
+
     xhr.timeout = 10000;
-    xhr.ontimeout = function(){ postile.ajax.notifier.networkError("request timeout"); };
+    xhr.ontimeout = function() {
+        postile.ajax.notifier.networkError("request timeout");
+    };
+
     if (postile.browser_compat.walkarounds.xhr >= 2) {
         xhr.open('POST', url);
         formData = new FormData();
         for (i in data) {
-    　　　　formData.append(i, data[i]);
-    　　}
-    　　xhr.send(formData);
-   } else {
+            formData.append(i, data[i]);
+        }
+        xhr.send(formData);
+    } else {
         headers.set("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
         formData = new Array();
         for (i in data) {
@@ -53,7 +59,7 @@ postile.ajax = function(url, data, onsuccess, onfail, notifier_text) {
         formData = formData.join('&');
         xhr.open('POST', url);
         xhr.send(formData);
-   }
+    }
 };
 
 postile.ajax.upload = function(url, formData, onsuccess, onfail, notifier_text) {
