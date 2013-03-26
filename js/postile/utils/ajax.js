@@ -26,11 +26,11 @@ postile.ajax = function(url, data, onsuccess, onfail, notifier_text) {
     } else {
         xhr = new XMLHttpRequest();
     　  xhr.onreadystatechange = function(){
-    　　　　if (xhr.readyState == 4) {
+        if (xhr.readyState == 4) {
                 if (xhr.status == 200) {
                     postile.ajax.fetchedHandler(onsuccess, onfail, xhr.responseText);
-    　　　　    } else {
-    　　　　　　    postile.ajax.notifier.networkError("XHR unknown error"); //TODO
+                } else {
+                    postile.ajax.notifier.networkError("XHR unknown error"); //TODO
     　　　　    }
             }
     　　};
@@ -144,6 +144,9 @@ postile.ajax.expection_handlers = { //exception_string and corresponding handler
     },
     SERVER_ERROR: function() {
         new postile.toast.Toast(5, "We are experiencing an magic error (again)...", [], 'red');
+    },
+    BOARD_NOT_FOUND: function() {
+        new postile.toast.Toast(5, "Board not exist. Please check the URL you entered", [], 'red');
     }
 }
 

@@ -170,7 +170,8 @@ html, body {
   font-size: 9pt;
   margin-top: 5px;
   height: 16px;
-  color: #bacfd5; }
+  color: #bacfd5;
+  visibility: hidden; }
 
 #login-form-container .forgot-password {
   width: 240px;

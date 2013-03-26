@@ -15,6 +15,8 @@ postile.view.login.LoginView = function() { //constructor
 
     this.loginButtonContainer_el = goog.dom.getElement('login-button-container');
     goog.events.listen(this.loginButtonContainer_el, goog.events.EventType.CLICK, this.login.bind(this));
+
+    this.incorrect_el = goog.dom.getElement('incorrect-alert');
 }
 
 goog.inherits(postile.view.login.LoginView, postile.view.FullScreenView);
@@ -32,9 +34,11 @@ postile.view.login.LoginView.prototype.enterPressed = function(e) {
 postile.view.login.LoginView.prototype.login = function() {
     var email = this.emailInput_el.value;
     var password = this.passwordInput_el.value;
+
     postile.user.login(email, password, function(data) {
         window.location.reload();
     }, function(e) {
-        alert(e);
-    });
+        console.log(this);
+        this.incorrect_el.style.visibility = 'visible';
+    }.bind(this));
 }

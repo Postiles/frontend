@@ -27,7 +27,6 @@ postile.user.logout = function() {
 }
 
 postile.user.openLoginBox = function() {
-    console.log('login box');
     if (postile.user.current_user) { return; } //already logged in
     if (postile.user.login_window) { return; } //login window already opened
 
