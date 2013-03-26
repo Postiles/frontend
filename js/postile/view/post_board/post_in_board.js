@@ -68,18 +68,30 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
     }.bind(this));    
 
     this.post_content_el = goog.dom.createDom("div", "post_content");
+    this.post_content_el.innerHTML = postile.parseBBcode(this.post.content);
     goog.dom.appendChild(this.container_el, this.post_content_el);
+    var mHeight = this.container_el.offsetHeight - 4 - 16 - 13 - 6;
+    console.log(mHeight, this.post_content_el.offsetHeight);
+    if (mHeight < this.post_content_el.offsetHeight + 16) {
+        this.post_content_el.style.maxHeight = mHeight - 16 + 'px';
+        var read_more = goog.dom.createDom("div", "read_more");
+        read_more.innerHTML = 'Read more...';
+        goog.events.listen(read_more, goog.events.EventType.CLICK, function() { alert('Please click the title to view more.'); });
+        goog.dom.appendChild(this.container_el, read_more);
+    } else {
+        this.post_content_el.style.maxHeight = mHeight + 'px';
+    }
+    
     this.post_bottom_el = goog.dom.createDom("div", "post_bottom");
     goog.dom.appendChild(this.container_el, this.post_bottom_el);
     this.post_icon_container_el = goog.dom.createDom("div", "post_icon_container");
     goog.dom.appendChild(this.post_bottom_el, this.post_icon_container_el);
     
-    this.post_title_el.innerHTML = postile.escapeString(this.post.title);
+    this.post_title_el.innerHTML = this.post.title;
     if (!this.post.title) {
         this.post_author_el.style.marginLeft = '0px';
     }
     this.post_author_el.innerHTML = 'By ' + this.creator.username;
-    this.post_content_el.innerHTML = postile.parseBBcode(this.post.content);
     
     if (this.post.creator_id == localStorage.postile_user_id) { //created by current user
         goog.events.listen(this.post_content_el, goog.events.EventType.CLICK, function() {
@@ -253,7 +265,7 @@ postile.view.post_in_board.Post.prototype.edit = function() {
         instance.board.disableMovingCanvas = true; //disable moving
         instance.enable();
         var bodyHandler = new postile.events.EventHandler(document.body, goog.events.EventType.CLICK, function(){
-            instance.submitEdit({ post_id: instance.post.id, content: y_editor.getBbCode(), title: instance.post_title_el.innerHTML ==  postile._('post_title_prompt') ? '' : postile.string.stripString(instance.post_title_el.innerHTML) });
+            instance.submitEdit({ post_id: instance.post.id, content: y_editor.getBbCode(), title: instance.post_title_el.innerHTML ==  postile._('post_title_prompt') ? '' : instance.post_title_el.innerHTML });
             bodyHandler.unlisten();
             postHandler.unlisten();
             instance.in_edit = false;
@@ -340,7 +352,7 @@ postile.view.post_in_board.InlineComment = function(icb, single_comment_data) {
     tmp_el.innerHTML = postile.date(single_comment_data.inline_comment.created_at, 'inline');
     goog.dom.appendChild(this.comment_container, tmp_el);
     tmp_el = goog.dom.createDom("p", "comment");
-    tmp_el.innerHTML = postile.escapeString(single_comment_data.inline_comment.content).replace(/ @(\d+)/g, '<span class="at_person" at-person="$1">@[Username pending]</span>');
+    tmp_el.innerHTML = single_comment_data.inline_comment.content.replace(/ @(\d+)/g, '<span class="at_person" at-person="$1">@[Username pending]</span>');
     var all_atp = postile.dom.getDescendantsByCondition(tmp_el, function(el) { return el.tagName && el.tagName.toUpperCase() == 'SPAN' && el.className == 'at_person'; });
     for (var i in all_atp) {
         this.fetchUsername(all_atp[i]);
