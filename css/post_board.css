@@ -64,6 +64,7 @@ html, body {
 
 #user_info_container {
   margin-top: 2px;
+  color:#024d61;
   margin-right: 10px;
 }
 
@@ -269,6 +270,7 @@ html, body {
 
 .post_top {
   color: #024d61;
+  height: 16px;
   font-size: 10pt; }
 
 .post_title {
@@ -278,11 +280,19 @@ html, body {
 .post_author {
   margin-left: 20px; }
 
-.post_content {
-}
-
 .post_pic_content img {
   width: 250px; }
+  
+.read_more {
+  color: #666;
+  position: relative;
+  -webkit-transition: 0.3s ease; 
+}
+
+.read_more:hover {
+  left: 10px;
+  -webkit-transition: 0.3s ease; 
+}
 
 .post_bottom {
   position: absolute;
@@ -536,7 +546,7 @@ html, body {
   margin-top: -1px;
   margin-left: 10px;
   width: 220px;
-  height: 300px;
+  max-height: 300px;
   overflow-y: scroll;
   background: #c8e5ed; }
 
@@ -595,6 +605,7 @@ html, body {
 
 .post_content {
   position: relative;
+  overflow: hidden;
   width: 100%; }
 
 .selectable {

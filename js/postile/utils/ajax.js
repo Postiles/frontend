@@ -150,6 +150,9 @@ postile.ajax.expection_handlers = { //exception_string and corresponding handler
     },
     SERVER_ERROR: function() {
         new postile.toast.Toast(5, "We are experiencing an magic error (again)...", [], 'red');
+    },
+    BOARD_NOT_FOUND: function() {
+        new postile.toast.Toast(5, "Board not exist. Please check the URL you entered", [], 'red');
     }
 }
 

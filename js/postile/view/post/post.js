@@ -49,7 +49,6 @@ postile.view.post.PostExpand.prototype.initComments = function() {
         this.comments = data.message.inline_comments;
         for (var i in this.comments) {
             var cmt = this.comments[i];
-            console.log(cmt);
 
             var comment_el = goog.dom.createDom('div', 'comment');
             goog.dom.appendChild(this.commentContainer_el, comment_el);

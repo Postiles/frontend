@@ -15,18 +15,20 @@ postile.view.board_more_pop.BoardMorePop = function(input_instance) {
     this.container.style.top = '0px';
     this.container.style.left = '0px';
 
-    var place = postile.dom.getDescendantById(this.container, 'place');
-    var star_bt = this.container.lastChild.previousSibling;
+    var star_bt = postile.dom.getDescendantById(this.container, 'star');
+    var more_photo_button = postile.dom.getDescendantById(this.container, 'more_photo_button');
+    var more_video_button = postile.dom.getDescendantById(this.container, 'more_video_button');
 
-    console.log(star_bt);
-    star_bt.style.background = "#fff";
+    goog.events.listen(more_photo_button, goog.events.EventType.CLICK, function(e) {
+        (new postile.view.image_upload.ImageUploadBlock(this)).open(this);
+    }.bind(this));  
 
-    goog.events.listen(place, goog.events.EventType.CLICK, function(e) {
-        console.log("star button called");
-        (new postile.view.star.Star(this)).open(star_bt);
-    });  
+    goog.events.listen(more_video_button, goog.events.EventType.CLICK, function(e) {
+        // TODO add a upload
+        // (new postile.view.image_upload.ImageUploadBlock(this)).open(this);
+    }.bind(this));  
+
     goog.events.listen(star_bt, goog.events.EventType.CLICK, function(e) {
-        //console.log("star button called");
         (new postile.view.star.Star(this)).open(star_bt);
     });  
 

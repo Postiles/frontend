@@ -38,8 +38,6 @@ postile.view.image_upload.ImageUploadBlock = function(input_instance) {
 	goog.events.listen(fileInput, goog.events.EventType.CHANGE, function(e) {
 		postile.uploader.clickUpload(this);
 	});
-
-   	this.open(300); 
 }
 goog.inherits(postile.view.image_upload.ImageUploadBlock, postile.view.PopView);
 
