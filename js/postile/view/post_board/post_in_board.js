@@ -73,7 +73,7 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
     this.post_icon_container_el = goog.dom.createDom("div", "post_icon_container");
     goog.dom.appendChild(this.post_bottom_el, this.post_icon_container_el);
     
-    this.post_title_el.innerHTML = postile.escapeString(this.post.title);
+    goog.dom.setTextContent(this.post_title_el, this.post.title);
     if (!this.post.title) {
         this.post_author_el.style.marginLeft = '0px';
     }
@@ -339,7 +339,7 @@ postile.view.post_in_board.InlineComment = function(icb, single_comment_data) {
     tmp_el.innerHTML = postile.date(single_comment_data.inline_comment.created_at, 'inline');
     goog.dom.appendChild(this.comment_container, tmp_el);
     tmp_el = goog.dom.createDom("p", "comment");
-    tmp_el.innerHTML = postile.escapeString(single_comment_data.inline_comment.content).replace(/ @(\d+)/g, '<span class="at_person" at-person="$1">@[Username pending]</span>');
+    goog.dom.setTextContent(tmp_el, single_comment_data.inline_comment.content.replace(/ @(\d+)/g, '<span class="at_person" at-person="$1">@[Username pending]</span>'));
     var all_atp = postile.dom.getDescendantsByCondition(tmp_el, function(el) { return el.tagName && el.tagName.toUpperCase() == 'SPAN' && el.className == 'at_person'; });
     for (var i in all_atp) {
         this.fetchUsername(all_atp[i]);
