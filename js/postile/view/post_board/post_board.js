@@ -324,9 +324,11 @@ postile.view.post_board.PostBoard.prototype.moveCanvas = function(dx, dy) { //re
     if (this.disableMovingCanvas) { 
         return false; 
     } //do not respond to actions if the user is actually dragging
+    this.locateCanvas(this.canvasCoord[0] - dx, this.canvasCoord[1] - dy);   
+    return true;
+}
 
-    var leftTarget = this.canvasCoord[0];
-    var topTarget = this.canvasCoord[1];
+postile.view.post_board.PostBoard.prototype.locateCanvas = function(leftTarget, topTarget) { //return true only when it's movable
     var i;
     var instance = this;
     var arrow_hide = {}; //the arrow index to hide
@@ -334,8 +336,6 @@ postile.view.post_board.PostBoard.prototype.moveCanvas = function(dx, dy) { //re
     for (i in postile.view.post_board.direction_norm_to_css) { 
         arrow_hide[i] = false; 
     }
-
-    leftTarget -= dx; topTarget -= dy;
 
     if (topTarget >= 0) { 
         topTarget = 0; arrow_hide['up'] = true; 
@@ -381,7 +381,6 @@ postile.view.post_board.PostBoard.prototype.moveCanvas = function(dx, dy) { //re
         }
     }
     instance.updateSubsribeArea();
-    return true;
 }
 
 //convent length from "unit length" of the grid to pixel.
