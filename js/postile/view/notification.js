@@ -149,7 +149,8 @@ postile.view.notification.InfoItem.prototype.render = function(parent, data, fro
     this.NotificationParent = parent;
     //console.log("rendering");
     this.notification_id = data.id;
-    var time = data.create_at;
+    var time = data.updated_at;
+    console.log(data);
     var notificationType = data.notification_type;
     var fromUserId = data.from_user_id;
     var targetId = data.target_id;
@@ -191,13 +192,11 @@ postile.view.notification.InfoItem.prototype.render = function(parent, data, fro
         });
     }.bind(this));
 
-
-
     /* footer part */
     this.notificationFooter = goog.dom.createDom('div','notification_footer');
     goog.dom.appendChild(this.notificationItem, this.notificationFooter);
 
-    this.notificationTime = goog.dom.createDom('p','message_time', time);
+    this.notificationTime = goog.dom.createDom('p','message_time',  postile.date(time, 'inline'));
     goog.dom.appendChild(this.notificationFooter, this.notificationTime);
 
     this.ignore = goog.dom.createDom('p','ignore', 'Ignore');
