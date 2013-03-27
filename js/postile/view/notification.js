@@ -142,7 +142,7 @@ postile.view.notification.FriendItem = function() {
     postile.view.notification.NotificationItem.call(this);
 }
 
-postile.view.notification.TypeMap = {'reply in post':'write on'};
+postile.view.notification.TypeMap = {'reply in post':'writes on', 'like post': 'likes', 'mention': 'mentions you at', 'link post': 'links'};
 
 postile.view.notification.InfoItem.prototype.render = function(parent, data, fromUser) {
     this.removed = false;
