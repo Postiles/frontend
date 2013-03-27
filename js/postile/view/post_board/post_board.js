@@ -112,6 +112,8 @@ postile.view.post_board.PostBoard = function(board_id) { //constructor
     var keyHandler;
     var instance = this;
     postile.view.FullScreenView.call(this);
+    
+    window.pb = this;
 
     /* BEGINNING OF MEMBER DEFINITION */
     this.board_id = board_id;
@@ -320,6 +322,18 @@ postile.view.post_board.PostBoard.prototype.preMoveCanvas = function(direction) 
     }
 }
 
+postile.view.post_board.PostBoard.prototype.moveToPost = function(pid) {
+    var doFunc = function() {
+        var p = this.currentPosts[pid].post;
+        this.locateCanvas(-(this.xPosTo(p.pos_x) + this.widthTo(p.span_x) / 2 - this.viewport.offsetWidth / 2), -(this.yPosTo(p.pos_y) + this.heightTo(p.span_y) / 2 - this.viewport.offsetHeight / 2));
+    };
+    if (pid in this.currentPosts) {
+        doFunc();
+    } else {
+        renderById(pid, doFunc);
+    }
+}
+
 postile.view.post_board.PostBoard.prototype.moveCanvas = function(dx, dy) { //return true only when it's movable
     if (this.disableMovingCanvas) { 
         return false; 
@@ -480,6 +494,14 @@ postile.view.post_board.PostBoard.prototype.renderArray = function(array) { //ad
         }
     }
 };
+
+postile.view.post_board.PostBoard.prototype.renderById = function(pid, callback) {
+    var instance = this;
+    postile.ajax(['post', 'get_post'], { post_id: pid }, function(r) {
+        instance.renderArray([r.message.post]);
+        callback();
+    });
+}
 
 postile.view.post_board.PostBoard.prototype.fayeHandler = function(status, data) {
     switch (status) {
