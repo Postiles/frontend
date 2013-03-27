@@ -34,13 +34,14 @@ postile.view.image_upload.ImageUploadBlock = function(input_instance) {
 
 	/* do not have logic in view, give everything for js to uploader to handle */
 	var fakefile = goog.dom.createDom('div',{'class': 'fileinputs'});
-	var fileInput = goog.dom.createDom('input',{'class': 'file', 'name': 'image', 'type':'file'});
+	this.fileInput = goog.dom.createDom('input',{'class': 'file', 'name': 'image', 'type':'file'});
 
 	goog.dom.appendChild(this.uploadContent, fakefile);
-	goog.dom.appendChild(fakefile, fileInput);
-	goog.events.listen(fileInput, goog.events.EventType.CHANGE, function(e) {
-		postile.uploader.clickUpload(this);
-	});
+	goog.dom.appendChild(fakefile, this.fileInput);
+	goog.events.listen(this.fileInput, goog.events.EventType.CHANGE, function(e) {
+		postile.uploader.clickUpload(this.fileInput);
+		this.close();
+	}.bind(this));
 }
 goog.inherits(postile.view.image_upload.ImageUploadBlock, postile.view.PopView);
 

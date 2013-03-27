@@ -22,6 +22,7 @@ goog.require('postile.view.confirm_delete');
 goog.require('postile.view.profile');
 goog.require('postile.view.notification');
 goog.require('postile.view.image_upload');
+goog.require('postile.view.video_upload');
 goog.require('postile.view.search_box');
 goog.require('postile.view.post_board.post_picker');
 

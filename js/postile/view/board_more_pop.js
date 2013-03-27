@@ -19,13 +19,17 @@ postile.view.board_more_pop.BoardMorePop = function(input_instance) {
     var more_photo_button = postile.dom.getDescendantById(this.container, 'more_photo_button');
     var more_video_button = postile.dom.getDescendantById(this.container, 'more_video_button');
 
+    this.imageUploadPop = new postile.view.image_upload.ImageUploadBlock(this);
     goog.events.listen(more_photo_button, goog.events.EventType.CLICK, function(e) {
-        (new postile.view.image_upload.ImageUploadBlock(this)).open(this);
+        e.stopPropagation(); 
+        this.imageUploadPop.open(this);
     }.bind(this));  
 
+
+    this.VideoUploadPop = new postile.view.video_upload.VideoUpload(this);
     goog.events.listen(more_video_button, goog.events.EventType.CLICK, function(e) {
-        // TODO add a upload
-        // (new postile.view.image_upload.ImageUploadBlock(this)).open(this);
+        e.stopPropagation(); 
+        this.VideoUploadPop.open(this);
     }.bind(this));  
 
     goog.events.listen(star_bt, goog.events.EventType.CLICK, function(e) {

@@ -291,6 +291,7 @@ html, body {
 
 .post_icon {
   float: left;
+  cursor: pointer;
   margin-right: 8px;
   width: 13px;
   height: 13px;
