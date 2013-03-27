@@ -12,87 +12,123 @@ postile.view.notification.Notification = function(header) {
     console.log("notification called");
     this.container.style.top = '0px';
     this.container.style.left = '0px';
+    this.opened = false;
 
-    this.currentIndex = 0;
-    this.currentMax = 6;
+    this.notificationListView = postile.dom.getDescendantById(this.container, 'notification_list');
+    this.markRead = postile.dom.getDescendantByClass(this.container, 'mark_read');
+    console.log(this.markRead);
 
-    postile.ajax([ 'notification', 'get_notifications' ], {}, function(data) {
-        /* handle the data return after getting the boards information back */
-        notificationList = data.message.notifications;
-        this.markRead = postile.dom.getDescendantByClass(this.container, 'mark_read');
-        console.log(this.markRead);
+    this.numberOfNotification = postile.dom.getDescendantById(this.container, 'number_of_unread');
 
-        this.numberOfNotification = postile.dom.getDescendantById(this.container, 'number_of_unread');
-        this.numberOfNotification.innerHTML = notificationList.length;
-        this.numberOfUnread = notificationList.length;
+// See more part more see more
+}
+goog.inherits(postile.view.notification.Notification, postile.view.TipView);
 
-        goog.events.listen(this.markRead, goog.events.EventType.CLICK, function() {
-            postile.ajax([ 'notification', 'dismiss_all' ], {}, function(data) {
-                for (var i = 0; i < this.listedNotification.length; i++) {
-                    this.listedNotification[i].removeFromList();
-                    
-                };
-                // Nothing to do
-            }.bind(this));
-        }.bind(this));
-
-        this.notificationListView = postile.dom.getDescendantById(this.container, 'notification_list');
-
-        this.listedNotification = new Array();
-        if(this.numberOfUnread > 6) {
-            for (var i = 0; i < 6; i++) {
-                this.currentIndex++;
-                var notificationType = notificationList[i].notification.notification_type;
-                this.listedNotification[i] = new postile.view.notification.InfoItem();
-                this.listedNotification[i].render(this, this.notificationListView, notificationList[i].notification, notificationList[i].from_user_profile);
-            }
-            this.seeMore();
-
-        } else {
-            for (i in notificationList) {
-                this.currentIndex++;
-                var notificationType = notificationList[i].notification.notification_type;
-                this.listedNotification[i] = new postile.view.notification.InfoItem();
-                this.listedNotification[i].render(this, this.notificationListView, notificationList[i].notification, notificationList[i].from_user_profile);
-            }
+postile.view.notification.Notification.prototype.close = function() {
+    postile.view.TipView.prototype.close.call(this);
+    this.opened = false;
+    for (var i = 0; i < this.listedNotification.length; i++) {
+        if(this.listedNotification[i].removed == false){
+            goog.dom.removeNode(this.listedNotification[i].notificationItem); 
         }
+    }
+}
 
-        this.notificationList = notificationList;
+postile.view.notification.Notification.prototype.open = function(a, b) {
+    if(this.opened == false){
+        postile.view.TipView.prototype.open.call(this,a,b);
+        this.currentIndex = 0;
+        this.currentMax = 4;
+        this.opened = true;
+        postile.ajax([ 'notification', 'get_notifications' ], {}, function(data) {
+            /* handle the data return after getting the boards information back */
 
-    }.bind(this));
-    // See more part more see more
+            notificationList = data.message.notifications;
+            console.log(notificationList[0]);
+            this.numberOfNotification.innerHTML = notificationList.length;
+            this.numberOfUnread = notificationList.length;
+
+            goog.events.listen(this.markRead, goog.events.EventType.CLICK, function() {
+                postile.ajax([ 'notification', 'dismiss_all' ], {}, function(data) {
+                    // Nothing to do
+                }.bind(this));
+
+                goog.dom.removeNode(this.notificationMore);
+                this.numberOfUnread = 0;
+                this.numberOfNotification.innerHTML = this.numberOfUnread;
+                this.currentIndex = 0;
+                for (var i = 0; i < this.listedNotification.length; i++) {
+                    if(this.listedNotification[i].removed == false){
+                        goog.dom.removeNode(this.listedNotification[i].notificationItem); 
+                    }
+                }
+                this.notificationList = new Array();
+                this.listedNotification =  new Array();
+
+            }.bind(this));
+
+
+            this.listedNotification = new Array();
+            if(this.numberOfUnread > 4) {
+                for (var i = 0; i < 4; i++) {
+                    this.currentIndex++;
+                    var notificationType = notificationList[i].notification.notification_type;
+                    this.listedNotification[i] = new postile.view.notification.InfoItem();
+                    this.listedNotification[i].render(this, notificationList[i].notification, notificationList[i].from_user_profile);
+                }
+                this.seeMore();
+
+            } else {
+                for (i in notificationList) {
+                    this.currentIndex++;
+                    var notificationType = notificationList[i].notification.notification_type;
+                    this.listedNotification[i] = new postile.view.notification.InfoItem();
+                    this.listedNotification[i].render(this, notificationList[i].notification, notificationList[i].from_user_profile);
+                }
+            }
+
+            this.notificationList = notificationList;
+
+        }.bind(this));
+    }
 }
 
 postile.view.notification.Notification.prototype.seeMore = function() {
+
+    goog.dom.removeNode(this.notificationMore);
     this.notificationMore = goog.dom.createDom('div', 'notification_more');
     goog.dom.appendChild(this.notificationListView, this.notificationMore);
     goog.dom.appendChild(this.notificationMore, goog.dom.createDom('p','','See More'));
 
-    for (var i = this.currentMax; i < this.currentMax + 3; i++) {
-        var notificationType = notificationList[i].notification.notification_type;
-        this.currentIndex++;
-        this.listedNotification[i] = new postile.view.notification.InfoItem();
-        this.listedNotification[i].render(this.notificationListView, this.notificationList[i].notification, this.notificationList[i].from_user_profile);
-    }
-    this.currentMax = this.currentMax + 3;
+    goog.events.listen(this.notificationMore, goog.events.EventType.CLICK, function(){
+        for (var i = this.currentMax; i < Math.min(this.currentMax + 3, this.numberOfUnread); i++) {
+            this.currentIndex++;
+            this.listedNotification[i] = new postile.view.notification.InfoItem();
+            this.listedNotification[i].render(this, this.notificationList[i].notification, this.notificationList[i].from_user_profile);
+        }
+        this.currentMax = this.currentMax + 3;
+        this.seeMore();
 
+    }.bind(this));
 }
 
 postile.view.notification.Notification.prototype.appendOneMore = function() {
+
+    if(this.numberOfUnread > this.currentMax) { // still can append
+        console.log(this.currentIndex);
+        this.listedNotification[this.currentIndex] = new postile.view.notification.InfoItem();
+        this.listedNotification[this.currentIndex].render(this, this.notificationListView, this.notificationList[this.currentIndex].notification, this.notificationList[this.currentIndex].from_user_profile);
+        this.currentIndex++;
+    }
     this.numberOfUnread--;
     goog.dom.getElement('number_of_unread');
     this.numberOfNotification.innerHTML = this.numberOfUnread;
-
-    if(this.numberOfUnread > this.currentMax) { // still can append
-        this.currentIndex++;
-        this.listedNotification[currentIndex] = new postile.view.notification.InfoItem();
-        this.listedNotification[currentIndex].render(this.notificationListView, this.notificationList[currentIndex].notification, this.notificationList[currentIndex].from_user_profile);
+    if(this.numberOfUnread > this.currentMax) {
+        this.seeMore();
+    }else{
+        goog.dom.removeNode(this.notificationMore);
     }
 }
-
-
-goog.inherits(postile.view.notification.Notification, postile.view.TipView);
-
 postile.view.notification.Notification.prototype.unloaded_stylesheets = ['notification.css'];
 
 
@@ -108,23 +144,23 @@ postile.view.notification.FriendItem = function() {
 
 postile.view.notification.TypeMap = {'reply in post':'write on'};
 
-postile.view.notification.InfoItem.prototype.render = function(parent, parent_el, data, fromUser) {
-
+postile.view.notification.InfoItem.prototype.render = function(parent, data, fromUser) {
+    this.removed = false;
     this.NotificationParent = parent;
-
+    //console.log("rendering");
     this.notification_id = data.id;
     var time = data.create_at;
     var notificationType = data.notification_type;
     var fromUserId = data.from_user_id;
-    var targetId = data.targetId;
-    var fromUserName = fromUser.last_name + fromUser.first_name;
+    var targetId = data.target_id;
+    var fromUserName = fromUser.last_name + ' ' + fromUser.first_name;
 
     var profile_img_url = fromUser.image_small_url;
 
     /* begins the rendering of notification item */
-    console.log(profile_img_url);
+    //console.log(profile_img_url);
     this.notificationItem = goog.dom.createDom('div', 'notification');
-    goog.dom.appendChild(parent, this.notificationItem);
+    goog.dom.appendChild(parent.notificationListView, this.notificationItem);
 
     this.profile_img = goog.dom.createDom('img', {'class':'notification_profile', 'src': postile.uploadsResource([profile_img_url]) , 'alt': 'profile'});
     goog.dom.appendChild(this.notificationItem, this.profile_img);
@@ -144,7 +180,18 @@ postile.view.notification.InfoItem.prototype.render = function(parent, parent_el
     this.targetPost = goog.dom.createDom('p', 'post_text_link', 'your post');
     goog.dom.appendChild(this.notificationTitle, this.targetPost);
 
-    // TODO provide a link to the post
+    goog.events.listen(this.targetPost, goog.events.EventType.CLICK, function(){
+        console.log("clicked");
+        console.log(targetId);
+        postile.ajax([ 'post', 'get_post' ], {'post_id': targetId}, function(data) {
+            var post_x = data.post.pos_x;
+            var post_y = data.post.pos_y;
+            // TODO provide a link to the post
+            // Move to seems not returning 
+        });
+    }.bind(this));
+
+
 
     /* footer part */
     this.notificationFooter = goog.dom.createDom('div','notification_footer');
@@ -167,10 +214,10 @@ postile.view.notification.InfoItem.prototype.userHandle = function() {
 }
 
 postile.view.notification.InfoItem.prototype.removeFromList = function() {
-    goog.dom.removeNode(this.notificationItem);
-
-
-    this.NotificationParent.appendOneMore();
+    if(this.removed == false) {
+        this.removed = true;
+        goog.dom.removeNode(this.notificationItem);
+        this.NotificationParent.appendOneMore();
+    }
     // if there are other posts, we need to display them.
-
 }
