@@ -9,6 +9,7 @@ goog.require('postile.view.post_board');
 goog.require('postile.view.create_user');
 goog.require('postile.view.profile');
 goog.require('postile.ui');
+goog.require('postile.feedback');
 
 postile = { //the base of posTile frontend framework
     /*

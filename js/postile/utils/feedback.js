@@ -1,8 +1,25 @@
 goog.provide('postile.feedback');
 
-postile.feedback.FeedbackData = function(text) {
-    this.userAgent = postile.browser_compat.uas;
-    this.clientTs = new Date().getTime();
-    this.location = window.location.href;
-    this.errorList = postile.logError.slice(Math.max(0, postile.logError.length - 10), postile.logError.length);
+postile.feedback.FeedbackData = function(img) {
+    var po = {};
+    po.userAgent = postile.browser_compat.uas;
+    po.clientTs = Math.round(new Date().getTime() / 1000);
+    po.location = window.location.href;
+    po.errorList = JSON.stringify(postile.error_log.slice(Math.max(0, postile.error_log.length - 10), postile.error_log.length));
+    if (img) { po.image = img; }
+    var nwin = window.open('http://feedback.postiles.com/');
+    var rt = function(e) {
+        if (e.data == 'REQUEST_ERROR_INFO') {
+            nwin.postMessage(po, "*");
+        } else if (e.data == "DONE") {
+            window.removeEventListener("message", rt, false);
+        }
+    }
+    window.addEventListener("message", rt, false);
 }
+
+window.addEventListener("message", function(e) {
+    if (e.data.action == 'SCREENSHOT') {
+        new postile.feedback.FeedbackData(e.data.img);
+    }
+});
