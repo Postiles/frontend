@@ -142,14 +142,15 @@ postile.view.notification.FriendItem = function() {
     postile.view.notification.NotificationItem.call(this);
 }
 
-postile.view.notification.TypeMap = {'reply in post':'write on'};
+postile.view.notification.TypeMap = {'reply in post':'writes on', 'like post': 'likes', 'mention': 'mentions you at', 'link post': 'links'};
 
 postile.view.notification.InfoItem.prototype.render = function(parent, data, fromUser) {
     this.removed = false;
     this.NotificationParent = parent;
     //console.log("rendering");
     this.notification_id = data.id;
-    var time = data.create_at;
+    var time = data.updated_at;
+    console.log(data);
     var notificationType = data.notification_type;
     var fromUserId = data.from_user_id;
     var targetId = data.target_id;
@@ -162,6 +163,8 @@ postile.view.notification.InfoItem.prototype.render = function(parent, data, fro
     this.notificationItem = goog.dom.createDom('div', 'notification');
     goog.dom.appendChild(parent.notificationListView, this.notificationItem);
 
+
+    //console.log(profile_img_url);
     this.profile_img = goog.dom.createDom('img', {'class':'notification_profile', 'src': postile.uploadsResource([profile_img_url]) , 'alt': 'profile'});
     goog.dom.appendChild(this.notificationItem, this.profile_img);
 
@@ -191,13 +194,11 @@ postile.view.notification.InfoItem.prototype.render = function(parent, data, fro
         });
     }.bind(this));
 
-
-
     /* footer part */
     this.notificationFooter = goog.dom.createDom('div','notification_footer');
     goog.dom.appendChild(this.notificationItem, this.notificationFooter);
 
-    this.notificationTime = goog.dom.createDom('p','message_time', time);
+    this.notificationTime = goog.dom.createDom('p','message_time',  postile.date(time, 'inline'));
     goog.dom.appendChild(this.notificationFooter, this.notificationTime);
 
     this.ignore = goog.dom.createDom('p','ignore', 'Ignore');

@@ -33,8 +33,11 @@ postile.view.image_upload.ImageUploadBlock = function(input_instance) {
 
 
 	/* do not have logic in view, give everything for js to uploader to handle */
-	var fileInput = goog.dom.createDom('input', { 'name': 'image', 'type':'file'});
-	goog.dom.appendChild(this.uploadContent, fileInput);
+	var fakefile = goog.dom.createDom('div',{'class': 'fileinputs'});
+	var fileInput = goog.dom.createDom('input',{'class': 'file', 'name': 'image', 'type':'file'});
+
+	goog.dom.appendChild(this.uploadContent, fakefile);
+	goog.dom.appendChild(fakefile, fileInput);
 	goog.events.listen(fileInput, goog.events.EventType.CHANGE, function(e) {
 		postile.uploader.clickUpload(this);
 	});
@@ -42,3 +45,32 @@ postile.view.image_upload.ImageUploadBlock = function(input_instance) {
 goog.inherits(postile.view.image_upload.ImageUploadBlock, postile.view.PopView);
 
 postile.view.image_upload.ImageUploadBlock.prototype.unloaded_stylesheets = ['upload_image.css'];
+
+postile.view.image_upload.ImageUploadBlock.prototype.open = function(a) {
+	postile.view.PopView.prototype.open.call(this,a);
+	this.initFileUploads();
+}
+
+
+postile.view.image_upload.ImageUploadBlock.prototype.initFileUploads = function() {
+	var W3CDOM = (document.createElement && document.getElementsByTagName);
+	var fakeFileUpload = document.createElement('div');
+	if (!W3CDOM) return;	fakeFileUpload.className = 'fakefile';
+	fakeFileUpload.appendChild(document.createElement('input'));
+	var image = document.createElement('img');
+	image.src=postile.uploadsResource(['guanlun-profile.png']);
+
+	fakeFileUpload.appendChild(image);
+	var x = document.getElementsByTagName('input');
+	for (var i=0;i<x.length;i++) {
+		if (x[i].type != 'file') continue;
+		if (x[i].name != 'image') continue;
+		x[i].className = 'file hidden';
+		var clone = fakeFileUpload.cloneNode(true);
+		x[i].parentNode.appendChild(clone);
+		x[i].relatedElement = clone.getElementsByTagName('input')[0];
+		x[i].onchange = x[i].onmouseout = function () {
+			this.relatedElement.value = this.value;
+		}
+	}
+}

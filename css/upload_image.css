@@ -14,7 +14,7 @@
       width: 300px; }
     #upload_image_pop .upload_drag_board .upload_content {
       margin: 0px auto;
-      width: 125px; }
+      width: 250px; }
       #upload_image_pop .upload_drag_board .upload_content .upload_icon {
         margin: 0px auto;
         width: 85px;
@@ -22,18 +22,31 @@
         background: url(../images/upload_pic.png) no-repeat;
         margin-top: 30px; }
       #upload_image_pop .upload_drag_board .upload_content span.upload_drag_here {
-        width: 86px;
-        font-size: 20px;
+        font-family: playbold;
+        width: 125px;
+        font-size: 25px;
         margin: 10px auto;
-        display: block; }
+        display: block;
+        color: #024d61; }
       #upload_image_pop .upload_drag_board .upload_content span.upload_or {
-        width: 15px;
+        color: #024d61;
+        width: 20px;
         font-size: 10px;
         margin: 10px auto;
         display: block; }
-      #upload_image_pop .upload_drag_board .upload_content input {
-        width: 80px;
-        margin-left: 22px; }
+      #upload_image_pop .upload_drag_board .upload_content .fileinputs {
+        margin: 0px auto;
+        width: 125px;
+        overflow: hidden;
+        background: url(../images/select_file_button.png) no-repeat; }
+      #upload_image_pop .upload_drag_board .upload_content input.file {
+        cursor: pointer;
+        font-size: 999px;
+        position: relative;
+        text-align: right;
+        -moz-opacity: 0;
+        -webkit-opacity: 0;
+        opacity: 0; }
       #upload_image_pop .upload_drag_board .upload_content #upload_target {
         width: 0px;
         height: 0px;
