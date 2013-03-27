@@ -163,6 +163,8 @@ postile.view.notification.InfoItem.prototype.render = function(parent, data, fro
     this.notificationItem = goog.dom.createDom('div', 'notification');
     goog.dom.appendChild(parent.notificationListView, this.notificationItem);
 
+
+    //console.log(profile_img_url);
     this.profile_img = goog.dom.createDom('img', {'class':'notification_profile', 'src': postile.uploadsResource([profile_img_url]) , 'alt': 'profile'});
     goog.dom.appendChild(this.notificationItem, this.profile_img);
 

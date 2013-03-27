@@ -24,7 +24,7 @@ $testing: #aaa;
 		.upload_content {
 			//opacity: 0;
 			margin: 0px auto;
-			width: 125px;
+			width: 250px;
 
 			.upload_icon {
 				margin: 0px auto;
@@ -34,21 +34,35 @@ $testing: #aaa;
 				margin-top: 30px;
 			}
 			span.upload_drag_here {
-				width: 86px;	
-				font-size: 20px;
+				font-family: playbold;
+				width: 125px;	
+				font-size: 25px;
 				margin: 10px auto;
 				display:block;
+				color: $main-color;
 			}
 			span.upload_or {
-				width: 15px;	
+				color: $main-color;
+				width: 20px;	
 				font-size: 10px;
 				margin: 10px auto;
 				display:block;
 			}
 
-			input {
-				width: 80px;
-				margin-left: 22px;
+			.fileinputs {
+				margin: 0px auto;
+				width: 125px;
+				overflow: hidden;
+				background: url(../images/select_file_button.png) no-repeat;
+			}
+			input.file {
+				cursor: pointer;
+				font-size:999px;
+				position: relative;
+				text-align: right;
+				-moz-opacity:0 ;
+				-webkit-opacity:0 ;
+				opacity: 0;
 			}
 
 			#upload_target {
