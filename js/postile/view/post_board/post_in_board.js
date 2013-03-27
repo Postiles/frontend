@@ -67,25 +67,18 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
     }.bind(this));    
 
     this.post_content_el = goog.dom.createDom("div", "post_content");
-    this.post_content_el.innerHTML = postile.parseBBcode(this.post.content);
     goog.dom.appendChild(this.container_el, this.post_content_el);
+
+    this.content_text_el = goog.dom.createDom('div', 'content_text');
+    this.content_text_el.innerHTML = postile.parseBBcode(this.post.content);
+
+    goog.dom.appendChild(this.post_content_el, this.content_text_el);
+
     var mHeight = this.container_el.offsetHeight - 4 - 16 - 13 - 6;
-    console.log(mHeight, this.post_content_el.offsetHeight);
-
-    if (mHeight < this.post_content_el.offsetHeight + 16) {
-        this.post_content_el.style.maxHeight = mHeight - 16 + 'px';
-        var read_more = goog.dom.createDom("div", "read_more");
-        read_more.innerHTML = 'Read more...';
-
-        goog.events.listen(read_more, goog.events.EventType.CLICK, function() { 
-            var postExpand = new postile.view.post.PostExpand(instance);
-        });
-
-        goog.dom.appendChild(this.container_el, read_more);
-    } else {
-        this.post_content_el.style.maxHeight = mHeight + 'px';
-    }
+    this.post_content_el.style.maxHeight = mHeight + 'px';
     
+    this.set_max_displayable_content(); // display proper number of characters
+
     this.post_bottom_el = goog.dom.createDom("div", "post_bottom");
     goog.dom.appendChild(this.container_el, this.post_bottom_el);
     this.post_icon_container_el = goog.dom.createDom("div", "post_icon_container");
@@ -106,6 +99,46 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
     if (animation) {
         postile.fx.effects.resizeIn(this.wrap_el);
     }  
+}
+
+postile.view.post_in_board.Post.prototype.set_max_displayable_content = function() {
+    var post_content_height = parseInt(this.post_content_el.style.maxHeight.replace('px', ''));
+    var content_text_height = this.content_text_el.offsetHeight;
+    var line_height = 16;
+
+    var content = this.content_text_el.innerHTML;
+    var currLength = content.length; // string length
+    var orig_text = '';
+
+    if (content_text_height <= post_content_height) { // content is short, no need to proceed
+        return;
+    }
+
+    for (var i = 0; i < 30; i++) { // limit number of iterations to 50
+        orig_text = this.content_text_el.innerHTML;
+        content_text_height = this.content_text_el.offsetHeight;
+
+        if (content_text_height > post_content_height) { // too long
+            currLength = currLength / 2;
+        } else if (content_text_height < post_content_height - line_height) { // too short
+            currLength = currLength / 2 * 3;
+        } else { // just right
+            break;
+        }
+        this.content_text_el.innerHTML = content.substring(0, currLength);
+
+        if (this.content_text_el.innerHTML == orig_text) { // no change
+            break;
+        }
+    }
+
+    content = this.content_text_el.innerHTML;
+
+    if (content_text_height > post_content_height) { // still too long after 30 iterations, highly impossible
+        this.content_el.innerHTML = content.substring(0, 20) + '...';
+    }
+
+    this.content_text_el.innerHTML = content.substring(0, content.length - 3) + '...';
 }
 
 postile.view.post_in_board.Post.prototype.post_icon_container_init = function() {
@@ -302,13 +335,13 @@ postile.view.post_in_board.InlineCommentsBlock = function(postObj) {
 
     postile.ui.makeLabeledInput(this.text_input, postile._('inline_comment_prompt'), 'inactive', function() {
         postile.ajax(['inline_comment','new'], { post_id: postObj.post.id, 
-                content: postile.string.stripString(postile.view.post_in_board.resolveAtPerson(instance.text_input.innerHTML)) }, function(data) {
-                    if (data.status == postile.ajax.status.OK) {
-                        postile.fx.effects.verticalExpand((new postile.view.post_in_board.InlineComment(instance, data.message)).comment_container);
-                        postile.ui.stopLoading(instance.text_input);
-                        instance.text_input.blur();
-                    }
-        });
+            content: postile.string.stripString(postile.view.post_in_board.resolveAtPerson(instance.text_input.innerHTML)) }, function(data) {
+                if (data.status == postile.ajax.status.OK) {
+                    postile.fx.effects.verticalExpand((new postile.view.post_in_board.InlineComment(instance, data.message)).comment_container);
+                    postile.ui.stopLoading(instance.text_input);
+                    instance.text_input.blur();
+                }
+            });
         postile.ui.startLoading(instance.text_input);
     });
 

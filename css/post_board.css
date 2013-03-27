@@ -282,18 +282,6 @@ html, body {
 
 .post_pic_content img {
   width: 250px; }
-  
-.read_more {
-  color: #666;
-  position: relative;
-  cursor: pointer;
-  -webkit-transition: 0.3s ease; 
-}
-
-.read_more:hover {
-  left: 10px;
-  -webkit-transition: 0.3s ease; 
-}
 
 .post_bottom {
   position: absolute;
@@ -608,6 +596,11 @@ html, body {
   position: relative;
   overflow: hidden;
   width: 100%; }
+
+.content_text {
+  line-height: 16px;
+  width: 100%;
+}
 
 .selectable {
   -webkit-user-select: text; }
