@@ -286,6 +286,7 @@ html, body {
 .read_more {
   color: #666;
   position: relative;
+  cursor: pointer;
   -webkit-transition: 0.3s ease; 
 }
 

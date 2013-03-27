@@ -55,7 +55,6 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
     this.post_author_el = goog.dom.createDom("span", "post_author");
     this.post_expand_listener = new postile.events.EventHandler(this.post_title_el, 
             goog.events.EventType.CLICK, function(e) {
-        console.log(instance);
         var postExpand = new postile.view.post.PostExpand(instance);
     });
 
@@ -72,11 +71,16 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
     goog.dom.appendChild(this.container_el, this.post_content_el);
     var mHeight = this.container_el.offsetHeight - 4 - 16 - 13 - 6;
     console.log(mHeight, this.post_content_el.offsetHeight);
+
     if (mHeight < this.post_content_el.offsetHeight + 16) {
         this.post_content_el.style.maxHeight = mHeight - 16 + 'px';
         var read_more = goog.dom.createDom("div", "read_more");
         read_more.innerHTML = 'Read more...';
-        goog.events.listen(read_more, goog.events.EventType.CLICK, function() { alert('Please click the title to view more.'); });
+
+        goog.events.listen(read_more, goog.events.EventType.CLICK, function() { 
+            var postExpand = new postile.view.post.PostExpand(instance);
+        });
+
         goog.dom.appendChild(this.container_el, read_more);
     } else {
         this.post_content_el.style.maxHeight = mHeight + 'px';
