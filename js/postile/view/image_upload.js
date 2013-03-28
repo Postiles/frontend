@@ -57,8 +57,10 @@ postile.view.image_upload.ImageUploadBlock.prototype.initFileUploads = function(
 	var W3CDOM = (document.createElement && document.getElementsByTagName);
 	var fakeFileUpload = document.createElement('div');
 	if (!W3CDOM) return;	fakeFileUpload.className = 'fakefile';
-	fakeFileUpload.appendChild(document.createElement('input'));
-	var image = document.createElement('img');
+//	fakeFileUpload.appendChild(document.createElement('input'));
+	//var image = document.createElement('img');
+
+	/*
 	image.src=postile.uploadsResource(['guanlun-profile.png']);
 
 	fakeFileUpload.appendChild(image);
@@ -74,4 +76,5 @@ postile.view.image_upload.ImageUploadBlock.prototype.initFileUploads = function(
 			this.relatedElement.value = this.value;
 		}
 	}
+	*/
 }
