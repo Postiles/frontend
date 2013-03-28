@@ -55,6 +55,8 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
 
     this.container_el = goog.dom.createDom('div', 'post_container');
     goog.dom.appendChild(this.wrap_el, this.container_el);
+    
+    goog.events.listen(this.container_el, goog.events.EventType.DBLCLICK, function(e){ e.stopPropagation(); });
 
     /* set top parts */
     this.post_top_el = goog.dom.createDom("div", "post_top");
@@ -391,7 +393,7 @@ postile.view.post_in_board.Post.prototype.edit = function(isNew) {
         }
 
         postile.ui.makeLabeledInput(instance.post_title_el, postile._('post_title_prompt'), 'half_opaque', function(){
-            instance.post_title_el.focus();
+            instance.post_content_el.focus();
         });
 
         //hide the original bottom bar
