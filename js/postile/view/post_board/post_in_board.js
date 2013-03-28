@@ -357,7 +357,7 @@ postile.view.post_in_board.Post.prototype.edit = function() {
         instance.board.disableMovingCanvas = true; //disable moving
         instance.enable();
         var bodyHandler = new postile.events.EventHandler(document.body, goog.events.EventType.CLICK, function(){
-            instance.submitEdit({ post_id: instance.post.id, content: y_editor.getBbCode(), title: instance.post_title_el.innerHTML ==  postile._('post_title_prompt') ? '' : instance.post_title_el.innerHTML });
+            instance.submitEdit({ post_id: instance.post.post_id, content: y_editor.getBbCode(), title: instance.post_title_el.innerHTML ==  postile._('post_title_prompt') ? '' : instance.post_title_el.innerHTML });
             bodyHandler.unlisten();
             postHandler.unlisten();
             instance.in_edit = false;
