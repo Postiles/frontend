@@ -106,7 +106,7 @@ postile.view.post_board.PostCreator.prototype.mousemove = function(e) {
 
     this.legal = (!intersect) && this.position.span_x > 1 && this.position.span_y > 1;
 
-    if (this.imageMode) {
+    if (!this.imageMode) {
         this.preview.style.backgroundColor = this.legal ? '#e4eee4': '#f4dcdc';
     } else {
         this.preview.style.opacity = this.legal ? '0.9' : '0.5';
