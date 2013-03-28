@@ -14,6 +14,7 @@ goog.addDependency('../postile/utils/dom.js', ['postile.dom'], ['goog.dom.classe
 goog.addDependency('../postile/utils/events.js', ['postile.events'], ['goog.events']);
 goog.addDependency('../postile/utils/feedback.js', ['postile.feedback'], []);
 goog.addDependency('../postile/utils/i18n.js', ['postile.i18n'], ['goog.locale', 'postile.locale.en']);
+goog.addDependency('../postile/utils/re.js', ['postile.re'], ['goog.dom', 'postile.fx.effects']);
 goog.addDependency('../postile/utils/string.js', ['postile.string'], []);
 goog.addDependency('../postile/utils/ui_misc.js', ['postile.ui'], ['goog.dom', 'goog.dom.classes', 'goog.events', 'postile.fx']);
 goog.addDependency('../postile/utils/ui_toast.js', ['postile.toast'], ['goog.dom', 'goog.events']);
@@ -28,7 +29,7 @@ goog.addDependency('../postile/view/notification.js', ['postile.view.notificatio
 goog.addDependency('../postile/view/post/post.js', ['postile.view.post'], ['goog.dom', 'goog.events', 'postile.view']);
 goog.addDependency('../postile/view/post_board/mask.js', ['postile.view.post_board.mask'], ['goog.dom', 'goog.events']);
 goog.addDependency('../postile/view/post_board/mousemove.js', ['postile.view.post_board.MouseMoveScroll'], ['goog.events', 'postile.fx']);
-goog.addDependency('../postile/view/post_board/post_board.js', ['postile.view.post_board', 'postile.view.post_board.handlers'], ['goog.dom', 'goog.events', 'goog.events.KeyCodes', 'goog.events.KeyHandler', 'goog.style', 'goog.ui.Textarea', 'postile.ajax', 'postile.events', 'postile.faye', 'postile.fx', 'postile.fx.effects', 'postile.view', 'postile.view.board_more_pop', 'postile.view.confirm_delete', 'postile.view.image_upload', 'postile.view.notification', 'postile.view.post_board.Header', 'postile.view.post_board.MouseMoveScroll', 'postile.view.post_board.mask', 'postile.view.post_board.post_picker', 'postile.view.post_in_board', 'postile.view.profile', 'postile.view.search_box']);
+goog.addDependency('../postile/view/post_board/post_board.js', ['postile.view.post_board', 'postile.view.post_board.handlers'], ['goog.dom', 'goog.events', 'goog.events.KeyCodes', 'goog.events.KeyHandler', 'goog.style', 'goog.ui.Textarea', 'postile.ajax', 'postile.events', 'postile.faye', 'postile.fx', 'postile.fx.effects', 'postile.view', 'postile.view.board_more_pop', 'postile.view.confirm_delete', 'postile.view.image_upload', 'postile.view.notification', 'postile.view.post_board.Header', 'postile.view.post_board.MouseMoveScroll', 'postile.view.post_board.mask', 'postile.view.post_board.post_picker', 'postile.view.post_in_board', 'postile.view.profile', 'postile.view.search_box', 'postile.view.video_upload']);
 goog.addDependency('../postile/view/post_board/post_header.js', ['postile.view.post_board.Header'], ['goog.dom', 'goog.events', 'postile.dom', 'postile.view.notification']);
 goog.addDependency('../postile/view/post_board/post_in_board.js', ['postile.view.post_in_board'], ['goog.dom', 'goog.dom.classes', 'goog.events', 'goog.events.KeyHandler', 'goog.object', 'goog.string', 'goog.style', 'goog.ui.LabelInput', 'postile.WYSIWYF', 'postile.debbcode', 'postile.dom', 'postile.fx', 'postile.fx.effects', 'postile.i18n', 'postile.string', 'postile.toast', 'postile.ui', 'postile.view.At', 'postile.view.post']);
 goog.addDependency('../postile/view/post_board/post_picker.js', ['postile.view.post_board.post_picker'], ['goog.dom', 'goog.events', 'postile.fx', 'postile.view.post_board']);
@@ -37,5 +38,5 @@ goog.addDependency('../postile/view/star.js', ['postile.view.star'], ['goog.dom'
 goog.addDependency('../postile/view/topic_list/topic_list.js', ['postile.view.topic_list'], ['postile.view']);
 goog.addDependency('../postile/view/user_admin/create_user.js', ['postile.view.create_user'], ['goog.dom', 'goog.events', 'postile.view']);
 goog.addDependency('../postile/view/user_admin/profile.js', ['postile.view.profile'], ['goog.dom', 'goog.events', 'postile.view']);
-goog.addDependency('../postile/view/video_upload.js', ['postile.view.video_upload'], ['goog.dom', 'goog.events', 'postile.fx.effects', 'postile.view']);
+goog.addDependency('../postile/view/video_upload.js', ['postile.view.video_upload'], ['goog.dom', 'goog.events', 'postile.fx.effects', 'postile.re', 'postile.view']);
 goog.addDependency('../postile/view/view.js', ['postile.view'], ['goog.dom', 'goog.style', 'postile.events', 'postile.fx.effects']);
