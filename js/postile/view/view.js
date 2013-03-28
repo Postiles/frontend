@@ -93,6 +93,8 @@ postile.view.PopView.prototype.open = function(width) {
         this.container.style.width = width + 'px';
     }
 
+    
+
     goog.dom.appendChild(document.body, this.mask);
     postile.fx.effects.resizeIn(this.container);
     postile.fx.Animate(function(i) { this.mask.style.opacity = i; }.bind(this), 400);

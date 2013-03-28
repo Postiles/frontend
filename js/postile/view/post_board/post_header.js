@@ -95,7 +95,6 @@ postile.view.post_board.Header = function(board) {
         /* TODO add a notification to the mail box to notify user */
     }.bind(this));
 
-    console.log('/notification/' + instance.board.userData.id);
     postile.faye.subscribe('notification/' + instance.board.userData.id, function(status, data) {
         instance.notificationHandler(data);
     });
@@ -112,6 +111,7 @@ postile.view.post_board.Header = function(board) {
     goog.events.listen(more_button, goog.events.EventType.CLICK, function(e) {
         e.stopPropagation();
         this.moreButtonPop.open(more_button);
+        this.moreButtonPopOpened = true;
     }.bind(this));
 }
 
@@ -125,4 +125,7 @@ postile.view.post_board.Header.prototype.notificationHandler = function(data) {
 postile.view.post_board.Header.prototype.notificationHandlerClear = function() {
     goog.dom.classes.remove( this.alert_wrapper, 'notification_number_pop_up_wraper_animiation');
     goog.dom.classes.remove( this.redCircle, 'notification_number_pop_up_animiation');
+}
+
+postile.view.post_board.Header.prototype.dismissOthers = function() {
 }
