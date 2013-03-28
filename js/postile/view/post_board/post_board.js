@@ -113,9 +113,7 @@ postile.view.post_board.PostBoard = function(board_id) { //constructor
     var keyHandler;
     var instance = this;
     postile.view.FullScreenView.call(this);
-    
-    window.pb = this;
-
+   
     /* BEGINNING OF MEMBER DEFINITION */
     this.board_id = board_id;
     this.channel_str = null;
