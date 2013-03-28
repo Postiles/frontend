@@ -54,10 +54,11 @@ $testing: #aaa;
 				width: 125px;
 				overflow: hidden;
 				background: url(../images/select_file_button.png) no-repeat;
+				cursor: pointer;
 			}
 			input.file {
 				cursor: pointer;
-				font-size:999px;
+				font-size: 20px;
 				position: relative;
 				text-align: right;
 				-moz-opacity:0 ;

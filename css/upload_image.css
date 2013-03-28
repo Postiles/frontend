@@ -38,10 +38,11 @@
         margin: 0px auto;
         width: 125px;
         overflow: hidden;
-        background: url(../images/select_file_button.png) no-repeat; }
+        background: url(../images/select_file_button.png) no-repeat;
+        cursor: pointer; }
       #upload_image_pop .upload_drag_board .upload_content input.file {
         cursor: pointer;
-        font-size: 999px;
+        font-size: 20px;
         position: relative;
         text-align: right;
         -moz-opacity: 0;
