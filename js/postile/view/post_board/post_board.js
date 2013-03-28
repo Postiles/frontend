@@ -26,14 +26,32 @@ goog.require('postile.view.video_upload');
 goog.require('postile.view.search_box');
 goog.require('postile.view.post_board.post_picker');
 
+/**
+ * Smallest unit size for a post, in pixel.
+ * @const
+ */
 postile.view.post_board.POST_WIDTH = 75;
 postile.view.post_board.POST_HEIGHT = 50;
 postile.view.post_board.POST_MARGIN = 14;
 
-postile.view.post_board.handlers.arrow_control_click = function() { //in chrome, mouseout will automatically be called
+/**
+ * Callback function for PostBoard.direction_controllers' mouseclick event.
+ * "In chrome, mouseout will automatically be called."
+ * @see PostBoard.bindKeyEvents Event binding is done there.
+ * @see PostBoard.direction_controllers
+ */
+postile.view.post_board.handlers.arrow_control_click = function() {
     this.parentNode.rel_data.preMoveCanvas(this.direction);
 }
 
+/**
+ * Callback function for PostBoard.direction_controllers' mousemove event.
+ * Moves the arrow button horizontally or vertically so as to keep aligned
+ * with user's mouse.
+ * @param {goog.events.Event}
+ * @see PostBoard.bindKeyEvents
+ * @see PostBoard.direction_controllers
+ */
 postile.view.post_board.handlers.arrow_control_mousemove = function(e) {
     if (this.direction == 'up' || this.direction == 'down') {
         this.button.style.left = (e.offsetX - 60)+'px';
@@ -42,6 +60,17 @@ postile.view.post_board.handlers.arrow_control_mousemove = function(e) {
     }
 }
 
+/**
+ * Callback function for PostBoard.direction_controllers' mouseover event.
+ * Does two things: First is to show the zebra crossing animation when
+ * the cursor is moved over the arrow button. Second is to set up a delayed
+ * canvas move, which can be canceld by moving the cursor out of the button.
+ *
+ * @param {goog.events.Event} e
+ * @see PostBoard.bindKeyEvents
+ * @see PostBoard.direction_controllers
+ * @see handlers.arrow_control.mouseout Cancels the canvas move.
+ */
 postile.view.post_board.handlers.arrow_control_mouseover = function(e) {
     e.preventDefault();
 
@@ -62,21 +91,40 @@ postile.view.post_board.handlers.arrow_control_mouseover = function(e) {
         });
 }
 
+/**
+ * Callback function for PostBoard.direction_controllers' mouseout event.
+ * Cancels the canvas move issued by the mouseover callback, and hide
+ * the arrow button.
+ *
+ * @see PostBoard.bindKeyEvents
+ * @see PostBoard.direction_controllers
+ * @see handlers.arrow_control.mouseover Initializes the animation.
+ */
 postile.view.post_board.handlers.arrow_control_mouseout = function() {
     this.parentNode.rel_data.direction_controllers_animation.stop();
     this.button.style.display = 'none';
 }
 
-postile.view.post_board.handlers.resize = function(instance){ //called on window.resize
+/**
+ * Resize the viewport. This is called when the PostBoard is first initialized,
+ * or on window.resize event.
+ * @param {postile.view.post_board.PostBoard} instance The postboard instance
+ * to resize (XXX: Shall we change this into a method of PostBoard?)
+ */
+postile.view.post_board.handlers.resize = function(instance) {
     instance.canvas.style.display = 'block'; 
     var new_viewport_size = [window.innerWidth,  window.innerHeight - 45]; //45 is the menu bar height
 
-    if (!instance.canvasCoord) { //first time (initialize)
+    if (!instance.canvasCoord) {
+        /**
+         * When called the first time, initialize canvasCoord.
+         * @see PostBoard
+         */
         instance.canvasCoord = [
             (new_viewport_size[0] - instance.canvasSize[0]) / 2, 
             (new_viewport_size[1] - instance.canvasSize[1]) / 2 ];
-    } else { //window resize
-        //keep the center in the same position
+    } else {
+        // Window resize. Keep the center in the same position.
         instance.canvasCoord[0] += (new_viewport_size[0] - parseInt(instance.catchall.style.width))/2;
         instance.canvasCoord[1] += (new_viewport_size[1] - parseInt(instance.catchall.style.height))/2;
     }
@@ -86,12 +134,23 @@ postile.view.post_board.handlers.resize = function(instance){ //called on window
 
     instance.viewport.scrollLeft = - instance.canvasCoord[0];
     instance.viewport.scrollTop = - instance.canvasCoord[1];
-    instance.viewport_position = goog.style.getRelativePosition(instance.viewport, document.body); //or document.documentElement perhaps?
 
-    instance.updateSubsribeArea(); //update according to the new subscribe area
+    // XXX: Or document.documentElement perhaps?
+    instance.viewport_position = goog.style.getRelativePosition(instance.viewport, document.body);
+
+    // Update according to the new subscribe area.
+    instance.updateSubsribeArea();
 }
 
-postile.view.post_board.handlers.keypress = function(instance, e){
+/**
+ * Callback function for document's key event.
+ * Checks for arrow keys and issue canvas moves.
+ * Currently only handles single direction.
+ *
+ * @param {goog.events.Event} e
+ * @see PostBoard.bindKeyEvents
+ */
+postile.view.post_board.handlers.keypress = function(instance, e) {
     switch (e.keyCode) {
         case goog.events.KeyCodes.LEFT:
             if (instance.preMoveCanvas('left')) { e.preventDefault(); }
@@ -108,32 +167,139 @@ postile.view.post_board.handlers.keypress = function(instance, e){
     }    
 }
 
-postile.view.post_board.PostBoard = function(board_id) { //constructor
+/**
+ * A collection of all the posts for a particular board id.
+ * @constructor
+ * @extends postile.view.FullScreenView
+ * @param {string} board_id Unique identifier for a board.
+ */
+postile.view.post_board.PostBoard = function(board_id) {
     var i;
+
+    /** @deprecated Dead code */
     var keyHandler;
+
     var instance = this;
+
     postile.view.FullScreenView.call(this);
    
-    /* BEGINNING OF MEMBER DEFINITION */
+    /** @private */
     this.board_id = board_id;
+
+    /**
+     * @type {?string} Faye channel id
+     * @private
+     */
     this.channel_str = null;
-    this.canvasCoord = null; //current canvas position relative to the canvas viewport
-    this.canvasSize = [3872, 2592]; //the size of the canvas currently
-    this.canva_shadow_animation = null; //the animation for the outbound shadow
-    this.disableMovingCanvas = false; //when true, moving canvas is disabled temporarily
-    this.currentPosts = {}; //an object containing all posts, as key = post_id and value = Post object
-    this.catchall = goog.dom.createDom('div', 'viewport_container'); //disable text selecting
-    this.viewport = goog.dom.createDom('div', 'canvas_viewport'); //disable text selecting
-    this.canvas = goog.dom.createDom('div', 'canvas'); //the canvas being dragged
-    this.viewport_position = null; //viewport's position relative to the window
-    this.direction_controllers = {}; //the control arrows
+
+    /**
+     * Current canvas position relative to the canvas viewport, in pixel.
+     * @type {Array.<number>}
+     * @see handlers.resize, since it's firstly initialized there.
+     */
+    this.canvasCoord = null;
+
+    /**
+     * The size of the canvas currently.
+     * @type {Array.<number>}
+     */
+    this.canvasSize = [3872, 2592];
+
+    /**
+     * "The animation for the outbound shadow."
+     * @type {postile.fx.Animate}
+     * @see mousemove.js:MouseMoveScroll.viewport_mouseup Initialized there.
+     */
+    this.canva_shadow_animation = null;
+
+    /**
+     * "When true, moving canvas is disabled temporarily."
+     * XXX: This variable is used by many files -- consider refactoring it?
+     * @type {boolean}
+     * @see PostBoard.locateCanvas
+     */
+    this.disableMovingCanvas = false;
+
+    /**
+     * "An object containing all posts,
+     *  as key = post_id and value = Post object"
+     * @type {Object.<number, postile.view.post_in_board.Post>}
+     * @see createPost, removePost, moveToPost, renderArray, fayeHandler.
+     */
+    this.currentPosts = {};
+
+    /**
+     * The parent dom for the viewport and all the direction_controllers.
+     * Blocks user action: context menu, text selecting, etc. Its size is
+     * modified in handlers.resize.
+     *
+     * @type {Element}
+     * @private
+     * @see bindMouseEvents, bindKeyEvents
+     */
+    this.catchall = goog.dom.createDom('div', 'viewport_container');
+
+    /**
+     * Canvas container. "Disable text selecting."
+     * @type {Element}
+     */
+    this.viewport = goog.dom.createDom('div', 'canvas_viewport');
+
+    /**
+     * "The canvas being dragged."
+     * @type {Element}
+     */
+    this.canvas = goog.dom.createDom('div', 'canvas');
+
+    /**
+     * "Viewport's position relative to the window."
+     * @type {goog.math.Coordinate}
+     * @see handlers.resize
+     */
+    this.viewport_position = null;
+
+    /**
+     * The control arrow elements, contains 4 element (up, down, left, right)
+     * for each direction.
+     * @type {Object.<number, Element>
+     * @see PostBoard.bindKeyEvents Since it's initialized there.
+     */
+    this.direction_controllers = {};
+
+    /**
+     * @type {postile.fx.Animate}
+     * @see handlers.arrow_control_mouseover Initialized there.
+     */
     this.direction_controllers_animation = null;
-    this.right = goog.dom.createDom('div', 'right_clicker'); //right click display
-    this.currentSubscribeArea = null; //a valid area for which we've got all data we need and keep refreshing from the server
-    this.maxZIndex = 0; //max zIndex of posts currently
+
+    /**
+     * "Right click display"
+     * @type {Element}
+     * @deprecated Currently not used.
+     */
+    this.right = goog.dom.createDom('div', 'right_clicker');
+
+    /**
+     * A valid area for which we've got all data we need and keep refreshing from the server.
+     * @type {postile.view.post_board.Area}
+     * @deprecated This variable is currently not being used.
+     */
+    this.currentSubscribeArea = null;
+
+    /**
+     * "Max zIndex of posts currently."
+     * @type {number}
+     */
+    this.maxZIndex = 0;
+
+    /**
+     * Saves the coord of cursor when a mousedown event occurs.
+     * @type {Array.<number>}
+     * @see bindMouseEvents
+     */
     this.click_start_point = null;
 
-    //initialize according to board_id
+    // Initialize according to board_id
     postile.ajax(['board','enter_board'], { board_id: board_id }, function(data) {
         instance.boardData = data.message.board;
         instance.userData = data.message.user;
@@ -148,18 +314,29 @@ postile.view.post_board.PostBoard = function(board_id) { //constructor
         instance.initView();
         instance.initEvents();
 
-        //initialize viewport size
+        // Initialize viewport size
         postile.view.post_board.handlers.resize(instance);
     });
 }
 
 goog.inherits(postile.view.post_board.PostBoard, postile.view.FullScreenView);
 
-//postile.view.View required component
+/**
+ * "Postile.view.View required component."
+ * @override
+ */
 postile.view.post_board.PostBoard.prototype.unloaded_stylesheets = ['fonts.css', 'post_board.css'];
 
+/**
+ * @type {string}
+ * @const
+ */
 postile.view.post_board.PostBoard.prototype.html_segment = postile.staticResource(['post_board.html']);
 
+/**
+ * Initialize view components. Called after receiving initial board data.
+ * @see PostBoard
+ */
 postile.view.post_board.PostBoard.prototype.initView = function() {
     var instance = this;
 
@@ -174,7 +351,7 @@ postile.view.post_board.PostBoard.prototype.initView = function() {
     goog.dom.appendChild(goog.dom.getElement("wrapper"), this.catchall);
 
     /**
-     * main viewport and canvas
+     * Main viewport and canvas
      */
     this.catchall.rel_data = this;
     this.viewport.rel_data = this;
@@ -185,6 +362,10 @@ postile.view.post_board.PostBoard.prototype.initView = function() {
     }
 }
 
+/**
+ * Initialize event listeners. Called after initializing views.
+ * @see PostBoard
+ */
 postile.view.post_board.PostBoard.prototype.initEvents = function() {
     this.bindWindowEvents();
     this.bindMouseEvents();
@@ -194,16 +375,17 @@ postile.view.post_board.PostBoard.prototype.initEvents = function() {
 postile.view.post_board.PostBoard.prototype.bindMouseEvents = function() {
     var instance = this;
 
+    // Disable text selecting, for IE.
     goog.events.listen(this.viewport, goog.events.EventType.SELECTSTART, function() {
         return false; 
-    }); //disable text selecting, for ie
+    });
 
     goog.events.listen(this.viewport, goog.events.EventType.SCROLL, function() {
         instance.canvasCoord[0] = - instance.viewport.scrollLeft;
         instance.canvasCoord[1] = - instance.viewport.scrollTop;
     }) 
 
-    /* start: controllers for moving the viewport */
+    // Start: controllers for moving the viewport
     goog.dom.appendChild(this.catchall, this.right);
 
     goog.events.listen(this.catchall, goog.events.EventType.CONTEXTMENU, function(e) {
@@ -213,7 +395,8 @@ postile.view.post_board.PostBoard.prototype.bindMouseEvents = function() {
     goog.events.listen(this.catchall, goog.events.EventType.MOUSEDOWN, function(e) {
         instance.click_start_point = [e.clientX, e.clientY];
     
-        if (!e.isButton(2)) { // right mouse button
+        if (!e.isButton(2)) {
+            // Right mouse button
             return; 
         }
 
@@ -234,7 +417,8 @@ postile.view.post_board.PostBoard.prototype.bindMouseEvents = function() {
         var dy = e.clientY - instance.click_start_point[1];
         var dx = e.clientX - instance.click_start_point[0];
     
-        if (!e.isButton(2) || Math.abs(dx) + Math.abs(dy) < 3) { // right mouse button
+        if (!e.isButton(2) || Math.abs(dx) + Math.abs(dy) < 3) {
+            // Right mouse button
             return; 
         }
 
@@ -288,7 +472,10 @@ postile.view.post_board.PostBoard.prototype.bindWindowEvents = function() {
     this.window_resize_event_handler.listen();
 }
 
-//postile.view.View required component
+/**
+ * "Postile.view.View required component."
+ * @override
+ */
 postile.view.post_board.PostBoard.prototype.close = function() {
     var instance = this;
 
@@ -308,7 +495,14 @@ postile.view.post_board.PostBoard.prototype.close = function() {
     */
 }
 
-postile.view.post_board.PostBoard.prototype.preMoveCanvas = function(direction) { //return true only when it's movable
+/**
+ * "Return true only when it's movable"
+ * Move the canvas in the given direction by half of the screen size.
+ * @param {string} direction Which direction to move to.
+ * @return {boolean} true if is movable.
+ * @see moveCanvas
+ */
+postile.view.post_board.PostBoard.prototype.preMoveCanvas = function(direction) {
     switch(direction) {
         case 'up':
             return this.moveCanvas(0, -0.5 * this.viewport.offsetHeight);
@@ -321,6 +515,10 @@ postile.view.post_board.PostBoard.prototype.preMoveCanvas = function(direction) 
     }
 }
 
+/**
+ * Adjust the screen to center the given post.
+ * @param {number} pid The post id to move to.
+ */
 postile.view.post_board.PostBoard.prototype.moveToPost = function(pid) {
     var doFunc = function() {
         var p = this.currentPosts[pid].post;
@@ -329,22 +527,38 @@ postile.view.post_board.PostBoard.prototype.moveToPost = function(pid) {
     if (pid in this.currentPosts) {
         doFunc();
     } else {
-        renderById(pid, doFunc);
+        this.renderById(pid, doFunc);
     }
 }
 
-postile.view.post_board.PostBoard.prototype.moveCanvas = function(dx, dy) { //return true only when it's movable
+/**
+ * Move the canvas by a certain offset.
+ * @param {number} dx Distance to move, in x axis.
+ * @param {number} dy Distance to move, in y axis.
+ * @return {boolean} Whether the canvas is movable (and thus moved).
+ */
+postile.view.post_board.PostBoard.prototype.moveCanvas = function(dx, dy) {
     if (this.disableMovingCanvas) { 
+        // Do not respond to actions if the user is actually dragging.
         return false; 
-    } //do not respond to actions if the user is actually dragging
+    }
     this.locateCanvas(this.canvasCoord[0] - dx, this.canvasCoord[1] - dy);   
     return true;
 }
 
-postile.view.post_board.PostBoard.prototype.locateCanvas = function(leftTarget, topTarget) { //return true only when it's movable
+/**
+ * Move the canvas to a certain position.
+ * @param {number} leftTarget Target x-coord to move to.
+ * @param {number} topTarget Target y-coord to move to.
+ * @return {boolean} Whether the canvas is movable (and thus moved).
+ */
+postile.view.post_board.PostBoard.prototype.locateCanvas = function(
+        leftTarget,
+        topTarget) {
+
     var i;
     var instance = this;
-    var arrow_hide = {}; //the arrow index to hide
+    var arrow_hide = {}; // The arrow index to hide.
 
     for (i in postile.view.post_board.direction_norm_to_css) { 
         arrow_hide[i] = false; 
@@ -396,7 +610,12 @@ postile.view.post_board.PostBoard.prototype.locateCanvas = function(leftTarget, 
     instance.updateSubsribeArea();
 }
 
-//convent length from "unit length" of the grid to pixel.
+/**
+ * "Convent length from 'unit length' of the grid to pixel."
+ * @param {number} u Grid length to be converted
+ * @return {number} Corresponding pixel length
+ * @see heightTo, xPosTo, yPosTo
+ */
 postile.view.post_board.PostBoard.prototype.widthTo = function(u) { 
     return (u*(postile.view.post_board.POST_WIDTH+postile.view.post_board.POST_MARGIN) 
             - postile.view.post_board.POST_MARGIN); 
@@ -417,7 +636,13 @@ postile.view.post_board.PostBoard.prototype.yPosTo = function(u) {
             + this.canvasSize[1]/2); 
 };
 
-//convent length to "unit length" of the grid from pixel. it is from the center grid points so margins and paddings are ignored.
+/**
+ * "Convent length to 'unit length' of the grid from pixel.
+ *  It is from the center grid points so margins and paddings are ignored."
+ * @param {number} px Pixel length to be converted
+ * @return {number} Corresponding grid length
+ * @see yPosFrom
+ */
 postile.view.post_board.PostBoard.prototype.xPosFrom = function(px) { 
     return ((px + postile.view.post_board.POST_MARGIN / 2 - this.canvasSize[0] / 2) 
             / (postile.view.post_board.POST_WIDTH + postile.view.post_board.POST_MARGIN)); 
@@ -428,10 +653,32 @@ postile.view.post_board.PostBoard.prototype.yPosFrom = function(px) {
             / (postile.view.post_board.POST_HEIGHT + postile.view.post_board.POST_MARGIN)); 
 };
 
-postile.view.post_board.direction_norm_to_css = { up: 'top', down: 'bottom', left: 'left', right: 'right' };
+/**
+ * Maps a certain direction to its corresponding css attribute.
+ * @enum {string}
+ */
+postile.view.post_board.direction_norm_to_css = {
+    up:    'top',
+    down:  'bottom',
+    left:  'left',
+    right: 'right'
+};
 
-postile.view.post_board.PostBoard.prototype.getVisibleArea = function(source) { // //get visible area in the unit of "grid unit" //source is expected to be this.canvasCoord or [parseInt(this.canvas.style.left), parseInt(this.canvas.style.top)]
-    return { 
+/**
+ * Represents an area, contains 4 attributes: left, top, right and bottom.
+ * @typedef {Object.<string, number>}
+ */
+postile.view.post_board.Area;
+
+/**
+ * Get visible area in the unit of "grid unit".
+ * @param {Array.<number>} source The relative base point.
+ * It is expected to be this.canvasCoord or [parseInt(this.canvas.style.left), parseInt(this.canvas.style.top)]
+ * @return {postile.view.post_board.Area}
+ * @deprecated This function is not being used at the moment.
+ */
+postile.view.post_board.PostBoard.prototype.getVisibleArea = function(source) {
+    return {
         left: Math.floor(this.xPosFrom(-source[0])), 
         top: Math.floor(this.yPosFrom(-source[1])), 
         right: Math.ceil(this.xPosFrom(this.viewport.offsetWidth - source[0])), 
@@ -439,8 +686,20 @@ postile.view.post_board.PostBoard.prototype.getVisibleArea = function(source) { 
     };
 }
 
-postile.view.post_board.PostBoard.prototype.getSubscribeArea = function(source) { //get subscribe area in the unit of "grid unit"
-    var preloadRadio = 1; //the size of preloaded area. 0 for exactly visible area (no preload), n for extend n screen length on all directions.
+/**
+ * Get subscribe area in the unit of "grid unit".
+ * @param {Array.<number>} source The relative base point.
+ * @return {postile.view.post_board.Area}
+ */
+postile.view.post_board.PostBoard.prototype.getSubscribeArea = function(source) {
+    /**
+     * The size of preloaded area, in screen length.
+     * 0 for exactly visible area (no preload),
+     * n for extend n screen length on all directions.
+     * @type {number}
+     */
+    var preloadRadio = 1;
+
     return { 
         left: Math.floor(this.xPosFrom(-source[0] - preloadRadio*this.viewport.offsetWidth)), 
         top: Math.floor(this.yPosFrom(-source[1] - preloadRadio*this.viewport.offsetHeight)), 
@@ -449,13 +708,16 @@ postile.view.post_board.PostBoard.prototype.getSubscribeArea = function(source) 
     };
 }
 
-postile.view.post_board.PostBoard.prototype.updateSubsribeArea = function() { //fetch the posts in the new area and subscribe it
+/**
+ * Fetch the posts in the new area and subscribe it.
+ */
+postile.view.post_board.PostBoard.prototype.updateSubsribeArea = function() {
     var instance = this;
     var current_loc = this.canvasCoord;
     var to_subscribe = this.getSubscribeArea(current_loc);
     /*
     if (!this.isAreaFullInside(this.currentSubscribeArea, this.getVisibleArea(currentLoc))) {
-        //TODO: display loading
+        // TODO: display loading
     }
     */
     to_subscribe.board_id = instance.board_id;
@@ -464,6 +726,14 @@ postile.view.post_board.PostBoard.prototype.updateSubsribeArea = function() { //
     }, 'Loading posts...', true);
 }
 
+/**
+ * Test if one area fully contains the other area. Note that this function
+ * will return true if the two areas are equal in size.
+ * @param {postile.view.post_board.Area} parent The outer area to test.
+ * @param {postile.view.post_board.Area} child The inner area to test.
+ * @return {boolean} true if fully contains, false otherwise.
+ * @deprecated This function is current not being used.
+ */
 postile.view.post_board.PostBoard.prototype.isAreaFullInside = function(parent, child) {
     return (parent.left <= child.left 
             && parent.right >= child.right 
@@ -472,16 +742,17 @@ postile.view.post_board.PostBoard.prototype.isAreaFullInside = function(parent, 
 }
 
 /**
- * The parameter "array" is an array of returned objects, which contains a post object and a username:
- *  Array: [ 
- *      Object {
- *          post { post attrs },
- *          username: <str>
- *      },
- *      Object { ... }
- *  ]
+ * Object { post: <post attrs>, username: <string> }
+ * @typedef
  */
-postile.view.post_board.PostBoard.prototype.renderArray = function(array) { //add post objects to the screen //NOTICE: just add, no not care the duplicate
+postile.view.post_board.NamedPostData;
+
+/**
+ * Add post objects to the screen.
+ * Note this function only adds and does not care about any duplicate.
+ * @param {Array.<postile.view.post_board.NamedPostData} array
+ */
+postile.view.post_board.PostBoard.prototype.renderArray = function(array) {
     var i;
     var animation = null;
     for (i in array) {
@@ -494,6 +765,11 @@ postile.view.post_board.PostBoard.prototype.renderArray = function(array) { //ad
     }
 };
 
+/**
+ * @param {number} pid Post id to render.
+ * @param {Function} callback Function to be called after fetching and
+ * rendering are done.
+ */
 postile.view.post_board.PostBoard.prototype.renderById = function(pid, callback) {
     var instance = this;
     postile.ajax(['post', 'get_post'], { post_id: pid }, function(r) {
