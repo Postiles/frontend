@@ -48,6 +48,8 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
 
     this.container_el = goog.dom.createDom('div', 'post_container');
     goog.dom.appendChild(this.wrap_el, this.container_el);
+    
+    goog.events.listen(this.container_el, goog.events.EventType.DBLCLICK, function(e){ e.stopPropagation(); });
 
     /* set top parts */
     this.post_top_el = goog.dom.createDom("div", "post_top");
