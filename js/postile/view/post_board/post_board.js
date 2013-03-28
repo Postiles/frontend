@@ -485,7 +485,10 @@ postile.view.post_board.PostBoard.prototype.renderArray = function(array) { //ad
     var i;
     var animation = null;
     for (i in array) {
-        if (!array[i].post.id) { return; }
+        if (!array[i].post.id) {
+            return;
+        }
+
         if (array[i].post.id in this.currentPosts) { //if so // so what?
             this.currentPosts[array[i].post.id].render(array[i]);
         } else {
@@ -510,7 +513,9 @@ postile.view.post_board.PostBoard.prototype.fayeHandler = function(status, data)
             break;
         case postile.view.post_board.faye_status.START:
             if (data.post.id in this.currentPosts) {
-                this.currentPosts[data.post.id].disable();
+                if (!this.currentPosts[data.post.id].in_edit) { // not the post currently being edited
+                    this.currentPosts[data.post.id].disable();
+                }
             } else {
                 this.renderArray([data]);
             }
@@ -530,9 +535,9 @@ postile.view.post_board.PostBoard.prototype.createPost = function(info) {
     req.board_id = this.board_id;
     ret.text_content = '';
 
-    postile.ajax(['post','new'], req, function(data) {
+    postile.ajax(['post', 'new'], req, function(data) {
         instance.renderArray([ { post: data.message.post, creator: data.message.creator } ]);
-        instance.currentPosts[data.message.post.id].edit();
+        instance.currentPosts[data.message.post.id].edit(true);
     });
 }
 

@@ -271,14 +271,19 @@ html, body {
 .post_top {
   color: #024d61;
   font-size: 10pt;
+  display: table-cell;
 }
 
 .post_title {
   float: left;
-  font-family: OxygenBold; }
+  font-family: OxygenBold;
+  white-space: nowrap;
+  overflow: hidden;
+}
 
 .post_author {
-  margin-left: 20px; }
+  float: right;
+}
 
 .post_pic_content img {
   width: 250px; }
