@@ -16,7 +16,7 @@ postile.view.notification.Notification = function(header) {
 
     this.notificationListView = postile.dom.getDescendantById(this.container, 'notification_list');
     this.markRead = postile.dom.getDescendantByClass(this.container, 'mark_read');
-    console.log(this.markRead);
+    //console.log(this.markRead);
 
     this.numberOfNotification = postile.dom.getDescendantById(this.container, 'number_of_unread');
 
