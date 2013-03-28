@@ -9,7 +9,7 @@ postile.view.notification.Notification = function(header) {
     postile.view.TipView.call(this);
     postile.ui.load(this.container, postile.staticResource(['_notification.html']));
     this.container.id = 'notifications_pop_up';
-    console.log("notification called");
+    //console.log("notification called");
     this.container.style.top = '0px';
     this.container.style.left = '0px';
     this.opened = false;

@@ -34,14 +34,6 @@ postile.uploader.dragUpload = function(evt){
         postile.uploader.formData.append('image', file); // NOTICE: always use "image" as the name, need to change
         // TODO: Give Feedback to the user 
 
-        /*
-        var reader = new FileReader();
-        // init the reader event handlers
-        reader.onload = handleReaderLoad;
-        // begin the read operation
-        reader.readAsDataURL(file);
-        */
-
         postile.uploader.submit();
     }
 };
@@ -80,31 +72,13 @@ postile.uploader.iframeUpload = function(){ // How to call this function?
     
     // This function is for drog only
 postile.uploader.submit = function(){ //  TODO check if browser is good
-    if(/*this.xhr2supported() &&*/ postile.uploader.formData !== null){
-        //postile.ajax('upload.php', formData);
-        /*
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', 'http://localhost:3000/application/upload_image');
-        xhr.send(postile.uploader.formData);
-        console.log(postile.uploader.formData);
-        */
+    if(postile.uploader.formData !== null){
         postile.ajax.upload( ['application', 'upload_image' ], postile.uploader.formData, function(data) {
-            console.log(data);
+            var filename = data.message.filename;
+
+            // TODO call the function of Kong to drag photo
         });
     }
-    //}
-    /*
-    else{
-        alert('unable to upload');
-        if(!this.xhr2supported()){
-            console.log('xhr2 not suppported');
-            console.log(this.xhr2supported);
-        }
-        if (this.formData === null){
-            console.log('formData is null');
-        }
-    }
-    */
 };
 
 

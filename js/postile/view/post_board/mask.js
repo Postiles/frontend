@@ -6,6 +6,7 @@ goog.require('goog.dom');
 postile.view.post_board.PostCreator = function(post_board_obj) {
     var instance = this;
     this.board = post_board_obj;
+    this.imageMode = false;
     this.ghost_board_el = goog.dom.createDom('div', 'canvas_mask');
     instance.ghost_board_el.style.display = 'none';
     this.preview = goog.dom.createDom('div', 'post_preview');
@@ -19,9 +20,16 @@ postile.view.post_board.PostCreator = function(post_board_obj) {
     goog.events.listen(this.ghost_board_el, goog.events.EventType.MOUSEUP, function(e) { e.stopPropagation(); instance.mouseup(e); });
 }
 
-postile.view.post_board.PostCreator.prototype.open = function() {
+postile.view.post_board.PostCreator.prototype.open = function(imgUri) {
     if(this.board.disableMovingCanvas) { 
         return; 
+    }
+    if(imgUri) {
+        this.imageMode = true;
+        this.preview.style.backgroundImage = 'url('+imgUri+')';
+    } else {
+        this.imageMode = false;
+        this.preview.style.backgroundImage = 'none';
     }
     this.board.disableMovingCanvas = true;
     this.ghost_board_el.style.display = 'block';
@@ -98,7 +106,11 @@ postile.view.post_board.PostCreator.prototype.mousemove = function(e) {
 
     this.legal = (!intersect) && this.position.span_x > 1 && this.position.span_y > 1;
 
-    this.preview.style.backgroundColor = this.legal ? '#e4eee4': '#f4dcdc';
+    if (this.imageMode) {
+        this.preview.style.backgroundColor = this.legal ? '#e4eee4': '#f4dcdc';
+    } else {
+        this.preview.style.opacity = this.legal ? '0.9' : '0.5';
+    }
     this.preview.style.display = 'block';
 };
 
@@ -121,20 +133,3 @@ postile.view.post_board.PostCreator.prototype.mouseup = function(e){
     this.board.createPost(this.position);
     this.close();
 };
-
-/****************************************************************
-*****************************************************************
-********************重***构***纪***念***碑***********************
-*****************************************************************
-*****************************************************************
-*****************************************************************
-*****************************************************************
-*****************************************************************
-*****************************************************************
-*****************************************************************
-*****************************************************************
-***************************特此纪念******************************
-*********************八百行的post_board.js***********************
-*****************************************************************
-*****************************************************************
-****************************************************************/

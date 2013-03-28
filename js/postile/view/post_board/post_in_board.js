@@ -277,7 +277,7 @@ postile.view.post_in_board.Post.prototype.enable = function() {
 postile.view.post_in_board.Post.prototype.submitEdit = function(to_submit) {
     var instance = this;
     var original_title = instance.post.title;
-    var original_value = instance.post.text_content;
+    var original_value = instance.post.content;
     var lels = instance.board.picker.all_lkd_el;
     for (i in lels) {
         goog.dom.removeNode(lels[i]);

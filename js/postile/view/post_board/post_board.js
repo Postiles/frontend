@@ -22,6 +22,7 @@ goog.require('postile.view.confirm_delete');
 goog.require('postile.view.profile');
 goog.require('postile.view.notification');
 goog.require('postile.view.image_upload');
+goog.require('postile.view.video_upload');
 goog.require('postile.view.search_box');
 goog.require('postile.view.post_board.post_picker');
 
@@ -112,6 +113,8 @@ postile.view.post_board.PostBoard = function(board_id) { //constructor
     var keyHandler;
     var instance = this;
     postile.view.FullScreenView.call(this);
+    
+    window.pb = this;
 
     /* BEGINNING OF MEMBER DEFINITION */
     this.board_id = board_id;
@@ -320,13 +323,27 @@ postile.view.post_board.PostBoard.prototype.preMoveCanvas = function(direction) 
     }
 }
 
+postile.view.post_board.PostBoard.prototype.moveToPost = function(pid) {
+    var doFunc = function() {
+        var p = this.currentPosts[pid].post;
+        this.locateCanvas(-(this.xPosTo(p.pos_x) + this.widthTo(p.span_x) / 2 - this.viewport.offsetWidth / 2), -(this.yPosTo(p.pos_y) + this.heightTo(p.span_y) / 2 - this.viewport.offsetHeight / 2));
+    };
+    if (pid in this.currentPosts) {
+        doFunc();
+    } else {
+        renderById(pid, doFunc);
+    }
+}
+
 postile.view.post_board.PostBoard.prototype.moveCanvas = function(dx, dy) { //return true only when it's movable
     if (this.disableMovingCanvas) { 
         return false; 
     } //do not respond to actions if the user is actually dragging
+    this.locateCanvas(this.canvasCoord[0] - dx, this.canvasCoord[1] - dy);   
+    return true;
+}
 
-    var leftTarget = this.canvasCoord[0];
-    var topTarget = this.canvasCoord[1];
+postile.view.post_board.PostBoard.prototype.locateCanvas = function(leftTarget, topTarget) { //return true only when it's movable
     var i;
     var instance = this;
     var arrow_hide = {}; //the arrow index to hide
@@ -334,8 +351,6 @@ postile.view.post_board.PostBoard.prototype.moveCanvas = function(dx, dy) { //re
     for (i in postile.view.post_board.direction_norm_to_css) { 
         arrow_hide[i] = false; 
     }
-
-    leftTarget -= dx; topTarget -= dy;
 
     if (topTarget >= 0) { 
         topTarget = 0; arrow_hide['up'] = true; 
@@ -381,7 +396,6 @@ postile.view.post_board.PostBoard.prototype.moveCanvas = function(dx, dy) { //re
         }
     }
     instance.updateSubsribeArea();
-    return true;
 }
 
 //convent length from "unit length" of the grid to pixel.
@@ -481,6 +495,14 @@ postile.view.post_board.PostBoard.prototype.renderArray = function(array) { //ad
         }
     }
 };
+
+postile.view.post_board.PostBoard.prototype.renderById = function(pid, callback) {
+    var instance = this;
+    postile.ajax(['post', 'get_post'], { post_id: pid }, function(r) {
+        instance.renderArray([r.message.post]);
+        callback();
+    });
+}
 
 postile.view.post_board.PostBoard.prototype.fayeHandler = function(status, data) {
     switch (status) {

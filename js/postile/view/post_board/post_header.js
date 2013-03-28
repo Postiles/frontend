@@ -33,13 +33,14 @@ postile.view.post_board.Header = function(board) {
     this.usernameText_el = postile.dom.getDescendantById(instance.container, 'username_text');
     this.usernameText_el.innerHTML = this.board.userData.username;
 
-    /* Fei Pure for testing */
+    /* Fei Pure for testing 
     this.imageUploadPop = new postile.view.image_upload.ImageUploadBlock(this);
     goog.events.listen(this.usernameText_el, goog.events.EventType.CLICK, function(e) {
         e.stopPropagation();
         this.imageUploadPop.open(300);
     }.bind(this));
 
+*/
     /* settings button */
     this.settingButton_el = postile.dom.getDescendantById(instance.container, 'setting_button');
 

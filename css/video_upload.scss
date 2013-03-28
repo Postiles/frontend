@@ -4,6 +4,15 @@ $main-color: #024d61;
 $upper-background: #e5e5e5;
 $lower-background: #b5b5b5;
 
+@keyframes slideDown /* Safari and Chrome */
+{
+	0%:{top: -200px;}
+	100:{top: 0px;}
+}
+
+
+
+
 #upload_video_pop {
 	width: 400px;
 	font-family: OxygenLight;
@@ -47,6 +56,7 @@ $lower-background: #b5b5b5;
 	}
 
 	.upload_video_lower {
+		display: none;
 		background: $lower-background;
 		width: 400px;
 		height: 290px;
@@ -68,6 +78,11 @@ $lower-background: #b5b5b5;
 				float: right;
 			}
 		}
+	}
+
+	.upload_video_lower_animation {
+		display: block;
+		animation: slideDown 1s;
 	}
 
 	.du {
