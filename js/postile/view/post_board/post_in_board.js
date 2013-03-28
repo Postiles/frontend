@@ -42,30 +42,52 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
     this.wrap_el.style.width = this.board.widthTo(this.post.span_x) + 'px';
     this.wrap_el.style.height = this.board.heightTo(this.post.span_y) + 'px';
     
-    if(this.container_el) { goog.dom.removeNode(this.container_el); }
+    if (this.container_el) {
+        goog.dom.removeNode(this.container_el);
+    }
+
     this.container_el = goog.dom.createDom('div', 'post_container');
-    this.post_top_el = goog.dom.createDom("div", "post_top");
-    this.post_title_el = goog.dom.createDom("span", "post_title");
-    this.wrap_el.rel_data = this;
     goog.dom.appendChild(this.wrap_el, this.container_el);
+
+    /* set top parts */
+    this.post_top_el = goog.dom.createDom("div", "post_top");
     goog.dom.appendChild(this.container_el, this.post_top_el);
+
+    this.post_title_el = goog.dom.createDom("span", "post_title");
     goog.dom.appendChild(this.post_top_el, this.post_title_el);
+    this.post_title_el.innerHTML = this.post.title;
+
+    this.wrap_el.rel_data = this;
 
     // post title clicked, should display post expanded
     this.post_author_el = goog.dom.createDom("span", "post_author");
+
+    // no title, no margin left for author
+    if (!this.post.title) {
+        this.post_author_el.style.marginLeft = '0px';
+    }
+
+    // listen for title click event, open post expand view
     this.post_expand_listener = new postile.events.EventHandler(this.post_title_el, 
             goog.events.EventType.CLICK, function(e) {
         var postExpand = new postile.view.post.PostExpand(instance);
     });
-
     this.post_expand_listener.listen();
+
     goog.dom.appendChild(this.post_top_el, this.post_author_el);
+    this.post_author_el.innerHTML = 'By ' + this.creator.username;
 
     // username clicked, should display user profile
-    goog.events.listen(this.post_author_el, goog.events.EventType.CLICK, function(e) {
-        var profileView = new postile.view.profile.ProfileView(this.creator.id);
-    }.bind(this));    
+    this.author_profile_display_listener = new postile.events.EventHandler(this.post_author_el,
+            goog.events.EventType.CLICK, function(e) {
+        var profileView = new postile.view.profile.ProfileView(instance.creator.id);
+    });
+    this.author_profile_display_listener.listen();
 
+    // display proper number of characters for title
+    this.set_max_displayable_top();
+
+    /* set content parts */
     this.post_content_el = goog.dom.createDom("div", "post_content");
     goog.dom.appendChild(this.container_el, this.post_content_el);
 
@@ -76,20 +98,15 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
 
     var mHeight = this.container_el.offsetHeight - 4 - 16 - 13 - 6;
     this.post_content_el.style.maxHeight = mHeight + 'px';
-    
-    this.set_max_displayable_content(); // display proper number of characters
+
+    // display proper number of characters for content
+    this.set_max_displayable_content();
 
     this.post_bottom_el = goog.dom.createDom("div", "post_bottom");
     goog.dom.appendChild(this.container_el, this.post_bottom_el);
     this.post_icon_container_el = goog.dom.createDom("div", "post_icon_container");
     goog.dom.appendChild(this.post_bottom_el, this.post_icon_container_el);
-    
-    this.post_title_el.innerHTML = this.post.title;
-    if (!this.post.title) {
-        this.post_author_el.style.marginLeft = '0px';
-    }
-    this.post_author_el.innerHTML = 'By ' + this.creator.username;
-    
+   
     if (this.post.creator_id == localStorage.postile_user_id) { //created by current user
         goog.events.listen(this.post_content_el, goog.events.EventType.CLICK, function() {
             instance.edit();
@@ -101,10 +118,46 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
     }  
 }
 
+postile.view.post_in_board.Post.prototype.set_max_displayable_top = function() {
+    var post_top_height = 17; // TODO change the magic number
+    var top_content_height = this.post_top_el.offsetHeight;
+
+    var content = this.post_title_el.innerHTML;
+    if (!content) { // we don't care about empty title here
+        return;
+    }
+
+    var currLength = content.length;
+    var orig_text = '';
+
+    if (top_content_height <= post_top_height) { // title is short, no need to proceed
+        return;
+    }
+    console.log(content);
+
+    for (var i = 0; i < 10; i++) {
+        top_content_height = this.post_top_el.offsetHeight;
+        if (top_content_height > post_top_height) {
+            currLength = currLength / 2;
+        } else {
+            break;
+        }
+        this.post_title_el.innerHTML = content.substring(0, currLength);
+    }
+
+    content = this.post_title_el.innerHTML;
+
+    if (top_content_height > post_top_height) { // still too long after 10 iterations, highly impossible
+        this.post_title_el.innerHTML = content.substring(0, 10) + '...';
+    }
+
+    this.post_title_el.innerHTML = content.substring(0, content.length - 3) + '...';
+}
+
 postile.view.post_in_board.Post.prototype.set_max_displayable_content = function() {
     var post_content_height = parseInt(this.post_content_el.style.maxHeight.replace('px', ''));
     var content_text_height = this.content_text_el.offsetHeight;
-    var line_height = 16;
+    var line_height = 17;
 
     var content = this.content_text_el.innerHTML;
     var currLength = content.length; // string length
@@ -136,6 +189,7 @@ postile.view.post_in_board.Post.prototype.set_max_displayable_content = function
 
     if (content_text_height > post_content_height) { // still too long after 30 iterations, highly impossible
         this.content_el.innerHTML = content.substring(0, 20) + '...';
+        return;
     }
 
     this.content_text_el.innerHTML = content.substring(0, content.length - 3) + '...';
@@ -284,6 +338,7 @@ postile.view.post_in_board.Post.prototype.edit = function() {
     var go_editing = function() {
         instance.in_edit = true;
         instance.post_expand_listener.unlisten();
+        instance.author_profile_display_listener.unlisten();
         goog.dom.classes.add(instance.post_title_el, 'selectable');
         goog.dom.classes.add(instance.post_content_el, 'selectable');
         var delete_icon = goog.dom.createDom('div', 'post_remove_icon');
