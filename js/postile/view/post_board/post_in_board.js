@@ -172,7 +172,6 @@ postile.view.post_in_board.Post.prototype.set_max_displayable_top = function() {
     }
 
     content = this.post_title_el.innerHTML;
-    console.log(content);
 
     if (title_text_width > maxWidth) { // still too long after 12 iterations, highly impossible
         this.post_title_el.innerHTML = content.substring(0, 10) + '...';
@@ -288,7 +287,9 @@ postile.view.post_in_board.Post.prototype.post_icon_container_init = function() 
 
     // addIcon("share");
     
-    goog.events.listen(addIcon("comment"), goog.events.EventType.CLICK, function() { instance.inline_comments_block = new postile.view.post_in_board.InlineCommentsBlock(instance); });
+    goog.events.listen(addIcon("comment"), goog.events.EventType.CLICK, function() {
+        instance.inline_comments_block = new postile.view.post_in_board.InlineCommentsBlock(instance);
+    });
 }
 
 postile.view.post_in_board.Post.prototype.comment_preview_init = function() {
@@ -317,8 +318,6 @@ postile.view.post_in_board.Post.prototype.comment_preview_init = function() {
     goog.dom.appendChild(this.comment_preview_el, this.comment_preview_content_el);
 
     if (this.inline_comments && this.inline_comments.length > 0) { // at least one comment
-        // comment preview
-        this.comment_preview_el = goog.dom.createDom('div', 'comment_preview');
         goog.dom.appendChild(this.post_bottom_el, this.comment_preview_el);
 
         this.comment_preview_midlle_el.innerHTML = ': ';
@@ -334,8 +333,7 @@ postile.view.post_in_board.Post.prototype.comment_preview_init = function() {
 }
 
 postile.view.post_in_board.Post.prototype.set_max_displayable_comment_preview = function(content) {
-    var maxWidth = this.container_el.offsetWidth - this.post_icon_container_el.offsetWidth - 20;
-
+    var maxWidth = this.container_el.offsetWidth - this.post_icon_container_el.offsetWidth - 10;
     var realWidth = this.comment_preview_el.offsetWidth;
 
     if (realWidth < maxWidth) { // no need to proceed
@@ -371,10 +369,32 @@ postile.view.post_in_board.Post.prototype.set_max_displayable_comment_preview = 
 }
 
 postile.view.post_in_board.Post.prototype.resetCommentPreview = function(data) {
-    console.log(data);
-    this.comment_preview_author_el.innerHTML = data.creator.username;
-    this.comment_preview_midlle_el.innerHTML = ': '; // in case there was no comment before
-    this.comment_preview_content_el.innerHTML = data.inline_comment.content;
+    var el = this.comment_preview_el;
+
+    var opacity = 1.0;
+
+    var fadeout = setInterval(function() {
+        opacity -= 0.1;
+        el.style.opacity = opacity;
+    }, 30);
+
+    var fadein;
+    setTimeout(function() {
+        clearInterval(fadeout);
+        fadein = setInterval(function() {
+            opacity += 0.1;
+            el.style.opacity = opacity;
+        }, 30);
+
+        this.comment_preview_author_el.innerHTML = data.creator.username;
+        this.comment_preview_midlle_el.innerHTML = ': '; // in case there was no comment before
+        this.comment_preview_content_el.innerHTML = data.inline_comment.content;
+        this.set_max_displayable_comment_preview(data.inline_comment.content);
+    }.bind(this), 300);
+
+    setTimeout(function() {
+        clearInterval(fadein);
+    }, 600);
 }
 
 postile.view.post_in_board.Post.prototype.disable = function() {
@@ -452,7 +472,6 @@ postile.view.post_in_board.Post.prototype.removeFromBoard = function() {
 }
 
 postile.view.post_in_board.Post.prototype.edit = function(isNew) {
-    console.log('hehe');
     if (this.in_edit) {
         return;
     }
