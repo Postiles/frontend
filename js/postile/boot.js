@@ -1,8 +1,9 @@
 goog.provide('postile');
 
-goog.require('postile.browser_compat');
-goog.require('goog.events.KeyHandler');
 goog.require('goog.events');
+goog.require('goog.events.KeyHandler');
+
+goog.require('postile.browser_compat');
 goog.require('postile.router');
 goog.require('postile.user');
 goog.require('postile.view.post_board');
@@ -99,3 +100,5 @@ postile = { //the base of posTile frontend framework
 };
 
 postile.getGlobalKeyHandler.handler = null;
+
+

@@ -11,3 +11,6 @@ third_party
 .DS_Store
 
 js/goog
+
+compiled.js
+tmp

@@ -30,7 +30,7 @@ postile.view.profile.ProfileView.prototype.displayableItems = [
     { name: 'location', description: 'Lives in ', icon: 'profile-preview/work-icon.png' }, 
     { name: 'work', description: 'Works at ', icon: 'profile-preview/work-icon.png' },
     { name: 'education', description: 'Attends ', icon: 'profile-preview/work-icon.png' },
-    { name: 'hometown', description: 'Comes from ', icon: 'profile-preview/work-icon.png' },
+    { name: 'hometown', description: 'Comes from ', icon: 'profile-preview/work-icon.png' }
 ];
 
 postile.view.profile.ProfileView.prototype.initExitButton = function() {

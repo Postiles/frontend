@@ -17,6 +17,10 @@ postile.ui.load = function (target_el, source_url) {
     target_el.innerHTML = postile.syncGet(source_url);
 }
 
+/**
+ * Attach a JuHua animation on the given element.
+ * @param {Element} target_el The element to attach JuHua on.
+ */
 postile.ui.startLoading = function(target_el) {
     target_el._postile_spinner_wrap = goog.dom.createDom('div', 'busy_wrap');
     target_el._postile_spinner = goog.dom.createDom('div', 'busy');
@@ -27,6 +31,10 @@ postile.ui.startLoading = function(target_el) {
     goog.dom.appendChild(target_el, target_el._postile_spinner_wrap);
 }
 
+/**
+ * Remove the JuHua animation from the given element.
+ * @param {Element} target_el The element to remove from.
+ */
 postile.ui.stopLoading = function(target_el){
     target_el._postile_spinner_animation.stop();
     goog.dom.removeNode(target_el._postile_spinner_wrap);

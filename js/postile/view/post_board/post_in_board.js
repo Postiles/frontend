@@ -279,6 +279,10 @@ postile.view.post_in_board.Post.prototype.post_icon_container_init = function() 
     goog.events.listen(addIcon("comment"), goog.events.EventType.CLICK, function() { instance.inline_comments_block = new postile.view.post_in_board.InlineCommentsBlock(instance); });
 }
 
+/**
+ * Disable the post and attach the JuHua animation, does nothing if called
+ * more than once without calling .enable() in between.
+ */
 postile.view.post_in_board.Post.prototype.disable = function() {
     if (this.disabled) {
         return;
@@ -287,6 +291,10 @@ postile.view.post_in_board.Post.prototype.disable = function() {
     postile.ui.startLoading(this.wrap_el);
 }
 
+/**
+ * Enable the post and remove the JuHua animation, does nothing if called
+ * more than once without calling .disable() in between.
+ */
 postile.view.post_in_board.Post.prototype.enable = function() {
     if (!this.disabled) {
         return;
