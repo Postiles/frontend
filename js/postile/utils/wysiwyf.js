@@ -1,7 +1,8 @@
 goog.provide('postile.WYSIWYF');
 
-goog.require('postile.dom');
 goog.require('goog.dom');
+goog.require('postile.conf');
+goog.require('postile.dom');
 goog.require('postile.view.At');
 
 /*******************************************************
@@ -102,7 +103,7 @@ postile.WYSIWYF = {
             editor.buttons[i].className = 'post_icon';
             editor.buttons[i].setAttribute('type', 'button');
             editor.buttons[i].style.border = '0 none';
-            editor.buttons[i].style.backgroundImage = 'url('+postile.imageResource(['editor_sprite.png'])+')';
+            editor.buttons[i].style.backgroundImage = 'url('+postile.conf.imageResource(['editor_sprite.png'])+')';
             editor.buttons[i].style.width = '13px';
             editor.buttons[i].style.height = '13px';
             editor.buttons[i].style.padding = '0';
@@ -115,7 +116,8 @@ postile.WYSIWYF = {
         editor.onEditListener = new postile.events.ValueChangeEvent(editor.editor_el, function(){
             var i;
             var links = postile.dom.getDescendantsByCondition(editor.editor_el, function(el) {
-                return el.tagName && el.tagName.toUpperCase() == 'IMG' && el.src.indexOf(postile.imageResource(['link_icon.png'])) > -1;
+                return el.tagName && el.tagName.toUpperCase() == 'IMG'
+                       && el.src.indexOf(postile.conf.imageResource(['link_icon.png'])) > -1;
             });
             var lels = editor.post.board.picker.all_lkd_el;
             for (i in lels) {
@@ -140,9 +142,11 @@ postile.WYSIWYF = {
             //Link to post
             var picker = editor.post.board.picker;
             var img_el;
-            document.execCommand('InsertImage', false, postile.imageResource(['link_icon.png']));
+            document.execCommand('InsertImage', false, postile.conf.imageResource(['link_icon.png']));
             img_el = postile.dom.getDescendantByCondition(editor.editor_el, function(el) { 
-                return el.tagName && el.tagName.toUpperCase() == 'IMG' && el.src.indexOf(postile.imageResource(['link_icon.png'])) > -1 && !el.getAttribute('link-to-post-id');
+                return el.tagName && el.tagName.toUpperCase() == 'IMG'
+                       && el.src.indexOf(postile.conf.imageResource(['link_icon.png'])) > -1
+                       && !el.getAttribute('link-to-post-id');
             });
             if (!img_el) { return; }
             picker.open(function(post){ 

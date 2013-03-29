@@ -10,7 +10,8 @@ postile.browser_compat.isMacOsX = function() {
     return navigator.appVersion.indexOf('Mac') != -1;
 };
 
-postile.browser_compat.walkarounds = { //determine if we have to use some tricks to simulate the new features in old browsers
+// Determine if we have to use some tricks to simulate the new features in old browsers
+postile.browser_compat.walkarounds = {
     xhr: 2, //level of xmlhttprequest
     xdr: false //require XDomainRequest
 };
@@ -34,7 +35,17 @@ postile.browser_compat.testVersion = function(of) {
     return this.handlers.ok;
 };
 
-postile.browser_compat.load = function() {
+/**
+ * @type {Function}
+ * @see browser_compat.load
+ */
+postile.browser_compat.route_dispatcher = null;
+
+postile.browser_compat.load = function(route_dispatcher) {
+    // Let this.handlers to use the given dispatcher,
+    // so as to avoid circular dependency.
+    this.route_dispatcher = route_dispatcher;
+
     if (!this.uas) { this.handlers.perhaps(); return; }
     var result;
     for(i in this.requirements) {
@@ -60,18 +71,18 @@ postile.browser_compat.handlers = {
     },
     perhaps: function() {
         if (goog.net.cookies.get("browser_compat_ignored")) {
-            postile.init();
+            postile.browser_compat.route_dispatcher();
         } else {
             //TODO: display PERHAPS
         }
     },
     ok: function() {
-        postile.init();
+        postile.browser_compat.route_dispatcher();
     },
     warning: function() {
         //the browser is supported but some functions are disabled due to the limit. visitors are advised to update their broswer.
         if (goog.net.cookies.get("browser_compat_ignored")) {
-            postile.init();
+            postile.browser_compat.route_dispatcher();
         } else {
             //TODO: display DEPRECATED
         }
@@ -80,10 +91,11 @@ postile.browser_compat.handlers = {
 
 postile.browser_compat.setIgnore = function() {
     goog.net.cookies.set("browser_compat_ignored", "ignored");
-    postile.init();
+    postile.browser_compat.route_dispatcher();
 };
 
 postile.browser_compat.setCss = function(dom, attr, value) {
     dom.style[attr] = value;
     dom.style[postile.browser_compat.css_prefix+attr.substr(0,1).toUpperCase()+attr.substr(1)] = value;
 }
+

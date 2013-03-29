@@ -2,6 +2,7 @@ goog.provide('postile.view.login');
 
 goog.require('goog.dom');
 goog.require('goog.events');
+goog.require('postile.conf');
 goog.require('postile.view');
 
 postile.view.login.LoginView = function() { //constructor
@@ -23,7 +24,7 @@ goog.inherits(postile.view.login.LoginView, postile.view.FullScreenView);
 
 postile.view.login.LoginView.prototype.unloaded_stylesheets = ['fonts.css', 'login.css'];
 
-postile.view.login.LoginView.prototype.html_segment = postile.staticResource(['login.html']);
+postile.view.login.LoginView.prototype.html_segment = postile.conf.staticResource(['login.html']);
 
 postile.view.login.LoginView.prototype.enterPressed = function(e) {
     if (e.keyCode == 13) { // enter key pressed

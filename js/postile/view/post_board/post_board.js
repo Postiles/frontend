@@ -1,6 +1,13 @@
 goog.provide('postile.view.post_board');
 goog.provide('postile.view.post_board.handlers');
 
+goog.require('goog.dom');
+goog.require('goog.style');
+goog.require('goog.events');
+goog.require('goog.events.KeyCodes');
+goog.require('goog.ui.Textarea');
+goog.require('goog.events.KeyHandler');
+goog.require('postile.conf');
 goog.require('postile.view.post_board.mask');
 goog.require('postile.view.post_board.MouseMoveScroll');
 goog.require('postile.view');
@@ -8,13 +15,7 @@ goog.require('postile.fx');
 goog.require('postile.fx.effects');
 goog.require('postile.ajax');
 goog.require('postile.faye');
-goog.require('goog.dom');
-goog.require('goog.style');
-goog.require('goog.events');
-goog.require('goog.events.KeyCodes');
-goog.require('goog.ui.Textarea');
 goog.require('postile.view.post_board.Header');
-goog.require('goog.events.KeyHandler');
 goog.require('postile.events');
 goog.require('postile.view.post_in_board');
 goog.require('postile.view.board_more_pop');
@@ -331,7 +332,7 @@ postile.view.post_board.PostBoard.prototype.unloaded_stylesheets = ['fonts.css',
  * @type {string}
  * @const
  */
-postile.view.post_board.PostBoard.prototype.html_segment = postile.staticResource(['post_board.html']);
+postile.view.post_board.PostBoard.prototype.html_segment = postile.conf.staticResource(['post_board.html']);
 
 /**
  * Initialize view components. Called after receiving initial board data.
@@ -444,7 +445,7 @@ postile.view.post_board.PostBoard.prototype.bindMouseEvents = function() {
 postile.view.post_board.PostBoard.prototype.bindKeyEvents = function() {
     var instance = this;
 
-    this.keyboard_event_handler = new postile.events.EventHandler(postile.getGlobalKeyHandler(), 
+    this.keyboard_event_handler = new postile.events.EventHandler(postile.conf.getGlobalKeyHandler(), 
             goog.events.KeyHandler.EventType.KEY, function(e) { 
                 postile.view.post_board.handlers.keypress(instance, e); 
             });

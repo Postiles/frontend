@@ -1,9 +1,10 @@
 goog.provide('postile.view.image_upload');
 
-goog.require('postile.view');
-goog.require('postile.uploader');
 goog.require('goog.dom');
 goog.require('goog.events');
+goog.require('postile.conf');
+goog.require('postile.view');
+goog.require('postile.uploader');
 goog.require('postile.fx.effects');
 
 postile.view.image_upload.ImageUploadBlock = function(input_instance) {
@@ -61,7 +62,7 @@ postile.view.image_upload.ImageUploadBlock.prototype.initFileUploads = function(
 	//var image = document.createElement('img');
 
 	/*
-	image.src=postile.uploadsResource(['guanlun-profile.png']);
+	image.src=postile.conf.uploadsResource(['guanlun-profile.png']);
 
 	fakeFileUpload.appendChild(image);
 	var x = document.getElementsByTagName('input');

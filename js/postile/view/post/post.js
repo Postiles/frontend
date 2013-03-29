@@ -1,12 +1,13 @@
 goog.provide('postile.view.post');
 
-goog.require('postile.view');
 goog.require('goog.dom');
 goog.require('goog.events');
+goog.require('postile.conf');
+goog.require('postile.view');
 
 postile.view.post.PostExpand = function(data) { // constructor
     postile.view.PopView.call(this);
-    postile.ui.load(this.container, postile.staticResource(['_post_expand.html']));
+    postile.ui.load(this.container, postile.conf.staticResource(['_post_expand.html']));
 
     this.postData = data.post;
     this.userData = data.creator;
@@ -43,7 +44,7 @@ postile.view.post.PostExpand.prototype.unloaded_stylesheets = ['_post_expand.css
 postile.view.post.PostExpand.prototype.initComments = function() {
     this.commentBox_el = postile.dom.getDescendantByClass(this.post_el, 'comment-box');
     this.commentProfileImg = postile.dom.getDescendantByClass(this.commentBox_el, 'img');
-    this.commentProfileImg.src = postile.uploadsResource([ this.profileData.image_small_url ]);
+    this.commentProfileImg.src = postile.conf.uploadsResource([ this.profileData.image_small_url ]);
 
     postile.ajax([ 'inline_comment', 'get_inline_comments' ], { post_id: this.postData.id }, function(data) {
         this.comments = data.message.inline_comments;
@@ -58,7 +59,7 @@ postile.view.post.PostExpand.prototype.initComments = function() {
 
             var profileImage_el = goog.dom.createDom('img', 'img');
             goog.dom.appendChild(profileImageContainer_el, profileImage_el);
-            profileImage_el.src = postile.uploadsResource([ cmt.profile.image_small_url ]);
+            profileImage_el.src = postile.conf.uploadsResource([ cmt.profile.image_small_url ]);
 
             var commentRight_el = goog.dom.createDom('div', 'comment-right');
             goog.dom.appendChild(comment_el, commentRight_el);

@@ -1,12 +1,13 @@
 goog.provide('postile.view.profile');
 
-goog.require('postile.view');
 goog.require('goog.dom');
 goog.require('goog.events');
+goog.require('postile.view');
+goog.require('postile.conf');
 
 postile.view.profile.ProfileView = function(id) { // constructor
     postile.view.PopView.call(this);
-    postile.ui.load(this.container, postile.staticResource(['_profile_preview.html']));
+    postile.ui.load(this.container, postile.conf.staticResource(['_profile_preview.html']));
 
     this.profile_el = goog.dom.getElementByClass('profile-preview', this.container);
 
@@ -46,7 +47,7 @@ postile.view.profile.ProfileView.prototype.initItems = function() {
 
     this.picture_el = goog.dom.getElementByClass('picture', this.container);
     this.pictureImg_el = goog.dom.getElementsByTagNameAndClass('img', null, this.picture_el)[0];
-    this.pictureImg_el.src = postile.uploadsResource([ this.profile.image_url ]);
+    this.pictureImg_el.src = postile.conf.uploadsResource([ this.profile.image_url ]);
 
     this.name_el = goog.dom.getElementByClass('name', this.container);
     this.name_el.innerHTML = this.profile.first_name + ' ' + this.profile.last_name;
@@ -97,7 +98,7 @@ postile.view.profile.ProfileView.prototype.initItems = function() {
             goog.dom.appendChild(newItem, newItemIcon);
 
             var newItemIconImg = goog.dom.createDom('img', null);
-            newItemIconImg.src = postile.imageResource([ item.icon ]);
+            newItemIconImg.src = postile.conf.imageResource([ item.icon ]);
             goog.dom.appendChild(newItemIcon, newItemIconImg);
 
             var newItemText = goog.dom.createDom('div', 'text');
