@@ -601,11 +601,7 @@ html, body {
 .post_content {
   position: relative;
   overflow: hidden;
-  width: 100%; }
-
-.content_text {
-  line-height: 16px;
-  width: 100%;
+  width: 100%; 
 }
 
 .selectable {

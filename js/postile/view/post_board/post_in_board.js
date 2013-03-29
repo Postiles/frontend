@@ -20,17 +20,17 @@ goog.require('postile.view.At');
 goog.require('postile.fx.effects');
 goog.require('postile.view.post');
 
-postile.view.post_in_board.Post = function(object, board) {
+postile.view.post_in_board.Post = function(data, board) {
     this.board = board;
     this.blur_timeout = null;
     this.disabled = false;
     this.in_edit = false;
     this.wrap_el = goog.dom.createDom('div', 'post_wrap');
     goog.dom.appendChild(this.board.canvas, this.wrap_el);
-    this.render(object, true);
+    this.render(data, true);
 }
 
-postile.view.post_in_board.Post.prototype.render = function(object, animation) { //animation is usually ommited (false by default)
+postile.view.post_in_board.Post.prototype.render = function(data, animation) { //animation is usually ommited (false by default)
     if (this.disabled) {
         return;
     }
@@ -38,8 +38,8 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
     var button;
     var instance = this;
 
-    if (object) {
-        goog.object.extend(this, object);
+    if (data) {
+        goog.object.extend(this, data);
     }
 
     this.post.coord_x_end = this.post.pos_x + this.post.span_x; //precalculate this two so that future intersect test will be faster
@@ -62,7 +62,7 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
     this.post_top_el = goog.dom.createDom("div", "post_top");
     goog.dom.appendChild(this.container_el, this.post_top_el);
 
-    this.post_title_el = goog.dom.createDom("span", "post_title");
+    this.post_title_el = goog.dom.createDom("div", "post_title");
     goog.dom.appendChild(this.post_top_el, this.post_title_el);
     this.post_title_el.innerHTML = this.post.title;
 
@@ -86,8 +86,6 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
     goog.dom.appendChild(this.post_top_el, this.post_author_el);
     this.post_author_el.innerHTML = 'By ' + this.creator.username;
 
-    this.adjust_post_top_bar();
-    
     // username clicked, should display user profile
     this.author_profile_display_listener = new postile.events.EventHandler(this.post_author_el,
             goog.events.EventType.CLICK, function(e) {
@@ -96,19 +94,12 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
     this.author_profile_display_listener.listen();
 
     // display proper number of characters for title
-    // this.set_max_displayable_top();
+    this.set_max_displayable_top();
 
     /* set content parts */
     this.post_content_el = goog.dom.createDom("div", "post_content");
     goog.dom.appendChild(this.container_el, this.post_content_el);
-
-    this.content_text_el = goog.dom.createDom('div', 'content_text');
-    this.content_text_el.innerHTML = postile.parseBBcode(this.post.content);
-
-    goog.dom.appendChild(this.post_content_el, this.content_text_el);
-
-    var mHeight = this.container_el.offsetHeight - 4 - 16 - 13 - 6;
-    this.post_content_el.style.maxHeight = mHeight + 'px';
+    this.post_content_el.innerHTML = postile.parseBBcode(this.post.content);
 
     // display proper number of characters for content
     this.set_max_displayable_content();
@@ -129,7 +120,7 @@ postile.view.post_in_board.Post.prototype.render = function(object, animation) {
     }  
 }
 
-postile.view.post_in_board.Post.prototype.adjust_post_top_bar = function() {
+postile.view.post_in_board.Post.prototype.set_max_displayable_top = function() {
     // get width of the post
     var post_width = this.container_el.offsetWidth;
     var post_author_width = this.post_author_el.offsetWidth;
@@ -137,12 +128,10 @@ postile.view.post_in_board.Post.prototype.adjust_post_top_bar = function() {
     // post_top's width should be the same as the post
     this.post_top_el.style.width = post_width + 'px';
 
-    this.post_title_el.style.width = (post_width - post_author_width - 20) + 'px';
-}
+    var maxWidth = post_width - post_author_width - 20;
+    var title_text_width = this.post_title_el.offsetWidth;
 
-postile.view.post_in_board.Post.prototype.set_max_displayable_top = function() {
-    var post_top_height = 17; // TODO change the magic number
-    var top_content_height = this.post_top_el.offsetHeight;
+    this.title_max_width = title_text_width;
 
     var content = this.post_title_el.innerHTML;
     if (!content) { // we don't care about empty title here
@@ -152,23 +141,30 @@ postile.view.post_in_board.Post.prototype.set_max_displayable_top = function() {
     var currLength = content.length;
     var orig_text = '';
 
-    if (top_content_height <= post_top_height) { // title is short, no need to proceed
+    if (title_text_width <= maxWidth) { // title is short, no need to proceed
         return;
     }
 
-    for (var i = 0; i < 10; i++) {
-        top_content_height = this.post_top_el.offsetHeight;
-        if (top_content_height > post_top_height) {
+    for (var i = 0; i < 12; i++) {
+        title_text_width = this.post_title_el.offsetWidth;
+        if (title_text_width > maxWidth) {
             currLength = currLength / 2;
+        } else if (title_text_width < maxWidth - 25) {
+            currLength = currLength / 2 * 3;
         } else {
             break;
         }
         this.post_title_el.innerHTML = content.substring(0, currLength);
+
+        if (this.post_title_el.innerHTML == orig_text) {
+            break;
+        }
     }
 
     content = this.post_title_el.innerHTML;
+    console.log(content);
 
-    if (top_content_height > post_top_height) { // still too long after 10 iterations, highly impossible
+    if (title_text_width > maxWidth) { // still too long after 12 iterations, highly impossible
         this.post_title_el.innerHTML = content.substring(0, 10) + '...';
     }
 
@@ -176,44 +172,44 @@ postile.view.post_in_board.Post.prototype.set_max_displayable_top = function() {
 }
 
 postile.view.post_in_board.Post.prototype.set_max_displayable_content = function() {
-    var post_content_height = parseInt(this.post_content_el.style.maxHeight.replace('px', ''));
-    var content_text_height = this.content_text_el.offsetHeight;
-    var line_height = 17;
+    var maxHeight = this.container_el.offsetHeight - 40;
+    var content_text_height = this.post_content_el.offsetHeight;
+    var lineHeight = 16;
 
-    var content = this.content_text_el.innerHTML;
+    var content = this.post_content_el.innerHTML;
     var currLength = content.length; // string length
     var orig_text = '';
 
-    if (content_text_height <= post_content_height) { // content is short, no need to proceed
+    if (content_text_height <= maxHeight) { // content is short, no need to proceed
         return;
     }
 
     for (var i = 0; i < 30; i++) { // limit number of iterations to 50
-        orig_text = this.content_text_el.innerHTML;
-        content_text_height = this.content_text_el.offsetHeight;
+        orig_text = this.post_content_el.innerHTML;
+        content_text_height = this.post_content_el.offsetHeight;
 
-        if (content_text_height > post_content_height) { // too long
+        if (content_text_height > maxHeight) { // too long
             currLength = currLength / 2;
-        } else if (content_text_height < post_content_height - line_height) { // too short
+        } else if (content_text_height < maxHeight - lineHeight) { // too short
             currLength = currLength / 2 * 3;
         } else { // just right
             break;
         }
-        this.content_text_el.innerHTML = content.substring(0, currLength);
+        this.post_content_el.innerHTML = content.substring(0, currLength);
 
-        if (this.content_text_el.innerHTML == orig_text) { // no change
+        if (this.post_content_el.innerHTML == orig_text) { // no change
             break;
         }
     }
 
-    content = this.content_text_el.innerHTML;
+    content = this.post_content_el.innerHTML;
 
-    if (content_text_height > post_content_height) { // still too long after 30 iterations, highly impossible
+    if (content_text_height > maxHeight) { // still too long after 30 iterations, highly impossible
         this.content_el.innerHTML = content.substring(0, 20) + '...';
         return;
     }
 
-    this.content_text_el.innerHTML = content.substring(0, content.length - 3) + '...';
+    this.post_content_el.innerHTML = content.substring(0, content.length - 3) + '...';
 }
 
 postile.view.post_in_board.Post.prototype.post_icon_container_init = function() {
@@ -376,8 +372,18 @@ postile.view.post_in_board.Post.prototype.edit = function(isNew) {
         instance.post_expand_listener.unlisten();
         instance.author_profile_display_listener.unlisten();
 
+        // reset title and content in case they are chomped
+        instance.post_title_el.innerHTML = instance.post.title;
+        instance.post_content_el.innerHTML = instance.post.content;
+
         goog.dom.classes.add(instance.post_title_el, 'selectable');
         goog.dom.classes.add(instance.post_content_el, 'selectable');
+
+        // set title and text size for editing
+        instance.post_title_el.style.width = instance.container_el.offsetWidth - 10 + 'px';
+        instance.post_content_el.style.height = instance.container_el.offsetHeight - 40 + 'px';
+
+        instance.post_content_el.style.overflowY = 'scroll';
 
         // delete icon on the top right corner
         var delete_icon = goog.dom.createDom('div', 'post_remove_icon');
@@ -389,7 +395,7 @@ postile.view.post_in_board.Post.prototype.edit = function(isNew) {
         instance.post_author_el.style.display = 'none'; // hide author name
 
         if (isNew) { // new post
-            instance.content_text_el.innerHTML = '(ctrl + enter to submit)';
+            instance.post_content_el.innerHTML = '(ctrl + enter to submit)';
         }
 
         postile.ui.makeLabeledInput(instance.post_title_el, postile._('post_title_prompt'), 'half_opaque', function(){
@@ -414,7 +420,7 @@ postile.view.post_in_board.Post.prototype.edit = function(isNew) {
 
                 return false;
             } else if (!started) { // not started edit yet
-                instance.content_text_el.innerHTML = '';
+                instance.post_content_el.innerHTML = '';
                 started = true;
             }
         });

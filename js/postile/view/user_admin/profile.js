@@ -173,7 +173,6 @@ postile.view.profile.ProfileItem.prototype.editClicked = function() {
 
     /* save when enter key is pressed */
     goog.events.listen(this.input_el, goog.events.EventType.KEYDOWN, function(e) {
-        goog.events.listen(this.input_el, goog.events.EventType.KEYUP, function(e) {
         if (e.keyCode == 13) { // enter pressed
             this.saveTriggered();
         }
