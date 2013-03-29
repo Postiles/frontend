@@ -15,7 +15,13 @@ goog.require('postile.fx');
 goog.require('postile.fx.effects');
 goog.require('postile.ajax');
 goog.require('postile.faye');
+goog.require('goog.dom');
+goog.require('goog.style');
+goog.require('goog.events');
+goog.require('goog.events.KeyCodes');
+goog.require('goog.ui.Textarea');
 goog.require('postile.view.post_board.Header');
+goog.require('goog.events.KeyHandler');
 goog.require('postile.events');
 goog.require('postile.view.post_in_board');
 goog.require('postile.view.board_more_pop');
@@ -812,11 +818,13 @@ postile.view.post_board.PostBoard.prototype.fayeHandler = function(status, data)
 
         case postile.view.post_board.faye_status.START:
             // Someone (could be this user) started editing a post.
-            if (data.post.id in this.currentPosts
-                && !this.currentPosts[data.post.id].in_edit) {
-                // If that post is loaded and that post is not currently being
-                // edited by this user: start JuHua animation.
-                this.currentPosts[data.post.id].disable();
+            if (data.post.id in this.currentPosts) {
+                // If that post is loaded
+                if(!this.currentPosts[data.post.id].in_edit) {
+                    // ... and that post is not currently being edited by
+                    // this user: start JuHua animation.
+                    this.currentPosts[data.post.id].disable();
+                }
             } else {
                 this.renderArray([data]);
             }
@@ -827,6 +835,11 @@ postile.view.post_board.PostBoard.prototype.fayeHandler = function(status, data)
             if (data.post.id in this.currentPosts) {
                 // If that post is loaded: remove it from the view.
                 this.currentPosts[data.post.id].removeFromBoard();
+            }
+            break;
+        case postile.view.post_board.faye_status.INLINE_COMMENT:
+            if (data.inline_comment.post_id in this.currentPosts) {
+                this.currentPosts[data.inline_comment.post_id].resetCommentPreview(data);
             }
             break;
     }
