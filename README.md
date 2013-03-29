@@ -1,5 +1,11 @@
 LATEST NOTICE
 ======
+
+run `bootstrap.sh` to get google closure and to get some instruction on
+configuring nginx.
+
+run `mkdep.sh` to build deps for closure library.
+
 **Notice: Now the code can ONLY run in the ROOT directory of a web server.**
 
 **To run, you'll need to go to http://{static_hostname}:{static_port}/test/{board_id}/{dynamic_hostname}/{dynamic_post} directly. For instance, postiles.com/test/1/postiles.com/300**
