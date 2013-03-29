@@ -14,7 +14,7 @@ postile.view.profile.ProfileView = function(id) { // constructor
     this.user_id = id;
 
     postile.data_manager.getUserData(this.user_id, function(data) {
-        this.profile = data.profile;
+        this.userData = data;
         this.initItems();
         this.initExitButton();
         this.open(710);
@@ -46,14 +46,14 @@ postile.view.profile.ProfileView.prototype.initItems = function() {
 
     this.picture_el = goog.dom.getElementByClass('picture', this.container);
     this.pictureImg_el = goog.dom.getElementsByTagNameAndClass('img', null, this.picture_el)[0];
-    this.pictureImg_el.src = postile.uploadsResource([ this.profile.image_url ]);
+    this.pictureImg_el.src = postile.uploadsResource([ this.userData.image_url ]);
 
     this.name_el = goog.dom.getElementByClass('name', this.container);
-    this.name_el.innerHTML = this.profile.first_name + ' ' + this.profile.last_name;
+    this.name_el.innerHTML = this.userData.first_name + ' ' + this.userData.last_name;
 
     this.signiture_el = goog.dom.getElementByClass('signiture', this.container);
     this.signitureData_el = goog.dom.getElementByClass('data', this.signiture_el);
-    this.signitureData_el.innerHTML = this.profile.signiture;
+    this.signitureData_el.innerHTML = this.userData.signiture;
 
     this.signiture_el.setAttribute('data-item', 'signiture');
     
@@ -61,7 +61,7 @@ postile.view.profile.ProfileView.prototype.initItems = function() {
 
     this.selfIntro_el = goog.dom.getElementByClass('self-intro', this.container);
     this.selfIntroData_el = goog.dom.getElementByClass('data', this.selfIntro_el);
-    this.selfIntroData_el.innerHTML = this.profile.personal_description;
+    this.selfIntroData_el.innerHTML = this.userData.personal_description;
 
     this.selfIntro_el.setAttribute('data-item', 'personal_description');
 
@@ -86,8 +86,8 @@ postile.view.profile.ProfileView.prototype.initItems = function() {
     for (i in this.displayableItems) {
         var item = this.displayableItems[i];
 
-        if (this.profile[item.name]) {
-            var itemValue = this.profile[item.name];
+        if (this.userData[item.name]) {
+            var itemValue = this.userData[item.name];
 
             /* create new data item */
             var newItem = goog.dom.createDom('div', 'item');

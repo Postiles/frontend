@@ -13,7 +13,11 @@ postile.data_manager.getUserData = function(user_id, callback) {
         callback(postile.data_manager.userData[user_id]);
     } else { // not found, send request to server
         postile.ajax([ 'user', 'get_user' ], { target_user_id: user_id }, function(data) {
-            postile.data_manager.userData[user_id] = data.message;
+            var user = { };
+            for (var attr in data.message.profile) {
+                data.message.user[attr] = data.message.profile[attr];
+            }
+            postile.data_manager.userData[user_id] = data.message.user;
             callback(postile.data_manager.userData[user_id]);
         });
     }

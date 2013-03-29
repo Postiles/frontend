@@ -81,7 +81,7 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
     // listen for title click event, open post expand view
     this.post_expand_listener = new postile.events.EventHandler(this.post_title_el, 
             goog.events.EventType.CLICK, function(e) {
-        var postExpand = new postile.view.post.PostExpand(instance);
+        var postExpand = new postile.view.post.PostExpand(instance.post);
     });
     this.post_expand_listener.listen();
 
@@ -89,7 +89,7 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
     goog.dom.appendChild(this.post_top_el, this.post_author_el);
 
     postile.data_manager.getUserData(this.post.creator_id, function(data) {
-        this.creator = data.user;
+        this.creator = data;
         this.post_author_el.innerHTML = this.creator.username;
     }.bind(this));
 
@@ -330,7 +330,7 @@ postile.view.post_in_board.Post.prototype.comment_preview_init = function() {
 
         postile.data_manager.getUserData(
                 this.inline_comments[index].inline_comment.creator_id, function(data) {
-                    this.comment_preview_author_el.innerHTML = data.user.username;
+                    this.comment_preview_author_el.innerHTML = data.username;
         }.bind(this));
 
         var content = this.inline_comments[index].inline_comment.content;
@@ -393,7 +393,7 @@ postile.view.post_in_board.Post.prototype.resetCommentPreview = function(data) {
         clearInterval(fadeout);
 
         postile.data_manager.getUserData(data.inline_comment.creator_id, function(userData) {
-            instance.comment_preview_author_el.innerHTML = userData.user.username;
+            instance.comment_preview_author_el.innerHTML = userData.username;
             instance.comment_preview_midlle_el.innerHTML = ': '; // in case there was no comment before
             instance.comment_preview_content_el.innerHTML = data.inline_comment.content;
             instance.set_max_displayable_comment_preview(data.inline_comment.content);
@@ -638,7 +638,7 @@ postile.view.post_in_board.InlineComment = function(icb, single_comment_data) {
     tmp_el = goog.dom.createDom("p", "name");
 
     postile.data_manager.getUserData(single_comment_data.inline_comment.creator_id, function(data) {
-        tmp_el.innerHTML = data.user.username + ' says: ';
+        tmp_el.innerHTML = data.username + ' says: ';
         goog.dom.appendChild(this.comment_container, tmp_el);
 
         tmp_el = goog.dom.createDom("p", "time");
@@ -653,7 +653,7 @@ postile.view.post_in_board.InlineComment = function(icb, single_comment_data) {
         });
 
         for (var i in all_atp) {
-            this.fetchUsername(all_atp[i]);
+            fetchUsername(all_atp[i]);
         }
 
         goog.dom.appendChild(this.comment_container, tmp_el);
@@ -664,7 +664,6 @@ postile.view.post_in_board.InlineComment = function(icb, single_comment_data) {
 
 fetchUsername = function(el) {
     postile.data_manager.getUserData(el.getAttribute('at-person'), function(data) {
-        var p = data.profile;
-        el.innerHTML = '@' + p.first_name + ' ' + p.last_name;
+        el.innerHTML = '@' + data.first_name + ' ' + data.last_name;
     });
 }

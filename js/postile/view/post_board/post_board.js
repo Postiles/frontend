@@ -305,8 +305,7 @@ postile.view.post_board.PostBoard = function(board_id) {
 
         // get board creator data
         instance.userData = postile.data_manager.getUserData(instance.boardData.creator_id, function(data) {
-            instance.userData = data.user;
-            instance.profileData = data.profile;
+            instance.userData = data
 
             instance.channel_str = instance.boardData.id;
 
