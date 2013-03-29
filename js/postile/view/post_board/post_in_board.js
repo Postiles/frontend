@@ -35,7 +35,6 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
         return;
     }
 
-    var button;
     var instance = this;
 
     if (data) {
@@ -44,11 +43,12 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
 
     this.post.coord_x_end = this.post.pos_x + this.post.span_x; //precalculate this two so that future intersect test will be faster
     this.post.coord_y_end = this.post.pos_y + this.post.span_y;
+
     this.wrap_el.style.left = this.board.xPosTo(this.post.pos_x) + 'px';
     this.wrap_el.style.top = this.board.yPosTo(this.post.pos_y) + 'px';
     this.wrap_el.style.width = this.board.widthTo(this.post.span_x) + 'px';
     this.wrap_el.style.height = this.board.heightTo(this.post.span_y) + 'px';
-    
+
     if (this.container_el) {
         goog.dom.removeNode(this.container_el);
     }
@@ -56,7 +56,9 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
     this.container_el = goog.dom.createDom('div', 'post_container');
     goog.dom.appendChild(this.wrap_el, this.container_el);
     
-    goog.events.listen(this.container_el, goog.events.EventType.DBLCLICK, function(e){ e.stopPropagation(); });
+    goog.events.listen(this.container_el, goog.events.EventType.DBLCLICK, function(e) {
+        e.stopPropagation(); // prevent displaying mask by stopping event propagation
+    });
 
     /* set top parts */
     this.post_top_el = goog.dom.createDom("div", "post_top");
@@ -83,8 +85,9 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
     });
     this.post_expand_listener.listen();
 
+    // author display
     goog.dom.appendChild(this.post_top_el, this.post_author_el);
-    this.post_author_el.innerHTML = 'By ' + this.creator.username;
+    this.post_author_el.innerHTML = this.creator.username;
 
     // username clicked, should display user profile
     this.author_profile_display_listener = new postile.events.EventHandler(this.post_author_el,
@@ -104,17 +107,24 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
     // display proper number of characters for content
     this.set_max_displayable_content();
 
+    // post bottom
     this.post_bottom_el = goog.dom.createDom("div", "post_bottom");
     goog.dom.appendChild(this.container_el, this.post_bottom_el);
+
+    // icon container
     this.post_icon_container_el = goog.dom.createDom("div", "post_icon_container");
     goog.dom.appendChild(this.post_bottom_el, this.post_icon_container_el);
    
-    if (this.post.creator_id == localStorage.postile_user_id) { //created by current user
+    if (this.post.creator_id == localStorage.postile_user_id) { //created by current user, can edit
         goog.events.listen(this.post_content_el, goog.events.EventType.CLICK, function() {
             instance.edit();
         });
     }
+
     this.post_icon_container_init();
+
+    this.comment_preview_init();
+
     if (animation) {
         postile.fx.effects.resizeIn(this.wrap_el);
     }  
@@ -225,15 +235,20 @@ postile.view.post_in_board.Post.prototype.post_icon_container_init = function() 
         return icon;
     }
     
+    // get the ids of all the users that likes this post
     instance.liked_user = instance.likes.map(function(like) {
         return like.user_id;
     });
 
-    instance.likeButton_el = addIcon('like');
-
+    // how many likes are there
     instance.like_count = instance.likes.length;
 
-    if (instance.liked_user.indexOf(parseInt(localStorage.postile_user_id)) == -1) { // not already liked
+    instance.likeButton_el = addIcon('like');
+
+    if (instance.liked_user.indexOf(parseInt(localStorage.postile_user_id)) != -1) { // already liked
+        goog.dom.classes.remove(instance.likeButton_el, 'post_like_icon');
+        goog.dom.classes.add(instance.likeButton_el, 'post_liked_icon');
+    } else {
         goog.events.listen(instance.likeButton_el, goog.events.EventType.CLICK, function() {
             var like_icon = instance.likeButton_el;
             var new_like_icon = goog.dom.createDom('div', 'post_liked_icon');
@@ -262,9 +277,6 @@ postile.view.post_in_board.Post.prototype.post_icon_container_init = function() 
                 // seems nothing to do
             });
         });
-    } else {
-        goog.dom.classes.remove(instance.likeButton_el, 'post_like_icon');
-        goog.dom.classes.add(instance.likeButton_el, 'post_liked_icon');
     }
     
     this.likes_count_el = goog.dom.createDom("div", "post_like_count");
@@ -274,9 +286,95 @@ postile.view.post_in_board.Post.prototype.post_icon_container_init = function() 
         this.likes_count_el.innerHTML = instance.like_count;
     }
 
-    addIcon("share");
+    // addIcon("share");
     
     goog.events.listen(addIcon("comment"), goog.events.EventType.CLICK, function() { instance.inline_comments_block = new postile.view.post_in_board.InlineCommentsBlock(instance); });
+}
+
+postile.view.post_in_board.Post.prototype.comment_preview_init = function() {
+    // comment preview
+    this.comment_preview_el = goog.dom.createDom('div', 'comment_preview');
+    goog.dom.appendChild(this.post_bottom_el, this.comment_preview_el);
+
+    // author
+    this.comment_preview_author_el = goog.dom.createDom('span', 'comment_preview_author');
+    goog.dom.appendChild(this.comment_preview_el, this.comment_preview_author_el);
+
+    // middle: displays ": " after username
+    this.comment_preview_midlle_el = goog.dom.createDom('span', 'comment_preview_midlle');
+    goog.dom.appendChild(this.comment_preview_el, this.comment_preview_midlle_el);
+
+    // author
+    this.comment_preview_author_el = goog.dom.createDom('span', 'comment_preview_author');
+    goog.dom.appendChild(this.comment_preview_el, this.comment_preview_author_el);
+
+    // middle: displays ": " after username
+    this.comment_preview_midlle_el = goog.dom.createDom('span', 'comment_preview_midlle');
+    goog.dom.appendChild(this.comment_preview_el, this.comment_preview_midlle_el);
+
+    // content
+    this.comment_preview_content_el = goog.dom.createDom('span', 'comment_preview_content');
+    goog.dom.appendChild(this.comment_preview_el, this.comment_preview_content_el);
+
+    if (this.inline_comments && this.inline_comments.length > 0) { // at least one comment
+        // comment preview
+        this.comment_preview_el = goog.dom.createDom('div', 'comment_preview');
+        goog.dom.appendChild(this.post_bottom_el, this.comment_preview_el);
+
+        this.comment_preview_midlle_el.innerHTML = ': ';
+
+        var index = this.inline_comments.length - 1; // display latest comment
+        this.comment_preview_author_el.innerHTML = this.inline_comments[index].creator.username;
+
+        var content = this.inline_comments[index].inline_comment.content;
+
+        this.comment_preview_content_el.innerHTML = content;
+        this.set_max_displayable_comment_preview(content);
+    }
+}
+
+postile.view.post_in_board.Post.prototype.set_max_displayable_comment_preview = function(content) {
+    var maxWidth = this.container_el.offsetWidth - this.post_icon_container_el.offsetWidth - 20;
+
+    var realWidth = this.comment_preview_el.offsetWidth;
+
+    if (realWidth < maxWidth) { // no need to proceed
+        return;
+    }
+
+    var currLength = content.length;
+    var orig_text = '';
+
+    for (var i = 0; i < 10; i++) {
+        realWidth = this.comment_preview_el.offsetWidth;
+        if (realWidth > maxWidth) {
+            currLength = currLength / 2;
+        } else if (realWidth < maxWidth - 25) {
+            currLength = currLength / 2 * 3;
+        } else {
+            break;
+        }
+        this.comment_preview_content_el.innerHTML = content.substring(0, currLength);
+
+        if (this.comment_preview_content_el.innerHTML == orig_text) {
+            break;
+        }
+    }
+
+    content = this.comment_preview_content_el.innerHTML;
+
+    if (realWidth > maxWidth) { // still too long after 10 iterations, highly impossible
+        this.post_title_el.innerHTML = content.substring(0, 10) + '...';
+    }
+
+    this.comment_preview_content_el.innerHTML = content.substring(0, content.length - 3) + '...';
+}
+
+postile.view.post_in_board.Post.prototype.resetCommentPreview = function(data) {
+    console.log(data);
+    this.comment_preview_author_el.innerHTML = data.creator.username;
+    this.comment_preview_midlle_el.innerHTML = ': '; // in case there was no comment before
+    this.comment_preview_content_el.innerHTML = data.inline_comment.content;
 }
 
 postile.view.post_in_board.Post.prototype.disable = function() {
@@ -354,6 +452,7 @@ postile.view.post_in_board.Post.prototype.removeFromBoard = function() {
 }
 
 postile.view.post_in_board.Post.prototype.edit = function(isNew) {
+    console.log('hehe');
     if (this.in_edit) {
         return;
     }
@@ -394,13 +493,15 @@ postile.view.post_in_board.Post.prototype.edit = function(isNew) {
 
         instance.post_author_el.style.display = 'none'; // hide author name
 
-        if (isNew) { // new post
-            instance.post_content_el.innerHTML = '(ctrl + enter to submit)';
-        }
+        // set placeholders for title and content views
+        postile.ui.makeLabeledInput(instance.post_content_el, '(ctrl + enter to submit)', 
+                'half_opaque');
 
-        postile.ui.makeLabeledInput(instance.post_title_el, postile._('post_title_prompt'), 'half_opaque', function(){
-            instance.post_content_el.focus();
+        postile.ui.makeLabeledInput(instance.post_title_el, postile._('post_title_prompt'), 
+                'half_opaque', function() {
+            instance.post_content_el.focus(); // when enter is pressd, change focus to content
         });
+
 
         //hide the original bottom bar
         goog.dom.removeChildren(instance.post_icon_container_el);
@@ -431,7 +532,12 @@ postile.view.post_in_board.Post.prototype.edit = function(isNew) {
 
         contentKeydownHandler.listen();
         postHandler.listen();
-        y_editor.editor_el.focus();
+
+        if (isNew) { // new post, focus on title
+            instance.post_title_el.focus();
+        } else {
+            y_editor.editor_el.focus();
+        }
     });
 }
 

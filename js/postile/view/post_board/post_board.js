@@ -801,6 +801,11 @@ postile.view.post_board.PostBoard.prototype.fayeHandler = function(status, data)
                 this.currentPosts[data.post.id].removeFromBoard();
             }
             break;
+        case postile.view.post_board.faye_status.INLINE_COMMENT:
+            if (data.inline_comment.post_id in this.currentPosts) {
+                this.currentPosts[data.inline_comment.post_id].resetCommentPreview(data);
+            }
+            break;
     }
 }
 
@@ -857,6 +862,6 @@ postile.view.post_board.faye_status = {
     DELETE: 'delete',
     TERMINATE: 'terminate',
     FINISH: 'finish',
-    INLINE_COMMENT: 'inline_comment',
+    INLINE_COMMENT: 'inline comment',
     NOTIFICATION: 'notification',
 }
