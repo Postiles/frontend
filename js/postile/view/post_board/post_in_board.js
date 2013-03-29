@@ -87,7 +87,11 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
 
     // author display
     goog.dom.appendChild(this.post_top_el, this.post_author_el);
-    this.post_author_el.innerHTML = this.creator.username;
+
+    postile.data_manager.getUserData(this.post.creator_id, function(data) {
+        this.creator = data.user;
+        this.post_author_el.innerHTML = this.creator.username;
+    }.bind(this));
 
     // username clicked, should display user profile
     this.author_profile_display_listener = new postile.events.EventHandler(this.post_author_el,
@@ -323,7 +327,11 @@ postile.view.post_in_board.Post.prototype.comment_preview_init = function() {
         this.comment_preview_midlle_el.innerHTML = ': ';
 
         var index = this.inline_comments.length - 1; // display latest comment
-        this.comment_preview_author_el.innerHTML = this.inline_comments[index].creator.username;
+
+        postile.data_manager.getUserData(
+                this.inline_comments[index].inline_comment.creator_id, function(data) {
+                    this.comment_preview_author_el.innerHTML = data.user.username;
+        }.bind(this));
 
         var content = this.inline_comments[index].inline_comment.content;
 
@@ -333,7 +341,7 @@ postile.view.post_in_board.Post.prototype.comment_preview_init = function() {
 }
 
 postile.view.post_in_board.Post.prototype.set_max_displayable_comment_preview = function(content) {
-    var maxWidth = this.container_el.offsetWidth - this.post_icon_container_el.offsetWidth - 10;
+    var maxWidth = this.container_el.offsetWidth - this.post_icon_container_el.offsetWidth - 20;
     var realWidth = this.comment_preview_el.offsetWidth;
 
     if (realWidth < maxWidth) { // no need to proceed
@@ -369,6 +377,8 @@ postile.view.post_in_board.Post.prototype.set_max_displayable_comment_preview = 
 }
 
 postile.view.post_in_board.Post.prototype.resetCommentPreview = function(data) {
+    var instance = this;
+
     var el = this.comment_preview_el;
 
     var opacity = 1.0;
@@ -381,16 +391,19 @@ postile.view.post_in_board.Post.prototype.resetCommentPreview = function(data) {
     var fadein;
     setTimeout(function() {
         clearInterval(fadeout);
-        fadein = setInterval(function() {
-            opacity += 0.1;
-            el.style.opacity = opacity;
-        }, 30);
 
-        this.comment_preview_author_el.innerHTML = data.creator.username;
-        this.comment_preview_midlle_el.innerHTML = ': '; // in case there was no comment before
-        this.comment_preview_content_el.innerHTML = data.inline_comment.content;
-        this.set_max_displayable_comment_preview(data.inline_comment.content);
-    }.bind(this), 300);
+        postile.data_manager.getUserData(data.inline_comment.creator_id, function(userData) {
+            instance.comment_preview_author_el.innerHTML = userData.user.username;
+            instance.comment_preview_midlle_el.innerHTML = ': '; // in case there was no comment before
+            instance.comment_preview_content_el.innerHTML = data.inline_comment.content;
+            instance.set_max_displayable_comment_preview(data.inline_comment.content);
+
+            fadein = setInterval(function() {
+                opacity += 0.1;
+                el.style.opacity = opacity;
+            }, 30);
+        });
+    }, 300);
 
     setTimeout(function() {
         clearInterval(fadein);
@@ -511,6 +524,7 @@ postile.view.post_in_board.Post.prototype.edit = function(isNew) {
         });
 
         instance.post_author_el.style.display = 'none'; // hide author name
+        instance.comment_preview_el.style.display = 'none' // hide comment preview
 
         // set placeholders for title and content views
         postile.ui.makeLabeledInput(instance.post_content_el, '(ctrl + enter to submit)', 
@@ -520,7 +534,6 @@ postile.view.post_in_board.Post.prototype.edit = function(isNew) {
                 'half_opaque', function() {
             instance.post_content_el.focus(); // when enter is pressd, change focus to content
         });
-
 
         //hide the original bottom bar
         goog.dom.removeChildren(instance.post_icon_container_el);
@@ -623,25 +636,35 @@ postile.view.post_in_board.InlineComment = function(icb, single_comment_data) {
     this.comment_container = goog.dom.createDom("div", "past_comment");
     var tmp_el;
     tmp_el = goog.dom.createDom("p", "name");
-    tmp_el.innerHTML = single_comment_data.creator.username + ' says: ';
 
-    goog.dom.appendChild(this.comment_container, tmp_el);
-    tmp_el = goog.dom.createDom("p", "time");
-    tmp_el.innerHTML = postile.date(single_comment_data.inline_comment.created_at, 'inline');
-    goog.dom.appendChild(this.comment_container, tmp_el);
-    tmp_el = goog.dom.createDom("p", "comment");
-    tmp_el.innerHTML = single_comment_data.inline_comment.content.replace(/ @(\d+)/g, '<span class="at_person" at-person="$1">@[Username pending]</span>');
-    var all_atp = postile.dom.getDescendantsByCondition(tmp_el, function(el) { return el.tagName && el.tagName.toUpperCase() == 'SPAN' && el.className == 'at_person'; });
-    for (var i in all_atp) {
-        this.fetchUsername(all_atp[i]);
-    }
-    goog.dom.appendChild(this.comment_container, tmp_el);
-    goog.dom.appendChild(icb.comments_container, this.comment_container);
+    postile.data_manager.getUserData(single_comment_data.inline_comment.creator_id, function(data) {
+        tmp_el.innerHTML = data.user.username + ' says: ';
+        goog.dom.appendChild(this.comment_container, tmp_el);
+
+        tmp_el = goog.dom.createDom("p", "time");
+        tmp_el.innerHTML = postile.date(single_comment_data.inline_comment.created_at, 'inline');
+        goog.dom.appendChild(this.comment_container, tmp_el);
+
+        tmp_el = goog.dom.createDom("p", "comment");
+        tmp_el.innerHTML = single_comment_data.inline_comment.content.replace(/ @(\d+)/g, '<span class="at_person" at-person="$1">@[Username pending]</span>');
+
+        var all_atp = postile.dom.getDescendantsByCondition(tmp_el, function(el) {
+            return el.tagName && el.tagName.toUpperCase() == 'SPAN' && el.className == 'at_person';
+        });
+
+        for (var i in all_atp) {
+            this.fetchUsername(all_atp[i]);
+        }
+
+        goog.dom.appendChild(this.comment_container, tmp_el);
+        goog.dom.appendChild(icb.comments_container, this.comment_container);
+
+    }.bind(this));
 }
 
 fetchUsername = function(el) {
-    postile.ajax(['user', 'get_user'], { user_id: el.getAttribute('at-person') }, function(r) {
-        var p = r.message.profile;
+    postile.data_manager.getUserData(el.getAttribute('at-person'), function(data) {
+        var p = data.profile;
         el.innerHTML = '@' + p.first_name + ' ' + p.last_name;
     });
 }

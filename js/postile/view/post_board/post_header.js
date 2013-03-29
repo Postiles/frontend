@@ -9,6 +9,7 @@ postile.view.post_board.Header = function(board) {
     postile.view.NormalView.call(this);
     
     var instance = this;
+    console.log(board);
     
     this.board = board;
 

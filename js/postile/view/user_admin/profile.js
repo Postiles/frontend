@@ -1,6 +1,7 @@
 goog.provide('postile.view.profile');
 
 goog.require('postile.view');
+goog.require('postile.data_manager');
 goog.require('goog.dom');
 goog.require('goog.events');
 
@@ -12,12 +13,11 @@ postile.view.profile.ProfileView = function(id) { // constructor
 
     this.user_id = id;
 
-    postile.ajax([ 'profile', 'get_profile' ], { target_user_id: this.user_id }, function(data) {
-        this.profile = data.message.profile;
-
+    postile.data_manager.getUserData(this.user_id, function(data) {
+        this.profile = data.profile;
         this.initItems();
         this.initExitButton();
-        this.open(710); // magic width
+        this.open(710);
     }.bind(this));
 }
 

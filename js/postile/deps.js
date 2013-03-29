@@ -9,6 +9,7 @@ goog.addDependency('../postile/router/Router.js', ['postile.router'], []);
 goog.addDependency('../postile/user/renren.js', ['postile.renren_connection'], ['goog.events', 'goog.net.Cookies']);
 goog.addDependency('../postile/user/user.js', ['postile.user'], ['postile.view.login']);
 goog.addDependency('../postile/utils/ajax.js', ['postile.ajax', 'postile.faye'], ['goog.net.jsloader']);
+goog.addDependency('../postile/utils/data_manager.js', ['postile.data_manager'], ['postile.ajax']);
 goog.addDependency('../postile/utils/debbcode.js', ['postile.debbcode'], ['goog.string']);
 goog.addDependency('../postile/utils/dom.js', ['postile.dom'], ['goog.dom.classes']);
 goog.addDependency('../postile/utils/events.js', ['postile.events'], ['goog.events']);

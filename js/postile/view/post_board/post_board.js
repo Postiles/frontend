@@ -300,22 +300,26 @@ postile.view.post_board.PostBoard = function(board_id) {
     this.click_start_point = null;
 
     // Initialize according to board_id
-    postile.ajax(['board','enter_board'], { board_id: board_id }, function(data) {
+    postile.ajax([ 'board', 'enter_board' ], { board_id: board_id }, function(data) {
         instance.boardData = data.message.board;
-        instance.userData = data.message.user;
-        instance.profileData = data.message.profile;
 
-        instance.channel_str = instance.boardData.id;
+        // get board creator data
+        instance.userData = postile.data_manager.getUserData(instance.boardData.creator_id, function(data) {
+            instance.userData = data.user;
+            instance.profileData = data.profile;
 
-        postile.faye.subscribe(instance.channel_str, function(status, data) {
-            instance.fayeHandler(status, data);
+            instance.channel_str = instance.boardData.id;
+
+            postile.faye.subscribe(instance.channel_str, function(status, data) {
+                instance.fayeHandler(status, data);
+            });
+
+            instance.initView();
+            instance.initEvents();
+
+            // Initialize viewport size
+            postile.view.post_board.handlers.resize(instance);
         });
-
-        instance.initView();
-        instance.initEvents();
-
-        // Initialize viewport size
-        postile.view.post_board.handlers.resize(instance);
     });
 }
 
