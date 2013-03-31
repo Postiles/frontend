@@ -15,13 +15,13 @@ postile.view.post_board.Header = function(board) {
 
     this.container.id = 'title_bar';
     
-    postile.ui.load(this.container, postile.staticResource(['post_board_title_bar.html']));
+    postile.ui.load(this.container, postile.conf.staticResource(['post_board_title_bar.html']));
     
     this.topicTitle_el = postile.dom.getDescendantById(instance.container, 'topic_title');
     instance.topicTitle_el.innerHTML = this.board.boardData.name;
     
     var feedback = goog.dom.createDom('img');
-    feedback.src = postile.imageResource(['feedback.png']);
+    feedback.src = postile.conf.imageResource(['feedback.png']);
     feedback.style.cssFloat = 'left';
     feedback.style.margin = '6px 0 0 10px';
     goog.events.listen(feedback, goog.events.EventType.CLICK, function() { new postile.feedback.FeedbackData(); });
@@ -29,7 +29,7 @@ postile.view.post_board.Header = function(board) {
 
     this.topicImgContainer_el = postile.dom.getDescendantById(instance.container, 'topic_image_container');
     this.topicImg_el = postile.dom.getDescendantByClass(this.topicImgContainer_el, 'topic_image');
-    this.topicImg_el.src = postile.uploadsResource( [this.board.boardData.image_small_url] );
+    this.topicImg_el.src = postile.conf.uploadsResource( [this.board.boardData.image_small_url] );
 
     this.usernameText_el = postile.dom.getDescendantById(instance.container, 'username_text');
     this.usernameText_el.innerHTML = this.board.userData.username;
@@ -55,7 +55,7 @@ postile.view.post_board.Header = function(board) {
 
     this.profileImageContainer_el = postile.dom.getDescendantById(instance.container, 'profile_image_container');
     this.profileImageContainerImg_el = goog.dom.getElementByClass('image', this.profileImageContainer_el);
-    this.profileImageContainerImg_el.src = postile.uploadsResource([ this.board.userData.image_small_url ]);
+    this.profileImageContainerImg_el.src = postile.conf.uploadsResource([ this.board.profileData.image_small_url ]);
 
     this.alert_wrapper = goog.dom.createDom('div', 'notificatoin_number_wrapper');
     goog.dom.appendChild(this.container, this.alert_wrapper);

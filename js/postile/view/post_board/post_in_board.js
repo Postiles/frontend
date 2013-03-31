@@ -410,6 +410,10 @@ postile.view.post_in_board.Post.prototype.resetCommentPreview = function(data) {
     }, 600);
 }
 
+/**
+ * Disable the post and attach the JuHua animation, does nothing if called
+ * more than once without calling .enable() in between.
+ */
 postile.view.post_in_board.Post.prototype.disable = function() {
     if (this.disabled) {
         return;
@@ -418,6 +422,10 @@ postile.view.post_in_board.Post.prototype.disable = function() {
     postile.ui.startLoading(this.wrap_el);
 }
 
+/**
+ * Enable the post and remove the JuHua animation, does nothing if called
+ * more than once without calling .disable() in between.
+ */
 postile.view.post_in_board.Post.prototype.enable = function() {
     if (!this.disabled) {
         return;

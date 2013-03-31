@@ -5,6 +5,7 @@ library for ajax-related activities
 goog.provide('postile.ajax');
 goog.provide('postile.faye');
 
+goog.require('postile.conf');
 goog.require('goog.net.jsloader');
 
 postile.ajax = function(url, data, onsuccess, onfail, notifier_text) { 
@@ -14,7 +15,7 @@ postile.ajax = function(url, data, onsuccess, onfail, notifier_text) {
     data.session_key = localStorage.postile_user_session_key;
 
     if (url instanceof Array) {
-        url = postile.dynamicResource(url);
+        url = postile.conf.dynamicResource(url);
     }
 
     if (notifier_text && notifier_text.length) {
@@ -69,7 +70,7 @@ postile.ajax.upload = function(url, formData, onsuccess, onfail, notifier_text) 
     }
 
     if (url instanceof Array) {
-        url = postile.dynamicResource(url);
+        url = postile.conf.dynamicResource(url);
     }
     if (postile.browser_compat.walkarounds.xdr) {
         xhr = new XDomainRequest();
@@ -159,8 +160,8 @@ postile.ajax.expection_handlers = { //exception_string and corresponding handler
 postile.faye.client = null;
 
 postile.faye.init = function(callback) {
-    goog.net.jsloader.load(postile.fayeLocation + '/client.js').addCallback(function() {
-        postile.faye.client = new Faye.Client(postile.fayeLocation);
+    goog.net.jsloader.load(postile.conf.fayeLocation + '/client.js').addCallback(function() {
+        postile.faye.client = new Faye.Client(postile.conf.fayeLocation);
         callback();
     });
 }

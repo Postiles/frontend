@@ -3,7 +3,7 @@ goog.provide('postile.uploader');
 goog.require('postile.ajax');
 //goog.require('postile.fx');
 goog.require('goog.dom');
-goog.require('postile.view.image_upload');
+//goog.require('postile.view.image_upload');
 
 
 /* How to handle these global variables ? */

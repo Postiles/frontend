@@ -1,8 +1,9 @@
 goog.provide('postile.view.video_upload');
 
-goog.require('postile.view');
 goog.require('goog.dom');
 goog.require('goog.events');
+goog.require('postile.conf');
+goog.require('postile.view');
 goog.require('postile.fx.effects');
 goog.require('postile.re');
 
@@ -10,7 +11,7 @@ postile.view.video_upload.VideoUpload = function(input_instance) {
 	postile.view.PopView.call(this);
 	
 	this.container.id = 'upload_video_pop';
-	postile.ui.load(this.container, postile.staticResource(['_upload_video.html']));
+	postile.ui.load(this.container, postile.conf.staticResource(['_upload_video.html']));
 	console.log("video called");
 
 	this.preview_button_el = postile.dom.getDescendantByClass(this.container, 'preview_button');

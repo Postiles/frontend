@@ -3,9 +3,10 @@
 goog.provide('postile.view');
 
 goog.require('goog.dom');
+goog.require('goog.style');
+goog.require('postile.conf');
 goog.require('postile.events');
 goog.require('postile.fx.effects');
-goog.require('goog.style');
 
 /*
 === How to create a normal view ===
@@ -52,7 +53,12 @@ postile.view.View = function() { //Do not use this class directly (this is an ab
         for (i in this.unloaded_stylesheets) {
             if (!(this.unloaded_stylesheets[i] in postile.loaded_stylesheets)) {
                 postile.loaded_stylesheets[this.unloaded_stylesheets[i]] = true;
-                goog.dom.appendChild(document.getElementsByTagName('head')[0], goog.dom.createDom('link', { type: 'text/css', rel: 'stylesheet', href: postile.cssResource([this.unloaded_stylesheets[i]]) }));
+                goog.dom.appendChild(document.getElementsByTagName('head')[0],
+                    goog.dom.createDom('link', {
+                        type: 'text/css',
+                        rel: 'stylesheet',
+                        href: postile.conf.cssResource([this.unloaded_stylesheets[i]])
+                    }));
             }
         }
     }

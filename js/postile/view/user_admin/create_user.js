@@ -117,5 +117,5 @@ postile.view.create_user = {
                         confirm_password: confirm_password
                     }, onsuccess, onfailure);
         }
-    },
+    }
 }
