@@ -9,15 +9,20 @@ goog.require('postile.ajax');
 postile.data_manager.userData = { };
 
 postile.data_manager.getUserData = function(user_id, callback) {
+    console.log(postile.data_manager.userData);
     if (postile.data_manager.userData[user_id]) { // found in local cache
         callback(postile.data_manager.userData[user_id]);
     } else { // not found, send request to server
         postile.ajax([ 'user', 'get_user' ], { target_user_id: user_id }, function(data) {
-            var user = { };
-            for (var attr in data.message.profile) {
-                data.message.user[attr] = data.message.profile[attr];
+            postile.data_manager.userData[user_id] = { };
+
+            for (var attr in data.message.user) {
+                postile.data_manager.userData[user_id][attr] = data.message.user[attr];
             }
-            postile.data_manager.userData[user_id] = data.message.user;
+
+            for (var attr in data.message.profile) {
+                postile.data_manager.userData[user_id][attr] = data.message.profile[attr];
+            }
             callback(postile.data_manager.userData[user_id]);
         });
     }
