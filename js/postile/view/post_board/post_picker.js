@@ -3,7 +3,7 @@ goog.provide('postile.view.post_board.post_picker');
 goog.require('goog.events');
 goog.require('goog.dom');
 goog.require('postile.fx');
-goog.require('postile.view.post_board');
+//goog.require('postile.view.post_board');
 
 postile.view.post_board.PostPicker = function(post_board_obj) {
     var instance = this;

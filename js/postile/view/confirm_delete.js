@@ -2,15 +2,16 @@
 
 goog.provide('postile.view.confirm_delete');
 
-goog.require('postile.view');
 goog.require('goog.dom');
+goog.require('postile.conf');
+goog.require('postile.view');
 goog.require('postile.fx.effects');
 
 postile.view.confirm_delete.ConfirmDelete = function(input_instance) {
 	var instance = input_instance;
 
 	postile.view.TipView.call(this);
-	postile.ui.load(this.container, postile.staticResource(['_confirm_delete.html']));
+	postile.ui.load(this.container, postile.conf.staticResource(['_confirm_delete.html']));
 	this.container.className = 'confirm_delete';
 	this.container.style.top = '-2px';
 	this.container.style.left = '22px';

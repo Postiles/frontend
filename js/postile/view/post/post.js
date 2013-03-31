@@ -3,12 +3,14 @@ goog.provide('postile.view.post');
 goog.require('postile.view');
 goog.require('goog.dom');
 goog.require('goog.events');
+goog.require('postile.conf');
+goog.require('postile.view');
 
 postile.view.post.PostExpand = function(data) { // constructor
     var instance = this;
 
     postile.view.PopView.call(this);
-    postile.ui.load(this.container, postile.staticResource(['_post_expand.html']));
+    postile.ui.load(this.container, postile.conf.staticResource(['_post_expand.html']));
 
     this.postData = data;
     postile.data_manager.getUserData(this.postData.creator_id, function(uData) {
@@ -62,7 +64,7 @@ postile.view.post.PostExpand.prototype.initComments = function() {
             }.bind(this));
 
     postile.data_manager.getUserData(localStorage.postile_user_id, function(data) {
-        this.commentProfileImg_el.src = postile.uploadsResource([ data.image_small_url ]);
+        this.commentProfileImg_el.src = postile.conf.uploadsResource([ data.image_small_url ]);
     }.bind(this));
 
     postile.ajax([ 'inline_comment', 'get_inline_comments' ], { post_id: this.postData.id }, function(data) {
@@ -84,7 +86,7 @@ postile.view.post.PostExpand.prototype.renderComment = function(cmt) {
 
         var profileImage_el = goog.dom.createDom('img', 'img');
         goog.dom.appendChild(profileImageContainer_el, profileImage_el);
-        profileImage_el.src = postile.uploadsResource([ userData.image_small_url ]);
+        profileImage_el.src = postile.conf.uploadsResource([ userData.image_small_url ]);
 
         var commentRight_el = goog.dom.createDom('div', 'comment-right');
         goog.dom.appendChild(comment_el, commentRight_el);

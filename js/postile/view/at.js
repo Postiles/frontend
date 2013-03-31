@@ -1,9 +1,10 @@
 goog.provide('postile.view.At');
 
-goog.require('postile.view');
 goog.require('goog.string');
 goog.require('goog.dom');
 goog.require('goog.events');
+goog.require('postile.conf');
+goog.require('postile.view');
 goog.require('postile.events');
 
 postile.view.At = function(el) {
@@ -46,7 +47,7 @@ postile.view.At.prototype.renderUser = function(profile) {
     var tmpDiv = goog.dom.createDom('div', 'at_single');
     var avaDiv = goog.dom.createDom('img', 'at_image');
     var usnDiv = goog.dom.createDom('div', 'at_name');
-    avaDiv.src = postile.uploadsResource([ profile.image_url ]);
+    avaDiv.src = postile.conf.uploadsResource([ profile.image_url ]);
     usnDiv.innerHTML = profile.first_name + ' ' + profile.last_name;
     goog.dom.appendChild(tmpDiv, avaDiv);
     goog.dom.appendChild(tmpDiv, usnDiv);

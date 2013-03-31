@@ -1,14 +1,15 @@
 goog.provide('postile.view.search_box');
 
-goog.require('postile.view');
 goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('goog.async.Throttle');
+goog.require('postile.conf');
+goog.require('postile.view');
 
 postile.view.search_box.SearchBox = function(input_instance) {
     this.instance = input_instance;
     postile.view.TipView.call(this);
-    postile.ui.load(this.container, postile.staticResource(['_search_box.html']));
+    postile.ui.load(this.container, postile.conf.staticResource(['_search_box.html']));
 
     this.container.id = 'search_pop_up';
 
@@ -68,7 +69,7 @@ postile.view.search_box.SearchBox.prototype.search = function(instance) {
                 var result_image = goog.dom.createDom('img', null);
                 goog.dom.appendChild(people_result, result_image_container);
                 goog.dom.appendChild(result_image_container, result_image);
-                result_image.src = postile.uploadsResource([ profile.image_small_url ]);
+                result_image.src = postile.conf.uploadsResource([ profile.image_small_url ]);
 
                 // right container
                 var result_right_container = goog.dom.createDom("div", "search_result_right_container");

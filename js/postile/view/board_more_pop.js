@@ -1,16 +1,17 @@
 goog.provide('postile.view.board_more_pop');
 
-goog.require('postile.view');
-goog.require('postile.view.star');
 goog.require('goog.dom');
 goog.require('goog.events');
+goog.require('postile.conf');
+goog.require('postile.view');
+goog.require('postile.view.star');
 goog.require('postile.fx.effects');
 
 postile.view.board_more_pop.BoardMorePop = function(input_instance) {
 
     postile.view.TipView.call(this);
 
-    postile.ui.load(this.container, postile.staticResource(['_board_more_pop.html']));
+    postile.ui.load(this.container, postile.conf.staticResource(['_board_more_pop.html']));
     this.container.id = 'board_more';
     this.container.style.top = '0px';
     this.container.style.left = '0px';
@@ -46,7 +47,7 @@ postile.view.board_more_pop.OtherBoard = function(in_board_instance) {
     this.curId = board_instance.boardData.topic_id;
 
     postile.view.TipView.call(this);
-    postile.ui.load(this.container, postile.staticResource(['_board_more_pop_up.html']));
+    postile.ui.load(this.container, postile.conf.staticResource(['_board_more_pop_up.html']));
 
     this.boardList = postile.dom.getDescendantById(this.container, 'board_list');
 
@@ -78,7 +79,7 @@ postile.view.board_more_pop.OtherBoard.prototype.renderBoardListItem = function(
 
     goog.events.listen(this.listedBoard, goog.events.EventType.CLICK, function(){
         console.log("try to redirect");
-        window.location="/test/" + nextBoardId + "/" + postile.dport;
+        window.location="/test/" + nextBoardId + "/" + postile.conf.dport;
     });
 
     this.listedTitle = goog.dom.createDom('h3', 'board_title', boardName);

@@ -1,6 +1,13 @@
 goog.provide('postile.view.post_board');
 goog.provide('postile.view.post_board.handlers');
 
+goog.require('goog.dom');
+goog.require('goog.style');
+goog.require('goog.events');
+goog.require('goog.events.KeyCodes');
+goog.require('goog.ui.Textarea');
+goog.require('goog.events.KeyHandler');
+goog.require('postile.conf');
 goog.require('postile.view.post_board.mask');
 goog.require('postile.view.post_board.MouseMoveScroll');
 goog.require('postile.view');
@@ -275,7 +282,7 @@ postile.view.post_board.PostBoard = function(board_id) {
     /**
      * "Right click display"
      * @type {Element}
-     * @deprecated Currently not used.
+     * @see bindMouseEvents
      */
     this.right = goog.dom.createDom('div', 'right_clicker');
 
@@ -334,7 +341,7 @@ postile.view.post_board.PostBoard.prototype.unloaded_stylesheets = ['fonts.css',
  * @type {string}
  * @const
  */
-postile.view.post_board.PostBoard.prototype.html_segment = postile.staticResource(['post_board.html']);
+postile.view.post_board.PostBoard.prototype.html_segment = postile.conf.staticResource(['post_board.html']);
 
 /**
  * Initialize view components. Called after receiving initial board data.
@@ -375,6 +382,10 @@ postile.view.post_board.PostBoard.prototype.initEvents = function() {
     this.bindKeyEvents();
 }
 
+/**
+ * Initialize mouse event listeners.
+ * @see initEvents
+ */
 postile.view.post_board.PostBoard.prototype.bindMouseEvents = function() {
     var instance = this;
 
@@ -411,7 +422,8 @@ postile.view.post_board.PostBoard.prototype.bindMouseEvents = function() {
     goog.events.listen(this.catchall, goog.events.EventType.CLICK, function(e) {
         var dy = e.clientY - instance.click_start_point[1];
         var dx = e.clientX - instance.click_start_point[0];
-        if (Math.abs(dy) > 2 && Math.abs(dx) > 2) { //left draging
+        if (Math.abs(dy) > 2 && Math.abs(dx) > 2) {
+            // Left dragging
             e.stopPropagation();
         }
     }, true);
@@ -435,10 +447,14 @@ postile.view.post_board.PostBoard.prototype.bindMouseEvents = function() {
             function(){ instance.postCreator.open(); });
 }
 
+/**
+ * Initialize key event listeners.
+ * @see initEvents
+ */
 postile.view.post_board.PostBoard.prototype.bindKeyEvents = function() {
     var instance = this;
 
-    this.keyboard_event_handler = new postile.events.EventHandler(postile.getGlobalKeyHandler(), 
+    this.keyboard_event_handler = new postile.events.EventHandler(postile.conf.getGlobalKeyHandler(), 
             goog.events.KeyHandler.EventType.KEY, function(e) { 
                 postile.view.post_board.handlers.keypress(instance, e); 
             });
@@ -447,7 +463,9 @@ postile.view.post_board.PostBoard.prototype.bindKeyEvents = function() {
     for (i in postile.view.post_board.direction_norm_to_css) {
         this.direction_controllers[i] = goog.dom.createDom('div', ['arrow_detect', i]);
         this.direction_controllers[i].direction = i;
-        this.direction_controllers[i].button = goog.dom.createDom('div', 'arrow_button'); //each one has a .button property pointing to the child
+
+        // Each one has a .button property pointing to the child
+        this.direction_controllers[i].button = goog.dom.createDom('div', 'arrow_button');
 
         goog.dom.appendChild(this.direction_controllers[i], this.direction_controllers[i].button);
         goog.dom.appendChild(this.direction_controllers[i].button, goog.dom.createDom('div'));
@@ -466,6 +484,10 @@ postile.view.post_board.PostBoard.prototype.bindKeyEvents = function() {
 
 }
 
+/**
+ * Initialize window event listeners.
+ * @see initEvents
+ */
 postile.view.post_board.PostBoard.prototype.bindWindowEvents = function() {
     var instance = this;
     this.window_resize_event_handler = new postile.events.EventHandler(window, 
@@ -784,23 +806,37 @@ postile.view.post_board.PostBoard.prototype.renderById = function(pid, callback)
     });
 }
 
+/**
+ * Handles faye's response and manipulates the board.
+ * @param {postile.view.post_board.faye_status} status
+ * @param {Object} data Faye response
+ */
 postile.view.post_board.PostBoard.prototype.fayeHandler = function(status, data) {
     switch (status) {
         case postile.view.post_board.faye_status.FINISH:
+            // Someone (could be this user) finished editing a post.
             this.currentPosts[data.post.id].enable();
             this.renderArray([data]);
             break;
+
         case postile.view.post_board.faye_status.START:
+            // Someone (could be this user) started editing a post.
             if (data.post.id in this.currentPosts) {
-                if (!this.currentPosts[data.post.id].in_edit) { // not the post currently being edited
+                // If that post is loaded
+                if(!this.currentPosts[data.post.id].in_edit) {
+                    // ... and that post is not currently being edited by
+                    // this user: start JuHua animation.
                     this.currentPosts[data.post.id].disable();
                 }
             } else {
                 this.renderArray([data]);
             }
             break;
+
         case postile.view.post_board.faye_status.DELETE:
+            // Someone (could be this user) deleted a post.
             if (data.post.id in this.currentPosts) {
+                // If that post is loaded: remove it from the view.
                 this.currentPosts[data.post.id].removeFromBoard();
             }
             break;
@@ -842,11 +878,14 @@ postile.view.post_board.FunctionButton = function(dom) { // constructor
     goog.events.listen(this.body_el, goog.events.EventType.CLICK, function(e) {
         this.open();
 
+        /*
+         * XXX: dead code..
         if (this.id == 'switch_board_button') {
         } else if (this.id == 'message_button') {
         } else if (this.id == 'search_button') {
         } else if (this.id == 'popup_button') {
         }
+        */
     }.bind(this));
 }
 
@@ -860,11 +899,16 @@ postile.view.post_board.FunctionButton.prototype.close = function() {
     this.image_el.style.webkitFilter = '';
 }
 
+/**
+ * Status code. Must be kept in sync with backend.
+ * @enum {string}
+ */
 postile.view.post_board.faye_status = {
     START: 'start',
     DELETE: 'delete',
     TERMINATE: 'terminate',
     FINISH: 'finish',
-    INLINE_COMMENT: 'inline comment',
-    NOTIFICATION: 'notification',
+    INLINE_COMMENT: 'inline_comment',
+    NOTIFICATION: 'notification'
 }
+

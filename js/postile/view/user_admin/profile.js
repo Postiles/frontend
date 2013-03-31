@@ -4,10 +4,11 @@ goog.require('postile.view');
 goog.require('postile.data_manager');
 goog.require('goog.dom');
 goog.require('goog.events');
+goog.require('postile.conf');
 
 postile.view.profile.ProfileView = function(id) { // constructor
     postile.view.PopView.call(this);
-    postile.ui.load(this.container, postile.staticResource(['_profile_preview.html']));
+    postile.ui.load(this.container, postile.conf.staticResource(['_profile_preview.html']));
 
     this.profile_el = goog.dom.getElementByClass('profile-preview', this.container);
 
@@ -30,7 +31,7 @@ postile.view.profile.ProfileView.prototype.displayableItems = [
     { name: 'location', description: 'Lives in ', icon: 'profile-preview/work-icon.png' }, 
     { name: 'work', description: 'Works at ', icon: 'profile-preview/work-icon.png' },
     { name: 'education', description: 'Attends ', icon: 'profile-preview/work-icon.png' },
-    { name: 'hometown', description: 'Comes from ', icon: 'profile-preview/work-icon.png' },
+    { name: 'hometown', description: 'Comes from ', icon: 'profile-preview/work-icon.png' }
 ];
 
 postile.view.profile.ProfileView.prototype.initExitButton = function() {
@@ -47,7 +48,7 @@ postile.view.profile.ProfileView.prototype.initItems = function() {
     console.log(this.userData);
     this.picture_el = goog.dom.getElementByClass('picture', this.container);
     this.pictureImg_el = goog.dom.getElementsByTagNameAndClass('img', null, this.picture_el)[0];
-    this.pictureImg_el.src = postile.uploadsResource([ this.userData.image_url ]);
+    this.pictureImg_el.src = postile.conf.uploadsResource([ this.userData.image_url ]);
 
     this.name_el = goog.dom.getElementByClass('name', this.container);
     this.name_el.innerHTML = this.userData.first_name + ' ' + this.userData.last_name;
@@ -98,7 +99,7 @@ postile.view.profile.ProfileView.prototype.initItems = function() {
             goog.dom.appendChild(newItem, newItemIcon);
 
             var newItemIconImg = goog.dom.createDom('img', null);
-            newItemIconImg.src = postile.imageResource([ item.icon ]);
+            newItemIconImg.src = postile.conf.imageResource([ item.icon ]);
             goog.dom.appendChild(newItemIcon, newItemIconImg);
 
             var newItemText = goog.dom.createDom('div', 'text');

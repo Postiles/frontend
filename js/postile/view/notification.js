@@ -1,13 +1,14 @@
 goog.provide('postile.view.notification');
 
-goog.require('postile.view');
 goog.require('goog.dom');
 goog.require('goog.events');
+goog.require('postile.conf');
+goog.require('postile.view');
 
 postile.view.notification.Notification = function(header) {
     //var instance = input_instance;
     postile.view.TipView.call(this);
-    postile.ui.load(this.container, postile.staticResource(['_notification.html']));
+    postile.ui.load(this.container, postile.conf.staticResource(['_notification.html']));
     this.container.id = 'notifications_pop_up';
     //console.log("notification called");
     this.container.style.top = '0px';
@@ -165,7 +166,11 @@ postile.view.notification.InfoItem.prototype.render = function(parent, data, fro
 
 
     //console.log(profile_img_url);
-    this.profile_img = goog.dom.createDom('img', {'class':'notification_profile', 'src': postile.uploadsResource([profile_img_url]) , 'alt': 'profile'});
+    this.profile_img = goog.dom.createDom('img', {
+        'class':'notification_profile',
+        'src': postile.conf.uploadsResource([profile_img_url]),
+        'alt': 'profile'
+    });
     goog.dom.appendChild(this.notificationItem, this.profile_img);
 
     this.notificationTitle = goog.dom.createDom('div', 'title');
