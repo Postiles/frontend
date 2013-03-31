@@ -1,9 +1,10 @@
 /* this file is the stylesheet for page.html in sass */
 /* layout */
 .post-expand {
+  position: relative;
   padding: 0px;
   margin: 0px;
-  height: 600px;
+  height: 500px;
   background: whitesmoke;
   font-family: RobotoRegular;
   box-shadow: 0px 0px 20px #024d62; }
@@ -28,7 +29,7 @@
           color: #024d62; }
         .post-expand .container .left .left-container .content {
           margin-top: 20px;
-          height: 400px;
+          height: 300px;
           font-size: 11pt; }
     .post-expand .container .right {
       float: left;
@@ -74,7 +75,7 @@
       .post-expand .container .right .comment-container {
         width: inherit;
         margin-top: 10px;
-        height: 420px;
+        height: 320px;
         overflow: scroll; }
         .post-expand .container .right .comment-container .comment {
           margin-top: 5px;
@@ -99,19 +100,5 @@
               font-size: 11pt; }
             .post-expand .container .right .comment-container .comment .comment-right .content {
               margin-top: 2px;
+              width: 260px;
               font-size: 10pt; }
-  .post-expand .footer {
-    width: 100%; }
-    .post-expand .footer .close-button {
-      position: relative;
-      margin: 0 auto;
-      padding: 5px;
-      width: 200px;
-      background: #024d62;
-      color: whitesmoke;
-      font-size: 14pt;
-      text-align: center;
-      cursor: pointer;
-      -webkit-transition: background 0.4s; }
-      .post-expand .footer .close-button:hover {
-        background: #008299; }

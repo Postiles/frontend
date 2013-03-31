@@ -80,9 +80,11 @@ postile.view.PopView = function() { // constructor
     this.mask = goog.dom.createDom('div', 'pop_mask');
 
     /* handle outside click event */
+    /*
     goog.events.listen(this.mask, goog.events.EventType.CLICK, function(e) {
         console.log(e.target);
     }.bind(this));
+    */
 
     this.mask.style.position = 'absolute';
     this.mask.style.top = '0px';
@@ -99,14 +101,26 @@ postile.view.PopView.prototype.open = function(width) {
         this.container.style.width = width + 'px';
     }
 
-    
-
     goog.dom.appendChild(document.body, this.mask);
     postile.fx.effects.resizeIn(this.container);
     postile.fx.Animate(function(i) { this.mask.style.opacity = i; }.bind(this), 400);
 
     this.esc = this.escPressed.bind(this); // create a binded function for removing events
     goog.events.listen(document, goog.events.EventType.KEYUP, this.esc);
+}
+
+/* add the close button at the top right corner of the view */
+postile.view.PopView.prototype.addCloseButton = function(view) {
+    this.closeButton_el = goog.dom.createDom('div', 'close-button');
+    goog.dom.appendChild(view, this.closeButton_el);
+
+    this.closeButtonX_el = goog.dom.createDom('div', 'x');
+    this.closeButtonX_el.innerHTML = 'x';
+    goog.dom.appendChild(this.closeButton_el, this.closeButtonX_el);
+
+    goog.events.listen(this.closeButton_el, goog.events.EventType.CLICK, function(e) {
+        this.close();
+    }.bind(this));
 }
     
 postile.view.PopView.prototype.close = function() {

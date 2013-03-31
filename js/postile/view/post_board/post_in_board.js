@@ -486,7 +486,7 @@ postile.view.post_in_board.Post.prototype.removeFromBoard = function() {
 
     /* guanlun hacks */
     postile.ajax([ 'post', 'delete' ], { post_id: this.post.id }, function(data) {
-        console.log(data);
+        console.log('deleted');
     });
 
     delete this.board.currentPosts[this.id];

@@ -1,4 +1,5 @@
 .profile-preview {
+  position: relative;
   font-family: RobotoRegular;
   font-size: 10pt;
   display: table-cell;
@@ -61,24 +62,6 @@
     width: 500px;
     position: relative;
     float: left; }
-    .profile-preview .info-container .exit-button {
-      position: relative;
-      left: 490px;
-      top: 10px;
-      width: 20px;
-      height: 20px;
-      z-index: 2;
-      cursor: pointer;
-      background: black;
-      -webkit-border-radius: 10px;
-      box-shadow: 0px 0px 6px #024d61;
-      -webkit-transition: box-shadow 0.5s; }
-      .profile-preview .info-container .exit-button .x {
-        position: relative;
-        left: 7px;
-        color: white; }
-      .profile-preview .info-container .exit-button:hover {
-        box-shadow: 0px 0px 15px #024d61; }
     .profile-preview .info-container .top {
       position: relative;
       z-index: 1;
