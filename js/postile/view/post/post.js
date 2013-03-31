@@ -12,7 +12,10 @@ goog.require('postile.view');
 postile.view.post.PostExpand = function(data) {
     var instance = this;
 
+    // parent's constructor
     postile.view.PopView.call(this);
+
+    // load static html template
     postile.ui.load(this.container, postile.conf.staticResource(['_post_expand.html']));
 
     this.postData = data;
@@ -20,6 +23,7 @@ postile.view.post.PostExpand = function(data) {
         instance.userData = uData;
     });
 
+    // container for this view
     this.post_el = goog.dom.getElementByClass('post-expand', this.container);
 
     this.commentContainer_el = postile.dom.getDescendantByClass(this.post_el, 'comment-container');
@@ -34,19 +38,15 @@ postile.view.post.PostExpand = function(data) {
     this.content_el = goog.dom.getElementByClass('content', this.post_el);
     this.content_el.innerHTML = this.postData.content;
 
-    this.closeButton_el = goog.dom.getElementByClass('close-button', this.post_el);
-    goog.events.listen(this.closeButton_el, goog.events.EventType.CLICK, function(e) {
-        this.close();
-    }.bind(this));
-
     this.initComments();
+    this.addCloseButton(this.post_el);
 
     this.open(1165);
 }
 
 goog.inherits(postile.view.post.PostExpand, postile.view.PopView);
 
-postile.view.post.PostExpand.prototype.unloaded_stylesheets = ['_post_expand.css'];
+postile.view.post.PostExpand.prototype.unloaded_stylesheets = ['_post_expand.css', '_close_button.css'];
 
 postile.view.post.PostExpand.prototype.initComments = function() {
     this.commentBox_el = postile.dom.getDescendantByClass(this.post_el, 'comment-box');

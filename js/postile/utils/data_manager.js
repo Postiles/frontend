@@ -9,7 +9,6 @@ goog.require('postile.ajax');
 postile.data_manager.userData = { };
 
 postile.data_manager.getUserData = function(user_id, callback) {
-    console.log(postile.data_manager.userData);
     if (postile.data_manager.userData[user_id]) { // found in local cache
         callback(postile.data_manager.userData[user_id]);
     } else { // not found, send request to server

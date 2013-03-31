@@ -17,7 +17,9 @@ postile.view.profile.ProfileView = function(id) { // constructor
     postile.data_manager.getUserData(this.user_id, function(data) {
         this.userData = data;
         this.initItems();
-        this.initExitButton();
+
+        this.addCloseButton(this.profile_el);
+
         this.open(710);
     }.bind(this));
 }
@@ -25,7 +27,7 @@ postile.view.profile.ProfileView = function(id) { // constructor
 // Profile is a subclass of PopView
 goog.inherits(postile.view.profile.ProfileView, postile.view.PopView);
 
-postile.view.profile.ProfileView.prototype.unloaded_stylesheets = ['_profile_preview.css'];
+postile.view.profile.ProfileView.prototype.unloaded_stylesheets = ['_profile_preview.css', '_close_button.css'];
 
 postile.view.profile.ProfileView.prototype.displayableItems = [
     { name: 'location', description: 'Lives in ', icon: 'profile-preview/work-icon.png' }, 
@@ -34,18 +36,10 @@ postile.view.profile.ProfileView.prototype.displayableItems = [
     { name: 'hometown', description: 'Comes from ', icon: 'profile-preview/work-icon.png' }
 ];
 
-postile.view.profile.ProfileView.prototype.initExitButton = function() {
-    this.exitButton = goog.dom.getElementByClass('exit-button', this.container);
-    goog.events.listen(this.exitButton, goog.events.EventType.CLICK, function(e) {
-        this.close();
-    }.bind(this));
-}
-
 postile.view.profile.ProfileView.prototype.initItems = function() {
     /* init a container for all the editable profile items */
     this.profileItems = [ ];
 
-    console.log(this.userData);
     this.picture_el = goog.dom.getElementByClass('picture', this.container);
     this.pictureImg_el = goog.dom.getElementsByTagNameAndClass('img', null, this.picture_el)[0];
     this.pictureImg_el.src = postile.conf.uploadsResource([ this.userData.image_url ]);

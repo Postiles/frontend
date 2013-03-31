@@ -107,9 +107,11 @@ postile.view.PopView = function() {
     this.mask = goog.dom.createDom('div', 'pop_mask');
 
     /* handle outside click event */
+    /*
     goog.events.listen(this.mask, goog.events.EventType.CLICK, function(e) {
         console.log(e.target);
     }.bind(this));
+    */
 
     this.mask.style.position = 'absolute';
     this.mask.style.top = '0px';
@@ -139,6 +141,20 @@ postile.view.PopView.prototype.open = function(opt_width) {
     // Create a binded function for removing events
     this.esc = this.escPressed.bind(this);
     goog.events.listen(document, goog.events.EventType.KEYUP, this.esc);
+}
+
+/* add the close button at the top right corner of the view */
+postile.view.PopView.prototype.addCloseButton = function(view) {
+    this.closeButton_el = goog.dom.createDom('div', 'close-button');
+    goog.dom.appendChild(view, this.closeButton_el);
+
+    this.closeButtonX_el = goog.dom.createDom('div', 'x');
+    this.closeButtonX_el.innerHTML = 'x';
+    goog.dom.appendChild(this.closeButton_el, this.closeButtonX_el);
+
+    goog.events.listen(this.closeButton_el, goog.events.EventType.CLICK, function(e) {
+        this.close();
+    }.bind(this));
 }
     
 /**

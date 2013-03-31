@@ -1,0 +1,19 @@
+.close-button {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: black;
+    width: 20px;
+    height: 20px;
+    z-index: 2;
+    box-shadow: 0px 0px 6px #024d61;
+    cursor: pointer;
+    -webkit-border-radius: 10px;
+    -webkit-transition: box-shadow 0.5s; }
+.close-button:hover {
+    box-shadow: 0px 0px 15px #024d61; }
+.close-button .x {
+    position: relative;
+    left: 7px;
+    font-size: 10pt;
+    color: white; }
