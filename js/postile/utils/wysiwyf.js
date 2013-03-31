@@ -113,7 +113,7 @@ postile.WYSIWYF = {
             icon_container_el.appendChild(editor.buttons[i]);
         }
         editor.toDisplayMode(0);
-        editor.onEditListener = new postile.events.ValueChangeEvent(editor.editor_el, function(){
+        editor.onEditListener = new postile.events.ContentChangeListener(editor.editor_el, function(){
             var i;
             var links = postile.dom.getDescendantsByCondition(editor.editor_el, function(el) {
                 return el.tagName && el.tagName.toUpperCase() == 'IMG'

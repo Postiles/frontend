@@ -1,3 +1,8 @@
+/**
+ * Static configuration for postile,
+ * splitted from boot.js to handle circular dependency.
+ */
+
 goog.provide('postile.conf');
 
 goog.require('goog.events.KeyHandler');
@@ -20,9 +25,16 @@ postile.conf = {
     uploadsResource: function(input) {
         return "http://"+postile.conf.dhost.replace('www', 'static-uploads')+"/"+input.join("/"); // kind of hack
     },
+
+    /**
+     * @param {Array.<string>} input A list of path segments, to be joined
+     * by backslash.
+     * @return {string} CSS path built 
+     */
     cssResource: function(input) {
         return "/css/" + input.join("/");
     },
+
     imageResource: function(input) {
         return "/images/" + input.join("/");
     },

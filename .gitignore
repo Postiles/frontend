@@ -1,5 +1,6 @@
 build/
 js/goog/*
+js/postile/deps.js
 build.bat
 build.sh
 third_party

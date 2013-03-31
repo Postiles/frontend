@@ -15,7 +15,7 @@ postile.view.At = function(el) {
     this.ipel = el;
     this.container.className = 'at_box';
     this.container.innerHTML = '<div class="at-hint">Enter a user name to @</div>';
-    this.editlsnr = new postile.events.ValueChangeEvent(el, function(e){ instance.realPress(e); });
+    this.editlsnr = new postile.events.ContentChangeListener(el, function(e){ instance.realPress(e); });
     goog.events.listen(el, goog.events.EventType.KEYUP, function(e){ instance.keyHandler(e); });
 }
 

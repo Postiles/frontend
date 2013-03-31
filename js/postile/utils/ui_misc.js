@@ -40,7 +40,15 @@ postile.ui.stopLoading = function(target_el){
     goog.dom.removeNode(target_el._postile_spinner_wrap);
 }
 
-postile.ui.makeLabeledInput = function(target_el, placeholder, inactive_classname, enter_handler) {
+/**
+ * @param {Element} target_el The dom element to attach the event handler to
+ * @param {string} placeholder The placeholder to display in the input
+ * @param {string} inactive_classname Classname to be added to the
+ * element when the element is not focused.
+ * @param {Function=} opt_enter_handler Handler function to be called with
+ * ENTER key is pressed in the target_el. Optional.
+ */
+postile.ui.makeLabeledInput = function(target_el, placeholder, inactive_classname, opt_enter_handler) {
     var focused = false;
 
     var focusHandler = function() {
@@ -62,18 +70,21 @@ postile.ui.makeLabeledInput = function(target_el, placeholder, inactive_classnam
     target_el.contentEditable = true;
     blurHandler();
 
-    new postile.events.EventHandler(target_el, goog.events.EventType.FOCUS, focusHandler).listen();
-
-    new postile.events.EventHandler(target_el, goog.events.EventType.BLUR, blurHandler).listen();
-
-    new postile.events.EventHandler(new goog.events.KeyHandler(target_el), goog.events.KeyHandler.EventType.KEY, function(e) {
-        if (target_el.innerHTML == placeholder) {
-            target_el.innerHTML = '';
-            goog.dom.classes.remove(target_el, inactive_classname);
-        } else if (e.keyCode == goog.events.KeyCodes.ENTER) {
-            e.preventDefault();
-            enter_handler();
-            target_el.blur();
-        }
-    }).listen();
+    goog.events.listen(target_el, goog.events.EventType.FOCUS, focusHandler);
+    goog.events.listen(target_el, goog.events.EventType.BLUR, blurHandler);
+    goog.events.listen(
+        // KeyHandler brings about browser compatiblity
+        new goog.events.KeyHandler(target_el),
+        goog.events.KeyHandler.EventType.KEY,
+        function(e) {
+            if (target_el.innerHTML == placeholder) {
+                target_el.innerHTML = '';
+                goog.dom.classes.remove(target_el, inactive_classname);
+            } else if (e.keyCode == goog.events.KeyCodes.ENTER) {
+                e.preventDefault();
+                opt_enter_handler();
+                target_el.blur();
+            }
+        });
 }
+
