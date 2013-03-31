@@ -9,12 +9,8 @@ goog.addDependency('../postile/locale.js', ['postile.locale.en', 'postile.locale
 goog.addDependency('../postile/router/Router.js', ['postile.router'], []);
 goog.addDependency('../postile/user/renren.js', ['postile.renren_connection'], ['goog.events', 'goog.net.Cookies']);
 goog.addDependency('../postile/user/user.js', ['postile.user'], ['postile.view.login']);
-<<<<<<< HEAD
-goog.addDependency('../postile/utils/ajax.js', ['postile.ajax', 'postile.faye'], ['goog.net.jsloader']);
-goog.addDependency('../postile/utils/data_manager.js', ['postile.data_manager'], ['postile.ajax']);
-=======
 goog.addDependency('../postile/utils/ajax.js', ['postile.ajax', 'postile.faye'], ['goog.net.jsloader', 'postile.conf']);
->>>>>>> cleanup-for-jsc
+goog.addDependency('../postile/utils/data_manager.js', ['postile.data_manager'], ['postile.ajax']);
 goog.addDependency('../postile/utils/debbcode.js', ['postile.debbcode'], ['goog.string']);
 goog.addDependency('../postile/utils/dom.js', ['postile.dom'], ['goog.dom.classes']);
 goog.addDependency('../postile/utils/events.js', ['postile.events'], ['goog.events']);
@@ -43,6 +39,6 @@ goog.addDependency('../postile/view/search_box.js', ['postile.view.search_box'],
 goog.addDependency('../postile/view/star.js', ['postile.view.star'], ['goog.dom', 'goog.events', 'postile.conf', 'postile.view']);
 goog.addDependency('../postile/view/topic_list/topic_list.js', ['postile.view.topic_list'], ['postile.view']);
 goog.addDependency('../postile/view/user_admin/create_user.js', ['postile.view.create_user'], ['goog.dom', 'goog.events', 'postile.view']);
-goog.addDependency('../postile/view/user_admin/profile.js', ['postile.view.profile'], ['goog.dom', 'goog.events', 'postile.conf', 'postile.view']);
+goog.addDependency('../postile/view/user_admin/profile.js', ['postile.view.profile'], ['goog.dom', 'goog.events', 'postile.conf', 'postile.data_manager', 'postile.view']);
 goog.addDependency('../postile/view/video_upload.js', ['postile.view.video_upload'], ['goog.dom', 'goog.events', 'postile.conf', 'postile.fx.effects', 'postile.re', 'postile.view']);
 goog.addDependency('../postile/view/view.js', ['postile.view'], ['goog.dom', 'goog.style', 'postile.conf', 'postile.events', 'postile.fx.effects']);
