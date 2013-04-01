@@ -54,7 +54,7 @@ postile.view.post_board.Header = function(board) {
 
     this.profileImageContainer_el = postile.dom.getDescendantById(instance.container, 'profile_image_container');
     this.profileImageContainerImg_el = goog.dom.getElementByClass('image', this.profileImageContainer_el);
-    this.profileImageContainerImg_el.src = postile.conf.uploadsResource([ this.board.userData.image_small_url ]);
+    this.profileImageContainerImg_el.src = postile.conf.uploadsResource([ this.board.profileData.image_small_url ]);
 
     this.alert_wrapper = goog.dom.createDom('div', 'notificatoin_number_wrapper');
     goog.dom.appendChild(this.container, this.alert_wrapper);
