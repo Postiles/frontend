@@ -8,4 +8,4 @@ postile.view.topic_list.TopicList = function() { //constructor
 
 goog.inherits(postile.view.topic_list.TopicList, postile.view.View);
 
-postile.view.topic_list.TopicList.prototype.unloadedStylesheets = [];
+postile.view.topic_list.TopicList.prototype.unloaded_stylesheets = [];

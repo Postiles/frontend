@@ -6,7 +6,10 @@ goog.require('goog.events');
 goog.require('postile.conf');
 goog.require('postile.view');
 
-postile.view.post.PostExpand = function(data) { // constructor
+/**
+ * @constructor
+ */
+postile.view.post.PostExpand = function(data) {
     var instance = this;
 
     // parent's constructor

@@ -1,3 +1,6 @@
+/**
+ * Entrypoint for postile, splitted from boot.js to handle circular dependency.
+ */
 goog.provide('postile.entry');
 
 goog.require('goog.events');

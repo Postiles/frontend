@@ -1,7 +1,15 @@
 goog.provide('postile.events');
 
 goog.require('goog.events');
+goog.require('goog.array');
 
+/**
+ * Make an event handler that can be toggled on or off.
+ * @param {Element} subject The dom element to attach to
+ * @param {string} action Event type
+ * @param {Function} handler
+ * @param {boolean} usecapture
+ */
 postile.events.EventHandler = function(subject, action, handler, usecapture) {
     this.subject = subject;
     this.action = action;
@@ -17,7 +25,13 @@ postile.events.EventHandler.prototype.unlisten = function() {
     goog.events.unlisten(this.subject, this.action, this.handler, this.usecapture);
 }
 
-postile.events.ValueChangeEvent = function(subject, handler) {
+/**
+ * Event listener specialized for text editing.
+ * @param {Element} subject The dom element to attach to
+ * @param {Function} handler The callback function that handles content
+ * change in subject.
+ */
+postile.events.ContentChangeListener = function(subject, handler) {
     var currentVal;
     var myHandler = function(e) {
         if (currentVal == subject.innerHTML) {
@@ -26,16 +40,23 @@ postile.events.ValueChangeEvent = function(subject, handler) {
         handler(e);
         currentVal = subject.innerHTML;
     }
-    this.listeners = [new postile.events.EventHandler(subject, goog.events.EventType.KEYUP, myHandler),
-    new postile.events.EventHandler(subject, goog.events.EventType.INPUT, myHandler),
-    new postile.events.EventHandler(subject, goog.events.EventType.CUT, myHandler),
-    new postile.events.EventHandler(subject, goog.events.EventType.PASTE, myHandler)];
+    this.listeners = [
+        new postile.events.EventHandler(subject, goog.events.EventType.KEYUP, myHandler),
+        new postile.events.EventHandler(subject, goog.events.EventType.INPUT, myHandler),
+        new postile.events.EventHandler(subject, goog.events.EventType.CUT, myHandler),
+        new postile.events.EventHandler(subject, goog.events.EventType.PASTE, myHandler)
+    ];
 }
 
-postile.events.ValueChangeEvent.prototype.listen = function() {
-    for (var i in this.listeners) { this.listeners[i].listen(); }
+postile.events.ContentChangeListener.prototype.listen = function() {
+    goog.array.forEach(this.listeners, function(elem) {
+        elem.listen();
+    });
 }
 
-postile.events.ValueChangeEvent.prototype.unlisten = function() {
-    for (var i in this.listeners) { this.listeners[i].unlisten(); }
+postile.events.ContentChangeListener.prototype.unlisten = function() {
+    goog.array.forEach(this.listeners, function(elem) {
+        elem.unlisten();
+    });
 }
+

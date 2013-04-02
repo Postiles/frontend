@@ -40,7 +40,15 @@ postile.ui.stopLoading = function(target_el){
     goog.dom.removeNode(target_el._postile_spinner_wrap);
 }
 
-postile.ui.makeLabeledInput = function(target_el, placeholder, inactive_classname, enter_handler) {
+/**
+ * @param {Element} target_el The dom element to attach the event handler to
+ * @param {string} placeholder The placeholder to display in the input
+ * @param {string} inactive_classname Classname to be added to the
+ * element when the element is not focused.
+ * @param {Function=} opt_enter_handler Handler function to be called with
+ * ENTER key is pressed in the target_el. Optional.
+ */
+postile.ui.makeLabeledInput = function(target_el, placeholder, inactive_classname, opt_enter_handler) {
     var focused = false;
 
     var focusHandler = function() {
