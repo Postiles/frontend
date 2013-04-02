@@ -495,6 +495,7 @@ postile.view.post_in_board.Post.prototype.submitEdit = function(to_submit) {
                 instance.disable();
                 var revert_submit_waiting = new postile.toast.Toast(0, "Please wait... We're submitting reversion... Be ready for 36s.");
                 if(original_value == null && original_title == null) {
+                    revert_submit_waiting.abort();
                     revert_waiting.abort();
                     instance.removeFromBoard();
                 } else {
