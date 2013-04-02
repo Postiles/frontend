@@ -88,11 +88,6 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
     // author display
     goog.dom.appendChild(this.post_top_el, this.post_author_el);
 
-    postile.data_manager.getUserData(this.post.creator_id, function(data) {
-        this.creator = data;
-        this.post_author_el.innerHTML = this.creator.username;
-    }.bind(this));
-
     // username clicked, should display user profile
     this.author_profile_display_listener = new postile.events.EventHandler(this.post_author_el,
             goog.events.EventType.CLICK, function(e) {
@@ -107,6 +102,15 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
     this.post_content_el = goog.dom.createDom("div", "post_content");
     goog.dom.appendChild(this.container_el, this.post_content_el);
     this.post_content_el.innerHTML = postile.parseBBcode(this.post.content);
+
+    postile.data_manager.getUserData(this.post.creator_id, function(data) {
+        this.creator = data;
+        this.post_author_el.innerHTML = this.creator.username;
+
+        if (this.creator.id == localStorage.postile_user_id) { // my own post
+            this.post_content_el.style.cursor = 'auto';
+        }
+    }.bind(this));
 
     // display proper number of characters for content
     this.set_max_displayable_content();
@@ -461,14 +465,14 @@ postile.view.post_in_board.Post.prototype.submitEdit = function(to_submit) {
     var original_title = instance.post.title;
     var original_value = instance.post.content;
     var lels = instance.board.picker.all_lkd_el;
+    var the_id = instance.post.id;
     for (i in lels) {
         goog.dom.removeNode(lels[i]);
     }
     lels = [];
     if (postile.string.empty(to_submit.content)) { 
-        var the_id = instance.id;
         if (confirm("Leaving a post blank will effectively delete this post. Confirm to proceed?")) {
-            instance.board.removePost(instance.id);
+            instance.board.removePost(the_id);
             instance.board.disableMovingCanvas = false;
             postile.ajax(['post','delete'], { post_id: the_id });
         }
@@ -493,7 +497,7 @@ postile.view.post_in_board.Post.prototype.submitEdit = function(to_submit) {
                 instance.disable();
                 var revert_submit_waiting = new postile.toast.Toast(0, "Please wait... We're submitting reversion... Be ready for 36s.");
                 revert_waiting.abort();
-                postile.ajax(['post','submit_change'], { post_id: data.message.post.id, content: original_value, title: original_title }, function(data) {
+                postile.ajax(['post','submit_change'], { post_id: the_id, content: original_value, title: original_title }, function(data) {
                     revert_submit_waiting.abort();
                     instance.enable();
                     instance.render(data.message);
@@ -532,6 +536,10 @@ postile.view.post_in_board.Post.prototype.edit = function(isNew) {
         instance.in_edit = true;
         instance.post_expand_listener.unlisten();
         instance.author_profile_display_listener.unlisten();
+
+        // remove effects in the view mode
+        instance.post_title_el.style.cursor = 'auto';
+        instance.post_title_el.style.textDecoration = 'none';
 
         // reset title and content in case they are chomped
         instance.post_title_el.innerHTML = instance.post.title;
@@ -623,6 +631,7 @@ postile.view.post_in_board.InlineCommentsBlock = function(postObj) {
                 if (data.status == postile.ajax.status.OK) {
                     postile.fx.effects.verticalExpand((new postile.view.post_in_board.InlineComment(instance, data.message)).comment_container);
                     postile.ui.stopLoading(instance.text_input);
+                    instance.text_input.innerHTML = '';
                     instance.text_input.blur();
                 }
             });
