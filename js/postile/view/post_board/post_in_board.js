@@ -603,6 +603,7 @@ postile.view.post_in_board.Post.prototype.edit = function(isNew) {
                 return false;
             } else if (!started) { // not started edit yet
                 instance.post_content_el.innerHTML = '';
+                goog.dom.classes.remove(instance.post_content_el,'half_opaque');
                 started = true;
             }
         });
