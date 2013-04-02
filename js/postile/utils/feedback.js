@@ -1,10 +1,11 @@
 goog.provide('postile.feedback');
 
+goog.require('goog.userAgent');
 goog.require('postile.conf');
 
 postile.feedback.FeedbackData = function(img) {
     var po = {};
-    po.userAgent = postile.browser_compat.uas;
+    po.userAgent = goog.userAgent.getUserAgentString();
     po.clientTs = Math.round(new Date().getTime() / 1000);
     po.location = window.location.href;
     po.errorList = JSON.stringify(postile.conf.error_log.slice(Math.max(0, postile.conf.error_log.length - 10), postile.conf.error_log.length));

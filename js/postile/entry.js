@@ -5,7 +5,7 @@ goog.provide('postile.entry');
 
 goog.require('goog.events');
 goog.require('postile.conf');
-goog.require('postile.browser_compat');
+goog.require('postile.conf.useragent');
 goog.require('postile.router');
 goog.require('postile.user');
 goog.require('postile.view.post_board');
@@ -20,8 +20,7 @@ goog.require('postile.feedback');
 postile.entry.main = function() {
     goog.events.listen(window, goog.events.EventType.LOAD, function() {
         goog.events.listen(window, goog.events.EventType.ERROR, postile.conf.logError);
-        // And that function will call postile.browser_compat.router_dispatch
-        postile.browser_compat.load(postile.entry.router_dispatch);
+        postile.conf.useragent.load(postile.entry.router_dispatch);
     });
 };
 

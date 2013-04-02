@@ -4,6 +4,7 @@ goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('goog.dom.classes');
 goog.require('postile.fx');
+goog.require('postile.conf.useragent');
 
 postile.syncGet = function(url) {
     var xhr = new XMLHttpRequest();
@@ -25,7 +26,7 @@ postile.ui.startLoading = function(target_el) {
     target_el._postile_spinner_wrap = goog.dom.createDom('div', 'busy_wrap');
     target_el._postile_spinner = goog.dom.createDom('div', 'busy');
     target_el._postile_spinner_animation = new postile.fx.Animate(function(i){
-        postile.browser_compat.setCss(target_el._postile_spinner, 'transform', 'rotate('+Math.floor(i*12)*30+'deg)');
+        postile.conf.useragent.setCss(target_el._postile_spinner, 'transform', 'rotate('+Math.floor(i*12)*30+'deg)');
     }, 1600, null, null, postile.fx.modes.FOREVER_REPEAT);
     goog.dom.appendChild(target_el._postile_spinner_wrap, target_el._postile_spinner);
     goog.dom.appendChild(target_el, target_el._postile_spinner_wrap);

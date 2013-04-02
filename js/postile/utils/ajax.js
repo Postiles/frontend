@@ -22,7 +22,7 @@ postile.ajax = function(url, data, onsuccess, onfail, notifier_text) {
         postile.ajax.notifier.show(notifier_text);
     }
 
-    if (postile.browser_compat.walkarounds.xdr) {
+    if (postile.conf.useragent.features.xdr) {
         xhr = new XDomainRequest();
         xhr.onload = function() { postile.ajax.fetchedHandler(onsuccess, onfail, xhr.responseText); }
         xhr.onerror = function() { postile.ajax.notifier.networkError("XDR unknwon error"); }
@@ -44,7 +44,7 @@ postile.ajax = function(url, data, onsuccess, onfail, notifier_text) {
         postile.ajax.notifier.networkError("request timeout");
     };
 
-    if (postile.browser_compat.walkarounds.xhr >= 2) {
+    if (postile.conf.useragent.features.xhr >= 2) {
         xhr.open('POST', url);
         formData = new FormData();
         for (i in data) {
@@ -72,7 +72,7 @@ postile.ajax.upload = function(url, formData, onsuccess, onfail, notifier_text) 
     if (url instanceof Array) {
         url = postile.conf.dynamicResource(url);
     }
-    if (postile.browser_compat.walkarounds.xdr) {
+    if (postile.conf.useragent.features.xdr) {
         xhr = new XDomainRequest();
         xhr.onload = function() { postile.ajax.fetchedHandler(onsuccess, onfail, xhr.responseText); }
         xhr.onerror = function() { postile.ajax.notifier.networkError("XDR unknwon error"); }
@@ -90,7 +90,7 @@ postile.ajax.upload = function(url, formData, onsuccess, onfail, notifier_text) 
     }
     xhr.timeout = 10000;
     xhr.ontimeout = function(){ postile.ajax.notifier.networkError("request timeout"); };
-    if (postile.browser_compat.walkarounds.xhr >= 2) {
+    if (postile.conf.useragent.features.xhr >= 2) {
         xhr.open('POST', url);
         xhr.send(formData);
     } else {

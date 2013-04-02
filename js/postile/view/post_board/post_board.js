@@ -6,6 +6,7 @@ goog.require('goog.style');
 goog.require('goog.events');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.ui.Textarea');
+goog.require('goog.userAgent');
 goog.require('goog.events.KeyHandler');
 goog.require('postile.conf');
 goog.require('postile.view.post_board.mask');
@@ -367,7 +368,7 @@ postile.view.post_board.PostBoard.prototype.initView = function() {
     this.viewport.rel_data = this;
     this.canvas.rel_data = this;
 
-    if (!postile.browser_compat.isMacOsX()) { // is not mac os
+    if (!goog.userAgent.MAC) {
         new postile.view.post_board.MouseMoveScroll(this);
     }
 }
