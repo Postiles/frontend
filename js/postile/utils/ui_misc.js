@@ -57,6 +57,13 @@ postile.ui.makeLabeledInput = function(target_el, placeholder, inactive_classnam
     }
     target_el.contentEditable = true;
     blurHandler();
+    //Always delete self when on focus
+    new postile.events.EventHandler(target_el, goog.events.EventType.FOCUS, function() {
+        if(target_el.innerHTML == placeholder) {
+            target_el.innerHTML = '';
+            goog.dom.classes.remove(target_el, inactive_classname);
+        }
+    }).listen();
     new postile.events.EventHandler(target_el, goog.events.EventType.BLUR, blurHandler).listen();
     new postile.events.EventHandler(new goog.events.KeyHandler(target_el), goog.events.KeyHandler.EventType.KEY, function(e) {
         if (target_el.innerHTML == placeholder) {

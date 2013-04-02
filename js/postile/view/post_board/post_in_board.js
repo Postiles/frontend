@@ -594,25 +594,39 @@ postile.view.post_in_board.Post.prototype.edit = function(isNew) {
                 goog.events.EventType.KEYDOWN, function(e) {
             // when user presses 'ctrl + enter', submit edit
             if (e.keyCode == 13 && e.ctrlKey) {
-                instance.submitEdit({ post_id: instance.post.id, content: y_editor.getBbCode(), title: instance.post_title_el.innerHTML ==  postile._('post_title_prompt') ? '' : instance.post_title_el.innerHTML });
+                instance.submitEdit({ post_id: instance.post.id, content: y_editor.getBbCode(),
+                                    title: instance.post_title_el.innerHTML ==  postile._('post_title_prompt') ? '' : instance.post_title_el.innerHTML });
 
                 contentKeydownHandler.unlisten();
+                //contentOnFocusHandler.unlisten();
                 postHandler.unlisten();
                 instance.in_edit = false;
 
                 return false;
             } else if (!started) { // not started edit yet
+                /*
                 instance.post_content_el.innerHTML = '';
                 goog.dom.classes.remove(instance.post_content_el,'half_opaque');
+                */
                 started = true;
             }
         });
+        /*
+        var contentOnFocusHandler = new postile.events.EventHandler(instance.post_content_el,
+                goog.events.EventType.FOCUS, function(e) {
+            if (!started) { // not started edit yet
+                instance.post_content_el.innerHTML = '';
+                goog.dom.classes.remove(instance.post_content_el,'half_opaque');
+            }
+        });
+        */
 
         var postHandler = new postile.events.EventHandler(instance.container_el, goog.events.EventType.CLICK, function(evt){
             evt.stopPropagation();
         });
 
         contentKeydownHandler.listen();
+        //contentOnFocusHandler.listen();
         postHandler.listen();
 
         if (isNew) { // new post, focus on title
