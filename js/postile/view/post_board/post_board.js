@@ -89,12 +89,12 @@ postile.view.post_board.handlers.arrow_control_mouseover = function(e) {
 
     hover.style[css_name] = '-40px';
 
-    this.parentNode.rel_data.direction_controllers_animation = new postile.fx.Animate(function(iter) { 
-        hover.style[css_name] = 40-40*iter + 'px'; }, 
-        500, 
-        false, 
-        function() { 
-            hover.parentNode.style.display = 'none'; rel_data.preMoveCanvas(direction); 
+    this.parentNode.rel_data.direction_controllers_animation = new postile.fx.Animate(function(iter) {
+        hover.style[css_name] = 40-40*iter + 'px'; },
+        500,
+        false,
+        function() {
+            hover.parentNode.style.display = 'none'; rel_data.preMoveCanvas(direction);
         });
 }
 
@@ -119,7 +119,7 @@ postile.view.post_board.handlers.arrow_control_mouseout = function() {
  * to resize (XXX: Shall we change this into a method of PostBoard?)
  */
 postile.view.post_board.handlers.resize = function(instance) {
-    instance.canvas.style.display = 'block'; 
+    instance.canvas.style.display = 'block';
     var new_viewport_size = [window.innerWidth,  window.innerHeight - 45]; //45 is the menu bar height
 
     if (!instance.canvasCoord) {
@@ -128,7 +128,7 @@ postile.view.post_board.handlers.resize = function(instance) {
          * @see PostBoard
          */
         instance.canvasCoord = [
-            (new_viewport_size[0] - instance.canvasSize[0]) / 2, 
+            (new_viewport_size[0] - instance.canvasSize[0]) / 2,
             (new_viewport_size[1] - instance.canvasSize[1]) / 2 ];
     } else {
         // Window resize. Keep the center in the same position.
@@ -136,7 +136,7 @@ postile.view.post_board.handlers.resize = function(instance) {
         instance.canvasCoord[1] += (new_viewport_size[1] - parseInt(instance.catchall.style.height))/2;
     }
 
-    instance.catchall.style.width = new_viewport_size[0] + 'px'; 
+    instance.catchall.style.width = new_viewport_size[0] + 'px';
     instance.catchall.style.height = new_viewport_size[1] + 'px';
 
     instance.viewport.scrollLeft = - instance.canvasCoord[0];
@@ -171,7 +171,7 @@ postile.view.post_board.handlers.keypress = function(instance, e) {
         case goog.events.KeyCodes.DOWN:
             if (instance.preMoveCanvas('down')) { e.preventDefault(); }
             break;
-    }    
+    }
 }
 
 /**
@@ -189,7 +189,7 @@ postile.view.post_board.PostBoard = function(board_id) {
     var instance = this;
 
     postile.view.FullScreenView.call(this);
-   
+
     /** @private */
     this.board_id = board_id;
 
@@ -305,7 +305,7 @@ postile.view.post_board.PostBoard = function(board_id) {
      * @see bindMouseEvents
      */
     this.click_start_point = null;
-    
+
     /**
      * Saves the coord of cursor when a mousedown event occurs.
      * @type {Object.<direction, number>}
@@ -397,27 +397,27 @@ postile.view.post_board.PostBoard.prototype.bindMouseEvents = function() {
 
     // Disable text selecting, for IE.
     goog.events.listen(this.viewport, goog.events.EventType.SELECTSTART, function() {
-        return false; 
+        return false;
     });
 
     goog.events.listen(this.viewport, goog.events.EventType.SCROLL, function() {
         instance.canvasCoord[0] = - instance.viewport.scrollLeft;
         instance.canvasCoord[1] = - instance.viewport.scrollTop;
-    }) 
+    })
 
     // Start: controllers for moving the viewport
     goog.dom.appendChild(this.catchall, this.right);
 
     goog.events.listen(this.catchall, goog.events.EventType.CONTEXTMENU, function(e) {
-        e.preventDefault(); 
+        e.preventDefault();
     });
 
     goog.events.listen(this.catchall, goog.events.EventType.MOUSEDOWN, function(e) {
         instance.click_start_point = [e.clientX, e.clientY];
-    
+
         if (!e.isButton(2)) {
             // Right mouse button
-            return; 
+            return;
         }
 
         instance.right.style.left = e.clientX - 53 + 'px'; // TODO: replace the magic number
@@ -433,14 +433,14 @@ postile.view.post_board.PostBoard.prototype.bindMouseEvents = function() {
             e.stopPropagation();
         }
     }, true);
-    
+
     goog.events.listen(this.catchall, goog.events.EventType.MOUSEUP, function(e) {
         var dy = e.clientY - instance.click_start_point[1];
         var dx = e.clientX - instance.click_start_point[0];
-    
+
         if (!e.isButton(2) || Math.abs(dx) + Math.abs(dy) < 3) {
             // Right mouse button
-            return; 
+            return;
         }
 
         this.rel_data.right.style.display = 'none';
@@ -449,7 +449,7 @@ postile.view.post_board.PostBoard.prototype.bindMouseEvents = function() {
         this.rel_data.moveCanvas(dx / 2 / length * this.offsetWidth, dy / 2 / length * this.offsetHeight);
     });
 
-    goog.events.listen(this.canvas, goog.events.EventType.DBLCLICK, 
+    goog.events.listen(this.canvas, goog.events.EventType.DBLCLICK,
             function(){ instance.postCreator.open(); });
 }
 
@@ -460,9 +460,9 @@ postile.view.post_board.PostBoard.prototype.bindMouseEvents = function() {
 postile.view.post_board.PostBoard.prototype.bindKeyEvents = function() {
     var instance = this;
 
-    this.keyboard_event_handler = new postile.events.EventHandler(postile.conf.getGlobalKeyHandler(), 
-            goog.events.KeyHandler.EventType.KEY, function(e) { 
-                postile.view.post_board.handlers.keypress(instance, e); 
+    this.keyboard_event_handler = new postile.events.EventHandler(postile.conf.getGlobalKeyHandler(),
+            goog.events.KeyHandler.EventType.KEY, function(e) {
+                postile.view.post_board.handlers.keypress(instance, e);
             });
     this.keyboard_event_handler.listen();
 
@@ -478,13 +478,13 @@ postile.view.post_board.PostBoard.prototype.bindKeyEvents = function() {
         goog.dom.appendChild(this.direction_controllers[i], goog.dom.createDom('div', 'arrow_covering'));
         goog.dom.appendChild(this.catchall, this.direction_controllers[i]);
 
-        goog.events.listen(this.direction_controllers[i], goog.events.EventType.CLICK, 
+        goog.events.listen(this.direction_controllers[i], goog.events.EventType.CLICK,
                 postile.view.post_board.handlers.arrow_control_click);
-        goog.events.listen(this.direction_controllers[i], goog.events.EventType.MOUSEMOVE, 
+        goog.events.listen(this.direction_controllers[i], goog.events.EventType.MOUSEMOVE,
                 postile.view.post_board.handlers.arrow_control_mousemove);
-        goog.events.listen(this.direction_controllers[i], goog.events.EventType.MOUSEOVER, 
+        goog.events.listen(this.direction_controllers[i], goog.events.EventType.MOUSEOVER,
                 postile.view.post_board.handlers.arrow_control_mouseover);
-        goog.events.listen(this.direction_controllers[i], goog.events.EventType.MOUSEOUT, 
+        goog.events.listen(this.direction_controllers[i], goog.events.EventType.MOUSEOUT,
                 postile.view.post_board.handlers.arrow_control_mouseout);
     }
 
@@ -496,8 +496,8 @@ postile.view.post_board.PostBoard.prototype.bindKeyEvents = function() {
  */
 postile.view.post_board.PostBoard.prototype.bindWindowEvents = function() {
     var instance = this;
-    this.window_resize_event_handler = new postile.events.EventHandler(window, 
-            goog.events.EventType.RESIZE, function() { 
+    this.window_resize_event_handler = new postile.events.EventHandler(window,
+            goog.events.EventType.RESIZE, function() {
                 postile.view.post_board.handlers.resize(instance);
             });
     this.window_resize_event_handler.listen();
@@ -569,11 +569,11 @@ postile.view.post_board.PostBoard.prototype.moveToPost = function(pid) {
  * @return {boolean} Whether the canvas is movable (and thus moved).
  */
 postile.view.post_board.PostBoard.prototype.moveCanvas = function(dx, dy) {
-    if (this.disableMovingCanvas) { 
+    if (this.disableMovingCanvas) {
         // Do not respond to actions if the user is actually dragging.
-        return false; 
+        return false;
     }
-    this.locateCanvas(this.canvasCoord[0] - dx, this.canvasCoord[1] - dy);   
+    this.locateCanvas(this.canvasCoord[0] - dx, this.canvasCoord[1] - dy);
     return true;
 }
 
@@ -591,24 +591,24 @@ postile.view.post_board.PostBoard.prototype.locateCanvas = function(
     var instance = this;
     var arrow_hide = {}; // The arrow index to hide.
 
-    for (i in postile.view.post_board.direction_norm_to_css) { 
-        arrow_hide[i] = false; 
+    for (i in postile.view.post_board.direction_norm_to_css) {
+        arrow_hide[i] = false;
     }
 
-    if (topTarget >= 0) { 
-        topTarget = 0; arrow_hide['up'] = true; 
+    if (topTarget >= 0) {
+        topTarget = 0; arrow_hide['up'] = true;
     }
 
-    if (topTarget <= this.viewport.offsetHeight - this.canvasSize[1]) { 
-        topTarget = this.viewport.offsetHeight - this.canvasSize[1]; arrow_hide['down'] = true; 
+    if (topTarget <= this.viewport.offsetHeight - this.canvasSize[1]) {
+        topTarget = this.viewport.offsetHeight - this.canvasSize[1]; arrow_hide['down'] = true;
     }
 
-    if (leftTarget >= 0) { 
-        leftTarget = 0; arrow_hide['left'] = true; 
+    if (leftTarget >= 0) {
+        leftTarget = 0; arrow_hide['left'] = true;
     }
 
-    if (leftTarget <= this.viewport.offsetWidth - this.canvasSize[0]) { 
-        leftTarget = this.viewport.offsetWidth - this.canvasSize[0]; arrow_hide['right'] = true; 
+    if (leftTarget <= this.viewport.offsetWidth - this.canvasSize[0]) {
+        leftTarget = this.viewport.offsetWidth - this.canvasSize[0]; arrow_hide['right'] = true;
     }
 
     if (leftTarget != instance.canvasCoord[0] || topTarget != instance.canvasCoord[1]) {
@@ -647,24 +647,24 @@ postile.view.post_board.PostBoard.prototype.locateCanvas = function(
  * @return {number} Corresponding pixel length
  * @see heightTo, xPosTo, yPosTo
  */
-postile.view.post_board.PostBoard.prototype.widthTo = function(u) { 
-    return (u*(postile.view.post_board.POST_WIDTH+postile.view.post_board.POST_MARGIN) 
-            - postile.view.post_board.POST_MARGIN); 
+postile.view.post_board.PostBoard.prototype.widthTo = function(u) {
+    return (u*(postile.view.post_board.POST_WIDTH+postile.view.post_board.POST_MARGIN)
+            - postile.view.post_board.POST_MARGIN);
 };
 
-postile.view.post_board.PostBoard.prototype.heightTo = function(u) { 
-    return (u*(postile.view.post_board.POST_HEIGHT+postile.view.post_board.POST_MARGIN) 
-            - postile.view.post_board.POST_MARGIN); 
+postile.view.post_board.PostBoard.prototype.heightTo = function(u) {
+    return (u*(postile.view.post_board.POST_HEIGHT+postile.view.post_board.POST_MARGIN)
+            - postile.view.post_board.POST_MARGIN);
 };
 
-postile.view.post_board.PostBoard.prototype.xPosTo = function(u) { 
-    return (u*(postile.view.post_board.POST_WIDTH+postile.view.post_board.POST_MARGIN) 
-            + this.canvasSize[0]/2); 
+postile.view.post_board.PostBoard.prototype.xPosTo = function(u) {
+    return (u*(postile.view.post_board.POST_WIDTH+postile.view.post_board.POST_MARGIN)
+            + this.canvasSize[0]/2);
 };
 
-postile.view.post_board.PostBoard.prototype.yPosTo = function(u) { 
-    return (u*(postile.view.post_board.POST_HEIGHT+postile.view.post_board.POST_MARGIN) 
-            + this.canvasSize[1]/2); 
+postile.view.post_board.PostBoard.prototype.yPosTo = function(u) {
+    return (u*(postile.view.post_board.POST_HEIGHT+postile.view.post_board.POST_MARGIN)
+            + this.canvasSize[1]/2);
 };
 
 /**
@@ -674,14 +674,14 @@ postile.view.post_board.PostBoard.prototype.yPosTo = function(u) {
  * @return {number} Corresponding grid length
  * @see yPosFrom
  */
-postile.view.post_board.PostBoard.prototype.xPosFrom = function(px) { 
-    return ((px + postile.view.post_board.POST_MARGIN / 2 - this.canvasSize[0] / 2) 
-            / (postile.view.post_board.POST_WIDTH + postile.view.post_board.POST_MARGIN)); 
+postile.view.post_board.PostBoard.prototype.xPosFrom = function(px) {
+    return ((px + postile.view.post_board.POST_MARGIN / 2 - this.canvasSize[0] / 2)
+            / (postile.view.post_board.POST_WIDTH + postile.view.post_board.POST_MARGIN));
 };
 
-postile.view.post_board.PostBoard.prototype.yPosFrom = function(px) { 
-    return ((px + postile.view.post_board.POST_MARGIN / 2 - this.canvasSize[1] / 2) 
-            / (postile.view.post_board.POST_HEIGHT + postile.view.post_board.POST_MARGIN)); 
+postile.view.post_board.PostBoard.prototype.yPosFrom = function(px) {
+    return ((px + postile.view.post_board.POST_MARGIN / 2 - this.canvasSize[1] / 2)
+            / (postile.view.post_board.POST_HEIGHT + postile.view.post_board.POST_MARGIN));
 };
 
 /**
@@ -710,9 +710,9 @@ postile.view.post_board.Area;
  */
 postile.view.post_board.PostBoard.prototype.getVisibleArea = function(source) {
     return {
-        left: Math.floor(this.xPosFrom(-source[0])), 
-        top: Math.floor(this.yPosFrom(-source[1])), 
-        right: Math.ceil(this.xPosFrom(this.viewport.offsetWidth - source[0])), 
+        left: Math.floor(this.xPosFrom(-source[0])),
+        top: Math.floor(this.yPosFrom(-source[1])),
+        right: Math.ceil(this.xPosFrom(this.viewport.offsetWidth - source[0])),
         bottom: Math.ceil(this.yPosFrom(this.viewport.offsetHeight - source[1]))
     };
 }
@@ -731,10 +731,10 @@ postile.view.post_board.PostBoard.prototype.getSubscribeArea = function(source) 
      */
     var preloadRadio = 1;
 
-    return { 
-        left: Math.floor(this.xPosFrom(-source[0] - preloadRadio*this.viewport.offsetWidth)), 
-        top: Math.floor(this.yPosFrom(-source[1] - preloadRadio*this.viewport.offsetHeight)), 
-        right: Math.ceil(this.xPosFrom(this.viewport.offsetWidth*(1+preloadRadio) - source[0])), 
+    return {
+        left: Math.floor(this.xPosFrom(-source[0] - preloadRadio*this.viewport.offsetWidth)),
+        top: Math.floor(this.yPosFrom(-source[1] - preloadRadio*this.viewport.offsetHeight)),
+        right: Math.ceil(this.xPosFrom(this.viewport.offsetWidth*(1+preloadRadio) - source[0])),
         bottom: Math.ceil(this.yPosFrom(this.viewport.offsetHeight*(1+preloadRadio) - source[1]))
     };
 }
@@ -775,9 +775,9 @@ postile.view.post_board.PostBoard.prototype.updateSubscribeArea = function() {
  * @deprecated This function is current not being used.
  */
 postile.view.post_board.PostBoard.prototype.isAreaFullInside = function(parent, child) {
-    return (parent.left <= child.left 
-            && parent.right >= child.right 
-            && parent.top <= child.top 
+    return (parent.left <= child.left
+            && parent.right >= child.right
+            && parent.top <= child.top
             && parent.bottom >= child.bottom);
 }
 

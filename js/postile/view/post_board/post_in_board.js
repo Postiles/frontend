@@ -472,9 +472,7 @@ postile.view.post_in_board.Post.prototype.submitEdit = function(to_submit) {
     lels = [];
     if (postile.string.empty(to_submit.content)) {
         if (confirm("Leaving a post blank will effectively delete this post. Confirm to proceed?")) {
-            instance.board.removePost(the_id);
-            instance.board.disableMovingCanvas = false;
-            postile.ajax(['post','delete'], { post_id: the_id });
+            instance.removeFromBoard();
         }
         return;
     }
@@ -498,11 +496,7 @@ postile.view.post_in_board.Post.prototype.submitEdit = function(to_submit) {
                 var revert_submit_waiting = new postile.toast.Toast(0, "Please wait... We're submitting reversion... Be ready for 36s.");
                 if(original_value == null && original_title == null) {
                     revert_waiting.abort();
-                    postile.ajax(['post', 'delete'], {post_id: the_id}, function(data) {
-                        revert_submit_waiting.abort();
-                        instance.disable();
-                        isntance.render();
-                    });
+                    instance.removeFromBoard();
                 } else {
                     revert_waiting.abort();
                     postile.ajax(['post','submit_change'], { post_id: the_id, content: original_value, title: original_title },
@@ -518,14 +512,21 @@ postile.view.post_in_board.Post.prototype.submitEdit = function(to_submit) {
 }
 
 postile.view.post_in_board.Post.prototype.removeFromBoard = function() {
+    var instance  = this;
+    var the_id = instance.post.id;
+    console.log(instance.board.currentPosts[the_id]);
+    instance.board.removePost(the_id);
+    instance.board.disableMovingCanvas = false;
+    postile.ajax(['post','delete'], { post_id: the_id });
+    /*
     goog.dom.removeNode(this.wrap_el);
-
-    /* guanlun hacks */
+    this.board.disableMovingCanvas = false;
     postile.ajax([ 'post', 'delete' ], { post_id: this.post.id }, function(data) {
         console.log('deleted');
     });
 
     delete this.board.currentPosts[this.id];
+    */
 }
 
 postile.view.post_in_board.Post.prototype.edit = function(isNew) {
