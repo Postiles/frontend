@@ -146,7 +146,7 @@ postile.view.post_board.handlers.resize = function(instance) {
     instance.viewport_position = goog.style.getRelativePosition(instance.viewport, document.body);
 
     // Update according to the new subscribe area.
-    instance.updateSubsribeArea();
+    instance.updateSubscribeArea();
 }
 
 /**
@@ -308,8 +308,8 @@ postile.view.post_board.PostBoard = function(board_id) {
     
     /**
      * Saves the coord of cursor when a mousedown event occurs.
-     * @type {Array.<number>}
-     * @see updateSubsribeArea
+     * @type {Object.<direction, number>}
+     * @see updateSubscribeArea
      */
     this.subscribedArea = null;
 
@@ -638,7 +638,7 @@ postile.view.post_board.PostBoard.prototype.locateCanvas = function(
             }
         }
     }
-    instance.updateSubsribeArea();
+    instance.updateSubscribeArea();
 }
 
 /**
@@ -742,7 +742,7 @@ postile.view.post_board.PostBoard.prototype.getSubscribeArea = function(source) 
 /**
  * Fetch the posts in the new area and subscribe it.
  */
-postile.view.post_board.PostBoard.prototype.updateSubsribeArea = function() {
+postile.view.post_board.PostBoard.prototype.updateSubscribeArea = function() {
     var instance = this;
     var current_loc = this.canvasCoord;
     var to_subscribe = this.getSubscribeArea(current_loc);
