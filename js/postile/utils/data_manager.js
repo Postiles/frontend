@@ -15,13 +15,14 @@ postile.data_manager.getUserData = function(user_id, callback) {
         postile.ajax([ 'user', 'get_user' ], { target_user_id: user_id }, function(data) {
             postile.data_manager.userData[user_id] = { };
 
+            for (var attr in data.message.profile) {
+                postile.data_manager.userData[user_id][attr] = data.message.profile[attr];
+            }
+
             for (var attr in data.message.user) {
                 postile.data_manager.userData[user_id][attr] = data.message.user[attr];
             }
 
-            for (var attr in data.message.profile) {
-                postile.data_manager.userData[user_id][attr] = data.message.profile[attr];
-            }
             callback(postile.data_manager.userData[user_id]);
         });
     }
