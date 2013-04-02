@@ -4,6 +4,7 @@
   position: fixed !important;
   top: 46px !important;
   right: 38px !important;
+  z-index: 200;
 }
 
 #search_box_arrow {

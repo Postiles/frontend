@@ -310,9 +310,8 @@ postile.view.post_board.PostBoard = function(board_id) {
     postile.ajax([ 'board', 'enter_board' ], { board_id: board_id }, function(data) {
         instance.boardData = data.message.board;
 
-        // get board creator data
-        instance.userData = postile.data_manager.getUserData(instance.boardData.creator_id, function(data) {
-            instance.userData = data
+        instance.userData = postile.data_manager.getUserData(localStorage.postile_user_id, function(data) {
+            instance.userData = data;
 
             instance.channel_str = instance.boardData.id;
 
@@ -908,7 +907,7 @@ postile.view.post_board.faye_status = {
     DELETE: 'delete',
     TERMINATE: 'terminate',
     FINISH: 'finish',
-    INLINE_COMMENT: 'inline_comment',
+    INLINE_COMMENT: 'inline comment',
     NOTIFICATION: 'notification'
 }
 

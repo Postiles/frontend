@@ -5,7 +5,7 @@ goog.provide('postile.locale.zh_TW');
 postile.locale.en.text = {
     inline_comment_prompt: 'Enter your comment here...',
     post_title_prompt: 'Title (optional)',
-    post_zone_illegal: 'The zone you choosed was illegal. Please reselect one.',
+    post_zone_illegal: 'The zone you chose was illegal. Please reselect one.',
     mask_for_creating_post: 'Click & Drag to add a post<br />Double click again to quit',
     linked: 'LINKED'
     //select_a_post: 'Click to select a post'

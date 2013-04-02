@@ -71,9 +71,11 @@ postile.ui.makeLabeledInput = function(target_el, placeholder, inactive_classnam
             target_el.innerHTML = '';
             goog.dom.classes.remove(target_el, inactive_classname);
         } else if (e.keyCode == goog.events.KeyCodes.ENTER) {
-            e.preventDefault();
-            enter_handler();
-            target_el.blur();
+            if (enter_handler) {
+                e.preventDefault();
+                enter_handler();
+                target_el.blur();
+            }
         }
     }).listen();
 }

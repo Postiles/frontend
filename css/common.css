@@ -33,6 +33,7 @@ html, body, #wrapper {
 
 .pop_popup {
 	display: table-cell; vertical-align: middle; margin: 0;
+    z-index: 400;
 }
 
 .pop_container {
@@ -47,7 +48,7 @@ MIC: postile.toast
 .toast_container {
     width: 100%;
     top: 10px;
-    z-index: 19520;
+    z-index: 600;
     position: absolute;
 }
 
@@ -102,7 +103,7 @@ MIC: postile.toast
     height: 0px;
     width: 100%;
     height: 100%;
-    z-index: 19520;
+    z-index: 600;
 }
 
 .half_opaque {

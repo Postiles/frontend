@@ -75,6 +75,7 @@ postile.view.PopView = function() { // constructor
     this.container = goog.dom.createDom('div', 'pop_container');
 
     this.container_wrap = goog.dom.createDom('div');
+    this.container_wrap.style.zIndex = '300';
     goog.dom.classes.add(this.container_wrap, 'pop_popup');
     goog.dom.appendChild(this.container_wrap, this.container);
     this.mask = goog.dom.createDom('div', 'pop_mask');
@@ -88,6 +89,8 @@ postile.view.PopView = function() { // constructor
 
     this.mask.style.position = 'absolute';
     this.mask.style.top = '0px';
+    this.mask.style.zIndex = '300';
+    this.mask.style.zIndex = '300';
 
     goog.dom.appendChild(this.mask, this.container_wrap);
 }
@@ -149,15 +152,23 @@ goog.inherits(postile.view.FullScreenView, postile.view.View);
 postile.view.TipView = function() {
     var instance = this;
     postile.view.View.call(this);
+
     this.container = goog.dom.createDom('div');
     this.container.style.position = 'absolute';
+    this.container.style.zIndex = '200';
+
     this.container_wrap = goog.dom.createDom('div');
     this.container_wrap.style.position = 'absolute';
+
     goog.dom.appendChild(this.container_wrap, this.container);
-    this.global_handler = new postile.events.EventHandler(document.body, goog.events.EventType.CLICK, function(){
+
+    this.global_handler = new postile.events.EventHandler(document.body, 
+            goog.events.EventType.CLICK, function() {
         instance.close();
     });
-    this.container_handler = new postile.events.EventHandler(this.container, goog.events.EventType.CLICK, function(evt){
+
+    this.container_handler = new postile.events.EventHandler(this.container, 
+            goog.events.EventType.CLICK, function(evt) {
         evt.stopPropagation();
     });
 }
@@ -165,8 +176,10 @@ postile.view.TipView = function() {
 goog.inherits(postile.view.TipView, postile.view.View);
 
 postile.view.TipView.prototype.open = function(reference, parent) {
-    console.log(this.container_wrap);
-    if (!parent) { parent = reference.parentNode; }
+    if (!parent) {
+        parent = reference.parentNode;
+    }
+
     var coord = goog.style.getRelativePosition(reference, parent);
     goog.style.setPosition(this.container_wrap, coord);
     goog.dom.appendChild(parent, this.container_wrap);
