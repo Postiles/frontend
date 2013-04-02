@@ -635,6 +635,7 @@ html, body {
   position: relative;
   overflow: hidden;
   width: 100%; 
+  cursor: default;
 }
 
 .selectable {

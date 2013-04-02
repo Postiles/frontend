@@ -88,11 +88,6 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
     // author display
     goog.dom.appendChild(this.post_top_el, this.post_author_el);
 
-    postile.data_manager.getUserData(this.post.creator_id, function(data) {
-        this.creator = data;
-        this.post_author_el.innerHTML = this.creator.username;
-    }.bind(this));
-
     // username clicked, should display user profile
     this.author_profile_display_listener = new postile.events.EventHandler(this.post_author_el,
             goog.events.EventType.CLICK, function(e) {
@@ -107,6 +102,15 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
     this.post_content_el = goog.dom.createDom("div", "post_content");
     goog.dom.appendChild(this.container_el, this.post_content_el);
     this.post_content_el.innerHTML = postile.parseBBcode(this.post.content);
+
+    postile.data_manager.getUserData(this.post.creator_id, function(data) {
+        this.creator = data;
+        this.post_author_el.innerHTML = this.creator.username;
+
+        if (this.creator.id == localStorage.postile_user_id) { // my own post
+            this.post_content_el.style.cursor = 'auto';
+        }
+    }.bind(this));
 
     // display proper number of characters for content
     this.set_max_displayable_content();
@@ -533,6 +537,10 @@ postile.view.post_in_board.Post.prototype.edit = function(isNew) {
         instance.post_expand_listener.unlisten();
         instance.author_profile_display_listener.unlisten();
 
+        // remove effects in the view mode
+        instance.post_title_el.style.cursor = 'auto';
+        instance.post_title_el.style.textDecoration = 'none';
+
         // reset title and content in case they are chomped
         instance.post_title_el.innerHTML = instance.post.title;
         instance.post_content_el.innerHTML = instance.post.content;
@@ -623,6 +631,7 @@ postile.view.post_in_board.InlineCommentsBlock = function(postObj) {
                 if (data.status == postile.ajax.status.OK) {
                     postile.fx.effects.verticalExpand((new postile.view.post_in_board.InlineComment(instance, data.message)).comment_container);
                     postile.ui.stopLoading(instance.text_input);
+                    instance.text_input.innerHTML = '';
                     instance.text_input.blur();
                 }
             });
