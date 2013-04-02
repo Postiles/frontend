@@ -55,7 +55,7 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
 
     this.container_el = goog.dom.createDom('div', 'post_container');
     goog.dom.appendChild(this.wrap_el, this.container_el);
-    
+
     goog.events.listen(this.container_el, goog.events.EventType.DBLCLICK, function(e) {
         e.stopPropagation(); // prevent displaying mask by stopping event propagation
     });
@@ -79,7 +79,7 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
     }
 
     // listen for title click event, open post expand view
-    this.post_expand_listener = new postile.events.EventHandler(this.post_title_el, 
+    this.post_expand_listener = new postile.events.EventHandler(this.post_title_el,
             goog.events.EventType.CLICK, function(e) {
         var postExpand = new postile.view.post.PostExpand(instance.post);
     });
@@ -122,7 +122,7 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
     // icon container
     this.post_icon_container_el = goog.dom.createDom("div", "post_icon_container");
     goog.dom.appendChild(this.post_bottom_el, this.post_icon_container_el);
-   
+
     if (this.post.creator_id == localStorage.postile_user_id) { //created by current user, can edit
         goog.events.listen(this.post_content_el, goog.events.EventType.CLICK, function() {
             instance.edit();
@@ -137,7 +137,7 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
 
     if (animation) {
         postile.fx.effects.resizeIn(this.wrap_el);
-    }  
+    }
 }
 
 /**
@@ -253,17 +253,17 @@ postile.view.post_in_board.Post.prototype.set_max_displayable_content = function
 
 postile.view.post_in_board.Post.prototype.post_icon_container_init = function() {
     var instance = this;
-    
+
     if (!instance.likes) { // likes not defined
         instance.likes = [ ];
     }
-    
+
     var addIcon = function(name) {
         var icon = goog.dom.createDom("div", "post_icon post_"+name+"_icon");
         goog.dom.appendChild(instance.post_icon_container_el, icon);
         return icon;
     }
-    
+
     // get the ids of all the users that likes this post
     instance.liked_user = instance.likes.map(function(like) {
         return like.user_id;
@@ -291,7 +291,7 @@ postile.view.post_in_board.Post.prototype.post_icon_container_init = function() 
             goog.dom.appendChild(like_icon, new_like_icon);
             goog.dom.appendChild(instance.likes_count_el, new_counts);
 
-            new postile.fx.Animate(function(i){ 
+            new postile.fx.Animate(function(i){
                 new_like_icon.style.clip = 'rect('+Math.round(13*(1-i))+'px 13px 13px 0px)';
                 new_counts.style.top = - Math.round(13 * i) + 'px';
             }, 400, postile.fx.ease.cubic_ease_out, function() {
@@ -307,7 +307,7 @@ postile.view.post_in_board.Post.prototype.post_icon_container_init = function() 
             });
         });
     }
-    
+
     this.likes_count_el = goog.dom.createDom("div", "post_like_count");
     goog.dom.appendChild(instance.post_icon_container_el, this.likes_count_el);
 
@@ -316,7 +316,7 @@ postile.view.post_in_board.Post.prototype.post_icon_container_init = function() 
     }
 
     // addIcon("share");
-    
+
     goog.events.listen(addIcon("comment"), goog.events.EventType.CLICK, function() {
         instance.inline_comments_block = new postile.view.post_in_board.InlineCommentsBlock(instance);
     });
@@ -470,7 +470,7 @@ postile.view.post_in_board.Post.prototype.submitEdit = function(to_submit) {
         goog.dom.removeNode(lels[i]);
     }
     lels = [];
-    if (postile.string.empty(to_submit.content)) { 
+    if (postile.string.empty(to_submit.content)) {
         if (confirm("Leaving a post blank will effectively delete this post. Confirm to proceed?")) {
             instance.board.removePost(the_id);
             instance.board.disableMovingCanvas = false;
@@ -491,17 +491,27 @@ postile.view.post_in_board.Post.prototype.submitEdit = function(to_submit) {
         instance.enable();
         instance.render(data.message);
         // submit_waiting.abort();
-        var revert_waiting = new postile.toast.Toast(5, "Changes made. [Revert changes].", [function(){ 
+        var revert_waiting = new postile.toast.Toast(5, "Changes made. [Revert changes].", [function(){
             var answer = confirm("Are you sure you'd like to revert? You cannot redo once you revert.");
             if (answer) {
                 instance.disable();
                 var revert_submit_waiting = new postile.toast.Toast(0, "Please wait... We're submitting reversion... Be ready for 36s.");
-                revert_waiting.abort();
-                postile.ajax(['post','submit_change'], { post_id: the_id, content: original_value, title: original_title }, function(data) {
-                    revert_submit_waiting.abort();
-                    instance.enable();
-                    instance.render(data.message);
-                });
+                if(original_value == null && original_title == null) {
+                    revert_waiting.abort();
+                    postile.ajax(['post', 'delete'], {post_id: the_id}, function(data) {
+                        revert_submit_waiting.abort();
+                        instance.disable();
+                        isntance.render();
+                    });
+                } else {
+                    revert_waiting.abort();
+                    postile.ajax(['post','submit_change'], { post_id: the_id, content: original_value, title: original_title },
+                                 function(data) {
+                        revert_submit_waiting.abort();
+                        instance.enable();
+                        instance.render(data.message);
+                    });
+                }
             }
         }]);
     });
@@ -565,10 +575,10 @@ postile.view.post_in_board.Post.prototype.edit = function(isNew) {
         instance.comment_preview_el.style.display = 'none' // hide comment preview
 
         // set placeholders for title and content views
-        postile.ui.makeLabeledInput(instance.post_content_el, '(ctrl + enter to submit)', 
+        postile.ui.makeLabeledInput(instance.post_content_el, '(ctrl + enter to submit)',
                 'half_opaque');
 
-        postile.ui.makeLabeledInput(instance.post_title_el, postile._('post_title_prompt'), 
+        postile.ui.makeLabeledInput(instance.post_title_el, postile._('post_title_prompt'),
                 'half_opaque', function() {
             instance.post_content_el.focus(); // when enter is pressd, change focus to content
         });
@@ -626,7 +636,7 @@ postile.view.post_in_board.InlineCommentsBlock = function(postObj) {
     goog.dom.appendChild(this.container, this.text_input);
 
     postile.ui.makeLabeledInput(this.text_input, postile._('inline_comment_prompt'), 'inactive', function() {
-        postile.ajax(['inline_comment','new'], { post_id: postObj.post.id, 
+        postile.ajax(['inline_comment','new'], { post_id: postObj.post.id,
             content: postile.string.stripString(postile.view.post_in_board.resolveAtPerson(instance.text_input.innerHTML)) }, function(data) {
                 if (data.status == postile.ajax.status.OK) {
                     postile.fx.effects.verticalExpand((new postile.view.post_in_board.InlineComment(instance, data.message)).comment_container);
@@ -639,7 +649,7 @@ postile.view.post_in_board.InlineCommentsBlock = function(postObj) {
     });
 
     new postile.view.At(this.text_input);
-    
+
     this.text_input.contentEditable = "true";
 
     tmp_el = goog.dom.createDom("div", "input_low");
@@ -658,8 +668,8 @@ postile.view.post_in_board.InlineCommentsBlock = function(postObj) {
     goog.dom.appendChild(this.container, this.comments_container);
 
     postile.ajax(['inline_comment','get_inline_comments'], { post_id: postObj.post.id }, function(data) {
-        for (var i in data.message.inline_comments) { 
-            new postile.view.post_in_board.InlineComment(instance, data.message.inline_comments[i]); 
+        for (var i in data.message.inline_comments) {
+            new postile.view.post_in_board.InlineComment(instance, data.message.inline_comments[i]);
         }
         instance.open(postile.dom.getDescendantByClass(postObj.container_el, 'post_comment_icon'), postObj.wrap_el);
         instance.container.style.left = '18px';
