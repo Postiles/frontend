@@ -49,39 +49,23 @@ postile.ui.stopLoading = function(target_el){
  * ENTER key is pressed in the target_el. Optional.
  */
 postile.ui.makeLabeledInput = function(target_el, placeholder, inactive_classname, opt_enter_handler) {
-    var focused = false;
-
-    var focusHandler = function() {
-        /*
-        if (!focused && target_el.innerHTML == placeholder) {
-            target_el.innerHTML = '';
-            focused = true;
-        }
-        */
-    }
-
     var blurHandler = function() {
         if(!postile.string.stripString(target_el.innerHTML).length) {
             target_el.innerHTML = placeholder;
             goog.dom.classes.add(target_el, inactive_classname);
         }
     }
-
     target_el.contentEditable = true;
     blurHandler();
-
-    new postile.events.EventHandler(target_el, goog.events.EventType.FOCUS, focusHandler).listen();
-
     new postile.events.EventHandler(target_el, goog.events.EventType.BLUR, blurHandler).listen();
-
     new postile.events.EventHandler(new goog.events.KeyHandler(target_el), goog.events.KeyHandler.EventType.KEY, function(e) {
         if (target_el.innerHTML == placeholder) {
             target_el.innerHTML = '';
             goog.dom.classes.remove(target_el, inactive_classname);
         } else if (e.keyCode == goog.events.KeyCodes.ENTER) {
-            if (enter_handler) {
+            if (opt_enter_handler) { // if handler is specific, for enter key to work when editing
                 e.preventDefault();
-                enter_handler();
+                opt_enter_handler();
                 target_el.blur();
             }
         }

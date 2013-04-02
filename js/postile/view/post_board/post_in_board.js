@@ -480,13 +480,13 @@ postile.view.post_in_board.Post.prototype.submitEdit = function(to_submit) {
         instance.render(); return;
     }
 
-    var submit_waiting = new postile.toast.Toast(0, "Please wait... We're submitting... Be ready for 36s.");
+    // var submit_waiting = new postile.toast.Toast(0, "Please wait... We're submitting... Be ready for 36s.");
     instance.disable();
 
     postile.ajax(['post','submit_change'], to_submit, function(data) {
         instance.enable();
         instance.render(data.message);
-        submit_waiting.abort();
+        // submit_waiting.abort();
         var revert_waiting = new postile.toast.Toast(5, "Changes made. [Revert changes].", [function(){ 
             var answer = confirm("Are you sure you'd like to revert? You cannot redo once you revert.");
             if (answer) {
