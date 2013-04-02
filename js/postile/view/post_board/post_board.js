@@ -305,6 +305,13 @@ postile.view.post_board.PostBoard = function(board_id) {
      * @see bindMouseEvents
      */
     this.click_start_point = null;
+    
+    /**
+     * Saves the coord of cursor when a mousedown event occurs.
+     * @type {Array.<number>}
+     * @see updateSubsribeArea
+     */
+    this.subscribedArea = null;
 
     // Initialize according to board_id
     postile.ajax([ 'board', 'enter_board' ], { board_id: board_id }, function(data) {
@@ -739,6 +746,14 @@ postile.view.post_board.PostBoard.prototype.updateSubsribeArea = function() {
     var instance = this;
     var current_loc = this.canvasCoord;
     var to_subscribe = this.getSubscribeArea(current_loc);
+    do {
+        if (!this.subscribedArea) { break; }
+        if (to_subscribe.left != this.subscribedArea.left) { break; }
+        if (to_subscribe.right != this.subscribedArea.right) { break; }
+        if (to_subscribe.top != this.subscribedArea.top) { break; }
+        if (to_subscribe.bottom != this.subscribedArea.bottom) { break; }
+        return;
+    } while(false);
     /*
     if (!this.isAreaFullInside(this.currentSubscribeArea, this.getVisibleArea(currentLoc))) {
         // TODO: display loading
@@ -746,6 +761,7 @@ postile.view.post_board.PostBoard.prototype.updateSubsribeArea = function() {
     */
     to_subscribe.board_id = instance.board_id;
     postile.ajax(['board', 'move_to'], to_subscribe, function(data) {
+        instance.subscribedArea = to_subscribe;
         instance.renderArray(data.message.posts);
     }, 'Loading posts...', true);
 }
