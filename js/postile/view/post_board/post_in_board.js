@@ -465,14 +465,14 @@ postile.view.post_in_board.Post.prototype.submitEdit = function(to_submit) {
     var original_title = instance.post.title;
     var original_value = instance.post.content;
     var lels = instance.board.picker.all_lkd_el;
+    var the_id = instance.post.id;
     for (i in lels) {
         goog.dom.removeNode(lels[i]);
     }
     lels = [];
     if (postile.string.empty(to_submit.content)) { 
-        var the_id = instance.id;
         if (confirm("Leaving a post blank will effectively delete this post. Confirm to proceed?")) {
-            instance.board.removePost(instance.id);
+            instance.board.removePost(the_id);
             instance.board.disableMovingCanvas = false;
             postile.ajax(['post','delete'], { post_id: the_id });
         }
@@ -497,7 +497,7 @@ postile.view.post_in_board.Post.prototype.submitEdit = function(to_submit) {
                 instance.disable();
                 var revert_submit_waiting = new postile.toast.Toast(0, "Please wait... We're submitting reversion... Be ready for 36s.");
                 revert_waiting.abort();
-                postile.ajax(['post','submit_change'], { post_id: data.message.post.id, content: original_value, title: original_title }, function(data) {
+                postile.ajax(['post','submit_change'], { post_id: the_id, content: original_value, title: original_title }, function(data) {
                     revert_submit_waiting.abort();
                     instance.enable();
                     instance.render(data.message);
