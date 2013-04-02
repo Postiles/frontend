@@ -16,7 +16,7 @@ html, body {
   background: whitesmoke;
   border-bottom: 5px solid #024d61;
   position: relative;
-  z-index: 3; }
+  z-index: 500; }
 
 #topic_image_container {
   position: absolute;
@@ -254,7 +254,7 @@ html, body {
   position: absolute;
   background: whitesmoke;
   font-size: 10pt;
-  z-index: 0;
+  z-index: 100;
   border-top: 3px solid #024d61; 
   border-bottom: 1px solid #024d61; 
   box-sizing: border-box;
@@ -645,7 +645,7 @@ html, body {
   width: 100%;
   height: 100%;
   position: absolute;
-  z-index: 2;
+  z-index: 400;
   left: 0;
   top: 0;
   background-color: rgba(0, 0, 0, 0.3); } /* the magic number is also referneced in postile.view.post_board.post_picker */
@@ -657,7 +657,7 @@ html, body {
   opacity: 0.8;
   box-shadow: inset 0 0 3px 1px rgba(2, 77, 97, 0.8);
   box-sizing: border-box;
-  z-index: 1;
+  z-index: 100;
   -webkit-transition-duration: 0.3s;
   -webkit-transition-property: left, top, width, height;
   display: none; }
@@ -671,7 +671,7 @@ html, body {
   background: url(/images/guanlun.jpg);
   background-size: 30px 30px;
   background-position: center;
-  z-index: 2; }
+  z-index: 100; }
 
 /*Arrow* */
 .right_clicker {
@@ -815,4 +815,35 @@ html, body {
     background: #FFF;
     width: 150px;
     padding: 6px;
+}
+
+.extra-button-container {
+    position: relative;
+    top: -14px;
+    left: 10px;
+    width: 150px;
+    height: 13px;
+    background: whitesmoke;
+    z-index: -1;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    -webkit-box-shadow: 0px 0px 2px #024d61;
+    -webkit-transition: top 0.3s;
+}
+
+.post_wrap:hover .extra-button-container {
+    top: 0px;
+}
+
+.extra-button {
+    position: relative;
+    top: -3px;
+    font-size: 8pt;
+    color: #024d61;
+    padding: 0px 5px;
+    cursor: pointer;
+}
+
+.extra-button:hover {
+    text-decoration: underline;
 }

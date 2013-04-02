@@ -7,6 +7,7 @@
   height: 500px;
   background: whitesmoke;
   font-family: RobotoRegular;
+  z-index: 300;
   box-shadow: 0px 0px 20px #024d62; }
   .post-expand .container {
     margin: 0 auto;
