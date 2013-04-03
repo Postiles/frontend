@@ -109,7 +109,7 @@ postile.view.post_board.MouseMoveScroll.prototype.viewport_mouseup = function(e)
     }
 
     //update subscribe area
-    post_board.updateSubsribeArea();
+    post_board.updateSubscribeArea();
 };
 
 postile.view.post_board.MouseMoveScroll.prototype.viewport_mousemove = function(e) {
