@@ -3,25 +3,29 @@ goog.provide('postile.toast');
 goog.require('goog.dom');
 goog.require('goog.events');
 
-/*
-To use:
-
-postile.toast.Toast to create a toast.
-
-toast.abort to make it disappear immediately.
-
-In handlers, use "this" to point to the toast element.
-
-*/
-
+/**
+ * Initialized when the first Toast object is created.
+ * @type {Element}
+ */
 postile.toast.toast_container = null;
 
-/*
-duration in seconds. 0 for displaying forever until abortion
-use text = "click to [close] or [bye]" and callbacks as an array of two functions
-color can be yellow (default) or red now
-*/
-postile.toast.Toast = function(duration, text, callbacks, color) {
+/**
+ * @constructor
+ * @param {number} duration Duration in seconds. 0 to display forever until
+ * aborted.
+ * @param {string} text Text to display. Link text should be wrapped between
+ * pair of brackets. See example below.
+ * @param {Array.<function>} callbacks An array of callbacks, its length should 
+ * match the number of link texts. During invocation, `this` will be bound
+ * to the toast object itself.
+ * Example: text = "click to [close] or [bye]",
+ *          callbacks = [closeHandler, byeHandler]
+ * @param {string} opt_color (Optional) background color, defaults to 'yellow',
+ * can be 'red' as well. Its css rules are defined in common.css.
+ */
+postile.toast.Toast = function(duration, text, callbacks, opt_color) {
+    var color = goog.isDef(opt_color) ? opt_color : 'yellow';
+
     if (!postile.toast.toast_container) {
         postile.toast.toast_container = goog.dom.createDom('div', 'toast_container');
         goog.dom.appendChild(document.body, postile.toast.toast_container);
@@ -33,7 +37,6 @@ postile.toast.Toast = function(duration, text, callbacks, color) {
     var plain = text.split(section);
     var instance = this;
     if (!callbacks) { callbacks = []; }
-    if (!color) { color = 'yellow'; } //default color: yellow. alternative: red. defined in common.css
     this.line_el = goog.dom.createDom('div', 'toast_line');
     this.instance_el = goog.dom.createDom('div', ['toast_instance', 'toast_'+color]);
     this.instance_el.innerHTML = plain[0];
@@ -62,6 +65,10 @@ postile.toast.Toast = function(duration, text, callbacks, color) {
     }
 }
 
+/**
+ * Detach this view from the document.
+ */
 postile.toast.Toast.prototype.abort = function() {
     goog.dom.removeNode(this.line_el);
 }
+

@@ -145,7 +145,7 @@ postile.router = {
                 return true;
             } else {
                 if(postile.router.routes.rescue !== null) {
-                    postile.router.routes.rescue();
+                    postile.router.routes.rescue(passed_route);
                 }
             }
         }
@@ -184,7 +184,7 @@ postile.router = {
 
     core:{
         /**
-         * @class route
+         * @constructor
          * A routing object. The object that the map() funciton may return
          */
         route:function(path) {

@@ -5,6 +5,7 @@ goog.require('goog.array');
 
 /**
  * Make an event handler that can be toggled on or off.
+ * @constructor
  * @param {Element} subject The dom element to attach to
  * @param {string} action Event type
  * @param {Function} handler
@@ -27,6 +28,7 @@ postile.events.EventHandler.prototype.unlisten = function() {
 
 /**
  * Event listener specialized for text editing.
+ * @constructor
  * @param {Element} subject The dom element to attach to
  * @param {Function} handler The callback function that handles content
  * change in subject.

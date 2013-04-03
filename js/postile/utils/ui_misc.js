@@ -55,8 +55,7 @@ postile.ui.stopLoading = function(target_el){
  */
 postile.ui.makeLabeledInput = function(target_el, placeholder, inactive_classname, opt_enter_handler) {
     var blurHandler = function() {
-        var trimmedHtml = goog.string.trim(target_el.innerHTML);
-        if (goog.string.isEmpty(trimmedHtml)) {
+        if (goog.string.isEmpty(target_el.innerHTML)) {
             target_el.innerHTML = placeholder;
             goog.dom.classes.add(target_el, inactive_classname);
         }

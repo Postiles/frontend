@@ -1,6 +1,6 @@
-goog.require('goog.dom.classes');
-
 goog.provide('postile.dom');
+
+goog.require('goog.dom.classes');
 
 postile.dom.getDescendantByCondition = function(element, judge) {
     var cldn = element.children;
@@ -29,13 +29,25 @@ postile.dom.getDescendantsByCondition = function(element, judge, to_return) {
     return to_return;
 }
 
+/**
+ * Find the first node in element that has className in its classes,
+ * or null if not found.
+ * @return {Element}
+ */
 postile.dom.getDescendantByClass = function(element, className) {
-    return this.getDescendantByCondition(element, function(el) { return goog.dom.classes.has(el, className); });
+    return postile.dom.getDescendantByCondition(element, function(el) {
+        return goog.dom.classes.has(el, className);
+    });
 }
 
+/**
+ * Find the element that has the given id, or null if not found.
+ * @return {Element}
+ */
 postile.dom.getDescendantById = function(element, id) {
     return this.getDescendantByCondition(element, function(el) { return el.id == id; });
 }
 
 postile.dom.setCursorPos = function(elem, caretPos) {
-}
+};
+

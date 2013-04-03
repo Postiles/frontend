@@ -31,8 +31,9 @@ postile.entry.main = function() {
 postile.entry.router_dispatch = function() {
     postile.conf.wrapper = goog.dom.getElement('wrapper');
     postile.entry.init_router_map();
-    postile.router.rescue(function() {
-        alert('router_dispatch: Bad route.');
+    postile.router.rescue(function(route) {
+        alert('router_dispatch: Bad route');
+        console.log(route);
     });
     postile.router.dispatch(window.location.pathname);
 };
