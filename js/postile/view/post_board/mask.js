@@ -33,12 +33,23 @@ postile.view.post_board.PostCreator.prototype.open = function(imgUri) {
     }
     this.board.disableMovingCanvas = true;
     this.ghost_board_el.style.display = 'block';
-    this.ghost_board_el.id ='fuckll';
+    this.ghost_board_el.id ='fll';
+
+    this.escHandler = new postile.events.EventHandler(postile.conf.getGlobalKeyHandler(), 
+            goog.events.KeyHandler.EventType.KEY, function(e) { 
+        if (e.keyCode == 27) { // esc pressed
+            this.close();
+        }
+    }.bind(this));
+
+    this.escHandler.listen();
 }
 
 postile.view.post_board.PostCreator.prototype.close = function() {
     this.ghost_board_el.style.display = 'none';
     this.board.disableMovingCanvas = false;
+
+    this.escHandler.unlisten();
 }
 
 //mouseevents for the mask
