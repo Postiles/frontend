@@ -60,8 +60,9 @@ postile.ui.makeLabeledInput = function(target_el, placeholder, inactive_classnam
     //Always delete self when on focus
     new postile.events.EventHandler(target_el, goog.events.EventType.FOCUS, function() {
         if(target_el.innerHTML == placeholder) {
-            target_el.innerHTML = '';
             goog.dom.classes.remove(target_el, inactive_classname);
+            target_el.innerHTML = ' ';
+            target_el.focus();
         }
     }).listen();
     new postile.events.EventHandler(target_el, goog.events.EventType.BLUR, blurHandler).listen();

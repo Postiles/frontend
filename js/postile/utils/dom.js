@@ -6,7 +6,7 @@ postile.dom.getDescendantByCondition = function(element, judge) {
     var cldn = element.children;
     var tried;
     for(var i in cldn) {
-        if (judge(cldn[i])) { 
+        if (judge(cldn[i])) {
             return cldn[i];
         } else {
             tried = postile.dom.getDescendantByCondition(cldn[i], judge);
@@ -20,7 +20,7 @@ postile.dom.getDescendantsByCondition = function(element, judge, to_return) {
     var cldn = element.children;
     if (!to_return) { to_return = new Array(); }
     for(var i in cldn) {
-        if (judge(cldn[i])) { 
+        if (judge(cldn[i])) {
             to_return.push(cldn[i]);
         } else {
             postile.dom.getDescendantsByCondition(cldn[i], judge, to_return);
@@ -35,4 +35,7 @@ postile.dom.getDescendantByClass = function(element, className) {
 
 postile.dom.getDescendantById = function(element, id) {
     return this.getDescendantByCondition(element, function(el) { return el.id == id; });
+}
+
+postile.dom.setCursorPos = function(elem, caretPos) {
 }
