@@ -291,15 +291,18 @@ postile.view.post_in_board.Post.prototype.post_icon_container_init = function() 
             goog.dom.appendChild(like_icon, new_like_icon);
             goog.dom.appendChild(instance.likes_count_el, new_counts);
 
-            new postile.fx.Animate(function(i){ 
+            new postile.fx.Animate(function(i) {
                 new_like_icon.style.clip = 'rect('+Math.round(13*(1-i))+'px 13px 13px 0px)';
                 new_counts.style.top = - Math.round(13 * i) + 'px';
-            }, 400, postile.fx.ease.cubic_ease_out, function() {
-                goog.dom.classes.remove(like_icon, 'post_like_icon');
-                goog.dom.classes.add(like_icon, 'post_liked_icon');
-                goog.dom.removeNode(new_like_icon);
-                goog.dom.removeNode(new_counts);
-                instance.likes_count_el.innerHTML = instance.like_count;
+            }, 400, {
+                ease: postile.fx.ease.cubic_ease_out,
+                callback: goog.bind(function() {
+                    goog.dom.classes.remove(like_icon, 'post_like_icon');
+                    goog.dom.classes.add(like_icon, 'post_liked_icon');
+                    goog.dom.removeNode(new_like_icon);
+                    goog.dom.removeNode(new_counts);
+                    this.likes_count_el.innerHTML = this.like_count;
+                }, this)
             });
 
             postile.ajax([ 'post', 'like' ], { post_id: instance.post.id }, function(data) {

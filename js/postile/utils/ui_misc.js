@@ -25,9 +25,12 @@ postile.ui.load = function (target_el, source_url) {
 postile.ui.startLoading = function(target_el) {
     target_el._postile_spinner_wrap = goog.dom.createDom('div', 'busy_wrap');
     target_el._postile_spinner = goog.dom.createDom('div', 'busy');
-    target_el._postile_spinner_animation = new postile.fx.Animate(function(i){
-        postile.conf.useragent.setCss(target_el._postile_spinner, 'transform', 'rotate('+Math.floor(i*12)*30+'deg)');
-    }, 1600, null, null, postile.fx.modes.FOREVER_REPEAT);
+    target_el._postile_spinner_animation = new postile.fx.Animate(function(i) {
+        postile.conf.useragent.setCss(target_el._postile_spinner,
+            'transform', 'rotate(' + Math.floor(i * 12) * 30 + 'deg)');
+    }, 1600, {
+        mode: postile.fx.Mode.FOREVER_REPEAT
+    });
     goog.dom.appendChild(target_el._postile_spinner_wrap, target_el._postile_spinner);
     goog.dom.appendChild(target_el, target_el._postile_spinner_wrap);
 }

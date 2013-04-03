@@ -67,24 +67,28 @@ postile.view.post_board.MouseMoveScroll.prototype.viewport_mouseup = function(e)
     var total = Math.max(Math.abs(this.shadowCoord[0]),Math.abs(this.shadowCoord[1]));
 
     if (this.shadowCoord[0] || this.shadowCoord[1]) {
-        post_board.canva_shadow_animation = new postile.fx.Animate(function(i) {
+        var iterFunc = function(i) {
             var now = i * total;
 
             if (init[0] < 0) { 
-                instance.shadowCoord[0] = now > -init[0] ? 0 : init[0] + now; 
+                this.shadowCoord[0] = now > -init[0] ? 0 : init[0] + now; 
             } else if (init[0] > 0) { 
-                instance.shadowCoord[0] = now > init[0] ? 0 : init[0] - now; 
+                this.shadowCoord[0] = now > init[0] ? 0 : init[0] - now; 
             }
 
             if (init[1] < 0) { 
-                instance.shadowCoord[1] = now > -init[1] ? 0 : init[1] + now; 
+                this.shadowCoord[1] = now > -init[1] ? 0 : init[1] + now; 
             }
             else if (init[1] > 0) { 
-                instance.shadowCoord[1] = now > init[1] ? 0 : init[1] - now; 
+                this.shadowCoord[1] = now > init[1] ? 0 : init[1] - now; 
             }
 
-            instance.canvasOutBoundAnimation();
-        }, 800, postile.fx.ease.cubic_ease_out);
+            this.canvasOutBoundAnimation();
+        };
+        post_board.canva_shadow_animation = new postile.fx.Animate(
+            goog.bind(iterFunc, this), 800, {
+                ease: postile.fx.ease.cubic_ease_out
+            });
     }
 
     //update display status of dirction control arrows

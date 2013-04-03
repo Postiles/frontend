@@ -12,8 +12,14 @@ postile.locale.en.text = {
 };
 
 postile.locale.en.date = {
-    _month_constant: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-    inline: function(date_obj) { return date_obj.getHours() + ':' + goog.string.padNumber(date_obj.getMinutes(), 2) + ' ' + this._month_constant[date_obj.getMonth()] + ' ' + date_obj.getDate(); }
+    _month_constant: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+    inline: function(date_obj) {
+        return date_obj.getHours() + ':' +
+               goog.string.padNumber(date_obj.getMinutes(), 2) + ' ' +
+               postile.locale.en.date._month_constant[date_obj.getMonth()] +
+               ' ' + date_obj.getDate();
+    }
 }
 
 postile.locale.zh_CN.text = {

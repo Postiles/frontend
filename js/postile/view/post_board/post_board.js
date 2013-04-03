@@ -90,12 +90,15 @@ postile.view.post_board.handlers.arrow_control_mouseover = function(e) {
 
     hover.style[css_name] = '-40px';
 
-    this.parentNode.rel_data.direction_controllers_animation = new postile.fx.Animate(function(iter) { 
-        hover.style[css_name] = 40-40*iter + 'px'; }, 
-        500, 
-        false, 
-        function() { 
-            hover.parentNode.style.display = 'none'; rel_data.preMoveCanvas(direction); 
+    this.parentNode.rel_data.direction_controllers_animation =
+        new postile.fx.Animate(function(iter) { 
+            hover.style[css_name] = 40 - 40 * iter + 'px';
+        }, 
+        500, {
+            callback: function() { 
+                hover.parentNode.style.display = 'none';
+                rel_data.preMoveCanvas(direction);
+            }
         });
 }
 
@@ -612,16 +615,19 @@ postile.view.post_board.PostBoard.prototype.locateCanvas = function(
         }
 
         new postile.fx.Animate(function(iter) {
-           instance.viewport.scrollLeft = - (instance.canvasCoord[0]*(1-iter) + leftTarget*iter);
-           instance.viewport.scrollTop = - (instance.canvasCoord[1]*(1-iter) + topTarget*iter);
-        }, 600, postile.fx.ease.sin_ease, function() {
-            instance.canvasCoord[0] = leftTarget;
-            instance.canvasCoord[1] = topTarget;
-            var i;
-            instance.disableMovingCanvas = false;
-            for (i in instance.direction_controllers) {
-                if (!arrow_hide[i]) {
-                    instance.direction_controllers[i].style.display = 'block';
+           instance.viewport.scrollLeft = - (instance.canvasCoord[0] * (1 - iter) + leftTarget * iter);
+           instance.viewport.scrollTop = - (instance.canvasCoord[1] * (1 - iter) + topTarget * iter);
+        }, 600, {
+            ease: postile.fx.ease.sin_ease,
+            callback: function() {
+                instance.canvasCoord[0] = leftTarget;
+                instance.canvasCoord[1] = topTarget;
+                var i;
+                instance.disableMovingCanvas = false;
+                for (i in instance.direction_controllers) {
+                    if (!arrow_hide[i]) {
+                        instance.direction_controllers[i].style.display = 'block';
+                    }
                 }
             }
         });

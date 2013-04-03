@@ -37,15 +37,18 @@ postile.view.post_board.PostPicker.prototype.close = function() {
         instance.all_lkd_el[instance.active_post.post.id] = instance.lkd_el;
         var width = instance.lkd_el.offsetWidth;
     }
-    new postile.fx.Animate(function(i){
+    new postile.fx.Animate(function(i) {
         instance.ghost_board_el.style.backgroundColor = 'rgba(0, 0, 0, '+(0.3 * (1 - i))+')';
         if (instance.lkd_el) { instance.lkd_el.style.clip = 'rect('+Math.round(21*(1-i))+'px '+width+'px 21px 0px)'; }
-    }, 400, postile.fx.ease.cubic_ease_out, function() {
-        goog.dom.appendChild(instance.board.canvas, instance.permanent_post.wrap_el);
-        instance.ghost_board_el.style.display = 'none';
-        instance.done_callback(instance.active_post);
-        instance.demote();
-        instance.lkd_el = null;
+    }, 400, {
+        ease: postile.fx.ease.cubic_ease_out,
+        callback: function() {
+            goog.dom.appendChild(instance.board.canvas, instance.permanent_post.wrap_el);
+            instance.ghost_board_el.style.display = 'none';
+            instance.done_callback(instance.active_post);
+            instance.demote();
+            instance.lkd_el = null;
+        }
     });
 }
 

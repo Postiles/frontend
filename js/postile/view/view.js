@@ -139,7 +139,9 @@ postile.view.PopView.prototype.open = function(opt_width) {
 
     goog.dom.appendChild(document.body, this.mask);
     postile.fx.effects.resizeIn(this.container);
-    postile.fx.Animate(function(i) { this.mask.style.opacity = i; }.bind(this), 400);
+    postile.fx.Animate(function(i) {
+        this.mask.style.opacity = i;
+    }.bind(this), 400);
 
     // Create a binded function for removing events
     this.esc = this.escPressed.bind(this);

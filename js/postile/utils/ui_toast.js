@@ -53,7 +53,11 @@ postile.toast.Toast = function(duration, text, callbacks, color) {
         window.setTimeout(function() {
             new postile.fx.Animate(function(iter) {
                 instance.instance_el.style.opacity = 1 - iter;
-            }, 1000, null, function() { goog.dom.removeNode(instance.line_el); });
+            }, 1000, {
+                callback: function() {
+                    goog.dom.removeNode(instance.line_el);
+                }
+            });
         }, duration*1000);
     }
 }
