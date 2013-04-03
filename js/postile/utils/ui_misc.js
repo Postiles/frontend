@@ -3,6 +3,7 @@ goog.provide('postile.ui');
 goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('goog.dom.classes');
+goog.require('goog.string');
 goog.require('postile.fx');
 goog.require('postile.conf.useragent');
 
@@ -54,7 +55,8 @@ postile.ui.stopLoading = function(target_el){
  */
 postile.ui.makeLabeledInput = function(target_el, placeholder, inactive_classname, opt_enter_handler) {
     var blurHandler = function() {
-        if(!postile.string.stripString(target_el.innerHTML).length) {
+        var trimmedHtml = goog.string.trim(target_el.innerHTML);
+        if (goog.string.isEmpty(trimmedHtml)) {
             target_el.innerHTML = placeholder;
             goog.dom.classes.add(target_el, inactive_classname);
         }
