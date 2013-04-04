@@ -278,8 +278,13 @@ postile.view.post_in_board.Post.prototype.post_icon_container_init = function() 
     if (instance.liked_user.indexOf(parseInt(localStorage.postile_user_id)) != -1) { // already liked
         goog.dom.classes.remove(instance.likeButton_el, 'post_like_icon');
         goog.dom.classes.add(instance.likeButton_el, 'post_liked_icon');
-    } else {
-        goog.events.listen(instance.likeButton_el, goog.events.EventType.CLICK, function() {
+    }
+    goog.events.listen(instance.likeButton_el, goog.events.EventType.CLICK, function() {
+        if(instance.liked_user.indexOf(parseInt(localStorage.postile_user_id))!=-1) {
+            console.log('liked!');
+            return;
+        }else{
+            instance.liked_user.push(parseInt(localStorage.postile_user_id));
             var like_icon = instance.likeButton_el;
             var new_like_icon = goog.dom.createDom('div', 'post_liked_icon');
             var new_counts = goog.dom.createDom('div', 'post_like_new_count');
@@ -302,15 +307,15 @@ postile.view.post_in_board.Post.prototype.post_icon_container_init = function() 
                     goog.dom.classes.add(like_icon, 'post_liked_icon');
                     goog.dom.removeNode(new_like_icon);
                     goog.dom.removeNode(new_counts);
-                    this.likes_count_el.innerHTML = this.like_count;
+                    instance.likes_count_el.innerHTML = instance.like_count;
                 }, this)
             });
 
             postile.ajax([ 'post', 'like' ], { post_id: instance.post.id }, function(data) {
-                // seems nothing to do
+                console.log(data);
             });
-        });
-    }
+        }
+    });
 
     this.likes_count_el = goog.dom.createDom("div", "post_like_count");
     goog.dom.appendChild(instance.post_icon_container_el, this.likes_count_el);
