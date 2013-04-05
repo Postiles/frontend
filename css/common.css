@@ -14,6 +14,7 @@ html, body, #wrapper {
 }
  
 ::-webkit-scrollbar-track {
+    border-radius: 2px;
     -webkit-box-shadow: inset 0 0 3px rgba(0,0,0,0.3); 
 }
  
@@ -21,6 +22,10 @@ html, body, #wrapper {
     border-radius: 4px;
     background: rgba(0, 0, 0, 0.2);
     -webkit-box-shadow: inset 0 0 4px rgba(0,0,0,0.5); 
+}
+
+.clear {
+    clear: both;
 }
 
 /*

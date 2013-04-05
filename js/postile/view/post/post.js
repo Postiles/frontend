@@ -101,5 +101,6 @@ postile.view.post.PostExpand.prototype.renderComment = function(cmt) {
         var content_el = goog.dom.createDom('div', 'content');
         goog.dom.appendChild(commentRight_el, content_el);
         content_el.innerHTML = cmt.content;
+        
     }.bind(this));
 }

@@ -80,26 +80,25 @@
         overflow: auto; }
         .post-expand .container .right .comment-container .comment {
           margin-top: 5px;
-          display: table;
-          width: inherit;
+          width: 100%;
+          position: relative;
           background: #ecf0fd; }
           .post-expand .container .right .comment-container .comment .profile-image {
             margin: 3px;
-            float: left;
             width: 50px;
+            position: absolute;
             height: 50px; }
             .post-expand .container .right .comment-container .comment .profile-image img {
               width: inherit;
               height: inherit; }
           .post-expand .container .right .comment-container .comment .comment-right {
-            margin: 0 10px;
-            width: 260px;
-            float: left;
-            padding-top: 4px; }
+            padding: 4px 10px 4px 66px;
+            box-sizing: border-box;
+            width: 100%;
+            }
             .post-expand .container .right .comment-container .comment .comment-right .username {
               color: #024d62;
               font-size: 11pt; }
             .post-expand .container .right .comment-container .comment .comment-right .content {
               margin-top: 2px;
-              width: 260px;
               font-size: 10pt; }

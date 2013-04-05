@@ -575,7 +575,7 @@ html, body {
   margin-left: 10px;
   width: 220px;
   max-height: 300px;
-  overflow-y: scroll;
+  overflow-y: auto;
   background: #c8e5ed; }
 
 
