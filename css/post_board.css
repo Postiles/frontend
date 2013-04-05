@@ -651,6 +651,16 @@ html, body {
   top: 0;
   background-color: rgba(0, 0, 0, 0.3); } /* the magic number is also referneced in postile.view.post_board.post_picker */
 
+.mask_hint {
+  color: #FFF;
+  position: fixed;
+  left: 20px;
+  bottom: 20px;
+  font-size: 20px;
+  line-height: 20px;
+  height: 20px;
+}
+  
 .post_preview {
   position: absolute;
   background-size: cover;

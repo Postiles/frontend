@@ -12,10 +12,14 @@ postile.view.post_board.PostPicker = function(post_board_obj) {
     this.lkd_el = null;
     this.done_callback = null;
     this.ghost_board_el = goog.dom.createDom('div', 'canvas_mask');
-    this.all_lkd_el = {};
+    this.hint_el = goog.dom.createDom('div', 'mask_hint');
+    this.hint_el.innerHTML = postile._('mask_for_picking_post');
     instance.ghost_board_el.style.display = 'none';
+    instance.hint_el.style.display = 'none';
+    this.all_lkd_el = {};
     this.mvListener = new postile.events.EventHandler(this.ghost_board_el, goog.events.EventType.MOUSEMOVE, function(e){ instance.mmHandler(e) });
     this.clkListener = new postile.events.EventHandler(this.ghost_board_el, goog.events.EventType.CLICK, function(e){ e.stopPropagation(); instance.clkHandler(); }, true);
+    goog.dom.appendChild(this.ghost_board_el, this.hint_el);
     goog.dom.appendChild(this.board.canvas, this.ghost_board_el);
 }
 
@@ -24,6 +28,7 @@ postile.view.post_board.PostPicker.prototype.open = function(dcb, post) {
     this.permanent_post = post;
     this.ghost_board_el.style.display = 'block';
     this.ghost_board_el.style.backgroundColor = 'rgba(0, 0, 0, 0.3)';
+    this.hint_el.style.display = 'block';
     this.mvListener.listen();
     this.clkListener.listen();
     goog.dom.appendChild(this.ghost_board_el, post.wrap_el);
@@ -33,6 +38,7 @@ postile.view.post_board.PostPicker.prototype.close = function() {
     var instance = this;
     this.mvListener.unlisten();
     this.clkListener.unlisten();
+    this.hint_el.style.display = 'none';
     if (instance.lkd_el) {
         instance.all_lkd_el[instance.active_post.post.id] = instance.lkd_el;
         var width = instance.lkd_el.offsetWidth;

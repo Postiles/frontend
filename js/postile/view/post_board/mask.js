@@ -8,11 +8,15 @@ postile.view.post_board.PostCreator = function(post_board_obj) {
     this.board = post_board_obj;
     this.imageMode = false;
     this.ghost_board_el = goog.dom.createDom('div', 'canvas_mask');
+    this.hint_el = goog.dom.createDom('div', 'mask_hint');
+    this.hint_el.innerHTML = postile._('mask_for_creating_post');
     instance.ghost_board_el.style.display = 'none';
+    instance.hint_el.style.display = 'none';
     this.preview = goog.dom.createDom('div', 'post_preview');
     goog.dom.appendChild(this.ghost_board_el, this.preview);
     this.post_preview_origin_spot = goog.dom.createDom('div', 'post_preview_origin_spot');
     goog.dom.appendChild(this.ghost_board_el, this.post_preview_origin_spot);
+    goog.dom.appendChild(this.ghost_board_el, this.hint_el);
     goog.dom.appendChild(this.board.canvas, this.ghost_board_el);
     goog.events.listen(this.ghost_board_el, goog.events.EventType.DBLCLICK, function(e) { e.stopPropagation(); instance.close(); });
     goog.events.listen(this.ghost_board_el, goog.events.EventType.MOUSEDOWN, function(e) { e.stopPropagation(); instance.mousedown(e); });
@@ -33,7 +37,7 @@ postile.view.post_board.PostCreator.prototype.open = function(imgUri) {
     }
     this.board.disableMovingCanvas = true;
     this.ghost_board_el.style.display = 'block';
-    this.ghost_board_el.id ='fll';
+    this.hint_el.style.display = 'block';
 
     this.escHandler = new postile.events.EventHandler(postile.conf.getGlobalKeyHandler(), 
             goog.events.KeyHandler.EventType.KEY, function(e) { 
@@ -47,6 +51,7 @@ postile.view.post_board.PostCreator.prototype.open = function(imgUri) {
 
 postile.view.post_board.PostCreator.prototype.close = function() {
     this.ghost_board_el.style.display = 'none';
+    this.hint_el.style.display = 'none';
     this.board.disableMovingCanvas = false;
 
     this.escHandler.unlisten();
