@@ -1,8 +1,3 @@
-/*
-For popup.
-MIC: postile.view
-*/
-
 html, body, #wrapper {
 	padding: 0;
 	margin: 0;
@@ -12,6 +7,26 @@ html, body, #wrapper {
 * {
     outline: none !important;
 }
+
+::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+}
+ 
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 3px rgba(0,0,0,0.3); 
+}
+ 
+::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.2);
+    -webkit-box-shadow: inset 0 0 4px rgba(0,0,0,0.5); 
+}
+
+/*
+For popup.
+MIC: postile.view
+*/
 
 .pop_mask {
     /* IE9 SVG, needs conditional override of 'filter' to 'none' */

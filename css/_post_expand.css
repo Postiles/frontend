@@ -19,7 +19,7 @@
       padding-top: 30px; }
       .post-expand .container .left .left-container {
         box-shadow: 0px 10px 40px -25px #888888 inset, 0px -10px 40px -25px #888888 inset;
-        overflow: scroll; }
+        overflow: auto; }
         .post-expand .container .left .left-container .title {
           margin-top: 20px;
           font-size: 15pt;
@@ -77,7 +77,7 @@
         width: inherit;
         margin-top: 10px;
         height: 320px;
-        overflow: scroll; }
+        overflow: auto; }
         .post-expand .container .right .comment-container .comment {
           margin-top: 5px;
           display: table;

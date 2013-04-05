@@ -706,7 +706,7 @@ postile.view.post_in_board.InlineCommentsBlock = function(postObj) {
         instance.open(postile.dom.getDescendantByClass(postObj.container_el, 'post_comment_icon'), postObj.wrap_el);
         instance.container.style.left = '18px';
         instance.container.style.top = '-12px'; //magic number based on 目测
-        // postObj.wrap_el.style.zIndex = (++postObj.board.maxZIndex);
+        postObj.wrap_el.style.zIndex = (++postObj.board.maxZIndex);
     });
 }
 
