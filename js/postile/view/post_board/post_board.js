@@ -194,8 +194,6 @@ postile.view.post_board.PostBoard = function(board_id) {
 
     var instance = this;
     
-    window.pb = this;
-
     postile.view.FullScreenView.call(this);
 
     /** @private */

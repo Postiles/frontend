@@ -189,7 +189,9 @@ postile.view.notification.InfoItem.prototype.render = function(parent, data, fro
     goog.dom.appendChild(this.notificationTitle, this.targetPost);
 
     goog.events.listen(this.targetPost, goog.events.EventType.CLICK, function(){
-        window.pb.moveToPost(targetId);
+        if (postile.router.current_view instanceof postile.view.post_board.PostBoard) {
+            postile.router.current_view.moveToPost(targetId);
+        }
     }.bind(this));
 
     /* footer part */
