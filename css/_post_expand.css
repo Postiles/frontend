@@ -4,15 +4,13 @@
   position: relative;
   padding: 0px;
   margin: 0px;
-  height: 500px;
   background: whitesmoke;
   font-family: RobotoRegular;
   z-index: 300;
   box-shadow: 0px 0px 20px #024d62; }
   .post-expand .container {
     margin: 0 auto;
-    width: 800px;
-    height: 100%; }
+    width: 800px; }
     .post-expand .container .left {
       float: left;
       width: 400px;
@@ -35,15 +33,16 @@
     .post-expand .container .right {
       float: left;
       margin-left: 60px;
+      padding: 30px 0;
       width: 340px; }
       .post-expand .container .right .comment-box {
+        position: relative;
         width: inherit; }
         .post-expand .container .right .comment-box .caret {
-          position: relative;
-          top: 30px;
+          position: absolute;
           left: -16px;
-          margin-top: 6px;
           width: 0;
+          top: 6px;
           height: 0;
           border-top: 12px solid transparent;
           border-right: 16px solid #024d62;
@@ -83,6 +82,9 @@
           width: 100%;
           position: relative;
           background: #ecf0fd; }
+          .post-expand .container .right .comment-container .comment:first-child {
+            margin-top: 0; /* no top margin for the first one */
+          }
           .post-expand .container .right .comment-container .comment .profile-image {
             margin: 3px;
             width: 50px;

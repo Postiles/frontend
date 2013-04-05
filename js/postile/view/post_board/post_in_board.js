@@ -341,16 +341,16 @@ postile.view.post_in_board.Post.prototype.comment_preview_init = function() {
     goog.dom.appendChild(this.comment_preview_el, this.comment_preview_author_el);
 
     // middle: displays ": " after username
-    this.comment_preview_midlle_el = goog.dom.createDom('span', 'comment_preview_midlle');
-    goog.dom.appendChild(this.comment_preview_el, this.comment_preview_midlle_el);
+    this.comment_preview_middle_el = goog.dom.createDom('span');
+    goog.dom.appendChild(this.comment_preview_el, this.comment_preview_middle_el);
 
     // author
     this.comment_preview_author_el = goog.dom.createDom('span', 'comment_preview_author');
     goog.dom.appendChild(this.comment_preview_el, this.comment_preview_author_el);
 
     // middle: displays ": " after username
-    this.comment_preview_midlle_el = goog.dom.createDom('span', 'comment_preview_midlle');
-    goog.dom.appendChild(this.comment_preview_el, this.comment_preview_midlle_el);
+    this.comment_preview_middle_el = goog.dom.createDom('span', 'comment_preview_midlle');
+    goog.dom.appendChild(this.comment_preview_el, this.comment_preview_middle_el);
 
     // content
     this.comment_preview_content_el = goog.dom.createDom('span', 'comment_preview_content');
@@ -359,7 +359,7 @@ postile.view.post_in_board.Post.prototype.comment_preview_init = function() {
     if (this.inline_comments && this.inline_comments.length > 0) { // at least one comment
         goog.dom.appendChild(this.post_bottom_el, this.comment_preview_el);
 
-        this.comment_preview_midlle_el.innerHTML = ': ';
+        this.comment_preview_middle_el.innerHTML = ': ';
 
         var index = this.inline_comments.length - 1; // display latest comment
 
@@ -429,7 +429,7 @@ postile.view.post_in_board.Post.prototype.resetCommentPreview = function(data) {
 
         postile.data_manager.getUserData(data.inline_comment.creator_id, function(userData) {
             instance.comment_preview_author_el.innerHTML = userData.username;
-            instance.comment_preview_midlle_el.innerHTML = ': '; // in case there was no comment before
+            instance.comment_preview_middle_el.innerHTML = ': '; // in case there was no comment before
             instance.comment_preview_content_el.innerHTML = data.inline_comment.content;
             instance.set_max_displayable_comment_preview(data.inline_comment.content);
 

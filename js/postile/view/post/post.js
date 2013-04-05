@@ -41,7 +41,7 @@ postile.view.post.PostExpand = function(data) {
     this.initComments();
     this.addCloseButton(this.post_el);
 
-    this.open(1165);
+    this.open(880);
 }
 
 goog.inherits(postile.view.post.PostExpand, postile.view.PopView);
