@@ -185,12 +185,16 @@ postile.view.post_board.handlers.keypress = function(instance, e) {
  * @param {string} board_id Unique identifier for a board.
  */
 postile.view.post_board.PostBoard = function(board_id) {
+    console.log(board_id);
+
     var i;
 
     /** @deprecated Dead code */
     var keyHandler;
 
     var instance = this;
+    
+    window.pb = this;
 
     postile.view.FullScreenView.call(this);
 
@@ -555,9 +559,10 @@ postile.view.post_board.PostBoard.prototype.preMoveCanvas = function(direction) 
  * @param {number} pid The post id to move to.
  */
 postile.view.post_board.PostBoard.prototype.moveToPost = function(pid) {
+    var instance = this;
     var doFunc = function() {
-        var p = this.currentPosts[pid].post;
-        this.locateCanvas(-(this.xPosTo(p.pos_x) + this.widthTo(p.span_x) / 2 - this.viewport.offsetWidth / 2), -(this.yPosTo(p.pos_y) + this.heightTo(p.span_y) / 2 - this.viewport.offsetHeight / 2));
+        var p = instance.currentPosts[pid].post;
+        instance.locateCanvas(-(instance.xPosTo(p.pos_x) + instance.widthTo(p.span_x) / 2 - instance.viewport.offsetWidth / 2), -(instance.yPosTo(p.pos_y) + instance.heightTo(p.span_y) / 2 - instance.viewport.offsetHeight / 2));
     };
     if (pid in this.currentPosts) {
         doFunc();
@@ -823,7 +828,8 @@ postile.view.post_board.PostBoard.prototype.renderArray = function(array) {
 postile.view.post_board.PostBoard.prototype.renderById = function(pid, callback) {
     var instance = this;
     postile.ajax(['post', 'get_post'], { post_id: pid }, function(r) {
-        instance.renderArray([r.message.post]);
+        if (r.message.post.board_id != instance.board_id) { alert("The post you're attempting to render is NOT in current board!"); return; }
+        instance.renderArray([r.message]);
         callback();
     });
 }

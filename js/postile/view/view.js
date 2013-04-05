@@ -51,13 +51,6 @@ directly set "container.style.left" and "container.style.top" to further offset 
 postile.loaded_stylesheets = {};
 
 /**
- * The current active FullScreenView. Will be destroyed when another
- * FullScreenView is activated.
- * @type {postile.view.FullScreenView}
- */
-postile.current_full_screen = null;
-
-/**
  * "Do not use this class directly."
  * @abstract
  * @constructor
@@ -181,17 +174,15 @@ postile.view.PopView.prototype.escPressed = function(e) {
 }
 
 /**
- * Larger than PopView since it's full screen. The number of concurrently
- * activated view is limited to one.
+ * Do NOT call a constructor of a FullScreenView directly. use postile.router.dispatch instead
  * Known subclasses are login screen and post board.
  * @constructor
  */
 postile.view.FullScreenView = function() {
-    if (postile.current_full_screen && postile.current_full_screen.close) {
+    if (postile.current_view && postile.current_view.close) {
         // Destruct the original fullscreenview
-        postile.current_full_screen.close();
+        postile.current_view.close();
     }
-    postile.current_full_screen = this;
     goog.base(this);
     this.container = document.body;
     postile.ui.load(this.container, this.html_segment);

@@ -11,17 +11,25 @@ goog.require('goog.events.KeyHandler');
  * Static functions and configurations
  */
 postile.conf = {
-    dhost: window.location.hostname,
-    dport: 3000,
-    fayeLocation: null,
+
+    dhost: 'www.postiles.com',
+    
+    dport: 300,
+    
+    fayeLocation: 'http://www.postiles.com:9292/faye',
+    
     wrapper: null,
+    
     error_log: [],
+    
     staticResource: function(input) {
         return "/templates/" + input.join("/");
     },
+    
     dynamicResource: function(input) {
         return "http://"+postile.conf.dhost+":"+postile.conf.dport+"/"+input.join("/");
     },
+    
     uploadsResource: function(input) {
         return "http://"+postile.conf.dhost.replace('www', 'static-uploads')+"/"+input.join("/"); // kind of hack
     },
@@ -38,12 +46,14 @@ postile.conf = {
     imageResource: function(input) {
         return "/images/" + input.join("/");
     },
+    
     getGlobalKeyHandler: function() {
         if(!postile.conf.getGlobalKeyHandler.handler) {
             postile.conf.getGlobalKeyHandler.handler = new goog.events.KeyHandler(document);
         }
         return postile.conf.getGlobalKeyHandler.handler;
     },
+    
     logError: function(e) {
         var err = e.getBrowserEvent();
         if (postile.conf.error_log.length > 40) {
@@ -54,7 +64,23 @@ postile.conf = {
             filename: err.filename,
             message: err.message
         });
+    },
+    
+    initDbgConfiguration: function() {
+        if ('postile_debug_dhost' in localStorage) {
+            postile.conf.dhost = localStorage["postile_debug_dhost"];
+        }
+        if ('postile_debug_dport' in localStorage) {
+            postile.conf.dport = localStorage["postile_debug_dport"];
+        }
+        if ('postile_debug_faye' in localStorage) {
+            postile.conf.fayeLocation = localStorage["postile_debug_faye"];
+        }
+        if ('postile_debug_locale' in localStorage) {
+            goog.locale.setLocale(localStorage["postile_debug_locale"]);
+        }
     }
+    
 };
 
 postile.conf.getGlobalKeyHandler.handler = null;

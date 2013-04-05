@@ -48,6 +48,3 @@ postile.dom.getDescendantById = function(element, id) {
     return this.getDescendantByCondition(element, function(el) { return el.id == id; });
 }
 
-postile.dom.setCursorPos = function(elem, caretPos) {
-};
-

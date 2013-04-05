@@ -20,6 +20,7 @@ goog.require('postile.feedback');
 postile.entry.main = function() {
     goog.events.listen(window, goog.events.EventType.LOAD, function() {
         goog.events.listen(window, goog.events.EventType.ERROR, postile.conf.logError);
+        postile.entry.init_router_map();
         postile.conf.useragent.load(postile.entry.router_dispatch);
     });
 };
@@ -29,13 +30,8 @@ postile.entry.main = function() {
  * Originally known as postile.init.
  */
 postile.entry.router_dispatch = function() {
-    postile.conf.wrapper = goog.dom.getElement('wrapper');
-    postile.entry.init_router_map();
-    postile.router.rescue(function(route) {
-        alert('router_dispatch: Bad route');
-        console.log(route);
-    });
-    postile.router.dispatch(window.location.pathname);
+    postile.conf.initDbgConfiguration();
+    postile.router.init();
 };
 
 
@@ -44,10 +40,9 @@ postile.entry.router_dispatch = function() {
  * Originally known as postile.router_map.
  */
 postile.entry.init_router_map = function() {
-    postile.router.map('/test/:id/:port').to(function(){
-        window.location.href = '/test/'+this.params["id"]+'/'+window.location.hostname+'/'+this.params["port"];
-    });
-
+    postile.router.map['board'] = postile.view.post_board.PostBoard;
+    postile.router.map['login'] = postile.view.login.LoginView;
+    /*
     postile.router.map('/test/:id/:domain/:port').to(function(){
         postile.conf.dhost = this.params["domain"];
         postile.conf.dport = this.params["port"];
@@ -82,6 +77,7 @@ postile.entry.init_router_map = function() {
     postile.router.map('/renrenlogin').to(function() {
         postile.ui.load(document.body, postile.conf.staticResource(['renren_test.html']));
     });
+    */
 };
 
 goog.exportSymbol('postile.entry.main', postile.entry.main);

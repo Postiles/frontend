@@ -189,14 +189,7 @@ postile.view.notification.InfoItem.prototype.render = function(parent, data, fro
     goog.dom.appendChild(this.notificationTitle, this.targetPost);
 
     goog.events.listen(this.targetPost, goog.events.EventType.CLICK, function(){
-        console.log("clicked");
-        console.log(targetId);
-        postile.ajax([ 'post', 'get_post' ], {'post_id': targetId}, function(data) {
-            var post_x = data.post.pos_x;
-            var post_y = data.post.pos_y;
-            // TODO provide a link to the post
-            // Move to seems not returning 
-        });
+        window.pb.moveToPost(targetId);
     }.bind(this));
 
     /* footer part */
