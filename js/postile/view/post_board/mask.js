@@ -7,6 +7,7 @@ postile.view.post_board.PostCreator = function(post_board_obj) {
     var instance = this;
     this.board = post_board_obj;
     this.imageMode = false;
+    this.videoMode = false;
     this.ghost_board_el = goog.dom.createDom('div', 'canvas_mask');
     this.hint_el = goog.dom.createDom('div', 'mask_hint');
     this.hint_el.innerHTML = postile._('mask_for_creating_post');
@@ -24,7 +25,7 @@ postile.view.post_board.PostCreator = function(post_board_obj) {
     goog.events.listen(this.ghost_board_el, goog.events.EventType.MOUSEUP, function(e) { e.stopPropagation(); instance.mouseup(e); });
 }
 
-postile.view.post_board.PostCreator.prototype.open = function(imgUri) {
+postile.view.post_board.PostCreator.prototype.open = function(imgUri, videoUri) {
     if(this.board.disableMovingCanvas) { 
         return; 
     }
@@ -35,6 +36,12 @@ postile.view.post_board.PostCreator.prototype.open = function(imgUri) {
         this.imageMode = false;
         this.preview.style.backgroundImage = 'none';
     }
+
+    if(videoUri){
+        this.videoMode = true;
+        this.videoUri = videoUri;
+    }
+
     this.board.disableMovingCanvas = true;
     this.ghost_board_el.style.display = 'block';
     this.hint_el.style.display = 'block';
@@ -146,6 +153,21 @@ postile.view.post_board.PostCreator.prototype.mouseup = function(e){
     }
     this.legal = false;
     this.new_post_start_coord_in_px = null;
+
+    if(this.videoMode){
+        this.videoMode = false;
+        var width = this.position.span_x;
+        // Hight of header in a post
+        height_of_header = 20;
+        var height = this.position.span_y - height_of_header;
+
+        // TODO modify the createPost function for image and video.
+    }
+
     this.board.createPost(this.position);
+
+
+
+
     this.close();
 };

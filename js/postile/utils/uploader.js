@@ -3,7 +3,7 @@ goog.provide('postile.uploader');
 goog.require('postile.ajax');
 //goog.require('postile.fx');
 goog.require('goog.dom');
-//goog.require('postile.view.image_upload');
+goog.require('postile.view.image_upload');
 
 
 /* How to handle these global variables ? */
@@ -30,19 +30,29 @@ postile.uploader.dragUpload = function(evt){
         // handling the upload event
         postile.uploader.formData = null;
   	    var file = files[0]; // get the photo
-        postile.uploader.formData = postile.uploader.tests.formdata ? new FormData() : null;
+        postile.uploader.formData = new FormData() ;
         postile.uploader.formData.append('image', file); // NOTICE: always use "image" as the name, need to change
         // TODO: Give Feedback to the user 
+
+        console.log(postile.uploader.formData);
 
         postile.uploader.submit();
     }
 };
 
+postile.uploader.setUploadPath = function(upload_path) {
+
+}
+
 
 postile.uploader.clickUpload = function(instance_el) {
     var files = instance_el.files;
-    postile.uploader.formData = postile.uploader.tests.formdata ? new FormData() : null;
+    console.log(files[0]);
+    postile.uploader.formData =  new FormData();
     postile.uploader.formData.append('image', files[0]);
+    postile.uploader.formData.append('upload_path', postile.uploader.upload_path);
+
+    console.log(postile.uploader.formData);
 
     postile.uploader.submit();
 }
@@ -72,11 +82,24 @@ postile.uploader.iframeUpload = function(){ // How to call this function?
     
     // This function is for drog only
 postile.uploader.submit = function(){ //  TODO check if browser is good
+
+    if(postile.uploader.upload_path == null){
+        console.log("error, no upload_path specified");
+    }
+    postile.uploader.formData.append('upload_path', postile.uploader.upload_path);
+
     if(postile.uploader.formData !== null){
         postile.ajax.upload( ['application', 'upload_image' ], postile.uploader.formData, function(data) {
             var filename = data.message.filename;
+             //TODO change the image path after backend is done
+            if(postile.uploader.upload_path == 'profile'){
+                
+            } else if(posile.uploader.upload_path == 'user_upload')
+                //TODO a handler to handle normal user upload
 
-            // TODO call the function of Kong to drag photo
+                
+                
+            }
         });
     }
 };
