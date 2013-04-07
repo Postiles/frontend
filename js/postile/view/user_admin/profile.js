@@ -68,6 +68,10 @@ postile.view.profile.ProfileView.prototype.initItems = function() {
         this.pictureEdit_el.innerHTML = 'Edit Profile Picture';
         goog.dom.appendChild(this.picture_el, this.pictureEdit_el);
 
+        goog.events.listen(this.pictureEdit_el, goog.events.EventType.CLICK, function(e) {
+            // this.mask.style.display = 'hidden';
+        }.bind(this));
+
         this.signitureEdit_el = goog.dom.createDom('span', 'edit');
         this.signitureEdit_el.innerHTML = 'Edit';
         goog.dom.appendChild(this.signiture_el, this.signitureEdit_el);
