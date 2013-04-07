@@ -45,6 +45,8 @@ postile.view.post.PostExpand.prototype.open = function() {
     this.author_el = goog.dom.getElementByClass('author', this.post_el);
     this.author_el.innerHTML = this.userData.username;
 
+    this.toolbar = goog.dom.getElementByClass('toolbar', instance.post_el);
+    
     this.content_el = goog.dom.getElementByClass('content', this.post_el);
     this.content_el.innerHTML = postile.parseBBcode(this.postData.content);
     
@@ -124,26 +126,23 @@ postile.view.post.PostExpand.prototype.edit = function() {
 
     var instance = this;
     
-    var toolbar = goog.dom.getElementByClass('toolbar', instance.post_el);
-    
     if (this.in_edit) { return; }
     
     this.in_edit = true;
+
+    var actual_tools = goog.dom.createDom('div', 'tools');
+    
+    goog.dom.appendChild(this.toolbar, actual_tools);
     
     var submit_button = goog.dom.createDom('div', 'submit-button');
     
     submit_button.innerHTML = postile._('submit_edit');
     
-    goog.dom.appendChild(toolbar, submit_button);
+    goog.dom.appendChild(this.toolbar, submit_button);
 
     goog.events.listen(submit_button, goog.events.EventType.CLICK, function() {
         instance.submitEdit();
-        instance.close();
     });
-    
-    var actual_tools = goog.dom.createDom('div', 'tools');
-    
-    goog.dom.appendChild(toolbar, actual_tools);
     
     postile.ajax(['post','start_edit'], { post_id: this.postData.id }, function() {
     
@@ -155,6 +154,24 @@ postile.view.post.PostExpand.prototype.edit = function() {
 
 postile.view.post.PostExpand.prototype.submitEdit = function() {
     
-    postile.ajax(['post','submit_change'], { post_id: this.postData.id, content: this.y_editor.getBbCode(), title: this.title_el.innerHTML });
+    var instance = this;
     
+    postile.ajax(['post','submit_change'], { post_id: this.postData.id, content: this.y_editor.getBbCode(), title: this.title_el.innerHTML }, function() {
+        instance.in_edit = false;
+    });
+    
+    goog.dom.removeChildren(this.toolbar);
+ 
+    delete this.y_editor;
+   
+    this.content_el.contentEditable = false;
+ 
+}
+
+postile.view.post.PostExpand.prototype.onclose = function() {
+    if (this.in_edit) {
+        if (window.confirm('Save your changes?')) {
+            this.submitEdit();
+        }
+    }
 }

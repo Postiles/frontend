@@ -15,6 +15,7 @@
       float: left;
       width: 420px;
       padding-bottom: 30px;
+      position: relative;
       padding-top: 30px; }
       .post-expand .container .left .left-container {
         box-shadow: 0px 10px 40px -25px #888888 inset, 0px -10px 40px -25px #888888 inset;
@@ -30,17 +31,23 @@
           font-size: 12pt;
           display: inline-block;
           color: #024d62; }
-        .post-expand .container .left .left-container .toolbar {
-          display: inline-block; }
-        .post-expand .container .left .left-container .toolbar .submit-button {
-          padding: 4px;
+        .post-expand .container .left .toolbar {
+          height: 24px;
+          position: absolute;
+          bottom: 30px;
+          right: 0;
+        }
+        .post-expand .container .left  .toolbar .submit-button {
+          padding: 6px;
           height: 12px;
+          line-height: 12px;
           font-size: 10pt;
           background: #024d62;
           color: #FFF;
+          margin-left: 10px;
           display: inline-block;
          }
-         .post-expand .container .left .left-container .toolbar .tools {
+         .post-expand .container .left  .toolbar .tools {
           display: inline-block;
          }
         .post-expand .container .left .left-container .content {
