@@ -33,6 +33,8 @@ postile.view.post.PostExpand.prototype.open = function() {
 
     // container for this view
     this.post_el = goog.dom.getElementByClass('post-expand', this.container);
+    
+    this.y_editor = null;
 
     this.commentContainer_el = postile.dom.getDescendantByClass(this.post_el, 'comment-container');
 
@@ -135,6 +137,7 @@ postile.view.post.PostExpand.prototype.edit = function() {
     goog.dom.appendChild(toolbar, submit_button);
 
     goog.events.listen(submit_button, goog.events.EventType.CLICK, function() {
+        instance.submitEdit();
         instance.close();
     });
     
@@ -144,8 +147,14 @@ postile.view.post.PostExpand.prototype.edit = function() {
     
     postile.ajax(['post','start_edit'], { post_id: this.postData.id }, function() {
     
-        new postile.WYSIWYF.Editor(instance.content_el, actual_tools);
+        instance.y_editor = new postile.WYSIWYF.Editor(instance.content_el, actual_tools);
     
     });
+    
+}
+
+postile.view.post.PostExpand.prototype.submitEdit = function() {
+    
+    postile.ajax(['post','submit_change'], { post_id: this.postData.id, content: this.y_editor.getBbCode(), title: this.title_el.innerHTML });
     
 }
