@@ -6,6 +6,7 @@ goog.require('goog.events');
 goog.require('goog.style');
 
 postile.view.onlinepeople.OnlinePeople = function(header) {
+    var instance = this;
     this.title_bar = header;
     //inherits TipView
     postile.view.TipView.call(this);
@@ -14,9 +15,15 @@ postile.view.onlinepeople.OnlinePeople = function(header) {
     this.container.style.top = '0px';
     this.container.style.left = '0px';
     this.expanded = false;
+    goog.events.listen(this.container, goog.events.EventType.CLICK, function() {
+        console.log("Expanding");
+    });
 }
+
 
 goog.inherits(postile.view.onlinepeople.OnlinePeople, postile.view.TipView);
 
+
 postile.view.onlinepeople.OnlinePeople.prototype.render = function() {
+    goog.dom.appendChild(this.title_bar.container, this.container_wrap);
 }
