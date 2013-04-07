@@ -102,7 +102,6 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
     /* set content parts */
     this.post_content_el = goog.dom.createDom("div", "post_content");
     goog.dom.appendChild(this.container_el, this.post_content_el);
-    this.post_content_el.innerHTML = postile.parseBBcode(this.post.content);
 
     postile.data_manager.getUserData(this.post.creator_id, function(data) {
         this.creator = data;
@@ -113,18 +112,26 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
         }
     }.bind(this));
 
+    /* Adding a background for image post */
+
+    if(this.image){
+        console.log("image Post");
+        this.post_content_el.style.backgroundImage = 'url(' + postile.conf.uploadsResource(this.image) + ')';
+        this.post_content_el.style.width = '100%';
+        this.post_content_el.style.height = '100%';
+        this.post_content_el.style.backgroundSize = 'cover';
+        //this.post_content_el.style.background-position = 'center';
+    }else {
+
+    
+    /* end of image post part */
+
+    this.post_content_el.innerHTML = postile.parseBBcode(this.post.content);
+
     // display proper number of characters for content
     this.set_max_displayable_content();
 
-    /* Adding a background for image post */
-    if(this.image){
-        this.image_wrapper = goog.dom.createDom("div", "image_wrapper");
-
     }
-
-
-    /* end of image post part */
-
     // post bottom
     this.post_bottom_el = goog.dom.createDom("div", "post_bottom");
     goog.dom.appendChild(this.container_el, this.post_bottom_el);
