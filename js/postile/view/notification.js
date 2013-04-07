@@ -1,5 +1,4 @@
 goog.provide('postile.view.notification');
-
 goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('postile.conf');
@@ -28,9 +27,14 @@ goog.inherits(postile.view.notification.Notification, postile.view.TipView);
 postile.view.notification.Notification.prototype.close = function() {
     postile.view.TipView.prototype.close.call(this);
     this.opened = false;
+    if(this.listedNotification == undefined) {
+        console.log("Loading notification");
+        return;
+    }
+
     for (var i = 0; i < this.listedNotification.length; i++) {
         if(this.listedNotification[i].removed == false){
-            goog.dom.removeNode(this.listedNotification[i].notificationItem); 
+            goog.dom.removeNode(this.listedNotification[i].notificationItem);
         }
     }
 }
@@ -60,7 +64,7 @@ postile.view.notification.Notification.prototype.open = function(a, b) {
                 this.currentIndex = 0;
                 for (var i = 0; i < this.listedNotification.length; i++) {
                     if(this.listedNotification[i].removed == false){
-                        goog.dom.removeNode(this.listedNotification[i].notificationItem); 
+                        goog.dom.removeNode(this.listedNotification[i].notificationItem);
                     }
                 }
                 this.notificationList = new Array();

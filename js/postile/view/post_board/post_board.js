@@ -91,11 +91,11 @@ postile.view.post_board.handlers.arrow_control_mouseover = function(e) {
     hover.style[css_name] = '-40px';
 
     this.parentNode.rel_data.direction_controllers_animation =
-        new postile.fx.Animate(function(iter) { 
+        new postile.fx.Animate(function(iter) {
             hover.style[css_name] = 40 - 40 * iter + 'px';
-        }, 
+        },
         500, {
-            callback: function() { 
+            callback: function() {
                 hover.parentNode.style.display = 'none';
                 rel_data.preMoveCanvas(direction);
             }
@@ -193,7 +193,7 @@ postile.view.post_board.PostBoard = function(board_id) {
     var keyHandler;
 
     var instance = this;
-    
+
     postile.view.FullScreenView.call(this);
 
     /** @private */
@@ -928,16 +928,8 @@ postile.view.post_board.FunctionButton = function(dom) { // constructor
     this.id = this.body_el.id;
 
     goog.events.listen(this.body_el, goog.events.EventType.CLICK, function(e) {
+        log(this);
         this.open();
-
-        /*
-         * XXX: dead code..
-        if (this.id == 'switch_board_button') {
-        } else if (this.id == 'message_button') {
-        } else if (this.id == 'search_button') {
-        } else if (this.id == 'popup_button') {
-        }
-        */
     }.bind(this));
 }
 

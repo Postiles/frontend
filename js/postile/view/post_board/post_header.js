@@ -7,18 +7,18 @@ goog.require('postile.view.notification');
 
 postile.view.post_board.Header = function(board) {
     postile.view.NormalView.call(this);
-    
+
     var instance = this;
-    
+
     this.board = board;
 
     this.container.id = 'title_bar';
-    
+
     postile.ui.load(this.container, postile.conf.staticResource(['post_board_title_bar.html']));
-    
+
     this.topicTitle_el = postile.dom.getDescendantById(instance.container, 'topic_title');
     instance.topicTitle_el.innerHTML = this.board.boardData.name;
-    
+
     var feedback = goog.dom.createDom('img');
     feedback.src = postile.conf.imageResource(['feedback.png']);
     feedback.style.cssFloat = 'left';
@@ -33,7 +33,7 @@ postile.view.post_board.Header = function(board) {
     this.usernameText_el = postile.dom.getDescendantById(instance.container, 'username_text');
     this.usernameText_el.innerHTML = this.board.userData.username;
 
-    /* Fei Pure for testing 
+    /* Fei Pure for testing
     this.imageUploadPop = new postile.view.image_upload.ImageUploadBlock(this);
     goog.events.listen(this.usernameText_el, goog.events.EventType.CLICK, function(e) {
         e.stopPropagation();
@@ -98,7 +98,7 @@ postile.view.post_board.Header = function(board) {
     postile.faye.subscribe('notification/' + instance.board.userData.id, function(status, data) {
         instance.notificationHandler(data);
     });
-    
+
     this.notification = new postile.view.notification.Notification(this);
     goog.events.listen(message_button, goog.events.EventType.CLICK, function(e) {
         e.stopPropagation();
