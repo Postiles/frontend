@@ -38,9 +38,9 @@ goog.require('postile.view.post_board.post_picker');
  * Smallest unit size for a post, in pixel.
  * @const
  */
-postile.view.post_board.POST_WIDTH = 75;
-postile.view.post_board.POST_HEIGHT = 50;
-postile.view.post_board.POST_MARGIN = 14;
+postile.view.post_board.POST_WIDTH = 80;
+postile.view.post_board.POST_HEIGHT = 60;
+postile.view.post_board.POST_MARGIN = 4;
 
 /**
  * Callback function for PostBoard.direction_controllers' mouseclick event.

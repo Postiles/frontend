@@ -111,10 +111,8 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
 
     this.post_icon_container_init();
 
-    /* set content parts */
     this.post_content_el = goog.dom.createDom("div", "post_content");
     goog.dom.appendChild(this.inner_container_el, this.post_content_el);
-    this.post_content_el.innerHTML = postile.parseBBcode(this.post.content);
 
     postile.data_manager.getUserData(this.post.creator_id, function(data) {
         this.creator = data;
@@ -126,28 +124,22 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
     }.bind(this));
 
     /* Adding a background for image post */
-
-    console.log(this.post);
-    if(this.post.image_url){
-        console.log("image Post");
-        this.post_content_el.style.backgroundImage = 'url(' + postile.conf.uploadsResource([this.post.image_url]) + ')';
-        this.post_content_el.style.width = '100%';
-        this.post_content_el.style.height = '100%';
-        this.post_content_el.style.backgroundSize = 'cover';
+    if (this.post.image_url) {
+        goog.dom.classes.add(this.wrap_el, 'picture_post');
+        this.wrap_el.style.backgroundImage = 'url(' + postile.conf.uploadsResource([this.post.image_url]) + ')';
+        this.wrap_el.style.backgroundSize = 'cover';
         //this.post_content_el.style.background-position = 'center';
-    }else if(this.post.video_url){
+    } else if (this.post.video_url) {
 
     } else {
+        /* end of image post part */
 
-    
-    /* end of image post part */
+        this.post_content_el.innerHTML = postile.parseBBcode(this.post.content);
 
-    this.post_content_el.innerHTML = postile.parseBBcode(this.post.content);
-
-    // display proper number of characters for content
-    this.set_max_displayable_content();
-
+        // display proper number of characters for content
+        this.set_max_displayable_content();
     }
+
     // post bottom
     this.post_bottom_el = goog.dom.createDom("div", "post_bottom");
     goog.dom.appendChild(this.container_el, this.post_bottom_el);
@@ -307,7 +299,6 @@ postile.view.post_in_board.Post.prototype.post_icon_container_init = function() 
     }
     goog.events.listen(instance.likeButton_el, goog.events.EventType.CLICK, function() {
         if(instance.liked_user.indexOf(parseInt(localStorage.postile_user_id))!=-1) {
-            console.log('liked!');
             return;
         }else{
             instance.liked_user.push(parseInt(localStorage.postile_user_id));
@@ -338,7 +329,6 @@ postile.view.post_in_board.Post.prototype.post_icon_container_init = function() 
             });
 
             postile.ajax([ 'post', 'like' ], { post_id: instance.post.id }, function(data) {
-                console.log(data);
             });
         }
     });
@@ -403,6 +393,13 @@ postile.view.post_in_board.Post.prototype.comment_preview_init = function() {
         this.comment_container_el = goog.dom.createDom('div', 'comment_container');
         goog.dom.appendChild(this.post_bottom_el, this.comment_container_el);
 
+        this.comment_list_close_button_el = goog.dom.createDom('div', 'comment_list_close_button');
+        goog.dom.appendChild(this.comment_container_el, this.comment_list_close_button_el);
+        this.comment_list_close_button_el.innerHTML = 'close';
+
+        this.comment_list_el = goog.dom.createDom('div', 'comment_list');
+        goog.dom.appendChild(this.comment_container_el, this.comment_list_el);
+
         // expand inline comments
         goog.events.listen(this.comment_preview_content_el, goog.events.EventType.CLICK, function(e) {
             this.comment_container_el.style.height = this.wrap_el.offsetHeight - 25 + 'px';
@@ -421,7 +418,7 @@ postile.view.post_in_board.Post.prototype.comment_preview_init = function() {
 postile.view.post_in_board.Post.prototype.renderInlineComments = function(content) {
     for (var i in this.inline_comments) {
         var cmt = new postile.view.post_in_board.InlineComment(
-                this.comment_container_el, this.inline_comments[i]);
+                this.comment_list_el, this.inline_comments[i]);
     }
 }
 

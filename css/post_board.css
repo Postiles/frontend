@@ -274,10 +274,18 @@ html, body {
   padding: 2px 5px;
 }
 
+.picture_post .post_inner_container {
+  background: rgba(0, 0, 0, 0.5);
+}
+
 .post_top {
   color: #024d61;
   font-size: 10pt;
   display: table-cell;
+}
+
+.picture_post .post_top {
+  color: whitesmoke;
 }
 
 .post_title {
@@ -477,7 +485,7 @@ html, body {
 .post_bottom {
   position: absolute;
   width: 100%;
-  bottom: 1px;
+  bottom: 0;
 }
 
 .comment_preview {
@@ -508,6 +516,13 @@ html, body {
   background: #cfdade;
   display: none;
   overflow-y: scroll;
+}
+
+.comment_list_close_button {
+  /* background: url('close-comment-arrow-down.png'); */
+}
+
+.comment_list {
 }
 
 .post_comment {
