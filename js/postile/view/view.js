@@ -12,17 +12,17 @@ goog.require('postile.fx.effects');
 /*
 === How to create a normal view ===
 
-1. have a class inherits "positle.view.NormalView".
+1. Have a class inherits "positle.view.NormalView".
 2. [optional, only when you need to load css] have a "unloaded_stylesheets" in its prototype, which is an array containing css files that need to be loaded.
 
-just put your fucking things into this.container, and use "open" and "close" if needed
+Just put your fucking things into this.container, and use "open" and "close" if needed
 
 === How to create a pop-up view ===
 
-1. have a class inherits "postile.view.PopView".
-2. the same as normal view.
+1. Have a class inherits "postile.view.PopView".
+2. The same as normal view.
 
-just put your fucking things into this.container, and use "open" and "close" if needed
+Just put your fucking things into this.container, and use "open" and "close" if needed
 
 === How to create a fullscreen view ===
 
@@ -35,7 +35,7 @@ just put your fucking things into this.container, and use "open" and "close" if 
 1.  have a class inherits "postile.view.TipView".
 2. the same as normal view
 
-just put your fucking things into this.container, and use "open" and "close" if needed. 
+just put your fucking things into this.container, and use "open" and "close" if needed.
 
 the "open: functon will receive a parameter indicating the reference element and container element of the tip view. If the reference element is not set, the parent element of the reference element will be used
 
@@ -154,7 +154,7 @@ postile.view.PopView.prototype.addCloseButton = function(view) {
         this.close();
     }.bind(this));
 }
-    
+
 /**
  * Hides itself and detachs event handlers.
  */
@@ -254,7 +254,7 @@ postile.view.NormalView = function() {
     this.container = goog.dom.createDom('div');
 }
 
-postile.view.NormalView.prototype.close = function() { 
+postile.view.NormalView.prototype.close = function() {
     goog.dom.removeNode(this.container);
 }
 
