@@ -31,6 +31,7 @@ postile.view.post_board.PostCreator.prototype.open = function(imgUri, videoUri) 
     }
     if(imgUri) {
         this.imageMode = true;
+        this.imgUri = imgUri;
         this.preview.style.backgroundImage = 'url(' + postile.conf.uploadsResource(imgUri) + ')';
         console.log(postile.conf.uploadsResource(imgUri));
     } else {
@@ -162,10 +163,9 @@ postile.view.post_board.PostCreator.prototype.mouseup = function(e){
         // Hight of header in a post
         height_of_header = 20;
         var height = this.position.span_y - height_of_header;
+        this.board.createImagePost(this.position, this.imgUri);
 
-    }
-
-    if(this.videoMode){
+    } else if(this.videoMode){
         this.videoMode = false;
         var width = this.position.span_x;
         // Hight of header in a post
@@ -173,12 +173,8 @@ postile.view.post_board.PostCreator.prototype.mouseup = function(e){
         var height = this.position.span_y - height_of_header;
 
         // TODO modify the createPost function for image and video.
+    }else {
+        this.board.createPost(this.position);
     }
-
-    this.board.createPost(this.position);
-
-
-
-
     this.close();
 };

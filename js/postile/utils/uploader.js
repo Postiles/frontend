@@ -40,11 +40,6 @@ postile.uploader.dragUpload = function(evt){
     }
 };
 
-postile.uploader.setUploadPath = function(upload_path) {
-
-}
-
-
 postile.uploader.clickUpload = function(instance_el) {
     var files = instance_el.files;
     console.log(files[0]);
