@@ -120,9 +120,6 @@ postile.view.post.PostExpand.prototype.edit = function() {
     this.in_edit = true;
     
     postile.ajax(['post','start_edit'], { post_id: this.post.id }, function() {
-    
         new postile.WYSIWYF.Editor(instance.content_el, goog.dom.getElementByClass('toolbar', instance.post_el));
-    
-    }
-    
+    });
 }
