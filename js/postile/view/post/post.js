@@ -59,10 +59,9 @@ postile.view.post.PostExpand.prototype.open = function() {
     this.initComments();
     this.addCloseButton(this.post_el);
 
-    this.open(860);
-}
-
-goog.inherits(postile.view.post.PostExpand, postile.view.PopView);
+    postile.view.PopView.prototype.open.call(this, 860);
+    
+};
 
 postile.view.post.PostExpand.prototype.unloaded_stylesheets = ['_post_expand.css', '_close_button.css'];
 
@@ -133,6 +132,11 @@ postile.view.post.PostExpand.prototype.edit = function() {
 
     var actual_tools = goog.dom.createDom('div', 'tools');
     
+<<<<<<< Temporary merge branch 1
+    postile.ajax(['post','start_edit'], { post_id: this.post.id }, function() {
+        new postile.WYSIWYF.Editor(instance.content_el, goog.dom.getElementByClass('toolbar', instance.post_el));
+    });
+=======
     goog.dom.appendChild(this.toolbar, actual_tools);
     
     var submit_button = goog.dom.createDom('div', 'submit-button');
@@ -151,4 +155,28 @@ postile.view.post.PostExpand.prototype.edit = function() {
     
     });
     
+}
+
+postile.view.post.PostExpand.prototype.submitEdit = function() {
+    
+    var instance = this;
+    
+    postile.ajax(['post','submit_change'], { post_id: this.postData.id, content: this.y_editor.getBbCode(), title: this.title_el.innerHTML }, function() {
+        instance.in_edit = false;
+    });
+    
+    goog.dom.removeChildren(this.toolbar);
+ 
+    delete this.y_editor;
+   
+    this.content_el.contentEditable = false;
+ 
+}
+
+postile.view.post.PostExpand.prototype.onclose = function() {
+    if (this.in_edit) {
+        if (window.confirm('Save your changes?')) {
+            this.submitEdit();
+        }
+    }
 }

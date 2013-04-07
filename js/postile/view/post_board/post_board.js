@@ -38,9 +38,9 @@ goog.require('postile.view.post_board.post_picker');
  * Smallest unit size for a post, in pixel.
  * @const
  */
-postile.view.post_board.POST_WIDTH = 75;
-postile.view.post_board.POST_HEIGHT = 50;
-postile.view.post_board.POST_MARGIN = 14;
+postile.view.post_board.POST_WIDTH = 80;
+postile.view.post_board.POST_HEIGHT = 60;
+postile.view.post_board.POST_MARGIN = 4;
 
 /**
  * Callback function for PostBoard.direction_controllers' mouseclick event.
@@ -773,6 +773,7 @@ postile.view.post_board.PostBoard.prototype.updateSubscribeArea = function() {
     to_subscribe.board_id = instance.board_id;
     postile.ajax(['board', 'move_to'], to_subscribe, function(data) {
         instance.subscribedArea = to_subscribe;
+        console.log(data);
         instance.renderArray(data.message.posts);
     }, 'Loading posts...', true);
 }
@@ -878,6 +879,8 @@ postile.view.post_board.PostBoard.prototype.fayeHandler = function(status, data)
 postile.view.post_board.PostBoard.prototype.createPost = function(info) {
     var req = goog.object.clone(info);
     var ret = goog.object.clone(info);
+    req.is_image = false;
+    req.is_video = false;
     var instance = this;
     req.board_id = this.board_id;
     ret.text_content = '';
@@ -890,27 +893,28 @@ postile.view.post_board.PostBoard.prototype.createPost = function(info) {
 
 postile.view.post_board.PostBoard.prototype.createImagePost = function(info, image_uri){
     var req = goog.object.clone(info);
-    req.isImage = true;
+    req.is_image = true;
     req.image_uri = image_uri;
     var ret = goog.object.clone(info);
     var instance = this;
     req.board_id = this.board_id;
+    console.log("createing Image Post");
 
     postile.ajax(['post', 'new'], req, function(data) {
-        instance.renderArray([ { post: data.message.post, creator: data.message.creator, image: image_uri } ]);
+        instance.renderArray([ { post: data.message.post, creator: data.message.creator} ]);
     });
 }
 
 postile.view.post_board.PostBoard.prototype.createVideoPost = function(info, video_uri){
     var req = goog.object.clone(info);
-    req.isVideo = true;
+    req.is_video = true;
     req.video_uri = video_uri;
     var ret = goog.object.clone(info);
     var instance = this;
     req.board_id = this.board_id;
 
     postile.ajax(['post', 'new'], req, function(data) {
-        instance.renderArray([ { post: data.message.post, creator: data.message.creator, video: video_uri } ]);
+        instance.renderArray([ { post: data.message.post, creator: data.message.creator} ]);
     });
 }
 

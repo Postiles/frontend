@@ -360,6 +360,9 @@ html, body {
 }
 
 #external-login-container {
+
+  display: none;
+
   position: absolute;
   top: 60px;
   left: 80px;
@@ -385,7 +388,7 @@ html, body {
 }
 
 #external-login-container:hover {
-  top: 200px;
+  /* top: 200px; */
 }
 
 #external-login-container .login-form-container {

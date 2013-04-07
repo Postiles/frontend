@@ -68,6 +68,10 @@ postile.view.profile.ProfileView.prototype.initItems = function() {
         this.pictureEdit_el.innerHTML = 'Edit Profile Picture';
         goog.dom.appendChild(this.picture_el, this.pictureEdit_el);
 
+        goog.events.listen(this.pictureEdit_el, goog.events.EventType.CLICK, function(e) {
+            // this.mask.style.display = 'hidden';
+        }.bind(this));
+
         this.signitureEdit_el = goog.dom.createDom('span', 'edit');
         this.signitureEdit_el.innerHTML = 'Edit';
         goog.dom.appendChild(this.signiture_el, this.signitureEdit_el);
@@ -82,7 +86,8 @@ postile.view.profile.ProfileView.prototype.initItems = function() {
     for (i in this.displayableItems) {
         var item = this.displayableItems[i];
 
-        if (this.userData[item.name]) {
+        if (this.userData[item.name] // item exists, should display
+                || this.isSelfProfile()) {
             var itemValue = this.userData[item.name];
 
             /* create new data item */
@@ -97,7 +102,13 @@ postile.view.profile.ProfileView.prototype.initItems = function() {
             goog.dom.appendChild(newItemIcon, newItemIconImg);
 
             var newItemText = goog.dom.createDom('div', 'text');
-            newItemText.innerHTML = item.description;
+            if (!this.userData[item.name] && this.isSelfProfile) {
+                newItemText.innerHTML = item.name;
+                newItemText.style.opacity = '0.3';
+            } else {
+                newItemText.innerHTML = item.description;
+            }
+
             goog.dom.appendChild(newItem, newItemText);
 
             var newItemTextData = goog.dom.createDom('span', 'data');
@@ -130,6 +141,9 @@ postile.view.profile.ProfileItem = function(baseDom, profileInstance) { // const
     this.baseDom = baseDom;
     this.className = goog.dom.classes.get(this.baseDom)[0];
 
+    this.item = this.baseDom.getAttribute('data-item');
+
+    this.text_el = goog.dom.getElementByClass('text', this.baseDom);
     this.data_el = goog.dom.getElementByClass('data', this.baseDom);
     this.edit_el = goog.dom.getElementByClass('edit', this.baseDom);
 
@@ -147,6 +161,20 @@ postile.view.profile.ProfileItem.prototype.clearEvent = function() {
 
 postile.view.profile.ProfileItem.prototype.editClicked = function() {
     this.data_el.innerHTML = '';
+
+    /*
+    if (!this.data_val) { // data val not set
+        for (var i in postile.view.profile.ProfileView.prototype.displayableItems) {
+            var displayableItem = postile.view.profile.ProfileView.prototype.displayableItems[i];
+            if (displayableItem.name == this.item) {
+                this.text_el.innerHTML = displayableItem.description;
+                break;
+            }
+        }
+        this.text_el.style.opacity = '1.0';
+    }
+    */
+
 
     if (this.className == 'item') {
         this.input_el = goog.dom.createDom('input', null);
@@ -176,11 +204,14 @@ postile.view.profile.ProfileItem.prototype.editClicked = function() {
 }
 
 postile.view.profile.ProfileItem.prototype.saveTriggered = function() {
-    var item = this.baseDom.getAttribute('data-item');
-    postile.ajax([ 'profile', 'update_profile_item' ], { item: item, value: this.input_el.value }, function() {
+    postile.ajax([ 'profile', 'update_profile_item' ], 
+            { item: this.item, value: this.input_el.value }, 
+            function() {
         this.data_el.innerHTML = this.input_el.value;
         this.edit_el.innerHTML = 'Edit';
 
         this.clearEvent();
+
+        postile.data_manager.markDataDirty(localStorage.postile_user_id); // user data changed, mark as dirty
     }.bind(this));
 }

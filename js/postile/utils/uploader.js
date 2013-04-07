@@ -90,8 +90,6 @@ postile.uploader.submit = function(){ //  TODO check if browser is good
             var filename = data.message.filename;
              //TODO change the image path after backend is done
             if(postile.uploader.upload_path == 'profile'){
-
-
                 
             } else if(postile.uploader.upload_path == 'post_image') {
                 //TODO a handler to handle normal user upload
