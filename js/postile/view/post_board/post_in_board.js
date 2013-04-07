@@ -82,7 +82,8 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
     // listen for title click event, open post expand view
     this.post_expand_listener = new postile.events.EventHandler(this.post_title_el,
             goog.events.EventType.CLICK, function(e) {
-        var postExpand = new postile.view.post.PostExpand(instance.post);
+            var postExpand = new postile.view.post.PostExpand(instance.post);
+            postExpand.open();
     });
     this.post_expand_listener.listen();
 
@@ -562,7 +563,6 @@ postile.view.post_in_board.Post.prototype.edit = function(isNew) {
         instance.author_profile_display_listener.unlisten();
 
         // remove effects in the view mode
-        instance.post_title_el.style.cursor = 'auto';
         instance.post_title_el.style.textDecoration = 'none';
 
         // reset title and content in case they are chomped

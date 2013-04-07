@@ -32,6 +32,17 @@
           color: #024d62; }
         .post-expand .container .left .left-container .toolbar {
           display: inline-block; }
+        .post-expand .container .left .left-container .toolbar .submit-button {
+          padding: 4px;
+          height: 12px;
+          font-size: 10pt;
+          background: #024d62;
+          color: #FFF;
+          display: inline-block;
+         }
+         .post-expand .container .left .left-container .toolbar .tools {
+          display: inline-block;
+         }
         .post-expand .container .left .left-container .content {
           margin-top: 15px;
           font-size: 11pt; }

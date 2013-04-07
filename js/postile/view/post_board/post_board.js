@@ -432,6 +432,7 @@ postile.view.post_board.PostBoard.prototype.bindMouseEvents = function() {
     });
 
     goog.events.listen(this.catchall, goog.events.EventType.CLICK, function(e) {
+        if (!instance.click_start_point) { return; }
         var dy = e.clientY - instance.click_start_point[1];
         var dx = e.clientX - instance.click_start_point[0];
         if (Math.abs(dy) > 2 && Math.abs(dx) > 2) {

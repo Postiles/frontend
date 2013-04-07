@@ -10,7 +10,7 @@ goog.require('postile.view');
  * @constructor
  */
 postile.view.post.PostExpand = function(data) {
-    var instance = this;
+    this.postData = data;
     
     this.in_edit = false;
 
@@ -19,8 +19,14 @@ postile.view.post.PostExpand = function(data) {
 
     // load static html template
     postile.ui.load(this.container, postile.conf.staticResource(['_post_expand.html']));
+}
 
-    this.postData = data;
+goog.inherits(postile.view.post.PostExpand, postile.view.PopView);
+
+postile.view.post.PostExpand.prototype.open = function() {
+
+    var instance = this;
+
     postile.data_manager.getUserData(this.postData.creator_id, function(uData) {
         instance.userData = uData;
     });
@@ -40,17 +46,18 @@ postile.view.post.PostExpand = function(data) {
     this.content_el = goog.dom.getElementByClass('content', this.post_el);
     this.content_el.innerHTML = this.postData.content;
     
-    goog.events.listen(this.content_el, goog.events.EventType.CLICK, function() {
-        instance.edit();
-    });
+    if (this.postData.creator_id == localStorage.postile_user_id) { //created by current user, can edit
+        goog.events.listen(this.content_el, goog.events.EventType.CLICK, function() {
+            instance.edit();
+        });
+    }
 
     this.initComments();
     this.addCloseButton(this.post_el);
 
-    this.open(860);
-}
-
-goog.inherits(postile.view.post.PostExpand, postile.view.PopView);
+    postile.view.post.PostExpand.prototype.open.call(this, 960);
+    
+};
 
 postile.view.post.PostExpand.prototype.unloaded_stylesheets = ['_post_expand.css', '_close_button.css'];
 
@@ -115,14 +122,30 @@ postile.view.post.PostExpand.prototype.edit = function() {
 
     var instance = this;
     
+    var toolbar = goog.dom.getElementByClass('toolbar', instance.post_el);
+    
     if (this.in_edit) { return; }
     
     this.in_edit = true;
     
-    postile.ajax(['post','start_edit'], { post_id: this.post.id }, function() {
+    var submit_button = goog.dom.createDom('div', 'submit-button');
     
-        new postile.WYSIWYF.Editor(instance.content_el, goog.dom.getElementByClass('toolbar', instance.post_el));
+    submit_button.innerHTML = postile._('submit_edit');
     
-    }
+    goog.dom.appendChild(toolbar, submit_button);
+
+    goog.events.listen(submit_button, goog.events.EventType.CLICK, function() {
+        instance.close();
+    });
+    
+    var actual_tools = goog.dom.createDom('div', 'tools');
+    
+    goog.dom.appendChild(toolbar, actual_tools);
+    
+    postile.ajax(['post','start_edit'], { post_id: this.postData.id }, function() {
+    
+        new postile.WYSIWYF.Editor(instance.content_el, actual_tools);
+    
+    });
     
 }
