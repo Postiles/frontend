@@ -132,7 +132,6 @@ postile.view.post.PostExpand.prototype.edit = function() {
 
     var actual_tools = goog.dom.createDom('div', 'tools');
     
-<<<<<<< HEAD
     goog.dom.appendChild(this.toolbar, actual_tools);
     
     var submit_button = goog.dom.createDom('div', 'submit-button');
@@ -167,9 +166,6 @@ postile.view.post.PostExpand.prototype.submitEdit = function() {
    
     this.content_el.contentEditable = false;
  
-    postile.ajax(['post','start_edit'], { post_id: this.post.id }, function() {
-        new postile.WYSIWYF.Editor(instance.content_el, goog.dom.getElementByClass('toolbar', instance.post_el));
-    });
 }
 
 postile.view.post.PostExpand.prototype.onclose = function() {
