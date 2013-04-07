@@ -40,17 +40,14 @@ postile.uploader.dragUpload = function(evt){
     }
 };
 
-postile.uploader.setUploadPath = function(upload_path) {
-
-}
-
-
 postile.uploader.clickUpload = function(instance_el) {
     var files = instance_el.files;
     console.log(files[0]);
     postile.uploader.formData =  new FormData();
     postile.uploader.formData.append('image', files[0]);
     postile.uploader.formData.append('upload_path', postile.uploader.upload_path);
+    postile.uploader.formData.append('user_id', localStorage.postile_user_id);
+    postile.uploader.formData.append('session_key', localStorage.postile_user_session_key);
 
     console.log(postile.uploader.formData);
 
@@ -94,10 +91,14 @@ postile.uploader.submit = function(){ //  TODO check if browser is good
              //TODO change the image path after backend is done
             if(postile.uploader.upload_path == 'profile'){
                 
-            } else if(posile.uploader.upload_path == 'user_upload') {
+            } else if(postile.uploader.upload_path == 'post_image') {
                 //TODO a handler to handle normal user upload
 
-                
+                if (postile.router.current_view instanceof postile.view.post_board.PostBoard) {
+                    console.log(data);
+                    console.log(postile.router.current_view);
+                    postile.router.current_view.postCreator.open([filename]);
+                }
                 
             }
         });

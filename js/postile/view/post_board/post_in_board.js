@@ -125,9 +125,26 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
         }
     }.bind(this));
 
+    /* Adding a background for image post */
+
+    if(this.image){
+        console.log("image Post");
+        this.post_content_el.style.backgroundImage = 'url(' + postile.conf.uploadsResource(this.image) + ')';
+        this.post_content_el.style.width = '100%';
+        this.post_content_el.style.height = '100%';
+        this.post_content_el.style.backgroundSize = 'cover';
+        //this.post_content_el.style.background-position = 'center';
+    }else {
+
+    
+    /* end of image post part */
+
+    this.post_content_el.innerHTML = postile.parseBBcode(this.post.content);
+
     // display proper number of characters for content
     this.set_max_displayable_content();
 
+    }
     // post bottom
     this.post_bottom_el = goog.dom.createDom("div", "post_bottom");
     goog.dom.appendChild(this.container_el, this.post_bottom_el);
@@ -574,12 +591,6 @@ postile.view.post_in_board.Post.prototype.edit = function(isNew) {
         return;
     }
 
-    /* started handles whether the text placeholder should be cleared after keypress */
-    var started = true;
-    if (isNew) {
-        started = false;
-    }
-
     var instance = this;
     this.disable();
 
@@ -603,7 +614,7 @@ postile.view.post_in_board.Post.prototype.edit = function(isNew) {
         instance.post_title_el.style.width = instance.container_el.offsetWidth - 10 + 'px';
         instance.post_content_el.style.height = instance.container_el.offsetHeight - 40 + 'px';
 
-        instance.post_content_el.style.overflowY = 'scroll';
+        instance.post_content_el.style.overflowY = 'auto';
 
         // delete icon on the top right corner
         var delete_icon = goog.dom.createDom('div', 'post_remove_icon');
@@ -631,47 +642,19 @@ postile.view.post_in_board.Post.prototype.edit = function(isNew) {
         instance.enable();
 
         var contentKeydownHandler = new postile.events.EventHandler(instance.post_content_el,
-                goog.events.EventType.KEYDOWN, function(e) {
+            goog.events.EventType.KEYDOWN, function(e) {
             // when user presses 'ctrl + enter', submit edit
             if (e.keyCode == 13 && e.ctrlKey) {
                 instance.submitEdit({ post_id: instance.post.id, content: y_editor.getBbCode(),
-                                    title: instance.post_title_el.innerHTML ==  postile._('post_title_prompt') ? '' : instance.post_title_el.innerHTML });
+                                    title: instance.post_title_el.innerHTML ==  postile._('post_title_prompt') ? '' : instance.post_title_el.innerHTML }, function() { instance.in_edit = false; });
 
                 contentKeydownHandler.unlisten();
-                //contentOnFocusHandler.unlisten();
-                postHandler.unlisten();
-                instance.in_edit = false;
-
                 return false;
-            } else if (!started) { // not started edit yet
-                instance.post_content_el.innerHTML = '';
-                goog.dom.classes.remove(instance.post_content_el,'half_opaque');
-                started = true;
             }
-        });
-        /*
-        var contentOnFocusHandler = new postile.events.EventHandler(instance.post_content_el,
-                goog.events.EventType.FOCUS, function(e) {
-            if (!started) { // not started edit yet
-                instance.post_content_el.innerHTML = '';
-                goog.dom.classes.remove(instance.post_content_el,'half_opaque');
-            }
-        });
-        */
-
-        var postHandler = new postile.events.EventHandler(instance.container_el, goog.events.EventType.CLICK, function(evt){
-            evt.stopPropagation();
         });
 
         contentKeydownHandler.listen();
-        //contentOnFocusHandler.listen();
-        postHandler.listen();
-
-        if (isNew) { // new post, focus on title
-            instance.post_title_el.focus();
-        } else {
-            y_editor.editor_el.focus();
-        }
+        y_editor.editor_el.focus();
     });
 }
 

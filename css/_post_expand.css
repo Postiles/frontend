@@ -13,26 +13,31 @@
     width: 800px; }
     .post-expand .container .left {
       float: left;
-      width: 400px;
+      width: 420px;
+      padding-bottom: 30px;
       padding-top: 30px; }
       .post-expand .container .left .left-container {
         box-shadow: 0px 10px 40px -25px #888888 inset, 0px -10px 40px -25px #888888 inset;
+        padding: 0 20px;
+        height: 410px;
         overflow: auto; }
         .post-expand .container .left .left-container .title {
           margin-top: 20px;
           font-size: 15pt;
           color: #024d62; }
         .post-expand .container .left .left-container .author {
-          margin-top: 30px;
+          margin-top: 10px;
           font-size: 12pt;
+          display: inline-block;
           color: #024d62; }
+        .post-expand .container .left .left-container .toolbar {
+          display: inline-block; }
         .post-expand .container .left .left-container .content {
-          margin-top: 20px;
-          height: 300px;
+          margin-top: 15px;
           font-size: 11pt; }
     .post-expand .container .right {
       float: left;
-      margin-left: 60px;
+      margin-left: 40px;
       padding: 30px 0;
       width: 340px; }
       .post-expand .container .right .comment-box {
@@ -81,6 +86,7 @@
           margin-top: 5px;
           width: 100%;
           position: relative;
+          min-height: 56px;
           background: #ecf0fd; }
           .post-expand .container .right .comment-container .comment:first-child {
             margin-top: 0; /* no top margin for the first one */

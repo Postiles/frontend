@@ -31,7 +31,9 @@ postile.view.post_board.PostCreator.prototype.open = function(imgUri, videoUri) 
     }
     if(imgUri) {
         this.imageMode = true;
-        this.preview.style.backgroundImage = 'url('+imgUri+')';
+        this.imgUri = imgUri;
+        this.preview.style.backgroundImage = 'url(' + postile.conf.uploadsResource(imgUri) + ')';
+        console.log(postile.conf.uploadsResource(imgUri));
     } else {
         this.imageMode = false;
         this.preview.style.backgroundImage = 'none';
@@ -118,7 +120,7 @@ postile.view.post_board.PostCreator.prototype.mousemove = function(e) {
         pos_x: current[0], 
         pos_y: current[1], 
         span_x: Math.abs(delta[0]), 
-        span_y: Math.abs(delta[1]) 
+        span_y: Math.abs(delta[1])
     };
 
     this.preview.style.left = this.board.xPosTo(this.position.pos_x) + 'px';
@@ -154,7 +156,16 @@ postile.view.post_board.PostCreator.prototype.mouseup = function(e){
     this.legal = false;
     this.new_post_start_coord_in_px = null;
 
-    if(this.videoMode){
+
+    if(this.imageMode){
+        this.imageMode = false;
+        var width = this.position.span_x;
+        // Hight of header in a post
+        height_of_header = 20;
+        var height = this.position.span_y - height_of_header;
+        this.board.createImagePost(this.position, this.imgUri);
+
+    } else if(this.videoMode){
         this.videoMode = false;
         var width = this.position.span_x;
         // Hight of header in a post
@@ -162,12 +173,8 @@ postile.view.post_board.PostCreator.prototype.mouseup = function(e){
         var height = this.position.span_y - height_of_header;
 
         // TODO modify the createPost function for image and video.
+    }else {
+        this.board.createPost(this.position);
     }
-
-    this.board.createPost(this.position);
-
-
-
-
     this.close();
 };

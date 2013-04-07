@@ -113,25 +113,27 @@ postile.WYSIWYF = {
             icon_container_el.appendChild(editor.buttons[i]);
         }
         editor.toDisplayMode(0);
-        editor.onEditListener = new postile.events.ContentChangeListener(editor.editor_el, function(){
-            var i;
-            var links = postile.dom.getDescendantsByCondition(editor.editor_el, function(el) {
-                return el.tagName && el.tagName.toUpperCase() == 'IMG'
-                       && el.src.indexOf(postile.conf.imageResource(['link_icon.png'])) > -1;
-            });
-            var lels = editor.post.board.picker.all_lkd_el;
-            for (i in lels) {
-                lels[i].style.display = 'none';
-            }
-            for (i in links) {
-                var id = links[i].getAttribute('link-to-post-id'); 
-                if (id) {
-                    console.log(id, lels);
-                    lels[id].style.display = 'block';
+        if (editor.post) {
+            editor.onEditListener = new postile.events.ContentChangeListener(editor.editor_el, function(){
+                var i;
+                var links = postile.dom.getDescendantsByCondition(editor.editor_el, function(el) {
+                    return el.tagName && el.tagName.toUpperCase() == 'IMG'
+                           && el.src.indexOf(postile.conf.imageResource(['link_icon.png'])) > -1;
+                });
+                var lels = editor.post.board.picker.all_lkd_el;
+                for (i in lels) {
+                    lels[i].style.display = 'none';
                 }
-            }
-        });
-        editor.onEditListener.listen();
+                for (i in links) {
+                    var id = links[i].getAttribute('link-to-post-id'); 
+                    if (id) {
+                        console.log(id, lels);
+                        lels[id].style.display = 'block';
+                    }
+                }
+            });
+            editor.onEditListener.listen();
+        }
         editor.at = new postile.view.At(this.editor_el);
     },
     /******Define buttons and corresponding operations******/
@@ -139,6 +141,7 @@ postile.WYSIWYF = {
     {
         bgPos: '-' + (13 * 8) + 'px 0px',
         callback: function (editor) {
+            if (!editor.post) { alert('Cannot link to post when expanded.'); return; }
             //Link to post
             var picker = editor.post.board.picker;
             var img_el;
