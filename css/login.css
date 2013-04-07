@@ -385,7 +385,7 @@ html, body {
 }
 
 #external-login-container:hover {
-  top: 200px;
+  /* top: 200px; */
 }
 
 #external-login-container .login-form-container {

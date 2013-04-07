@@ -23,12 +23,18 @@ postile.view.post_board.Header = function(board) {
     feedback.src = postile.conf.imageResource(['feedback.png']);
     feedback.style.cssFloat = 'left';
     feedback.style.margin = '6px 0 0 10px';
-    goog.events.listen(feedback, goog.events.EventType.CLICK, function() { new postile.feedback.FeedbackData(); });
+    goog.events.listen(feedback, goog.events.EventType.CLICK, function() {
+        new postile.feedback.FeedbackData();
+    });
     goog.dom.appendChild(instance.container, feedback);
 
     this.topicImgContainer_el = postile.dom.getDescendantById(instance.container, 'topic_image_container');
     this.topicImg_el = postile.dom.getDescendantByClass(this.topicImgContainer_el, 'topic_image');
     this.topicImg_el.src = postile.conf.uploadsResource( [this.board.boardData.image_small_url] );
+
+    goog.events.listen(this.topicImg_el, goog.events.EventType.CLICK, function(e) {
+        var profileView = new postile.view.profile.ProfileView(localStorage.postile_user_id);
+    });
 
     this.usernameText_el = postile.dom.getDescendantById(instance.container, 'username_text');
     this.usernameText_el.innerHTML = this.board.userData.username;
