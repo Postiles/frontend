@@ -22,7 +22,7 @@ postile.view.notification.Notification = function(header) {
 
 // See more part more see more
 }
-//goog.inherits(postile.view.notification.Notification, postile.view.TipView);
+goog.inherits(postile.view.notification.Notification, postile.view.TipView);
 
 postile.view.notification.Notification.prototype.close = function() {
     postile.view.TipView.prototype.close.call(this);

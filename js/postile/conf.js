@@ -13,23 +13,23 @@ goog.require('goog.events.KeyHandler');
 postile.conf = {
 
     dhost: 'www.postiles.com',
-    
+
     dport: 300,
-    
+
     fayeLocation: 'http://www.postiles.com:9292/faye',
-    
+
     wrapper: null,
-    
+
     error_log: [],
-    
+
     staticResource: function(input) {
         return "/templates/" + input.join("/");
     },
-    
+
     dynamicResource: function(input) {
         return "http://"+postile.conf.dhost+":"+postile.conf.dport+"/"+input.join("/");
     },
-    
+
     uploadsResource: function(input) {
         return "http://"+postile.conf.dhost.replace('www', 'static-uploads')+"/"+input.join("/"); // kind of hack
     },
@@ -37,7 +37,7 @@ postile.conf = {
     /**
      * @param {Array.<string>} input A list of path segments, to be joined
      * by backslash.
-     * @return {string} CSS path built 
+     * @return {string} CSS path built
      */
     cssResource: function(input) {
         return "/css/" + input.join("/");
@@ -46,14 +46,14 @@ postile.conf = {
     imageResource: function(input) {
         return "/images/" + input.join("/");
     },
-    
+
     getGlobalKeyHandler: function() {
         if(!postile.conf.getGlobalKeyHandler.handler) {
             postile.conf.getGlobalKeyHandler.handler = new goog.events.KeyHandler(document);
         }
         return postile.conf.getGlobalKeyHandler.handler;
     },
-    
+
     logError: function(e) {
         var err = e.getBrowserEvent();
         if (postile.conf.error_log.length > 40) {
@@ -65,7 +65,7 @@ postile.conf = {
             message: err.message
         });
     },
-    
+
     initDbgConfiguration: function() {
         if ('postile_debug_dhost' in localStorage) {
             postile.conf.dhost = localStorage["postile_debug_dhost"];
@@ -80,7 +80,7 @@ postile.conf = {
             goog.locale.setLocale(localStorage["postile_debug_locale"]);
         }
     }
-    
+
 };
 
 postile.conf.getGlobalKeyHandler.handler = null;
