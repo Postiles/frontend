@@ -46,7 +46,7 @@ postile.view.post.PostExpand.prototype.open = function() {
     this.author_el.innerHTML = this.userData.username;
 
     this.content_el = goog.dom.getElementByClass('content', this.post_el);
-    this.content_el.innerHTML = this.postData.content;
+    this.content_el.innerHTML = postile.parseBBcode(this.postData.content);
     
     if (this.postData.creator_id == localStorage.postile_user_id) { //created by current user, can edit
         goog.events.listen(this.content_el, goog.events.EventType.CLICK, function() {
@@ -57,7 +57,7 @@ postile.view.post.PostExpand.prototype.open = function() {
     this.initComments();
     this.addCloseButton(this.post_el);
 
-    postile.view.PopView.prototype.open.call(this, 960);
+    postile.view.PopView.prototype.open.call(this, 860);
     
 };
 

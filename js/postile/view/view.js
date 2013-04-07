@@ -24,6 +24,8 @@ just put your fucking things into this.container, and use "open" and "close" if 
 
 just put your fucking things into this.container, and use "open" and "close" if needed
 
+can set onclose method
+
 === How to create a fullscreen view ===
 
 1. have a class inherits "postile.view.FullScreenView", and use "html_segment" property to represent the HTML that need to be loaded into document.body
@@ -40,6 +42,8 @@ just put your fucking things into this.container, and use "open" and "close" if 
 the "open: functon will receive a parameter indicating the reference element and container element of the tip view. If the reference element is not set, the parent element of the reference element will be used
 
 directly set "container.style.left" and "container.style.top" to further offset the container
+
+can set onclose method
 
 */
 
@@ -159,6 +163,7 @@ postile.view.PopView.prototype.addCloseButton = function(view) {
  * Hides itself and detachs event handlers.
  */
 postile.view.PopView.prototype.close = function() {
+    if (this.onclose) { this.onclose(); }
     goog.dom.removeNode(this.mask);
     goog.events.unlisten(document, goog.events.EventType.KEYUP, this.esc);
 }
