@@ -9,8 +9,8 @@ postile.locale.en.text = {
     mask_for_creating_post: 'Click & Drag to add a post. Double click again to quit',
     mask_for_picking_post: 'Click to select a post to link to',
     linked: 'LINKED',
-    submit_edit: 'Submit'
-    //select_a_post: 'Click to select a post'
+    submit_edit: 'Submit',
+    drag_here: 'Drag Here'
 };
 
 postile.locale.en.date = {
@@ -29,8 +29,10 @@ postile.locale.zh_CN.text = {
     post_title_prompt: '标题（选填）',
     post_zone_illegal: '您选择的区域不合法。请重新选择',
     mask_for_creating_post: '拖拽发帖、双击返回',
-    linked: '已链接'
-    //select_a_post: '点击选择帖子'
+    mask_for_picking_post: '请点击选择要链接的帖子',
+    linked: '已链接',
+    submit_edit: '保存更改',
+    drag_here: '拖拽至此处'
 };
 
 postile.locale.zh_CN.date = {
@@ -42,8 +44,10 @@ postile.locale.zh_TW.text = {
     post_title_prompt: '標題（可選）',
     post_zone_illegal: '這尼瑪不可以的……重新選擇區域去！',
     mask_for_creating_post: '拖拽創建新post、雙擊返回瀏覽',
-    linked: '已鏈接'
-    //select_a_post: '點擊選擇post'
+    mask_for_picking_post: '請點擊選擇要鏈接的帖子',
+    linked: '已鏈接',
+    submit_edit: '保存更改',
+    drag_here: '拖拽至此處'
 };
 
 postile.locale.zh_TW.date = {
