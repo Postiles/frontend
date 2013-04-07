@@ -131,14 +131,17 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
 
     /* Adding a background for image post */
 
-    if(this.image){
+    console.log(this.post);
+    if(this.post.image_url){
         console.log("image Post");
-        this.post_content_el.style.backgroundImage = 'url(' + postile.conf.uploadsResource(this.image) + ')';
+        this.post_content_el.style.backgroundImage = 'url(' + postile.conf.uploadsResource([this.post.image_url]) + ')';
         this.post_content_el.style.width = '100%';
         this.post_content_el.style.height = '100%';
         this.post_content_el.style.backgroundSize = 'cover';
         //this.post_content_el.style.background-position = 'center';
-    }else {
+    }else if(this.post.video_url){
+
+    } else {
 
     
     /* end of image post part */
