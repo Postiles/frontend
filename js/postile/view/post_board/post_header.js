@@ -32,21 +32,13 @@ postile.view.post_board.Header = function(board) {
     this.topicImg_el = postile.dom.getDescendantByClass(this.topicImgContainer_el, 'topic_image');
     this.topicImg_el.src = postile.conf.uploadsResource( [this.board.boardData.image_small_url] );
 
-    goog.events.listen(this.topicImg_el, goog.events.EventType.CLICK, function(e) {
-        var profileView = new postile.view.profile.ProfileView(localStorage.postile_user_id);
-    });
-
     this.usernameText_el = postile.dom.getDescendantById(instance.container, 'username_text');
     this.usernameText_el.innerHTML = this.board.userData.username;
 
-    /* Fei Pure for testing 
-    this.imageUploadPop = new postile.view.image_upload.ImageUploadBlock(this);
     goog.events.listen(this.usernameText_el, goog.events.EventType.CLICK, function(e) {
-        e.stopPropagation();
-        this.imageUploadPop.open(300);
-    }.bind(this));
+        new postile.view.profile.ProfileView(localStorage.postile_user_id);
+    });
 
-*/
     /* settings button */
     this.settingButton_el = postile.dom.getDescendantById(instance.container, 'setting_button');
 
@@ -57,10 +49,13 @@ postile.view.post_board.Header = function(board) {
     });
 
     /* testing end */
-
     this.profileImageContainer_el = postile.dom.getDescendantById(instance.container, 'profile_image_container');
     this.profileImageContainerImg_el = goog.dom.getElementByClass('image', this.profileImageContainer_el);
     this.profileImageContainerImg_el.src = postile.conf.uploadsResource([ this.board.userData.image_small_url ]);
+
+    goog.events.listen(this.profileImageContainerImg_el, goog.events.EventType.CLICK, function(e) {
+        new postile.view.profile.ProfileView(localStorage.postile_user_id);
+    });
 
     this.alert_wrapper = goog.dom.createDom('div', 'notificatoin_number_wrapper');
     goog.dom.appendChild(this.container, this.alert_wrapper);

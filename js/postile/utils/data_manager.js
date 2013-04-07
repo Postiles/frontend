@@ -27,3 +27,7 @@ postile.data_manager.getUserData = function(user_id, callback) {
         });
     }
 }
+
+postile.data_manager.markDataDirty = function(user_id) {
+    postile.data_manager.userData[user_id] = null;
+}
