@@ -11,6 +11,8 @@ goog.require('postile.view');
  */
 postile.view.post.PostExpand = function(data) {
     var instance = this;
+    
+    this.in_edit = false;
 
     // parent's constructor
     postile.view.PopView.call(this);
@@ -37,11 +39,15 @@ postile.view.post.PostExpand = function(data) {
 
     this.content_el = goog.dom.getElementByClass('content', this.post_el);
     this.content_el.innerHTML = this.postData.content;
+    
+    goog.events.listen(this.content_el, goog.events.EventType.CLICK, function() {
+        instance.edit();
+    });
 
     this.initComments();
     this.addCloseButton(this.post_el);
 
-    this.open(880);
+    this.open(860);
 }
 
 goog.inherits(postile.view.post.PostExpand, postile.view.PopView);
@@ -103,4 +109,20 @@ postile.view.post.PostExpand.prototype.renderComment = function(cmt) {
         content_el.innerHTML = cmt.content;
         
     }.bind(this));
+}
+
+postile.view.post.PostExpand.prototype.edit = function() {
+
+    var instance = this;
+    
+    if (this.in_edit) { return; }
+    
+    this.in_edit = true;
+    
+    postile.ajax(['post','start_edit'], { post_id: this.post.id }, function() {
+    
+        new postile.WYSIWYF.Editor(instance.content_el, goog.dom.getElementByClass('toolbar', instance.post_el));
+    
+    }
+    
 }
