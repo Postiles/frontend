@@ -69,7 +69,10 @@ postile.view.video_upload.VideoUpload.prototype.showPreview = function(){
 		this.close();
 	}.bind(this));
 	goog.events.listen(this.ok_button, goog.events.EventType.CLICK, function(){
-		// TODO create a post with this video
+		if (postile.router.current_view instanceof postile.view.post_board.PostBoard) {
+            console.log(postile.router.current_view);
+            postile.router.current_view.postCreator.open('video_place_holder', embedCode);
+        }
 	}.bind(this));
 
 }

@@ -116,6 +116,15 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
     // display proper number of characters for content
     this.set_max_displayable_content();
 
+    /* Adding a background for image post */
+    if(this.image){
+        this.image_wrapper = goog.dom.createDom("div", "image_wrapper");
+
+    }
+
+
+    /* end of image post part */
+
     // post bottom
     this.post_bottom_el = goog.dom.createDom("div", "post_bottom");
     goog.dom.appendChild(this.container_el, this.post_bottom_el);

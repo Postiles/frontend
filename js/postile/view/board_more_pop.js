@@ -24,6 +24,7 @@ postile.view.board_more_pop.BoardMorePop = function(input_instance) {
     goog.events.listen(more_photo_button, goog.events.EventType.CLICK, function(e) {
         e.stopPropagation(); 
         this.imageUploadPop.open(this);
+        postile.uploader.upload_path = 'post_image';
     }.bind(this));  
 
 

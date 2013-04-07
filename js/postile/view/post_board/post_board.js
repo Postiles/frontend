@@ -887,6 +887,17 @@ postile.view.post_board.PostBoard.prototype.createPost = function(info) {
     });
 }
 
+postile.view.post_board.PostBoard.prototype.createImagePost = function(info, image_uri){
+    var req = goog.object.clone(info);
+    var ret = goog.object.clone(info);
+    var instance = this;
+    req.board_id = this.board_id;
+
+    postile.ajax(['post', 'new'], req, function(data) {
+        instance.renderArray([ { post: data.message.post, creator: data.message.creator, image: image_uri } ]);
+    });
+}
+
 postile.view.post_board.PostBoard.prototype.removePost = function(id) {
     if (this.currentPosts[id].wrap_el) {
         goog.dom.removeNode(this.currentPosts[id].wrap_el); //remove original element
