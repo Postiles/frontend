@@ -80,9 +80,9 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
     }
 
     // listen for title click event, open post expand view
-    this.post_expand_listener = new postile.events.EventHandler(this.post_title_el,
-            goog.events.EventType.CLICK, function(e) {
-        var postExpand = new postile.view.post.PostExpand(instance.post);
+    this.post_expand_listener = new postile.events.EventHandler(this.post_title_el, goog.events.EventType.CLICK, function(e) {
+            var postExpand = new postile.view.post.PostExpand(instance.post);
+            postExpand.open();
     });
     this.post_expand_listener.listen();
 
@@ -511,6 +511,7 @@ postile.view.post_in_board.Post.prototype.submitEdit = function(to_submit) {
     instance.disable();
 
     postile.ajax(['post','submit_change'], to_submit, function(data) {
+        instance.in_edit = false;
         instance.enable();
         instance.render(data.message);
         // submit_waiting.abort();
@@ -525,8 +526,7 @@ postile.view.post_in_board.Post.prototype.submitEdit = function(to_submit) {
                     instance.removeFromBoard();
                 } else {
                     revert_waiting.abort();
-                    postile.ajax(['post','submit_change'], { post_id: the_id, content: original_value, title: original_title },
-                                 function(data) {
+                    postile.ajax(['post','submit_change'], { post_id: the_id, content: original_value, title: original_title }, function(data) {
                         revert_submit_waiting.abort();
                         instance.enable();
                         instance.render(data.message);
@@ -555,7 +555,7 @@ postile.view.post_in_board.Post.prototype.removeFromBoard = function() {
     */
 }
 
-postile.view.post_in_board.Post.prototype.edit = function(isNew) {
+postile.view.post_in_board.Post.prototype.edit = function() {
     if (this.in_edit) {
         return;
     }
@@ -569,12 +569,11 @@ postile.view.post_in_board.Post.prototype.edit = function(isNew) {
         instance.author_profile_display_listener.unlisten();
 
         // remove effects in the view mode
-        instance.post_title_el.style.cursor = 'auto';
         instance.post_title_el.style.textDecoration = 'none';
 
         // reset title and content in case they are chomped
-        instance.post_title_el.innerHTML = instance.post.title;
-        instance.post_content_el.innerHTML = instance.post.content;
+        instance.post_title_el.innerHTML = postile.parseBBcode(instance.post.title);
+        instance.post_content_el.innerHTML = postile.parseBBcode(instance.post.content);
 
         goog.dom.classes.add(instance.post_title_el, 'selectable');
         goog.dom.classes.add(instance.post_content_el, 'selectable');
@@ -596,11 +595,9 @@ postile.view.post_in_board.Post.prototype.edit = function(isNew) {
         instance.comment_preview_el.style.display = 'none' // hide comment preview
 
         // set placeholders for title and content views
-        postile.ui.makeLabeledInput(instance.post_content_el, '(ctrl + enter to submit)',
-                'half_opaque');
+        postile.ui.makeLabeledInput(instance.post_content_el, '(ctrl + enter to submit)', 'half_opaque');
 
-        postile.ui.makeLabeledInput(instance.post_title_el, postile._('post_title_prompt'),
-                'half_opaque', function() {
+        postile.ui.makeLabeledInput(instance.post_title_el, postile._('post_title_prompt'), 'half_opaque', function() {
             instance.post_content_el.focus(); // when enter is pressd, change focus to content
         });
 
@@ -610,13 +607,10 @@ postile.view.post_in_board.Post.prototype.edit = function(isNew) {
         instance.board.disableMovingCanvas = true; //disable moving
         instance.enable();
 
-        var contentKeydownHandler = new postile.events.EventHandler(instance.post_content_el,
-            goog.events.EventType.KEYDOWN, function(e) {
+        var contentKeydownHandler = new postile.events.EventHandler(instance.post_content_el, goog.events.EventType.KEYDOWN, function(e) {
             // when user presses 'ctrl + enter', submit edit
             if (e.keyCode == 13 && e.ctrlKey) {
-                instance.submitEdit({ post_id: instance.post.id, content: y_editor.getBbCode(),
-                                    title: instance.post_title_el.innerHTML ==  postile._('post_title_prompt') ? '' : instance.post_title_el.innerHTML }, function() { instance.in_edit = false; });
-
+                instance.submitEdit({ post_id: instance.post.id, content: y_editor.getBbCode(), title: instance.post_title_el.innerHTML ==  postile._('post_title_prompt') ? '' : instance.post_title_el.innerHTML });
                 contentKeydownHandler.unlisten();
                 return false;
             }
