@@ -55,7 +55,7 @@ postile.view.post.PostExpand.prototype.open = function() {
     this.initComments();
     this.addCloseButton(this.post_el);
 
-    postile.view.post.PostExpand.prototype.open.call(this, 960);
+    postile.view.PopView.prototype.open.call(this, 960);
     
 };
 

@@ -80,8 +80,7 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
     }
 
     // listen for title click event, open post expand view
-    this.post_expand_listener = new postile.events.EventHandler(this.post_title_el,
-            goog.events.EventType.CLICK, function(e) {
+    this.post_expand_listener = new postile.events.EventHandler(this.post_title_el, goog.events.EventType.CLICK, function(e) {
             var postExpand = new postile.view.post.PostExpand(instance.post);
             postExpand.open();
     });
