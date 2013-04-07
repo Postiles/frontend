@@ -203,7 +203,7 @@ postile.view.FullScreenView.prototype.html_segment = null;
 
 /**
  * Smaller view. Known subclasses are inline comment view and post
- * deletion confirmation dialog.
+ * deletion confirmation dialog, notification
  * @constructor
  */
 postile.view.TipView = function() {
@@ -227,7 +227,8 @@ postile.view.TipView = function() {
 
     // When user clicks on this view: prevent its parent from
     // receiving the event.
-    this.container_handler = new postile.events.EventHandler(this.container, goog.events.EventType.CLICK, function(evt){
+    this.container_handler = new postile.events.EventHandler(
+        this.container, goog.events.EventType.CLICK, function(evt){
         evt.stopPropagation();
     });
 }
