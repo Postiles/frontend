@@ -8,7 +8,8 @@ postile.locale.en.text = {
     post_zone_illegal: 'The zone you chose was illegal. Please reselect one.',
     mask_for_creating_post: 'Click & Drag to add a post. Double click again to quit',
     mask_for_picking_post: 'Click to select a post to link to',
-    linked: 'LINKED'
+    linked: 'LINKED',
+    submit_edit: 'Submit'
     //select_a_post: 'Click to select a post'
 };
 

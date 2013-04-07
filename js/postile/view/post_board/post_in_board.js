@@ -83,9 +83,9 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
     }
 
     // listen for title click event, open post expand view
-    this.post_expand_listener = new postile.events.EventHandler(this.post_title_el,
-            goog.events.EventType.CLICK, function(e) {
-        var postExpand = new postile.view.post.PostExpand(instance.post);
+    this.post_expand_listener = new postile.events.EventHandler(this.post_title_el, goog.events.EventType.CLICK, function(e) {
+            var postExpand = new postile.view.post.PostExpand(instance.post);
+            postExpand.open();
     });
     this.post_expand_listener.listen();
 
@@ -111,6 +111,7 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
 
     this.post_icon_container_init();
 
+    /* set content parts */
     this.post_content_el = goog.dom.createDom("div", "post_content");
     goog.dom.appendChild(this.inner_container_el, this.post_content_el);
 
@@ -542,6 +543,7 @@ postile.view.post_in_board.Post.prototype.submitEdit = function(to_submit) {
     instance.disable();
 
     postile.ajax(['post','submit_change'], to_submit, function(data) {
+        instance.in_edit = false;
         instance.enable();
         instance.render(data.message);
         // submit_waiting.abort();
@@ -586,7 +588,7 @@ postile.view.post_in_board.Post.prototype.removeFromBoard = function() {
     */
 }
 
-postile.view.post_in_board.Post.prototype.edit = function(isNew) {
+postile.view.post_in_board.Post.prototype.edit = function() {
     if (this.in_edit) {
         return;
     }
@@ -600,12 +602,11 @@ postile.view.post_in_board.Post.prototype.edit = function(isNew) {
         instance.author_profile_display_listener.unlisten();
 
         // remove effects in the view mode
-        instance.post_title_el.style.cursor = 'auto';
         instance.post_title_el.style.textDecoration = 'none';
 
         // reset title and content in case they are chomped
-        instance.post_title_el.innerHTML = instance.post.title;
-        instance.post_content_el.innerHTML = instance.post.content;
+        instance.post_title_el.innerHTML = postile.parseBBcode(instance.post.title);
+        instance.post_content_el.innerHTML = postile.parseBBcode(instance.post.content);
 
         goog.dom.classes.add(instance.post_title_el, 'selectable');
         goog.dom.classes.add(instance.post_content_el, 'selectable');
