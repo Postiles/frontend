@@ -57,13 +57,16 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
     this.container_el = goog.dom.createDom('div', 'post_container');
     goog.dom.appendChild(this.wrap_el, this.container_el);
 
+    this.inner_container_el = goog.dom.createDom('div', 'post_inner_container');
+    goog.dom.appendChild(this.container_el, this.inner_container_el);
+
     goog.events.listen(this.container_el, goog.events.EventType.DBLCLICK, function(e) {
         e.stopPropagation(); // prevent displaying mask by stopping event propagation
     });
 
     /* set top parts */
     this.post_top_el = goog.dom.createDom("div", "post_top");
-    goog.dom.appendChild(this.container_el, this.post_top_el);
+    goog.dom.appendChild(this.inner_container_el, this.post_top_el);
 
     this.post_title_el = goog.dom.createDom("div", "post_title");
     goog.dom.appendChild(this.post_top_el, this.post_title_el);
@@ -99,9 +102,23 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
     // display proper number of characters for title
     this.set_max_displayable_top();
 
+    this.post_middle_container = goog.dom.createDom('div', 'post_middle_container');
+    goog.dom.appendChild(this.inner_container_el, this.post_middle_container);
+
+    // icon container
+    this.post_icon_container_el = goog.dom.createDom("div", "post_icon_container");
+    goog.dom.appendChild(this.post_middle_container, this.post_icon_container_el);
+
+    this.post_icon_container_init();
+
     /* set content parts */
     this.post_content_el = goog.dom.createDom("div", "post_content");
+<<<<<<< HEAD
     goog.dom.appendChild(this.container_el, this.post_content_el);
+=======
+    goog.dom.appendChild(this.inner_container_el, this.post_content_el);
+    this.post_content_el.innerHTML = postile.parseBBcode(this.post.content);
+>>>>>>> post style changed
 
     postile.data_manager.getUserData(this.post.creator_id, function(data) {
         this.creator = data;
@@ -136,10 +153,6 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
     this.post_bottom_el = goog.dom.createDom("div", "post_bottom");
     goog.dom.appendChild(this.container_el, this.post_bottom_el);
 
-    // icon container
-    this.post_icon_container_el = goog.dom.createDom("div", "post_icon_container");
-    goog.dom.appendChild(this.post_bottom_el, this.post_icon_container_el);
-
     if (this.post.creator_id == localStorage.postile_user_id) { //created by current user, can edit
         goog.events.listen(this.post_content_el, goog.events.EventType.CLICK, function() {
             instance.edit();
@@ -147,8 +160,6 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
     }
 
     // this.extra_button_view_init();
-
-    this.post_icon_container_init();
 
     this.comment_preview_init();
 
@@ -342,9 +353,11 @@ postile.view.post_in_board.Post.prototype.post_icon_container_init = function() 
 
     // addIcon("share");
 
+    /*
     goog.events.listen(addIcon("comment"), goog.events.EventType.CLICK, function() {
         instance.inline_comments_block = new postile.view.post_in_board.InlineCommentsBlock(instance);
     });
+    */
 }
 
 postile.view.post_in_board.Post.prototype.comment_preview_init = function() {
@@ -371,10 +384,9 @@ postile.view.post_in_board.Post.prototype.comment_preview_init = function() {
     // content
     this.comment_preview_content_el = goog.dom.createDom('span', 'comment_preview_content');
     goog.dom.appendChild(this.comment_preview_el, this.comment_preview_content_el);
+    goog.dom.appendChild(this.post_bottom_el, this.comment_preview_el);
 
     if (this.inline_comments && this.inline_comments.length > 0) { // at least one comment
-        goog.dom.appendChild(this.post_bottom_el, this.comment_preview_el);
-
         this.comment_preview_middle_el.innerHTML = ': ';
 
         var index = this.inline_comments.length - 1; // display latest comment
@@ -388,6 +400,29 @@ postile.view.post_in_board.Post.prototype.comment_preview_init = function() {
 
         this.comment_preview_content_el.innerHTML = content;
         this.set_max_displayable_comment_preview(content);
+
+        this.comment_container_el = goog.dom.createDom('div', 'comment_container');
+        goog.dom.appendChild(this.post_bottom_el, this.comment_container_el);
+
+        // expand inline comments
+        goog.events.listen(this.comment_preview_content_el, goog.events.EventType.CLICK, function(e) {
+            this.comment_container_el.style.height = this.wrap_el.offsetHeight - 25 + 'px';
+            this.comment_container_el.style.display = 'block';
+
+            this.renderInlineComments();
+        }.bind(this));
+
+    } else { // no inline comments
+        this.comment_preview_content_el.innerHTML = 'click here to comment';
+        this.comment_preview_content_el.style.opacity = '0.4';
+        this.comment_preview_content_el.style.cursor = 'pointer';
+    }
+}
+
+postile.view.post_in_board.Post.prototype.renderInlineComments = function(content) {
+    for (var i in this.inline_comments) {
+        var cmt = new postile.view.post_in_board.InlineComment(
+                this.comment_container_el, this.inline_comments[i]);
     }
 }
 
@@ -688,24 +723,31 @@ postile.view.post_in_board.InlineCommentsBlock = function(postObj) {
 
 goog.inherits(postile.view.post_in_board.InlineCommentsBlock, postile.view.TipView);
 
-/*return the container element*/
+/* return the container element */
 postile.view.post_in_board.InlineComment = function(icb, single_comment_data) {
-    this.comment_container = goog.dom.createDom("div", "past_comment");
-    var tmp_el;
-    tmp_el = goog.dom.createDom("p", "name");
+    this.comment_container = goog.dom.createDom("div", "post_comment");
 
     postile.data_manager.getUserData(single_comment_data.inline_comment.creator_id, function(data) {
-        tmp_el.innerHTML = data.username + ' says: ';
-        goog.dom.appendChild(this.comment_container, tmp_el);
+        this.name_content_container_el = goog.dom.createDom('div', 'name_content_container');
+        goog.dom.appendChild(this.comment_container, this.name_content_container_el);
 
-        tmp_el = goog.dom.createDom("p", "time");
-        tmp_el.innerHTML = postile.date(single_comment_data.inline_comment.created_at, 'inline');
-        goog.dom.appendChild(this.comment_container, tmp_el);
+        this.name_el = goog.dom.createDom("span", "comment_name");
+        this.name_el.innerHTML = data.username;
+        goog.dom.appendChild(this.name_content_container_el, this.name_el);
 
-        tmp_el = goog.dom.createDom("p", "comment");
-        tmp_el.innerHTML = single_comment_data.inline_comment.content.replace(/ @(\d+)/g, '<span class="at_person" at-person="$1">@[Username pending]</span>');
+        this.middle_el = goog.dom.createDom('span', 'comment_middle');
+        this.middle_el.innerHTML = 'says:';
+        goog.dom.appendChild(this.name_content_container_el, this.middle_el);
 
-        var all_atp = postile.dom.getDescendantsByCondition(tmp_el, function(el) {
+        this.content_el = goog.dom.createDom("span", "comment_content");
+        this.content_el.innerHTML = single_comment_data.inline_comment.content.replace(/ @(\d+)/g, '<span class="at_person" at-person="$1">@[Username pending]</span>');
+        goog.dom.appendChild(this.name_content_container_el, this.content_el);
+
+        this.time_el = goog.dom.createDom("span", "comment_time");
+        this.time_el.innerHTML = postile.date(single_comment_data.inline_comment.created_at, 'inline');
+        goog.dom.appendChild(this.comment_container, this.time_el);
+
+        var all_atp = postile.dom.getDescendantsByCondition(this.content_el, function(el) {
             return el.tagName && el.tagName.toUpperCase() == 'SPAN' && el.className == 'at_person';
         });
 
@@ -713,8 +755,7 @@ postile.view.post_in_board.InlineComment = function(icb, single_comment_data) {
             fetchUsername(all_atp[i]);
         }
 
-        goog.dom.appendChild(this.comment_container, tmp_el);
-        goog.dom.appendChild(icb.comments_container, this.comment_container);
+        goog.dom.appendChild(icb, this.comment_container);
 
     }.bind(this));
 }

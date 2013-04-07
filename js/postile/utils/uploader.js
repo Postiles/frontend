@@ -93,7 +93,11 @@ postile.uploader.submit = function(){ //  TODO check if browser is good
 
 
                 
+<<<<<<< HEAD
             } else if(postile.uploader.upload_path == 'post_image') {
+=======
+            } else if(posile.uploader.upload_path == 'user_upload') {
+>>>>>>> post style changed
                 //TODO a handler to handle normal user upload
 
                 if (postile.router.current_view instanceof postile.view.post_board.PostBoard) {
