@@ -32,7 +32,6 @@ postile.view.image_upload.ImageUploadBlock = function(input_instance) {
 	goog.dom.appendChild(this.uploadWord, goog.dom.createDom('span', 'upload_drag_here', postile._('drag_here')));
 	goog.dom.appendChild(this.uploadWord, goog.dom.createDom('span', 'upload_or', 'OR'));
 
-
 	/* do not have logic in view, give everything for js to uploader to handle */
 	var fakefile = goog.dom.createDom('div',{'class': 'fileinputs'});
 	this.fileInput = goog.dom.createDom('input',{'class': 'file', 'name': 'image', 'type':'file'});

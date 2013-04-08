@@ -136,6 +136,7 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
         /* end of image post part */
 
         this.post_content_el.innerHTML = postile.parseBBcode(this.post.content);
+        postile.bbcodePostProcess(this.post_content_el);
 
         // display proper number of characters for content
         this.set_max_displayable_content();
@@ -605,8 +606,9 @@ postile.view.post_in_board.Post.prototype.edit = function() {
         instance.post_title_el.style.textDecoration = 'none';
 
         // reset title and content in case they are chomped
-        instance.post_title_el.innerHTML = postile.parseBBcode(instance.post.title);
+        instance.post_title_el.innerHTML = instance.post.title;
         instance.post_content_el.innerHTML = postile.parseBBcode(instance.post.content);
+        postile.bbcodePostProcess(instance.post_content_el);
 
         goog.dom.classes.add(instance.post_title_el, 'selectable');
         goog.dom.classes.add(instance.post_content_el, 'selectable');
