@@ -48,14 +48,25 @@ postile.view.post.PostExpand.prototype.open = function() {
     this.toolbar = goog.dom.getElementByClass('toolbar', instance.post_el);
 
     this.content_el = goog.dom.getElementByClass('content', this.post_el);
-    this.content_el.innerHTML = postile.parseBBcode(this.postData.content);
+    
+    if (this.postData.image_url) {
+    
+        this.img_el = goog.dom.createDom('img');
+        this.img_el.src = postile.conf.uploadsResource([this.postData.image_url]);
+        
+        goog.dom.appendChild(this.content_el, this.img_el);
+    
+    } else {
 
-    if (this.postData.creator_id == localStorage.postile_user_id) { //created by current user, can edit
-        goog.events.listen(this.content_el, goog.events.EventType.CLICK, function() {
-            instance.edit();
-        });
+        this.content_el.innerHTML = postile.parseBBcode(this.postData.content);
+
+        if (this.postData.creator_id == localStorage.postile_user_id) { //created by current user, can edit
+            goog.events.listen(this.content_el, goog.events.EventType.CLICK, function() {
+                instance.edit();
+            });
+        }
     }
-
+    
     this.initComments();
     this.addCloseButton(this.post_el);
 
