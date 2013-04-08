@@ -38,8 +38,8 @@ goog.require('postile.view.post_board.post_picker');
  * Smallest unit size for a post, in pixel.
  * @const
  */
-postile.view.post_board.POST_WIDTH = 80;
-postile.view.post_board.POST_HEIGHT = 60;
+postile.view.post_board.POST_WIDTH = 100;
+postile.view.post_board.POST_HEIGHT = 80;
 postile.view.post_board.POST_MARGIN = 4;
 
 /**
@@ -216,7 +216,7 @@ postile.view.post_board.PostBoard = function(board_id) {
      * The size of the canvas currently.
      * @type {Array.<number>}
      */
-    this.canvasSize = [3872, 2592];
+    this.canvasSize = [5000, 4000];
 
     /**
      * "The animation for the outbound shadow."
@@ -840,6 +840,7 @@ postile.view.post_board.PostBoard.prototype.renderById = function(pid, callback)
  * @param {Object} data Faye response
  */
 postile.view.post_board.PostBoard.prototype.fayeHandler = function(status, data) {
+    console.log(data);
     switch (status) {
         case postile.view.post_board.faye_status.FINISH:
             // Someone (could be this user) finished editing a post.

@@ -80,6 +80,7 @@ postile.view.post.PostExpand.prototype.initComments = function() {
                             content: this.commentArea_el.innerHTML
                         }, function(data) {
                             this.renderComment(data.message.inline_comment);
+                            this.commentArea_el.innerHTML = '';
                         }.bind(this));
             }.bind(this));
 

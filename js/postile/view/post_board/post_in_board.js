@@ -389,22 +389,49 @@ postile.view.post_in_board.Post.prototype.comment_preview_init = function() {
         var content = this.inline_comments[index].inline_comment.content;
 
         this.comment_preview_content_el.innerHTML = content;
-        this.set_max_displayable_comment_preview(content);
+        // this.set_max_displayable_comment_preview(content);
 
         this.comment_container_el = goog.dom.createDom('div', 'comment_container');
         goog.dom.appendChild(this.post_bottom_el, this.comment_container_el);
 
+        /*
+        this.comment_container_top_el = goog.dom.createDom('div', 'comment_container_top');
+        goog.dom.appendChild(this.comment_container_el, this.comment_container_top_el);
+
         this.comment_list_close_button_el = goog.dom.createDom('div', 'comment_list_close_button');
-        goog.dom.appendChild(this.comment_container_el, this.comment_list_close_button_el);
-        this.comment_list_close_button_el.innerHTML = 'close';
+        goog.dom.appendChild(this.comment_container_top_el, this.comment_list_close_button_el);
+        goog.events.listen(this.comment_list_close_button_el, goog.events.EventType.CLICK, function(e) {
+            this.comment_container_el.style.display = 'none';
+        }.bind(this));
+        */
 
         this.comment_list_el = goog.dom.createDom('div', 'comment_list');
         goog.dom.appendChild(this.comment_container_el, this.comment_list_el);
+
+        this.comment_container_items_el = goog.dom.createDom('div', 'comment_container_items');
+        goog.dom.appendChild(this.comment_list_el, this.comment_container_items_el);
+
+        this.comment_container_bottom_el = goog.dom.createDom('div', 'comment_container_bottom');
+        goog.dom.appendChild(this.comment_container_el, this.comment_container_bottom_el);
+
+        this.comment_container_input_el = goog.dom.createDom('input', 'comment_container_input');
+        this.comment_container_input_el.style.width = this.wrap_el.offsetWidth - 60 + 'px';
+        this.comment_container_input_el.placeholder = 'enter your comment here...';
+        goog.dom.appendChild(this.comment_container_bottom_el, this.comment_container_input_el);
+
+        this.comment_list_close_button_el = goog.dom.createDom('div', 'comment_list_close_button');
+        this.comment_list_close_button_el.innerHTML = 'close';
+        goog.dom.appendChild(this.comment_container_bottom_el, this.comment_list_close_button_el);
+        goog.events.listen(this.comment_list_close_button_el, goog.events.EventType.CLICK, function(e) {
+            this.comment_container_el.style.display = 'none';
+        }.bind(this));
 
         // expand inline comments
         goog.events.listen(this.comment_preview_content_el, goog.events.EventType.CLICK, function(e) {
             this.comment_container_el.style.height = this.wrap_el.offsetHeight - 25 + 'px';
             this.comment_container_el.style.display = 'block';
+
+            this.comment_list_el.style.height = this.wrap_el.offsetHeight - 57 + 'px';
 
             this.renderInlineComments();
         }.bind(this));
@@ -419,7 +446,7 @@ postile.view.post_in_board.Post.prototype.comment_preview_init = function() {
 postile.view.post_in_board.Post.prototype.renderInlineComments = function(content) {
     for (var i in this.inline_comments) {
         var cmt = new postile.view.post_in_board.InlineComment(
-                this.comment_list_el, this.inline_comments[i]);
+                this.comment_container_items_el, this.inline_comments[i]);
     }
 }
 
@@ -479,7 +506,7 @@ postile.view.post_in_board.Post.prototype.resetCommentPreview = function(data) {
             instance.comment_preview_author_el.innerHTML = userData.username;
             instance.comment_preview_middle_el.innerHTML = ': '; // in case there was no comment before
             instance.comment_preview_content_el.innerHTML = data.inline_comment.content;
-            instance.set_max_displayable_comment_preview(data.inline_comment.content);
+            // instance.set_max_displayable_comment_preview(data.inline_comment.content);
 
             fadein = setInterval(function() {
                 opacity += 0.1;

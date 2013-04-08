@@ -515,19 +515,29 @@ html, body {
   width: 100%;
   background: #cfdade;
   display: none;
-  overflow-y: scroll;
 }
 
-.comment_list_close_button {
-  /* background: url('close-comment-arrow-down.png'); */
+.comment_container_top {
+  width: 100%;
+  height: 18px;
+}
+
+.comment_list_close_button:hover {
+  opacity: 0.7;
 }
 
 .comment_list {
+  margin-top: 4px;
+  overflow-y: scroll;
 }
 
 .post_comment {
   overflow: hidden;
   margin: 4px 8px;
+}
+
+.post_comment:first-child {
+  margin-top: 0px;
 }
 
 .name_content_container {
@@ -558,6 +568,30 @@ html, body {
   color: #999;
   margin-top: 3px;
 }
+
+.comment_container_bottom {
+  height: 24px;
+}
+
+.comment_container_input {
+  margin-top: 2px;
+  margin-left: 8px;
+  padding: 0px 5px;
+  height: 20px;
+  border: none;
+  outline: none;
+  resize: none;
+  background: whitesmoke;
+}
+
+.comment_list_close_button {
+  position: relative;
+  right: 5px;
+  top: 4px;
+  float: right;
+  cursor: pointer;
+}
+
 /* end */
 
 .viewport_container {
@@ -578,8 +612,8 @@ html, body {
 }
 
 .canvas {
-  width: 3872px;
-  height: 2592px;
+  width: 5000px;
+  height: 4000px;
   position: absolute;
   background: url(/images/paper_bg.png);
   display: none; }
