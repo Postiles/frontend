@@ -33,6 +33,7 @@ goog.require('postile.view.image_upload');
 goog.require('postile.view.video_upload');
 goog.require('postile.view.search_box');
 goog.require('postile.view.post_board.post_picker');
+goog.require('postile.view.onlinepeople');
 
 /**
  * Smallest unit size for a post, in pixel.
@@ -366,11 +367,17 @@ postile.view.post_board.PostBoard.prototype.initView = function() {
     this.header = new postile.view.post_board.Header(this);
     this.postCreator = new postile.view.post_board.PostCreator(this);
 
+
     goog.dom.appendChild(this.catchall, this.viewport);
     goog.dom.appendChild(this.viewport, this.canvas);
 
     goog.dom.appendChild(goog.dom.getElement("wrapper"), this.header.container);
     goog.dom.appendChild(goog.dom.getElement("wrapper"), this.catchall);
+    // We have to append the header before add the online people bar,
+    // otherwise there is no way to get the size of the header bar.
+    this.onlinepeople = new Object();
+    this.onlinepeople.view = new postile.view.onlinepeople.OnlinePeople(this.header);
+    this.onlinepeople.view.render();
 
     /**
      * Main viewport and canvas
@@ -828,7 +835,7 @@ postile.view.post_board.PostBoard.prototype.renderArray = function(array) {
 postile.view.post_board.PostBoard.prototype.renderById = function(pid, callback) {
     var instance = this;
     postile.ajax(['post', 'get_post'], { post_id: pid }, function(r) {
-        if (r.message.post.board_id != instance.board_id) { 
+        if (r.message.post.board_id != instance.board_id) {
             new postile.toast.Toast(10, "The post is not in the current board. [Click to go] to another board and view.", function() {
                 postile.router.dispatch('board/' + r.message.post.board_id + '#' + pid);
             });
