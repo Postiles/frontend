@@ -41,6 +41,17 @@ postile.dom.getDescendantByClass = function(element, className) {
 }
 
 /**
+ * Find the all nodes in element that has className in its classes,
+ * or null if not found.
+ * @return {Array<Element>}
+ */
+postile.dom.getDescendantsByClass = function(element, className) {
+    return postile.dom.getDescendantsByCondition(element, function(el) {
+        return goog.dom.classes.has(el, className);
+    });
+}
+
+/**
  * Find the element that has the given id, or null if not found.
  * @return {Element}
  */

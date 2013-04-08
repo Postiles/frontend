@@ -129,3 +129,21 @@ MIC: postile.toast
 .half_opaque {
     opacity: 0.5;
 }
+
+/*
+Post 
+*/
+
+.external_link {
+    cursor: pointer;
+    font-style: italic;
+}
+
+.internal_link {
+    background: url(link_icon.png) left no-repeat;
+}
+
+.at_person {
+    color: #024d61;
+    font-style: italic;
+}

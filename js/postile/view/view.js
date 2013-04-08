@@ -12,17 +12,17 @@ goog.require('postile.fx.effects');
 /*
 === How to create a normal view ===
 
-1. have a class inherits "positle.view.NormalView".
+1. Have a class inherits "positle.view.NormalView".
 2. [optional, only when you need to load css] have a "unloaded_stylesheets" in its prototype, which is an array containing css files that need to be loaded.
 
-just put your fucking things into this.container, and use "open" and "close" if needed
+Just put your fucking things into this.container, and use "open" and "close" if needed
 
 === How to create a pop-up view ===
 
-1. have a class inherits "postile.view.PopView".
-2. the same as normal view.
+1. Have a class inherits "postile.view.PopView".
+2. The same as normal view.
 
-just put your fucking things into this.container, and use "open" and "close" if needed
+Just put your fucking things into this.container, and use "open" and "close" if needed
 
 can set onclose method
 
@@ -37,7 +37,7 @@ can set onclose method
 1.  have a class inherits "postile.view.TipView".
 2. the same as normal view
 
-just put your fucking things into this.container, and use "open" and "close" if needed. 
+just put your fucking things into this.container, and use "open" and "close" if needed.
 
 the "open: functon will receive a parameter indicating the reference element and container element of the tip view. If the reference element is not set, the parent element of the reference element will be used
 
@@ -158,7 +158,7 @@ postile.view.PopView.prototype.addCloseButton = function(view) {
         this.close();
     }.bind(this));
 }
-    
+
 /**
  * Hides itself and detachs event handlers.
  */
@@ -203,7 +203,7 @@ postile.view.FullScreenView.prototype.html_segment = null;
 
 /**
  * Smaller view. Known subclasses are inline comment view and post
- * deletion confirmation dialog.
+ * deletion confirmation dialog, notification
  * @constructor
  */
 postile.view.TipView = function() {
@@ -211,7 +211,6 @@ postile.view.TipView = function() {
     var instance = this;
     this.container = goog.dom.createDom('div');
     this.container.style.position = 'absolute';
-    this.container.style.zIndex = '200';
 
     this.container_wrap = goog.dom.createDom('div');
     this.container_wrap.style.position = 'absolute';
@@ -227,7 +226,8 @@ postile.view.TipView = function() {
 
     // When user clicks on this view: prevent its parent from
     // receiving the event.
-    this.container_handler = new postile.events.EventHandler(this.container, goog.events.EventType.CLICK, function(evt){
+    this.container_handler = new postile.events.EventHandler(
+        this.container, goog.events.EventType.CLICK, function(evt){
         evt.stopPropagation();
     });
 }
@@ -259,7 +259,7 @@ postile.view.NormalView = function() {
     this.container = goog.dom.createDom('div');
 }
 
-postile.view.NormalView.prototype.close = function() { 
+postile.view.NormalView.prototype.close = function() {
     goog.dom.removeNode(this.container);
 }
 
