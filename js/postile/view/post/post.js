@@ -59,6 +59,8 @@ postile.view.post.PostExpand.prototype.open = function() {
     } else {
 
         this.content_el.innerHTML = postile.parseBBcode(this.postData.content);
+        
+        postile.bbcodePostProcess(this.content_el);
 
         if (this.postData.creator_id == localStorage.postile_user_id) { //created by current user, can edit
             goog.events.listen(this.content_el, goog.events.EventType.CLICK, function() {
@@ -143,9 +145,6 @@ postile.view.post.PostExpand.prototype.edit = function() {
 
     var actual_tools = goog.dom.createDom('div', 'tools');
 
-    postile.ajax(['post','start_edit'], { post_id: this.post.id }, function() {
-        new postile.WYSIWYF.Editor(instance.content_el, goog.dom.getElementByClass('toolbar', instance.post_el));
-    });
     goog.dom.appendChild(this.toolbar, actual_tools);
 
     var submit_button = goog.dom.createDom('div', 'submit-button');
