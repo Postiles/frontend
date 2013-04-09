@@ -408,8 +408,10 @@ postile.view.post_in_board.Post.prototype.comment_preview_init = function() {
                     content: goog.string.trim(this.comment_container_input_el.value),
                 }, function(data) {
                     var comment = data.message;
+                    console.log('-------------------');
                     console.log('render');
                     console.log(this.inline_comments);
+                    console.log('-------------------');
                     // if (this.inline_comments.indexOf(comment) == -1) {
                     if (!this.inlineCommentRendered(comment)) {
                         // add the new comment to list
@@ -470,6 +472,7 @@ postile.view.post_in_board.Post.prototype.inlineCommentRendered = function(comme
 }
 
 postile.view.post_in_board.Post.prototype.renderInlineComments = function(content) {
+    this.comment_container_items_el.innerHTML = '';
     for (var i in this.inline_comments) {
         var cmt = new postile.view.post_in_board.InlineComment(
                 this.comment_container_items_el, this.inline_comments[i]);

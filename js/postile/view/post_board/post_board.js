@@ -885,8 +885,10 @@ postile.view.post_board.PostBoard.prototype.fayeHandler = function(status, data)
             if (data.inline_comment.post_id in this.currentPosts) {
                 var currPost = this.currentPosts[data.inline_comment.post_id];
                 currPost.resetCommentPreview(data);
+                console.log('-------------------');
                 console.log('faye');
                 console.log(currPost.inline_comments);
+                console.log('-------------------');
                 if (!currPost.inlineCommentRendered(data)) {
                     currPost.inline_comments.push(data);
                     currPost.appendInlineComment(data);
