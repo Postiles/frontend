@@ -7,11 +7,11 @@
   #onlinepeople_container p {
     margin: 0px;
     padding: 0px; }
-  #onlinepeople_container .online_people_bar {
+  #onlinepeople_container #online_people_bar {
     background: #436b77;
     height: 15px;
     color: #FFF; }
-    #onlinepeople_container .online_people_bar p {
+    #onlinepeople_container #online_people_bar p {
       font-size: 12px;
       float: left;
       margin: -0.5px;
