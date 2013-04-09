@@ -58,7 +58,6 @@ postile.view.board_more_pop.OtherBoard = function(in_board_instance) {
         for(i in boardArray) {
             this.renderBoardListItem(boardArray[i]);
         }
-        console.log(data);
     }.bind(this));
     this.container.id = 'other_boards';
     this.container.style.top = '0px';

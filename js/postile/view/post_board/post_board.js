@@ -186,7 +186,6 @@ postile.view.post_board.handlers.keypress = function(instance, e) {
  * @param {string} board_id Unique identifier for a board.
  */
 postile.view.post_board.PostBoard = function(board_id) {
-    console.log(board_id);
 
     var i;
 
@@ -780,7 +779,6 @@ postile.view.post_board.PostBoard.prototype.updateSubscribeArea = function() {
     to_subscribe.board_id = instance.board_id;
     postile.ajax(['board', 'move_to'], to_subscribe, function(data) {
         instance.subscribedArea = to_subscribe;
-        console.log(data);
         instance.renderArray(data.message.posts);
     }, 'Loading posts...', true);
 }
@@ -852,7 +850,6 @@ postile.view.post_board.PostBoard.prototype.renderById = function(pid, callback)
  * @param {Object} data Faye response
  */
 postile.view.post_board.PostBoard.prototype.fayeHandler = function(status, data) {
-    console.log(data);
     switch (status) {
         case postile.view.post_board.faye_status.FINISH:
             // Someone (could be this user) finished editing a post.
@@ -885,10 +882,8 @@ postile.view.post_board.PostBoard.prototype.fayeHandler = function(status, data)
             if (data.inline_comment.post_id in this.currentPosts) {
                 var currPost = this.currentPosts[data.inline_comment.post_id];
                 currPost.resetCommentPreview(data);
-                console.log('-------------------');
-                console.log('faye');
-                console.log(currPost.inline_comments);
-                console.log('-------------------');
+                currPost.hideNoCommentEl();
+
                 if (!currPost.inlineCommentRendered(data)) {
                     currPost.inline_comments.push(data);
                     currPost.appendInlineComment(data);
@@ -920,7 +915,6 @@ postile.view.post_board.PostBoard.prototype.createImagePost = function(info, ima
     var ret = goog.object.clone(info);
     var instance = this;
     req.board_id = this.board_id;
-    console.log("createing Image Post");
 
     postile.ajax(['post', 'new'], req, function(data) {
         instance.renderArray([ { post: data.message.post, creator: data.message.creator} ]);

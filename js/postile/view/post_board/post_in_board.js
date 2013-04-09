@@ -421,6 +421,11 @@ postile.view.post_in_board.Post.prototype.comment_preview_init = function() {
     this.comment_list_el = goog.dom.createDom('div', 'comment_list');
     goog.dom.appendChild(this.comment_container_el, this.comment_list_el);
 
+    // "no comment"
+    this.comment_container_no_comment_el = goog.dom.createDom('div', 'comment_container_no_comment');
+    this.comment_container_no_comment_el.innerHTML = 'no comment yet, be the first one to comment!';
+    goog.dom.appendChild(this.comment_list_el, this.comment_container_no_comment_el);
+
     // comment items
     this.comment_container_items_el = goog.dom.createDom('div', 'comment_container_items');
     goog.dom.appendChild(this.comment_list_el, this.comment_container_items_el);
@@ -443,16 +448,13 @@ postile.view.post_in_board.Post.prototype.comment_preview_init = function() {
                     content: goog.string.trim(this.comment_container_input_el.value),
                 }, function(data) {
                     var comment = data.message;
-                    console.log('-------------------');
-                    console.log('render');
-                    console.log(this.inline_comments);
-                    console.log('-------------------');
-                    // if (this.inline_comments.indexOf(comment) == -1) {
                     if (!this.inlineCommentRendered(comment)) {
                         // add the new comment to list
                         this.inline_comments.push(comment);
                         this.appendInlineComment(comment);
                     }
+
+                    this.hideNoCommentEl();
                 }.bind(this));
 
                 this.comment_container_input_el.value = ''; // clear the input field
@@ -494,7 +496,13 @@ postile.view.post_in_board.Post.prototype.comment_preview_init = function() {
 
         this.comment_list_el.style.height = this.wrap_el.offsetHeight - 57 + 'px';
         this.renderInlineComments();
+
+        this.comment_container_input_el.focus();
     }.bind(this));
+}
+
+postile.view.post_in_board.Post.prototype.hideNoCommentEl = function(comment) {
+    this.comment_container_no_comment_el.style.display = 'none';
 }
 
 postile.view.post_in_board.Post.prototype.inlineCommentRendered = function(comment) {
@@ -507,20 +515,14 @@ postile.view.post_in_board.Post.prototype.inlineCommentRendered = function(comme
 
 postile.view.post_in_board.Post.prototype.renderInlineComments = function(content) {
     this.comment_container_items_el.innerHTML = '';
-    for (var i in this.inline_comments) {
-        var cmt = new postile.view.post_in_board.InlineComment(
-                this.comment_container_items_el, this.inline_comments[i]);
-    }
-    /*
-    this.comment_container_items_el.innerHTML = '';
-    postile.ajax([ 'inline_comment', 'get_inline_comments' ], { post_id: this.post.id }, function(data) {
-        this.inline_comments = data.message.inline_comments;
+    if (this.inline_comments.length != 0) { // has comment
         for (var i in this.inline_comments) {
             var cmt = new postile.view.post_in_board.InlineComment(
                     this.comment_container_items_el, this.inline_comments[i]);
+            this.hideNoCommentEl();
         }
-    }.bind(this));
-    */
+
+    }
 }
 
 postile.view.post_in_board.Post.prototype.appendInlineComment = function(comment) {

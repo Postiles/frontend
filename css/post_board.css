@@ -480,6 +480,11 @@ html, body {
   overflow-y: scroll;
 }
 
+.comment_container_no_comment {
+  color: #999;
+  padding: 0px 10px;
+}
+
 .post_comment {
   overflow: hidden;
   margin: 4px 8px;

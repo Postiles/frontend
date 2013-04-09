@@ -36,7 +36,6 @@ goog.inherits(postile.view.onlinepeople.OnlinePeople, postile.view.TipView);
 
 postile.view.onlinepeople.OnlinePeople.prototype.render = function() {
     var title_bar_bound = goog.style.getBounds(this.title_bar.container);
-    console.log(title_bar_bound);
     var coord = new goog.math.Coordinate(title_bar_bound.width,
                              title_bar_bound.height);
     coord.x = coord.x - this.BAR_WIDTH;
