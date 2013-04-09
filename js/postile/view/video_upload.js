@@ -12,7 +12,6 @@ postile.view.video_upload.VideoUpload = function(input_instance) {
 	
 	this.container.id = 'upload_video_pop';
 	postile.ui.load(this.container, postile.conf.staticResource(['_upload_video.html']));
-	console.log("video called");
 
 	this.preview_button_el = postile.dom.getDescendantByClass(this.container, 'preview_button');
 	this.lower_part_el = postile.dom.getDescendantByClass(this.container, 'upload_video_lower');

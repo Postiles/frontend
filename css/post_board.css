@@ -310,74 +310,27 @@ html, body {
 }
 
 .post_middle_container {
-  margin-top: 4px;
   height: 14px;
 }
 
-.post_icon_container {
-  float: left;
-  display: table-cell;
+.post_like_container {
+    margin-left: 10px;
+    color: #024d61;
 }
 
-.post_icon {
-  float: left;
-  cursor: pointer;
-  margin-right: 8px;
-  width: 13px;
-  height: 13px;
-  background-repeat: no-repeat;
-  position: relative;
-  background-position: center; }
-
-.post_like_icon {
-  background-image: url("../images/like_icon.png"); }
-  
-.post_liked_icon {
-  background-image: url("../images/liked_icon.png"); }
-
-.post_like_count {
-  float: left;
-  margin: 0 6px 0 -14px;
-  padding: 1px 5px 1px 9px;
-  overflow: hidden;
+.post_like_count_el {
+    float: left;
 }
 
-.post_like_count, .post_like_new_count {
-  height: 11px;
-  font-size: 9px;
-  line-height: 11px;
-  background: #c0d7dd;
+.post_like_button {
+    margin-left: 10px;
+    cursor: pointer;
 }
 
-.post_like_new_count {
-  position: relative;
+.post_like_button:hover {
+    text-decoration: underline;
 }
-  
-.post_share_icon {
-  background-image: url("../images/share_icon.png"); }
-
-.post_comment_icon {
-  background-image: url("../images/comment_icon.png"); }
-  
-.post_remove_icon {
-  background-image: url("../images/new_delete.png");
-  position: absolute;
-  width: 20px;
-  height: 20px;
-  right: -10px;
-  top: -10px;
-}
-  
-/*
-  
-.post_edit_icon {
-  background-image: url("../images/edit_icon.png"); }
-  
-.post_delete_icon {
-  background-image: url("../images/delete_icon.png"); }
-
-*/
-  
+ 
 /*
   
 .post_box {
@@ -522,13 +475,14 @@ html, body {
   height: 18px;
 }
 
-.comment_list_close_button:hover {
-  opacity: 0.7;
-}
-
 .comment_list {
   margin-top: 4px;
   overflow-y: scroll;
+}
+
+.comment_container_no_comment {
+  color: #999;
+  padding: 0px 10px;
 }
 
 .post_comment {
@@ -576,8 +530,8 @@ html, body {
 .comment_container_input {
   margin-top: 2px;
   margin-left: 8px;
-  padding: 0px 5px;
-  height: 20px;
+  padding: 2px 5px;
+  height: 16px;
   border: none;
   outline: none;
   resize: none;
@@ -590,6 +544,12 @@ html, body {
   top: 4px;
   float: right;
   cursor: pointer;
+  color: #024d61;
+}
+
+.comment_list_close_button:hover {
+  background: #024d61;
+  color: whitesmoke;
 }
 
 /* end */
