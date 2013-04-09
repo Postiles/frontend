@@ -377,6 +377,60 @@ postile.view.post_in_board.Post.prototype.comment_preview_init = function() {
     goog.dom.appendChild(this.comment_preview_el, this.comment_preview_content_el);
     goog.dom.appendChild(this.post_bottom_el, this.comment_preview_el);
 
+    /* the following code displays all the inline comments in a container */
+    // comment container
+    this.comment_container_el = goog.dom.createDom('div', 'comment_container');
+    goog.dom.appendChild(this.post_bottom_el, this.comment_container_el);
+
+    // comment list
+    this.comment_list_el = goog.dom.createDom('div', 'comment_list');
+    goog.dom.appendChild(this.comment_container_el, this.comment_list_el);
+
+    // comment items
+    this.comment_container_items_el = goog.dom.createDom('div', 'comment_container_items');
+    goog.dom.appendChild(this.comment_list_el, this.comment_container_items_el);
+
+    // bottom (including input and close button)
+    this.comment_container_bottom_el = goog.dom.createDom('div', 'comment_container_bottom');
+    goog.dom.appendChild(this.comment_container_el, this.comment_container_bottom_el);
+
+    // input for new comments
+    this.comment_container_input_el = goog.dom.createDom('input', 'comment_container_input');
+    this.comment_container_input_el.style.width = this.wrap_el.offsetWidth - 60 + 'px';
+    this.comment_container_input_el.placeholder = 'enter your comment here...';
+    goog.dom.appendChild(this.comment_container_bottom_el, this.comment_container_input_el);
+
+    goog.events.listen(this.comment_container_input_el, goog.events.EventType.KEYDOWN, function(e) {
+        if (this.comment_container_input_el.value.length > 0) { // must have something in the input
+            if (e.keyCode == 13) { // enter pressed
+                postile.ajax([ 'inline_comment', 'new' ], {
+                    post_id: this.post.id,
+                    content: goog.string.trim(this.comment_container_input_el.value),
+                }, function(data) {
+                    var comment = data.message;
+                    console.log('render');
+                    console.log(this.inline_comments);
+                    // if (this.inline_comments.indexOf(comment) == -1) {
+                    if (!this.inlineCommentRendered(comment)) {
+                        // add the new comment to list
+                        this.inline_comments.push(comment);
+                        this.appendInlineComment(comment);
+                    }
+                }.bind(this));
+
+                this.comment_container_input_el.value = ''; // clear the input field
+            }
+        }
+    }.bind(this));
+
+    // button that closes comment container
+    this.comment_list_close_button_el = goog.dom.createDom('div', 'comment_list_close_button');
+    this.comment_list_close_button_el.innerHTML = 'close';
+    goog.dom.appendChild(this.comment_container_bottom_el, this.comment_list_close_button_el);
+    goog.events.listen(this.comment_list_close_button_el, goog.events.EventType.CLICK, function(e) {
+        this.comment_container_el.style.display = 'none';
+    }.bind(this));
+
     if (this.inline_comments && this.inline_comments.length > 0) { // at least one comment
         this.comment_preview_middle_el.innerHTML = ': ';
 
@@ -391,57 +445,28 @@ postile.view.post_in_board.Post.prototype.comment_preview_init = function() {
 
         this.comment_preview_content_el.innerHTML = content;
         // this.set_max_displayable_comment_preview(content);
-
-        this.comment_container_el = goog.dom.createDom('div', 'comment_container');
-        goog.dom.appendChild(this.post_bottom_el, this.comment_container_el);
-
-        /*
-        this.comment_container_top_el = goog.dom.createDom('div', 'comment_container_top');
-        goog.dom.appendChild(this.comment_container_el, this.comment_container_top_el);
-
-        this.comment_list_close_button_el = goog.dom.createDom('div', 'comment_list_close_button');
-        goog.dom.appendChild(this.comment_container_top_el, this.comment_list_close_button_el);
-        goog.events.listen(this.comment_list_close_button_el, goog.events.EventType.CLICK, function(e) {
-            this.comment_container_el.style.display = 'none';
-        }.bind(this));
-        */
-
-        this.comment_list_el = goog.dom.createDom('div', 'comment_list');
-        goog.dom.appendChild(this.comment_container_el, this.comment_list_el);
-
-        this.comment_container_items_el = goog.dom.createDom('div', 'comment_container_items');
-        goog.dom.appendChild(this.comment_list_el, this.comment_container_items_el);
-
-        this.comment_container_bottom_el = goog.dom.createDom('div', 'comment_container_bottom');
-        goog.dom.appendChild(this.comment_container_el, this.comment_container_bottom_el);
-
-        this.comment_container_input_el = goog.dom.createDom('input', 'comment_container_input');
-        this.comment_container_input_el.style.width = this.wrap_el.offsetWidth - 60 + 'px';
-        this.comment_container_input_el.placeholder = 'enter your comment here...';
-        goog.dom.appendChild(this.comment_container_bottom_el, this.comment_container_input_el);
-
-        this.comment_list_close_button_el = goog.dom.createDom('div', 'comment_list_close_button');
-        this.comment_list_close_button_el.innerHTML = 'close';
-        goog.dom.appendChild(this.comment_container_bottom_el, this.comment_list_close_button_el);
-        goog.events.listen(this.comment_list_close_button_el, goog.events.EventType.CLICK, function(e) {
-            this.comment_container_el.style.display = 'none';
-        }.bind(this));
-
-        // expand inline comments
-        goog.events.listen(this.comment_preview_content_el, goog.events.EventType.CLICK, function(e) {
-            this.comment_container_el.style.height = this.wrap_el.offsetHeight - 25 + 'px';
-            this.comment_container_el.style.display = 'block';
-
-            this.comment_list_el.style.height = this.wrap_el.offsetHeight - 57 + 'px';
-
-            this.renderInlineComments();
-        }.bind(this));
-
     } else { // no inline comments
         this.comment_preview_content_el.innerHTML = 'click here to comment';
         this.comment_preview_content_el.style.opacity = '0.4';
         this.comment_preview_content_el.style.cursor = 'pointer';
     }
+
+    // comment preview clicked, open comment container
+    goog.events.listen(this.comment_preview_el, goog.events.EventType.CLICK, function(e) {
+        this.comment_container_el.style.height = this.wrap_el.offsetHeight - 25 + 'px';
+        this.comment_container_el.style.display = 'block';
+
+        this.comment_list_el.style.height = this.wrap_el.offsetHeight - 57 + 'px';
+        this.renderInlineComments();
+    }.bind(this));
+}
+
+postile.view.post_in_board.Post.prototype.inlineCommentRendered = function(comment) {
+    var comment_ids = this.inline_comments.map(function(c) {
+        return c.inline_comment.id;
+    });
+
+    return (comment_ids.indexOf(comment.inline_comment.id) != -1);
 }
 
 postile.view.post_in_board.Post.prototype.renderInlineComments = function(content) {
@@ -449,6 +474,21 @@ postile.view.post_in_board.Post.prototype.renderInlineComments = function(conten
         var cmt = new postile.view.post_in_board.InlineComment(
                 this.comment_container_items_el, this.inline_comments[i]);
     }
+    /*
+    this.comment_container_items_el.innerHTML = '';
+    postile.ajax([ 'inline_comment', 'get_inline_comments' ], { post_id: this.post.id }, function(data) {
+        this.inline_comments = data.message.inline_comments;
+        for (var i in this.inline_comments) {
+            var cmt = new postile.view.post_in_board.InlineComment(
+                    this.comment_container_items_el, this.inline_comments[i]);
+        }
+    }.bind(this));
+    */
+}
+
+postile.view.post_in_board.Post.prototype.appendInlineComment = function(comment) {
+    var cmt = new postile.view.post_in_board.InlineComment(
+            this.comment_container_items_el, comment);
 }
 
 postile.view.post_in_board.Post.prototype.set_max_displayable_comment_preview = function(content) {

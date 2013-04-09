@@ -871,7 +871,14 @@ postile.view.post_board.PostBoard.prototype.fayeHandler = function(status, data)
             break;
         case postile.view.post_board.faye_status.INLINE_COMMENT:
             if (data.inline_comment.post_id in this.currentPosts) {
-                this.currentPosts[data.inline_comment.post_id].resetCommentPreview(data);
+                var currPost = this.currentPosts[data.inline_comment.post_id];
+                currPost.resetCommentPreview(data);
+                console.log('faye');
+                console.log(currPost.inline_comments);
+                if (!currPost.inlineCommentRendered(data)) {
+                    currPost.inline_comments.push(data);
+                    currPost.appendInlineComment(data);
+                }
             }
             break;
     }
