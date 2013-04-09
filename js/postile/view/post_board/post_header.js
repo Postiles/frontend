@@ -4,7 +4,6 @@ goog.require('goog.events');
 goog.require('goog.dom');
 goog.require('postile.dom');
 goog.require('postile.view.notification');
-goog.require('postile.view.onlinepeople');
 
 postile.view.post_board.Header = function(board) {
     postile.view.NormalView.call(this);

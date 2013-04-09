@@ -13,7 +13,8 @@ goog.require('postile.fx.effects');
 === How to create a normal view ===
 
 1. Have a class inherits "positle.view.NormalView".
-2. [optional, only when you need to load css] have a "unloaded_stylesheets" in its prototype, which is an array containing css files that need to be loaded.
+2. [optional, only when you need to load css] have a "unloaded_stylesheets" in its prototype,
+  which is an array containing css files that need to be loaded.
 
 Just put your fucking things into this.container, and use "open" and "close" if needed
 
