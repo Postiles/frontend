@@ -1,4 +1,6 @@
 $background-color: #f2f7f7;
+$main-color: #024d61;
+$light-main: #436b77;
 
 #onlinepeople_container {
     font-family: OxygenLight;
@@ -6,4 +8,21 @@ $background-color: #f2f7f7;
     line-height:100%;
     position:fix !important;
     background:$background-color;
+    p {
+        margin: 0px;
+        padding: 0px;
+    }
+    .online_people_bar{
+        background: $light-main;
+        height:15px;
+        color:#FFF;
+        p{
+            font-size: 12px;
+            float: left;
+            margin: -0.5px;
+            padding: 0px;
+            padding-left: 60px;
+            margin-left: 15px;
+        }
+    }
 }
