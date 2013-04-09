@@ -120,18 +120,22 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
     });
     
     if (liked_user_id.indexOf(parseInt(localStorage.postile_user_id)) != -1) { // already liked
-        console.log('u');
         this.post_like_button_el.innerHTML = 'unlike';
     } else {
-        console.log('l');
         this.post_like_button_el.innerHTML = 'like';
     }
 
     goog.events.listen(this.post_like_button_el, goog.events.EventType.CLICK, function(e) {
         var action = this.post_like_button_el.innerHTML;
         postile.ajax([ 'post', action ], { post_id: this.post.id }, function(data) {
-            console.log(data);
-        });
+            if (action == 'like') { // like
+                this.post_like_count_el.innerHTML = '+' + (++this.likes.length);
+                this.post_like_button_el.innerHTML = 'unlike';
+            } else { // unlike
+                this.post_like_count_el.innerHTML = '+' + (--this.likes.length);
+                this.post_like_button_el.innerHTML = 'like';
+            }
+        }.bind(this));
     }.bind(this));
 
     /*
