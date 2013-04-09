@@ -1,0 +1,20 @@
+#onlinepeople_container {
+  font-family: OxygenLight;
+  width: 300px;
+  line-height: 100%;
+  position: fix !important;
+  background: #f2f7f7; }
+  #onlinepeople_container p {
+    margin: 0px;
+    padding: 0px; }
+  #onlinepeople_container .online_people_bar {
+    background: #436b77;
+    height: 15px;
+    color: #FFF; }
+    #onlinepeople_container .online_people_bar p {
+      font-size: 12px;
+      float: left;
+      margin: -0.5px;
+      padding: 0px;
+      padding-left: 60px;
+      margin-left: 15px; }

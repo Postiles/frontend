@@ -4,7 +4,6 @@ goog.require('goog.events');
 goog.require('goog.dom');
 goog.require('postile.dom');
 goog.require('postile.view.notification');
-goog.require('postile.view.onlinepeople');
 
 postile.view.post_board.Header = function(board) {
     postile.view.NormalView.call(this);
@@ -108,9 +107,6 @@ postile.view.post_board.Header = function(board) {
         this.notificationHandlerClear();
     }.bind(this));
 
-    this.onlinepeople = new Object();
-    this.onlinepeople.view = new postile.view.onlinepeople.OnlinePeople(this);
-    this.onlinepeople.view.render();
 
     var more_button = postile.dom.getDescendantById(instance.container, "popup_button");
     this.moreButtonPop = new postile.view.board_more_pop.BoardMorePop(more_button);
