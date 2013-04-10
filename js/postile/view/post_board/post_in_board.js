@@ -176,7 +176,7 @@ postile.view.post_in_board.Post.prototype.edit_for_picture_and_video_post = func
 
         postile.ui.makeLabeledInput(this.post_title_el, '(picture description here and enter to submit)',
                 'half_opaque', function(){
-            var title = this.post_title_el.innerHTML == 
+            var title = this.post_title_el.innerHTML ==
                     postile._('post_title_prompt') ? '' : this.post_title_el.innerHTML;
 
             this.submitEdit({ post_id: this.post.id, title: title }, function() {
@@ -240,7 +240,7 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
     }
 
     // listen for title click event, open post expand view
-    this.post_expand_listener = new postile.events.EventHandler(this.post_title_el, 
+    this.post_expand_listener = new postile.events.EventHandler(this.post_title_el,
             goog.events.EventType.CLICK, function(e) {
         var postExpand = new postile.view.post.PostExpand(instance.post);
         postExpand.open();
@@ -269,7 +269,6 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
     if (this.likes) {
         this.init_like_container();
     }
-
 
     /* set content parts */
     this.post_content_el = goog.dom.createDom("div", "post_content");
@@ -321,7 +320,7 @@ postile.view.post_in_board.Post.prototype.init_like_container = function() {
     var liked_user_id = this.likes.map(function(l) {
         return l.user_id;
     });
-    
+
     if (liked_user_id.indexOf(parseInt(localStorage.postile_user_id)) != -1) { // already liked
         this.post_like_button_el.innerHTML = 'unlike';
     } else {
@@ -598,7 +597,7 @@ postile.view.post_in_board.Post.prototype.comment_preview_init = function() {
     goog.events.listen(this.comment_list_close_button_el, goog.events.EventType.CLICK, function(e) {
         this.comment_container_el.style.display = 'none';
     }.bind(this));
-    
+
     if (this.inline_comments && this.inline_comments.length > 0) { // at least one comment
         this.comment_preview_middle_el.innerHTML = ': ';
 
@@ -861,7 +860,7 @@ postile.view.post_in_board.Post.prototype.edit = function() {
 
     var instance = this;
     this.disable();
-
+}
 
 postile.view.post_in_board.resolveAtPerson = function(displayText) { //displayed -> shown
     return displayText.replace(/<span[^<>]*at\-user="(\d+)"[^<>]*> @[^<]+ <\/span>/g, ' @$1 ');
