@@ -238,12 +238,11 @@ postile.view.TipView.prototype.open = function(reference, parent) {
     if (!parent) {
         parent = reference.parentNode;
     }
-
     var coord = goog.style.getRelativePosition(reference, parent);
     goog.style.setPosition(this.container_wrap, coord);
     goog.dom.appendChild(parent, this.container_wrap);
-    this.close_handler.listen();
     this.container_handler.listen();
+    this.close_handler.listen();
     this.should_close = false;
 }
 

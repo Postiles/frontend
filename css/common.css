@@ -103,6 +103,7 @@ MIC: postile.toast
 
 .toast_instance span {
     text-decoration: underline;
+    cursor: pointer;
 }
 
 .busy {
