@@ -13,8 +13,10 @@ postile.view.video_upload.VideoUpload = function(input_instance) {
 	this.container.id = 'upload_video_pop';
 	postile.ui.load(this.container, postile.conf.staticResource(['_upload_video.html']));
 
-	this.preview_button_el = postile.dom.getDescendantByClass(this.container, 'preview_button');
+	this.upper_part_el = postile.dom.getDescendantByClass(this.container, 'upload_video_upper');
 	this.lower_part_el = postile.dom.getDescendantByClass(this.container, 'upload_video_lower');
+	
+	this.preview_button_el = postile.dom.getDescendantByClass(this.container, 'preview_button');
 	this.user_input_el = postile.dom.getDescendantByClass(this.container, 'text');
 
     goog.events.listen(this.user_input_el, goog.events.EventType.KEYDOWN, function(e) {
@@ -49,6 +51,7 @@ postile.view.video_upload.VideoUpload.prototype.showPreview = function(){
 		return;
 	}
 	goog.dom.classes.add(this.lower_part_el, 'upload_video_lower_animation');
+	goog.dom.classes.add(this.upper_part_el, 'upload_video_upper_animation');
 
 	this.video_preview_el = postile.dom.getDescendantByClass(this.container, 'video_preview');
 	this.iframe = postile.dom.getDescendantByClass(this.video_preview_el,'iframe_preview');
