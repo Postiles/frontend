@@ -42,7 +42,7 @@ goog.require('postile.view.onlinepeople');
  */
 postile.view.post_board.POST_WIDTH = 100;
 postile.view.post_board.POST_HEIGHT = 80;
-postile.view.post_board.POST_MARGIN = 4;
+postile.view.post_board.POST_MARGIN = 10;
 
 /**
  * Callback function for PostBoard.direction_controllers' mouseclick event.
@@ -323,7 +323,7 @@ postile.view.post_board.PostBoard = function(board_id) {
      * Throttle subscription updating when scrolling 
      * @type {postile.delayedThrottle}
      */
-    this.scrollUpdateThrottle = new postile.DelayedThrottle(function() { instance.updateSubscribeArea(); }, 500);
+    // this.scrollUpdateThrottle = new postile.DelayedThrottle(function() { instance.updateSubscribeArea(); }, 500);
 
     // Initialize according to board_id
     postile.ajax([ 'board', 'enter_board' ], { board_id: board_id }, function(data) {
@@ -421,7 +421,7 @@ postile.view.post_board.PostBoard.prototype.bindMouseEvents = function() {
     goog.events.listen(this.viewport, goog.events.EventType.SCROLL, function() {
         instance.canvasCoord[0] = - instance.viewport.scrollLeft;
         instance.canvasCoord[1] = - instance.viewport.scrollTop;
-        instance.scrollUpdateThrottle.kick();
+        // instance.scrollUpdateThrottle.kick();
     });
 
     // Start: controllers for moving the viewport
@@ -827,7 +827,7 @@ postile.view.post_board.PostBoard.prototype.renderArray = function(array) {
         if (array[i].post.id in this.currentPosts) { //if so // so what?
             this.currentPosts[array[i].post.id].render(array[i]);
         } else {
-            this.currentPosts[array[i].post.id] = new postile.view.post_in_board.Post(array[i], this);
+            this.currentPosts[array[i].post.id] = postile.view.post_in_board.createPostFromJSON(array[i], this);
         }
     }
 };

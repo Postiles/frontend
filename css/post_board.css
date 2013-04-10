@@ -275,6 +275,7 @@ html, body {
 }
 
 .picture_post .post_inner_container {
+  /* background: -webkit-linear-gradient(top, rgba(0,0,0,0.5) 0%,rgba(0,0,0,0.5) 50%,rgba(0,0,0,0.2) 100%); */
   background: rgba(0, 0, 0, 0.5);
 }
 
@@ -283,7 +284,6 @@ html, body {
   height: 100%;
 }
 
-
 .post_top {
   color: #024d61;
   font-size: 10pt;
@@ -291,6 +291,10 @@ html, body {
 }
 
 .picture_post .post_top {
+  color: whitesmoke;
+}
+
+.picture_post .post_like_container {
   color: whitesmoke;
 }
 
@@ -316,12 +320,12 @@ html, body {
 }
 
 .post_middle_container {
-  height: 14px;
+  height: 16px;
+  color: #024d61;
 }
 
 .post_like_container {
-    margin-left: 10px;
-    color: #024d61;
+    margin-left: 5px;
 }
 
 .post_like_count_el {
@@ -334,6 +338,16 @@ html, body {
 }
 
 .post_like_button:hover {
+  text-decoration: underline;
+}
+
+.post_edit_button {
+    float: right;
+    color: #999;
+    cursor: pointer;
+}
+
+.post_edit_button:hover {
     text-decoration: underline;
 }
 
@@ -452,7 +466,8 @@ html, body {
   float: left; }
 
 .post_box_comment_item_datetime_text {
-  float: right; }
+  float: right;
+}
 
 .post_box_comment_item_content_text {
   clear: right;
@@ -503,7 +518,7 @@ html, body {
 
 .comment_list {
   margin-top: 4px;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .comment_container_no_comment {
@@ -536,10 +551,6 @@ html, body {
   text-decoration: underline;
 }
 
-.comment_middle {
-  margin: 0px 4px;
-}
-
 .comment_content {
   margin: 0px;
 }
@@ -547,6 +558,7 @@ html, body {
 .comment_time {
   color: #999;
   margin-top: 3px;
+  font-size: 8pt;
 }
 
 .comment_container_bottom {
@@ -606,7 +618,7 @@ html, body {
 
 .post_content {
   position: relative;
-  overflow: hidden;
+  /* overflow: hidden; */
   width: 100%; 
   cursor: default;
 }
@@ -799,35 +811,4 @@ html, body {
     background: #FFF;
     width: 150px;
     padding: 6px;
-}
-
-.extra-button-container {
-    position: relative;
-    top: -14px;
-    left: 10px;
-    width: 150px;
-    height: 13px;
-    background: whitesmoke;
-    z-index: -1;
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
-    -webkit-box-shadow: 0px 0px 2px #024d61;
-    -webkit-transition: top 0.3s;
-}
-
-.post_wrap:hover .extra-button-container {
-    top: 0px;
-}
-
-.extra-button {
-    position: relative;
-    top: -3px;
-    font-size: 8pt;
-    color: #024d61;
-    padding: 0px 5px;
-    cursor: pointer;
-}
-
-.extra-button:hover {
-    text-decoration: underline;
 }

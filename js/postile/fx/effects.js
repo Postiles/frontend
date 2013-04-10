@@ -17,11 +17,20 @@ postile.fx.effects.resizeIn = function(dom) {
     });
 };
 
-postile.fx.effects.verticalExpand = function(dom) { // TODO: to be improved
+postile.fx.effects.verticalExpand = function(dom) { // TODO: to be improved //? : is this still used now? maight be obliterated
     var th = dom.clientHeight;
     return new postile.fx.Animate(function(i) {
-        postile.conf.useragent.setCss(dom, 'height', i*th + 'px');
+        dom.style.height = i*th + 'px';
     }, 500, {
         ease: postile.fx.ease.cubic_ease_out
     });
 };
+
+postile.fx.effects.flowDown = function(dom) {
+    var th = dom.clientHeight;
+    return new postile.fx.Animate(function(i) {
+        postile.conf.useragent.setCss(dom, 'transform', 'translateY(-' + (1-i)*th + 'px)');
+    }, 500, {
+        ease: postile.fx.ease.cubic_ease_out
+    });
+}

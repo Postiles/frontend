@@ -1,21 +1,42 @@
 /* I am writing this again */
 @-webkit-keyframes slideDown {
   0% {
-    top: -290px; }
+    top: -10px; }
 
   100% {
     top: 0px; } }
 
 @keyframes slideDown {
   0% {
-    top: -290px; }
+    top: -10px; }
 
   100% {
     top: 0px; } }
 
 @-moz-keyframes slideDown {
   0% {
-    top: -290px; }
+    top: -10px; }
+
+  100% {
+    top: 0px; } }
+
+@-webkit-keyframes slideUp {
+  0% {
+    top: 130px; }
+
+  100% {
+    top: 0px; } }
+
+@keyframes slideUp {
+  0% {
+    top: 130px; }
+
+  100% {
+    top: 0px; } }
+
+@-moz-keyframes slideUp {
+  0% {
+    top: 130px; }
 
   100% {
     top: 0px; } }
@@ -33,9 +54,11 @@
     text-align: center;
     cursor: pointer; }
   #upload_video_pop .upload_video_upper {
+    z-index: 1;
     background: #e5e5e5;
     width: 400px;
-    height: 130px; }
+    height: 130px;
+    position: relative; }
     #upload_video_pop .upload_video_upper .info_part {
       margin-top: 15px;
       font-size: 13px;
@@ -53,6 +76,7 @@
         float: right;
         margin-right: 15px; }
   #upload_video_pop .upload_video_lower {
+    z-index: -1;
     display: none;
     background: #b5b5b5;
     width: 400px;
@@ -69,6 +93,12 @@
       margin-left: 10px; }
     #upload_video_pop .upload_video_lower .button_part .ok_button {
       float: right; }
+  #upload_video_pop .upload_video_upper_animation {
+    animation: slideUp 1s;
+    -webkit-animation: slideUp 1s;
+    /* Safari and Chrome */
+    -moz-animation: slideUp 1s;
+    /* Firefox */ }
   #upload_video_pop .upload_video_lower_animation {
     display: block;
     animation: slideDown 1s;

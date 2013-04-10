@@ -1,0 +1,28 @@
+.internal_link_wrap  {
+    width: 200px;
+    top: 20px;
+    left: -50px;
+    border: 2px solid #024d61;
+    background: #EEE;
+    padding: 8px;
+    box-sizing: border-box;
+}
+
+.internal_link_wrap .arrow {
+    top: -10px;
+    position: absolute;
+    left: 45px;
+    width: 0px;
+    height: 0px;
+    border-left: 10px solid transparent;
+	border-right: 10px solid transparent;
+	border-bottom: 10px solid #024d61;
+}
+
+.internal_link_wrap .title {
+    cursor: pointer;
+}
+
+.internal_link_wrap .user {
+    font-style: italic;
+}

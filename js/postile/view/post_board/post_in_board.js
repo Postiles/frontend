@@ -21,6 +21,22 @@ goog.require('postile.view.At');
 goog.require('postile.fx.effects');
 goog.require('postile.view.post');
 
+/**
+ * A factory function that creates a post from JSON data retrieved from the server
+ */
+postile.view.post_in_board.createPostFromJSON = function(data, board) {
+    if (data.post.image_url) { // PicturePost
+        return new postile.view.post_in_board.PicturePost(data, board);
+    } else if (data.post.video_link) { // VideoPost
+        return new postile.view.post_in_board.VideoPost(data, board);
+    } else {
+        return new postile.view.post_in_board.TextPost(data, board);
+    }
+}
+
+/**
+ * abstract super class for all Posts
+ */
 postile.view.post_in_board.Post = function(data, board) {
     this.board = board;
     this.blur_timeout = null;
@@ -28,7 +44,148 @@ postile.view.post_in_board.Post = function(data, board) {
     this.in_edit = false;
     this.wrap_el = goog.dom.createDom('div', 'post_wrap');
     goog.dom.appendChild(this.board.canvas, this.wrap_el);
+}
+
+/**
+ * text post
+ */
+postile.view.post_in_board.TextPost = function(data, board) {
+    goog.base(this, data, board);
+    this.type = 'TextPost';
+
     this.render(data, true);
+}
+
+goog.inherits(postile.view.post_in_board.TextPost, postile.view.post_in_board.Post);
+
+postile.view.post_in_board.TextPost.prototype.render = function(data, animation) {
+    goog.base(this, 'render', data, animation);
+
+    this.post_content_el.innerHTML = postile.parseBBcode(this.post.content);
+    postile.bbcodePostProcess(this.post_content_el);
+
+    // display proper number of characters for content
+    this.set_max_displayable_content();
+}
+
+postile.view.post_in_board.TextPost.prototype.edit = function() {
+    goog.base(this, 'edit');
+
+    postile.ajax(['post','start_edit'], { post_id: this.post.id }, function() {
+        this.change_view_for_edit();
+
+        this.post_content_el.innerHTML = postile.parseBBcode(this.post.content);
+        postile.bbcodePostProcess(this.post_content_el);
+
+        goog.dom.classes.add(this.post_content_el, 'selectable');
+
+        this.post_content_el.style.overflowY = 'auto';
+
+        // set placeholders for title and content views
+        postile.ui.makeLabeledInput(this.post_title_el, postile._('post_title_prompt'),
+                'half_opaque', function() {
+            this.post_content_el.focus(); // when enter is pressd, change focus to content
+        }.bind(this));
+
+        postile.ui.makeLabeledInput(this.post_content_el, '(ctrl + enter to submit)', 'half_opaque');
+
+        //hide the original bottom bar
+        goog.dom.removeChildren(this.post_middle_container_el);
+        var y_editor = new postile.WYSIWYF.Editor(this.post_content_el, this.post_middle_container_el, this);
+        this.board.disableMovingCanvas = true; //disable moving
+        this.enable();
+
+        var contentKeydownHandler = new postile.events.EventHandler(this.post_content_el,
+            goog.events.EventType.KEYDOWN, function(e) {
+            // when user presses 'ctrl + enter', submit edit
+            if (e.keyCode == 13 && e.ctrlKey) {
+                this.submitEdit({ post_id: this.post.id, content: y_editor.getBbCode(),
+                                    title: this.post_title_el.innerHTML ==  postile._('post_title_prompt') ? '' : this.post_title_el.innerHTML }, function() { this.in_edit = false; });
+
+                contentKeydownHandler.unlisten();
+                return false;
+            }
+        }.bind(this));
+
+        contentKeydownHandler.listen();
+        y_editor.editor_el.focus();
+    }.bind(this));
+}
+
+/**
+ * picture post
+ */
+postile.view.post_in_board.PicturePost = function(data, board) {
+    goog.base(this, data, board);
+    this.type = 'VideoPost';
+
+    this.render(data, true);
+}
+
+goog.inherits(postile.view.post_in_board.PicturePost, postile.view.post_in_board.Post);
+
+postile.view.post_in_board.PicturePost.prototype.render = function(data, animation) {
+    goog.base(this, 'render', data, animation);
+
+    goog.dom.classes.add(this.wrap_el, 'picture_post');
+    this.wrap_el.style.backgroundImage = 'url(' + postile.conf.uploadsResource([this.post.image_url]) + ')';
+    this.wrap_el.style.backgroundSize = 'cover';
+    this.wrap_el.style.backgroundPosition = 'center';
+}
+
+postile.view.post_in_board.PicturePost.prototype.edit = function() {
+    goog.base(this, 'edit');
+    this.edit_for_picture_and_video_post();
+}
+
+/**
+ * video post
+ */
+postile.view.post_in_board.VideoPost = function(data, board) {
+    goog.base(this, data, board);
+    this.type = 'PicturePost';
+
+    this.render(data, true);
+}
+
+goog.inherits(postile.view.post_in_board.VideoPost, postile.view.post_in_board.Post);
+
+postile.view.post_in_board.VideoPost.prototype.render = function(data, animation) {
+    goog.base(this, 'render', data, animation);
+
+    goog.dom.classes.add(this.wrap_el, 'video_post');
+    this.video_preivew_el = goog.dom.createDom('iframe', {
+        'class': 'video_iframe',
+        'src': this.post.video_link
+    });
+    goog.dom.appendChild(this.post_content_el, this.video_preivew_el);
+}
+
+postile.view.post_in_board.VideoPost.prototype.edit = function() {
+    goog.base(this, 'edit');
+
+    this.edit_for_picture_and_video_post();
+}
+
+/**
+ * the edit function for picture and video posts, allows the user to edit the title of the post
+ */
+postile.view.post_in_board.Post.prototype.edit_for_picture_and_video_post = function() {
+    postile.ajax(['post','start_edit'], { post_id: this.post.id }, function() {
+        this.change_view_for_edit();
+
+        postile.ui.makeLabeledInput(this.post_title_el, '(picture description here and enter to submit)',
+                'half_opaque', function(){
+            var title = this.post_title_el.innerHTML == 
+                    postile._('post_title_prompt') ? '' : this.post_title_el.innerHTML;
+
+            this.submitEdit({ post_id: this.post.id, title: title }, function() {
+                this.in_edit = false;
+            });
+        }.bind(this));
+
+        this.enable();
+    }.bind(this));
 }
 
 postile.view.post_in_board.Post.prototype.render = function(data, animation) { //animation is usually ommited (false by default)
@@ -50,7 +207,7 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
     this.wrap_el.style.width = this.board.widthTo(this.post.span_x) + 'px';
     this.wrap_el.style.height = this.board.heightTo(this.post.span_y) + 'px';
 
-    if (this.container_el) {
+    if (this.container_el) { // if the post already exists, delete the original one
         goog.dom.removeNode(this.container_el);
     }
 
@@ -83,9 +240,10 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
     }
 
     // listen for title click event, open post expand view
-    this.post_expand_listener = new postile.events.EventHandler(this.post_title_el, goog.events.EventType.CLICK, function(e) {
-            var postExpand = new postile.view.post.PostExpand(instance.post);
-            postExpand.open();
+    this.post_expand_listener = new postile.events.EventHandler(this.post_title_el, 
+            goog.events.EventType.CLICK, function(e) {
+        var postExpand = new postile.view.post.PostExpand(instance.post);
+        postExpand.open();
     });
     this.post_expand_listener.listen();
 
@@ -105,48 +263,13 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
     this.post_middle_container_el = goog.dom.createDom('div', 'post_middle_container');
     goog.dom.appendChild(this.inner_container_el, this.post_middle_container_el);
 
-    this.post_like_container_el = goog.dom.createDom('div', 'post_like_container');
+    this.post_like_container_el = goog.dom.createDom('span', 'post_like_container');
     goog.dom.appendChild(this.post_middle_container_el, this.post_like_container_el);
 
     if (this.likes) {
-        this.post_like_count_el = goog.dom.createDom('span', 'post_like_count');
-        this.post_like_count_el.innerHTML = '+' + this.likes.length;
-        goog.dom.appendChild(this.post_like_container_el, this.post_like_count_el);
-
-        this.post_like_button_el = goog.dom.createDom('span', 'post_like_button');
-        goog.dom.appendChild(this.post_like_container_el, this.post_like_button_el);
-
-        var liked_user_id = this.likes.map(function(l) {
-            return l.user_id;
-        });
-        
-        if (liked_user_id.indexOf(parseInt(localStorage.postile_user_id)) != -1) { // already liked
-            this.post_like_button_el.innerHTML = 'unlike';
-        } else {
-            this.post_like_button_el.innerHTML = 'like';
-        }
-
-        goog.events.listen(this.post_like_button_el, goog.events.EventType.CLICK, function(e) {
-            var action = this.post_like_button_el.innerHTML;
-            postile.ajax([ 'post', action ], { post_id: this.post.id }, function(data) {
-                if (action == 'like') { // like
-                    this.post_like_count_el.innerHTML = '+' + (++this.likes.length);
-                    this.post_like_button_el.innerHTML = 'unlike';
-                } else { // unlike
-                    this.post_like_count_el.innerHTML = '+' + (--this.likes.length);
-                    this.post_like_button_el.innerHTML = 'like';
-                }
-            }.bind(this));
-        }.bind(this));
+        this.init_like_container();
     }
 
-    /*
-    // icon container
-    this.post_icon_container_el = goog.dom.createDom("div", "post_icon_container");
-    goog.dom.appendChild(this.post_middle_container, this.post_icon_container_el);
-
-    this.post_icon_container_init();
-    */
 
     /* set content parts */
     this.post_content_el = goog.dom.createDom("div", "post_content");
@@ -156,45 +279,27 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
         this.creator = data;
         this.post_author_el.innerHTML = this.creator.username;
 
+        /* render elements for the user's own post */
         if (this.creator.id == localStorage.postile_user_id) { // my own post
             this.post_content_el.style.cursor = 'auto';
+            goog.events.listen(this.post_content_el, goog.events.EventType.CLICK, function() {
+                instance.edit();
+            });
+
+            /* add edit button */
+            this.post_edit_button_el = goog.dom.createDom('span', 'post_edit_button');
+            this.post_edit_button_el.innerHTML = 'edit';
+            goog.dom.appendChild(this.post_middle_container_el, this.post_edit_button_el);
+
+            goog.events.listen(this.post_edit_button_el, goog.events.EventType.CLICK, function(e) {
+                this.edit();
+            }.bind(this));
         }
     }.bind(this));
-
-    console.log(this);
-
-    /* Adding a background for image post */
-    if (this.post.image_url) {
-        goog.dom.classes.add(this.wrap_el, 'picture_post');
-        this.wrap_el.style.backgroundImage = 'url(' + postile.conf.uploadsResource([this.post.image_url]) + ')';
-        this.wrap_el.style.backgroundSize = 'cover';
-        this.wrap_el.style.backgroundPosition = 'center';
-    } else if (this.post.video_link) {
-        goog.dom.classes.add(this.wrap_el, 'video_post');
-        this.video_preivew_el = goog.dom.createDom('iframe', {
-            'class': 'video_iframe',
-            'src': this.post.video_link
-        });
-        goog.dom.appendChild(this.post_content_el, this.video_preivew_el);
-    } else {
-        /* end of image post part */
-
-        this.post_content_el.innerHTML = postile.parseBBcode(this.post.content);
-        postile.bbcodePostProcess(this.post_content_el);
-
-        // display proper number of characters for content
-        this.set_max_displayable_content();
-    }
 
     // post bottom
     this.post_bottom_el = goog.dom.createDom("div", "post_bottom");
     goog.dom.appendChild(this.container_el, this.post_bottom_el);
-
-    if (this.post.creator_id == localStorage.postile_user_id) { //created by current user, can edit
-        goog.events.listen(this.post_content_el, goog.events.EventType.CLICK, function() {
-            instance.edit();
-        });
-    }
 
     // this.extra_button_view_init();
 
@@ -205,24 +310,36 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
     }
 }
 
-/**
- * initialize the drop-down menu that contains extra buttons
- */
-postile.view.post_in_board.Post.prototype.extra_button_view_init = function() {
-    this.extra_button_container_el = goog.dom.createDom('div', 'extra-button-container');
-    goog.dom.appendChild(this.wrap_el, this.extra_button_container_el);
+postile.view.post_in_board.Post.prototype.init_like_container = function() {
+    this.post_like_count_el = goog.dom.createDom('span', 'post_like_count');
+    this.post_like_count_el.innerHTML = '+' + this.likes.length;
+    goog.dom.appendChild(this.post_like_container_el, this.post_like_count_el);
 
-    this.extra_comment_button = goog.dom.createDom('span', 'extra-button extra-comment-button');
-    this.extra_comment_button.innerHTML = 'comment';
-    goog.dom.appendChild(this.extra_button_container_el, this.extra_comment_button);
+    this.post_like_button_el = goog.dom.createDom('span', 'post_like_button');
+    goog.dom.appendChild(this.post_like_container_el, this.post_like_button_el);
 
-    this.extra_share_button = goog.dom.createDom('span', 'extra-button extra-share-button');
-    this.extra_share_button.innerHTML = 'share';
-    goog.dom.appendChild(this.extra_button_container_el, this.extra_share_button);
+    var liked_user_id = this.likes.map(function(l) {
+        return l.user_id;
+    });
+    
+    if (liked_user_id.indexOf(parseInt(localStorage.postile_user_id)) != -1) { // already liked
+        this.post_like_button_el.innerHTML = 'unlike';
+    } else {
+        this.post_like_button_el.innerHTML = 'like';
+    }
 
-    this.extra_delete_button = goog.dom.createDom('span', 'extra-button extra-delete-button');
-    this.extra_delete_button.innerHTML = 'delete';
-    goog.dom.appendChild(this.extra_button_container_el, this.extra_delete_button);
+    goog.events.listen(this.post_like_button_el, goog.events.EventType.CLICK, function(e) {
+        var action = this.post_like_button_el.innerHTML;
+        postile.ajax([ 'post', action ], { post_id: this.post.id }, function(data) {
+            if (action == 'like') { // like
+                this.post_like_count_el.innerHTML = '+' + (++this.likes.length);
+                this.post_like_button_el.innerHTML = 'unlike';
+            } else { // unlike
+                this.post_like_count_el.innerHTML = '+' + (--this.likes.length);
+                this.post_like_button_el.innerHTML = 'like';
+            }
+        }.bind(this));
+    }.bind(this));
 }
 
 postile.view.post_in_board.Post.prototype.set_max_displayable_top = function() {
@@ -392,8 +509,8 @@ postile.view.post_in_board.Post.prototype.post_icon_container_init = function() 
     goog.events.listen(addIcon("comment"), goog.events.EventType.CLICK, function() {
         instance.inline_comments_block = new postile.view.post_in_board.InlineCommentsBlock(instance);
     });
-    */
 }
+*/
 
 postile.view.post_in_board.Post.prototype.comment_preview_init = function() {
     // comment preview
@@ -461,6 +578,9 @@ postile.view.post_in_board.Post.prototype.comment_preview_init = function() {
                         // add the new comment to list
                         this.inline_comments.push(comment);
                         this.appendInlineComment(comment);
+
+                        // scroll the comment list to the bottom
+                        this.comment_list_el.scrollTop = this.comment_list_el.scrollHeight;
                     }
 
                     this.hideNoCommentEl();
@@ -478,7 +598,7 @@ postile.view.post_in_board.Post.prototype.comment_preview_init = function() {
     goog.events.listen(this.comment_list_close_button_el, goog.events.EventType.CLICK, function(e) {
         this.comment_container_el.style.display = 'none';
     }.bind(this));
-
+    
     if (this.inline_comments && this.inline_comments.length > 0) { // at least one comment
         this.comment_preview_middle_el.innerHTML = ': ';
 
@@ -537,6 +657,7 @@ postile.view.post_in_board.Post.prototype.renderInlineComments = function(conten
 postile.view.post_in_board.Post.prototype.appendInlineComment = function(comment) {
     var cmt = new postile.view.post_in_board.InlineComment(
             this.comment_container_items_el, comment);
+
 }
 
 postile.view.post_in_board.Post.prototype.set_max_displayable_comment_preview = function(content) {
@@ -704,7 +825,36 @@ postile.view.post_in_board.Post.prototype.removeFromBoard = function() {
     */
 }
 
-postile.view.post_in_board.Post.prototype.edit = function(mode) {
+/**
+ * Change the viewing mode to edit mode by adding and removing elements
+ */
+postile.view.post_in_board.Post.prototype.change_view_for_edit = function() {
+    this.in_edit = true;
+    this.post_expand_listener.unlisten();
+    this.author_profile_display_listener.unlisten();
+
+    // remove effects in the view mode
+    this.post_title_el.style.textDecoration = 'none';
+    this.post_title_el.style.cursor = 'auto';
+
+    // reset title
+    this.post_title_el.innerHTML = this.post.title;
+    this.post_title_el.style.width = this.container_el.offsetWidth - 10 + 'px';
+    goog.dom.classes.add(this.post_title_el, 'selectable');
+
+    // delete icon on the top right corner
+    var delete_icon = goog.dom.createDom('div', 'post_remove_icon');
+    goog.dom.appendChild(this.container_el, delete_icon);
+    goog.events.listen(delete_icon, goog.events.EventType.CLICK, function(e) {
+        e.stopPropagation();
+        new postile.view.confirm_delete.ConfirmDelete(this).open(delete_icon);
+    }.bind(this));
+
+    this.post_author_el.style.display = 'none'; // hide author name
+    this.comment_preview_el.style.display = 'none' // hide comment preview
+}
+
+postile.view.post_in_board.Post.prototype.edit = function() {
     if (this.in_edit) {
         return;
     }
@@ -712,83 +862,6 @@ postile.view.post_in_board.Post.prototype.edit = function(mode) {
     var instance = this;
     this.disable();
 
-    postile.ajax(['post','start_edit'], { post_id: this.post.id }, function() {
-        instance.in_edit = true;
-        instance.post_expand_listener.unlisten();
-        instance.author_profile_display_listener.unlisten();
-
-        // remove effects in the view mode
-        instance.post_title_el.style.textDecoration = 'none';
-
-        // reset title and content in case they are chomped
-        instance.post_title_el.innerHTML = instance.post.title;
-        instance.post_content_el.innerHTML = postile.parseBBcode(instance.post.content);
-        postile.bbcodePostProcess(instance.post_content_el);
-
-
-        if(mode != 'title'){
-            goog.dom.classes.add(instance.post_content_el, 'selectable');
-        }
-        goog.dom.classes.add(instance.post_title_el, 'selectable');
-        goog.dom.classes.add(instance.post_content_el, 'selectable');
-
-        // set title and text size for editing
-        instance.post_title_el.style.width = instance.container_el.offsetWidth - 10 + 'px';
-        instance.post_content_el.style.height = instance.container_el.offsetHeight - 40 + 'px';
-
-        instance.post_content_el.style.overflowY = 'auto';
-
-        // delete icon on the top right corner
-        var delete_icon = goog.dom.createDom('div', 'post_remove_icon');
-        goog.dom.appendChild(instance.container_el, delete_icon);
-        goog.events.listen(delete_icon, goog.events.EventType.CLICK, function(e) {
-            e.stopPropagation();
-            new postile.view.confirm_delete.ConfirmDelete(instance).open(delete_icon);
-        });
-
-        instance.post_author_el.style.display = 'none'; // hide author name
-        instance.comment_preview_el.style.display = 'none' // hide comment preview
-
-        // set placeholders for title and content views
-
-        if(mode != "title"){
-            postile.ui.makeLabeledInput(instance.post_content_el, '(ctrl + enter to submit)',
-                    'half_opaque');
-
-            postile.ui.makeLabeledInput(instance.post_title_el, postile._('post_title_prompt'),
-                    'half_opaque', function() {
-                instance.post_content_el.focus(); // when enter is pressd, change focus to content
-            });
-        }
-        else {
-            postile.ui.makeLabeledInput(instance.post_title_el, '(ctrl + enter to submit)',
-                    'half_opaque', function(){
-                instance.post_title_el.focus();
-            });
-        }
-
-        //hide the original bottom bar
-        goog.dom.removeChildren(instance.post_middle_container_el);
-        var y_editor = new postile.WYSIWYF.Editor(instance.post_content_el, instance.post_middle_container_el, instance);
-        instance.board.disableMovingCanvas = true; //disable moving
-        instance.enable();
-
-        var contentKeydownHandler = new postile.events.EventHandler(instance.post_content_el,
-            goog.events.EventType.KEYDOWN, function(e) {
-            // when user presses 'ctrl + enter', submit edit
-            if (e.keyCode == 13 && e.ctrlKey) {
-                instance.submitEdit({ post_id: instance.post.id, content: y_editor.getBbCode(),
-                                    title: instance.post_title_el.innerHTML ==  postile._('post_title_prompt') ? '' : instance.post_title_el.innerHTML }, function() { instance.in_edit = false; });
-
-                contentKeydownHandler.unlisten();
-                return false;
-            }
-        });
-
-        contentKeydownHandler.listen();
-        y_editor.editor_el.focus();
-    });
-}
 
 postile.view.post_in_board.resolveAtPerson = function(displayText) { //displayed -> shown
     return displayText.replace(/<span[^<>]*at\-user="(\d+)"[^<>]*> @[^<]+ <\/span>/g, ' @$1 ');
@@ -797,6 +870,7 @@ postile.view.post_in_board.resolveAtPerson = function(displayText) { //displayed
 /**
  * @constructor
  */
+/*
 postile.view.post_in_board.InlineCommentsBlock = function(postObj) {
     var instance = this;
     var tmp_el;
@@ -856,6 +930,7 @@ postile.view.post_in_board.InlineCommentsBlock = function(postObj) {
 }
 
 goog.inherits(postile.view.post_in_board.InlineCommentsBlock, postile.view.TipView);
+*/
 
 /* return the container element */
 postile.view.post_in_board.InlineComment = function(icb, single_comment_data) {
@@ -870,7 +945,7 @@ postile.view.post_in_board.InlineComment = function(icb, single_comment_data) {
         goog.dom.appendChild(this.name_content_container_el, this.name_el);
 
         this.middle_el = goog.dom.createDom('span', 'comment_middle');
-        this.middle_el.innerHTML = 'says:';
+        this.middle_el.innerHTML = ':&nbsp;';
         goog.dom.appendChild(this.name_content_container_el, this.middle_el);
 
         this.content_el = goog.dom.createDom("span", "comment_content");

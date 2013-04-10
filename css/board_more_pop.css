@@ -60,7 +60,7 @@ body {
     height: 40px;
     color: #fff; }
     #other_boards .other_header h3 {
-      font-size: 14px;
+      font-size: 11pt;
       float: left;
       margin: 10px;
       margin-left: 14px; }
@@ -68,7 +68,7 @@ body {
       float: right;
       margin-top: 14px;
       margin-right: 15px;
-      font-size: 10px;
+      font-size: 10pt;
       cursor: pointer; }
       #other_boards .other_header p:hover {
         color: #FF8C00; }
@@ -88,7 +88,8 @@ body {
       top: -12px; }
   #other_boards #board_list {
     max-height: 400px;
-    overflow: scroll; }
+    width: 100%;
+    overflow: auto; }
     #other_boards #board_list .up_roll {
       height: 10px;
       background-color: #f2f7f7;
@@ -127,7 +128,7 @@ body {
       height: 50px;
       cursor: pointer; }
       #other_boards #board_list .listed_board h3.board_title {
-        font-size: 14px;
+        font-size: 11pt;
         margin-top: 0px;
         margin-bottom: 0px;
         margin-left: 14px;
@@ -135,7 +136,7 @@ body {
       #other_boards #board_list .listed_board p.board_discription {
         margin-left: 14px;
         margin-top: 3px;
-        font-size: 10px;
+        font-size: 10pt;
         width: 200px; }
       #other_boards #board_list .listed_board .selected_icon {
         opacity: 0;
@@ -149,7 +150,7 @@ body {
         background: #cedadd;
         position: relative; }
         #other_boards #board_list .listed_board:hover h3.board_title {
-          font-size: 14px;
+          font-size: 11pt;
           margin-bottom: 0px;
           margin-left: 14px; }
         #other_boards #board_list .listed_board:hover .selected_icon {
@@ -159,7 +160,7 @@ body {
       color: #c2d6ad;
       position: relative; }
       #other_boards #board_list .selected_board h3.board_title {
-        font-size: 14px;
+        font-size: 11pt;
         margin-bottom: 0px;
         margin-left: 14px;
         color: #fff !important; }
