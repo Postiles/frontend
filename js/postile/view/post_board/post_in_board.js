@@ -21,6 +21,22 @@ goog.require('postile.view.At');
 goog.require('postile.fx.effects');
 goog.require('postile.view.post');
 
+/**
+ * A factory function that creates a post from JSON data retrieved from the server
+ */
+postile.view.post_in_board.createPostFromJSON = function(data, board) {
+    if (data.post.image_url) { // PicturePost
+        return new postile.view.post_in_board.PicturePost(data, board);
+    } else if (data.post.video_link) { // VideoPost
+        return new postile.view.post_in_board.VideoPost(data, board);
+    } else {
+        return new postile.view.post_in_board.TextPost(data, board);
+    }
+}
+
+/**
+ * abstract super class for all Posts
+ */
 postile.view.post_in_board.Post = function(data, board) {
     this.board = board;
     this.blur_timeout = null;
@@ -28,8 +44,52 @@ postile.view.post_in_board.Post = function(data, board) {
     this.in_edit = false;
     this.wrap_el = goog.dom.createDom('div', 'post_wrap');
     goog.dom.appendChild(this.board.canvas, this.wrap_el);
+}
+
+/**
+ * text post
+ */
+postile.view.post_in_board.TextPost = function(data, board) {
+    goog.base(this, data, board);
+    this.type = 'TextPost';
+
     this.render(data, true);
 }
+
+goog.inherits(postile.view.post_in_board.TextPost, postile.view.post_in_board.Post);
+
+/**
+ * picture post
+ */
+postile.view.post_in_board.PicturePost = function(data, board) {
+    goog.base(this, data, board);
+    this.type = 'VideoPost';
+
+    this.render(data, true);
+}
+
+goog.inherits(postile.view.post_in_board.PicturePost, postile.view.post_in_board.Post);
+
+postile.view.post_in_board.PicturePost.prototype.render = function(data, animation) {
+    goog.base(this, 'render', data, animation);
+
+    goog.dom.classes.add(this.wrap_el, 'picture_post');
+    this.wrap_el.style.backgroundImage = 'url(' + postile.conf.uploadsResource([this.post.image_url]) + ')';
+    this.wrap_el.style.backgroundSize = 'cover';
+    this.wrap_el.style.backgroundPosition = 'center';
+}
+
+/**
+ * video post
+ */
+postile.view.post_in_board.VideoPost = function(data, board) {
+    goog.base(this, data, board);
+    this.type = 'PicturePost';
+
+    this.render(data, true);
+}
+
+goog.inherits(postile.view.post_in_board.VideoPost, postile.view.post_in_board.Post);
 
 postile.view.post_in_board.Post.prototype.render = function(data, animation) { //animation is usually ommited (false by default)
     if (this.disabled) {
@@ -50,7 +110,7 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
     this.wrap_el.style.width = this.board.widthTo(this.post.span_x) + 'px';
     this.wrap_el.style.height = this.board.heightTo(this.post.span_y) + 'px';
 
-    if (this.container_el) {
+    if (this.container_el) { // if the post already exists, delete the original one
         goog.dom.removeNode(this.container_el);
     }
 
@@ -83,9 +143,10 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
     }
 
     // listen for title click event, open post expand view
-    this.post_expand_listener = new postile.events.EventHandler(this.post_title_el, goog.events.EventType.CLICK, function(e) {
-            var postExpand = new postile.view.post.PostExpand(instance.post);
-            postExpand.open();
+    this.post_expand_listener = new postile.events.EventHandler(this.post_title_el, 
+            goog.events.EventType.CLICK, function(e) {
+        var postExpand = new postile.view.post.PostExpand(instance.post);
+        postExpand.open();
     });
     this.post_expand_listener.listen();
 
@@ -109,35 +170,7 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
     goog.dom.appendChild(this.post_middle_container_el, this.post_like_container_el);
 
     if (this.likes) {
-        this.post_like_count_el = goog.dom.createDom('span', 'post_like_count');
-        this.post_like_count_el.innerHTML = '+' + this.likes.length;
-        goog.dom.appendChild(this.post_like_container_el, this.post_like_count_el);
-
-        this.post_like_button_el = goog.dom.createDom('span', 'post_like_button');
-        goog.dom.appendChild(this.post_like_container_el, this.post_like_button_el);
-
-        var liked_user_id = this.likes.map(function(l) {
-            return l.user_id;
-        });
-        
-        if (liked_user_id.indexOf(parseInt(localStorage.postile_user_id)) != -1) { // already liked
-            this.post_like_button_el.innerHTML = 'unlike';
-        } else {
-            this.post_like_button_el.innerHTML = 'like';
-        }
-
-        goog.events.listen(this.post_like_button_el, goog.events.EventType.CLICK, function(e) {
-            var action = this.post_like_button_el.innerHTML;
-            postile.ajax([ 'post', action ], { post_id: this.post.id }, function(data) {
-                if (action == 'like') { // like
-                    this.post_like_count_el.innerHTML = '+' + (++this.likes.length);
-                    this.post_like_button_el.innerHTML = 'unlike';
-                } else { // unlike
-                    this.post_like_count_el.innerHTML = '+' + (--this.likes.length);
-                    this.post_like_button_el.innerHTML = 'like';
-                }
-            }.bind(this));
-        }.bind(this));
+        this.init_like_container();
     }
 
     /*
@@ -161,14 +194,8 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
         }
     }.bind(this));
 
-    console.log(this);
-
     /* Adding a background for image post */
     if (this.post.image_url) {
-        goog.dom.classes.add(this.wrap_el, 'picture_post');
-        this.wrap_el.style.backgroundImage = 'url(' + postile.conf.uploadsResource([this.post.image_url]) + ')';
-        this.wrap_el.style.backgroundSize = 'cover';
-        this.wrap_el.style.backgroundPosition = 'center';
     } else if (this.post.video_link) {
         goog.dom.classes.add(this.wrap_el, 'video_post');
         this.video_preivew_el = goog.dom.createDom('iframe', {
@@ -203,6 +230,38 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
     if (animation) {
         postile.fx.effects.resizeIn(this.wrap_el);
     }
+}
+
+postile.view.post_in_board.Post.prototype.init_like_container = function() {
+    this.post_like_count_el = goog.dom.createDom('span', 'post_like_count');
+    this.post_like_count_el.innerHTML = '+' + this.likes.length;
+    goog.dom.appendChild(this.post_like_container_el, this.post_like_count_el);
+
+    this.post_like_button_el = goog.dom.createDom('span', 'post_like_button');
+    goog.dom.appendChild(this.post_like_container_el, this.post_like_button_el);
+
+    var liked_user_id = this.likes.map(function(l) {
+        return l.user_id;
+    });
+    
+    if (liked_user_id.indexOf(parseInt(localStorage.postile_user_id)) != -1) { // already liked
+        this.post_like_button_el.innerHTML = 'unlike';
+    } else {
+        this.post_like_button_el.innerHTML = 'like';
+    }
+
+    goog.events.listen(this.post_like_button_el, goog.events.EventType.CLICK, function(e) {
+        var action = this.post_like_button_el.innerHTML;
+        postile.ajax([ 'post', action ], { post_id: this.post.id }, function(data) {
+            if (action == 'like') { // like
+                this.post_like_count_el.innerHTML = '+' + (++this.likes.length);
+                this.post_like_button_el.innerHTML = 'unlike';
+            } else { // unlike
+                this.post_like_count_el.innerHTML = '+' + (--this.likes.length);
+                this.post_like_button_el.innerHTML = 'like';
+            }
+        }.bind(this));
+    }.bind(this));
 }
 
 /**
@@ -719,12 +778,12 @@ postile.view.post_in_board.Post.prototype.edit = function(mode) {
 
         // remove effects in the view mode
         instance.post_title_el.style.textDecoration = 'none';
+        instance.post_title_el.style.cursor = 'auto';
 
         // reset title and content in case they are chomped
         instance.post_title_el.innerHTML = instance.post.title;
         instance.post_content_el.innerHTML = postile.parseBBcode(instance.post.content);
         postile.bbcodePostProcess(instance.post_content_el);
-
 
         if(mode != 'title'){
             goog.dom.classes.add(instance.post_content_el, 'selectable');
