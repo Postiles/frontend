@@ -307,6 +307,7 @@ postile.view.post_in_board.Post.prototype.set_max_displayable_content = function
     this.post_content_el.innerHTML = content.substring(0, content.length - 3) + '...';
 }
 
+/*
 postile.view.post_in_board.Post.prototype.post_icon_container_init = function() {
     var instance = this;
 
@@ -379,12 +380,11 @@ postile.view.post_in_board.Post.prototype.post_icon_container_init = function() 
 
     // addIcon("share");
 
-    /*
     goog.events.listen(addIcon("comment"), goog.events.EventType.CLICK, function() {
         instance.inline_comments_block = new postile.view.post_in_board.InlineCommentsBlock(instance);
     });
-    */
 }
+*/
 
 postile.view.post_in_board.Post.prototype.comment_preview_init = function() {
     // comment preview
@@ -745,8 +745,8 @@ postile.view.post_in_board.Post.prototype.edit = function() {
         });
 
         //hide the original bottom bar
-        goog.dom.removeChildren(instance.post_icon_container_el);
-        var y_editor = new postile.WYSIWYF.Editor(instance.post_content_el, instance.post_icon_container_el, instance);
+        goog.dom.removeChildren(instance.post_middle_container_el);
+        var y_editor = new postile.WYSIWYF.Editor(instance.post_content_el, instance.post_middle_container_el, instance);
         instance.board.disableMovingCanvas = true; //disable moving
         instance.enable();
 
