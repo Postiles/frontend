@@ -18,3 +18,11 @@
 	border-right: 10px solid transparent;
 	border-bottom: 10px solid #024d61;
 }
+
+.internal_link_wrap .title {
+    cursor: pointer;
+}
+
+.internal_link_wrap .user {
+    font-style: italic;
+}

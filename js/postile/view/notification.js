@@ -196,7 +196,7 @@ postile.view.notification.InfoItem.prototype.render = function(parent, data, fro
         if (postile.router.current_view instanceof postile.view.post_board.PostBoard) {
             postile.router.current_view.moveToPost(targetId);
         }
-    }.bind(this));
+    });
 
     /* footer part */
     this.notificationFooter = goog.dom.createDom('div','notification_footer');
