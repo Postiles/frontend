@@ -214,6 +214,8 @@ postile.view.AbstractTipView = function() {
     this.container_wrap = goog.dom.createDom('div');
     this.container_wrap.style.position = 'absolute';
 
+    this.listeners = [];
+    
     goog.dom.appendChild(this.container_wrap, this.container);
 }
 
@@ -226,15 +228,15 @@ postile.view.AbstractTipView.prototype.open = function(reference, parent) {
     var coord = goog.style.getRelativePosition(reference, parent);
     goog.style.setPosition(this.container_wrap, coord);
     goog.dom.appendChild(parent, this.container_wrap);
-    this.container_handler.listen();
-    this.close_handler.listen();
-    this.should_close = false;
+    for (var i in this.listeners) {
+        this.listeners[i].listen();
+    }
 }
 
 postile.view.AbstractTipView.prototype.close = function() {
-    this.should_close = true;
-    this.close_handler.unlisten();
-    this.container_handler.unlisten();
+    for (var i in this.listeners) {
+        this.listeners[i].unlisten();
+    }
     if (this.onclose) { this.onclose(); }
     goog.dom.removeNode(this.container_wrap);
 }
@@ -247,27 +249,27 @@ postile.view.HoverTipView = function() {
     goog.base(this);
     
     this.timer = null;
-    
-    var prepareClosing = function() {
-        this.close();
-    }
-  
-    // When user clicks on the background: close this view.
-    this.close_handler = new postile.events.EventHandler(
-        this.container, goog.events.EventType.MOUSEOUT, function(){
-            if (this.timer) { clearTimeout(this.timer); }
-            this.timer = setTimeout(prepareClosing, 500);
-        });
-
-    // When user clicks on this view: prevent its parent from
-    // receiving the event.
-    this.container_handler = new postile.events.EventHandler(
-        this.container, goog.events.EventType.MOUSEOVER, function(evt){
-            if (this.timer) { clearTimeout(this.timer); }
-    });
+   
+    this.listeners.push(new postile.events.EventHandler(this.container, goog.events.EventType.MOUSEOUT, this.mouseout.bind(this)));
+    this.listeners.push(new postile.events.EventHandler(this.container, goog.events.EventType.MOUSEOVER, this.mouseover.bind(this)));
 }
 
 goog.inherits(postile.view.HoverTipView, postile.view.AbstractTipView);
+
+postile.view.HoverTipView.prototype.mouseout = function(){
+    if (this.timer) { clearTimeout(this.timer); }
+    this.timer = setTimeout(function() { this.close(); }.bind(this), 200);
+};
+
+postile.view.HoverTipView.prototype.mouseover = function(evt){
+    if (this.timer) { clearTimeout(this.timer); }
+}
+
+postile.view.HoverTipView.prototype.open = function(reference, parent) {
+    this.listeners.push(new postile.events.EventHandler(reference, goog.events.EventType.MOUSEOUT, this.mouseout.bind(this)));
+    this.listeners.push(new postile.events.EventHandler(reference, goog.events.EventType.MOUSEOVER, this.mouseover.bind(this)));
+    postile.view.AbstractTipView.prototype.open.call(this, reference, parent);
+}
 
  /**
  * So-called traditional TipView. Opened by clicking and closed by clicking outside.
@@ -278,18 +280,18 @@ postile.view.TipView = function() {
     var instance = this;
   
     // When user clicks on the background: close this view.
-    this.close_handler = new postile.events.EventHandler(document.body,
+    this.listeners.push(new postile.events.EventHandler(document.body,
         goog.events.EventType.CLICK,
         function(){
             instance.close();
-        });
+        }));
 
     // When user clicks on this view: prevent its parent from
     // receiving the event.
-    this.container_handler = new postile.events.EventHandler(
+    this.listeners.push(new postile.events.EventHandler(
         this.container, goog.events.EventType.CLICK, function(evt){
         evt.stopPropagation();
-    });
+    }));
 }
 
 goog.inherits(postile.view.TipView, postile.view.AbstractTipView);

@@ -6,20 +6,34 @@ $lower-background: #b5b5b5;
 
 @-webkit-keyframes slideDown /* Safari and Chrome */
 {
-	0%:{top: -290px;}
+	0%:{top: -10px;}
 	100%:{top: 0px;}
 }
 @keyframes slideDown /* Safari and Chrome */
 {
-	0%:{top: -290px;}
+	0%:{top: -10px;}
 	100%:{top: 0px;}
 }
 @-moz-keyframes slideDown /* Safari and Chrome */
 {
-	0%:{top: -290px;}
+	0%:{top: -10px;}
 	100%:{top: 0px;}
 }
-
+@-webkit-keyframes slideUp /* Safari and Chrome */
+{
+	0%:{top: 130px;}
+	100%:{top: 0px;}
+}
+@keyframes slideUp /* Safari and Chrome */
+{
+	0%:{top: 130px;}
+	100%:{top: 0px;}
+}
+@-moz-keyframes slideUp /* Safari and Chrome */
+{
+	0%:{top: 130px;}
+	100%:{top: 0px;}
+}
 
 
 #upload_video_pop {
@@ -38,9 +52,11 @@ $lower-background: #b5b5b5;
 	}
 
 	.upload_video_upper {
+		z-index : 1;
 		background: $upper-background;
 		width: 400px;
 		height: 130px;
+		position: relative;
 		.info_part {
 			margin-top: 15px;
 			font-size: 13px;
@@ -66,6 +82,7 @@ $lower-background: #b5b5b5;
 	}
 
 	.upload_video_lower {
+		z-index: -1;
 		display: none;
 		background: $lower-background;
 		width: 400px;
@@ -91,13 +108,18 @@ $lower-background: #b5b5b5;
 		}
 	}
 
+	.upload_video_upper_animation {
+		animation: slideUp 1s;
+		-webkit-animation: slideUp 1s; /* Safari and Chrome */
+		-moz-animation: slideUp 1s; /* Firefox */
+	}
+
 	.upload_video_lower_animation {
 		display: block;
 		animation: slideDown 1s;
 		-webkit-animation: slideDown 1s; /* Safari and Chrome */
 		-moz-animation: slideDown 1s; /* Firefox */
 	}
-
 	.du {
 		height: 1px;
 	}

@@ -2,6 +2,7 @@ goog.provide('postile.debbcode');
 
 goog.require('goog.string');
 goog.require('postile.dom');
+goog.require("postile.view.post_board.InternalLink");
 
 postile.parseBBcode = function(input) {
     input = goog.string.htmlEscape(input + '');
@@ -23,8 +24,9 @@ postile.bbcodePostProcess = function(el) {
     }
     var handleOneInternalLink = function(el) {
         el.src = postile.conf.imageResource(['link_icon.png']);
+        var htv = new postile.view.post_board.InternalLink(el.getAttribute("link-to-post-id"));
         goog.events.listen(el, goog.events.EventType.MOUSEOVER, function() {
-            alert("This is a link.");
+            htv.open(el);
         });
     }
     var atps = postile.dom.getDescendantsByClass(el, "at_person");

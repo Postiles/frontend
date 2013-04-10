@@ -617,7 +617,7 @@ html, body {
 
 .post_content {
   position: relative;
-  overflow: hidden;
+  /* overflow: hidden; */
   width: 100%; 
   cursor: default;
 }
