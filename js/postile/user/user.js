@@ -25,6 +25,11 @@ postile.user.logout = function() {
 }
 
 postile.user.openLoginBox = function() {
+    try {
+        a.b;
+    } catch(e) {
+        console.log(e.stack);
+    }
     if (postile.user.current_user) { return; } //already logged in
     if (postile.router.current_view instanceof postile.view.login.LoginView) { return; } //login window already opened
 

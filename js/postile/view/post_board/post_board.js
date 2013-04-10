@@ -186,7 +186,6 @@ postile.view.post_board.handlers.keypress = function(instance, e) {
  * @param {string} board_id Unique identifier for a board.
  */
 postile.view.post_board.PostBoard = function(board_id) {
-
     var i;
 
     /** @deprecated Dead code */
