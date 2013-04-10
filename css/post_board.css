@@ -497,7 +497,7 @@ html, body {
 
 .comment_list {
   margin-top: 4px;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .comment_container_no_comment {
