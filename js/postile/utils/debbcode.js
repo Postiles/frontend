@@ -24,7 +24,7 @@ postile.bbcodePostProcess = function(el) {
     }
     var handleOneInternalLink = function(el) {
         el.src = postile.conf.imageResource(['link_icon.png']);
-        var htv = new postile.view.post_board.InternalLink();
+        var htv = new postile.view.post_board.InternalLink(el.getAttribute("link-to-post-id"));
         goog.events.listen(el, goog.events.EventType.MOUSEOVER, function() {
             htv.open(el);
         });
