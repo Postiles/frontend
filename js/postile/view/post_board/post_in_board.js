@@ -139,6 +139,7 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
             }.bind(this));
         }.bind(this));
     }
+
     /*
     // icon container
     this.post_icon_container_el = goog.dom.createDom("div", "post_icon_container");
@@ -165,15 +166,9 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
         goog.dom.classes.add(this.wrap_el, 'picture_post');
         this.wrap_el.style.backgroundImage = 'url(' + postile.conf.uploadsResource([this.post.image_url]) + ')';
         this.wrap_el.style.backgroundSize = 'cover';
-        this.wrap_el.style.backgroundPosition = 'center';
         //this.post_content_el.style.background-position = 'center';
     } else if (this.post.video_url) {
-        goog.dom.classes.add(this.wrap_el, 'video_post');
-        this.video_preivew_el = goog.dom.createDom('iframe', {
-            'class': 'video_post',
-            'src': this.embed_code
-        });
-        goog.dom.appendChild(this.post_content_el, this.video_preivew_el);
+
     } else {
         /* end of image post part */
 
@@ -314,6 +309,7 @@ postile.view.post_in_board.Post.prototype.set_max_displayable_content = function
     this.post_content_el.innerHTML = content.substring(0, content.length - 3) + '...';
 }
 
+/*
 postile.view.post_in_board.Post.prototype.post_icon_container_init = function() {
     var instance = this;
 
@@ -386,12 +382,11 @@ postile.view.post_in_board.Post.prototype.post_icon_container_init = function() 
 
     // addIcon("share");
 
-    /*
     goog.events.listen(addIcon("comment"), goog.events.EventType.CLICK, function() {
         instance.inline_comments_block = new postile.view.post_in_board.InlineCommentsBlock(instance);
     });
-    */
 }
+*/
 
 postile.view.post_in_board.Post.prototype.comment_preview_init = function() {
     // comment preview
@@ -476,7 +471,7 @@ postile.view.post_in_board.Post.prototype.comment_preview_init = function() {
     goog.events.listen(this.comment_list_close_button_el, goog.events.EventType.CLICK, function(e) {
         this.comment_container_el.style.display = 'none';
     }.bind(this));
-
+    
     if (this.inline_comments && this.inline_comments.length > 0) { // at least one comment
         this.comment_preview_middle_el.innerHTML = ': ';
 
@@ -702,8 +697,7 @@ postile.view.post_in_board.Post.prototype.removeFromBoard = function() {
     */
 }
 
-
-postile.view.post_in_board.Post.prototype.edit = function(option) {
+postile.view.post_in_board.Post.prototype.edit = function() {
     if (this.in_edit) {
         return;
     }
@@ -721,45 +715,41 @@ postile.view.post_in_board.Post.prototype.edit = function(option) {
 
         // reset title and content in case they are chomped
         instance.post_title_el.innerHTML = instance.post.title;
+        instance.post_content_el.innerHTML = postile.parseBBcode(instance.post.content);
+        postile.bbcodePostProcess(instance.post_content_el);
 
-        if(option != "title"){ // general edit
-            instance.post_content_el.innerHTML = postile.parseBBcode(instance.post.content);
-            postile.bbcodePostProcess(instance.post_content_el);
-
-            goog.dom.classes.add(instance.post_content_el, 'selectable');
-
-        }
         goog.dom.classes.add(instance.post_title_el, 'selectable');
+        goog.dom.classes.add(instance.post_content_el, 'selectable');
+
         // set title and text size for editing
         instance.post_title_el.style.width = instance.container_el.offsetWidth - 10 + 'px';
+        instance.post_content_el.style.height = instance.container_el.offsetHeight - 40 + 'px';
 
         instance.post_content_el.style.overflowY = 'auto';
-        instance.post_content_el.style.height = instance.container_el.offsetHeight - 40 + 'px';
 
         // delete icon on the top right corner
         var delete_icon = goog.dom.createDom('div', 'post_remove_icon');
         goog.dom.appendChild(instance.container_el, delete_icon);
-        goog.events.listen(delete_icon, goog.events.EventType.CLICK, function() {
-            new postile.view.confirm_delete.ConfirmDelete(instance).open(this);
+        goog.events.listen(delete_icon, goog.events.EventType.CLICK, function(e) {
+            e.stopPropagation();
+            new postile.view.confirm_delete.ConfirmDelete(instance).open(delete_icon);
         });
 
         instance.post_author_el.style.display = 'none'; // hide author name
         instance.comment_preview_el.style.display = 'none' // hide comment preview
 
-        // set placeholders for title and content views 
-        if(option != "title"){
-            postile.ui.makeLabeledInput(instance.post_content_el, '(ctrl + enter to submit)',
+        // set placeholders for title and content views
+        postile.ui.makeLabeledInput(instance.post_content_el, '(ctrl + enter to submit)',
                 'half_opaque');
-        }
-        
+
         postile.ui.makeLabeledInput(instance.post_title_el, postile._('post_title_prompt'),
                 'half_opaque', function() {
             instance.post_content_el.focus(); // when enter is pressd, change focus to content
         });
 
         //hide the original bottom bar
-        goog.dom.removeChildren(instance.post_icon_container_el);
-        var y_editor = new postile.WYSIWYF.Editor(instance.post_content_el, instance.post_icon_container_el, instance);
+        goog.dom.removeChildren(instance.post_middle_container_el);
+        var y_editor = new postile.WYSIWYF.Editor(instance.post_content_el, instance.post_middle_container_el, instance);
         instance.board.disableMovingCanvas = true; //disable moving
         instance.enable();
 
