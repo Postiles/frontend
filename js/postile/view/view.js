@@ -16,14 +16,14 @@ goog.require('postile.fx.effects');
 2. [optional, only when you need to load css] have a "unloaded_stylesheets" in its prototype,
   which is an array containing css files that need to be loaded.
 
-Just put your fucking things into this.container, and use "open" and "close" if needed
+Just put your things into this.container, and use "open" and "close" if needed
 
 === How to create a pop-up view ===
 
 1. Have a class inherits "postile.view.PopView".
 2. The same as normal view.
 
-Just put your fucking things into this.container, and use "open" and "close" if needed
+Just put your things into this.container, and use "open" and "close" if needed
 
 can set onclose method
 
@@ -38,7 +38,7 @@ can set onclose method
 1.  have a class inherits "postile.view.TipView".
 2. the same as normal view
 
-just put your fucking things into this.container, and use "open" and "close" if needed.
+just put your things into this.container, and use "open" and "close" if needed.
 
 the "open: functon will receive a parameter indicating the reference element and container element of the tip view. If the reference element is not set, the parent element of the reference element will be used
 
@@ -115,7 +115,6 @@ postile.view.PopView = function() {
     this.mask.style.position = 'absolute';
     this.mask.style.top = '0px';
     this.mask.style.zIndex = '300';
-    this.mask.style.zIndex = '300';
 
     goog.dom.appendChild(this.mask, this.container_wrap);
 }
@@ -136,7 +135,7 @@ postile.view.PopView.prototype.open = function(opt_width) {
     }
 
     goog.dom.appendChild(document.body, this.mask);
-    postile.fx.effects.resizeIn(this.container);
+    postile.fx.effects.flowDown(this.container);
     new postile.fx.Animate(goog.bind(function(i) {
         this.mask.style.opacity = i;
     }, this), 400);
