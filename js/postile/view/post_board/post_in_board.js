@@ -168,7 +168,12 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
         this.wrap_el.style.backgroundPosition = 'center';
         //this.post_content_el.style.background-position = 'center';
     } else if (this.post.video_url) {
-
+        goog.dom.classes.add(this.wrap_el, 'video_post');
+        this.video_preivew_el = goog.dom.createDom('iframe', {
+            'class': 'video_post',
+            'src': this.embed_code
+        });
+        goog.dom.appendChild(this.post_content_el, this.video_preivew_el);
     } else {
         /* end of image post part */
 
@@ -697,7 +702,8 @@ postile.view.post_in_board.Post.prototype.removeFromBoard = function() {
     */
 }
 
-postile.view.post_in_board.Post.prototype.edit = function() {
+
+postile.view.post_in_board.Post.prototype.edit = function(option) {
     if (this.in_edit) {
         return;
     }
@@ -715,17 +721,20 @@ postile.view.post_in_board.Post.prototype.edit = function() {
 
         // reset title and content in case they are chomped
         instance.post_title_el.innerHTML = instance.post.title;
-        instance.post_content_el.innerHTML = postile.parseBBcode(instance.post.content);
-        postile.bbcodePostProcess(instance.post_content_el);
 
+        if(option != "title"){ // general edit
+            instance.post_content_el.innerHTML = postile.parseBBcode(instance.post.content);
+            postile.bbcodePostProcess(instance.post_content_el);
+
+            goog.dom.classes.add(instance.post_content_el, 'selectable');
+
+        }
         goog.dom.classes.add(instance.post_title_el, 'selectable');
-        goog.dom.classes.add(instance.post_content_el, 'selectable');
-
         // set title and text size for editing
         instance.post_title_el.style.width = instance.container_el.offsetWidth - 10 + 'px';
-        instance.post_content_el.style.height = instance.container_el.offsetHeight - 40 + 'px';
 
         instance.post_content_el.style.overflowY = 'auto';
+        instance.post_content_el.style.height = instance.container_el.offsetHeight - 40 + 'px';
 
         // delete icon on the top right corner
         var delete_icon = goog.dom.createDom('div', 'post_remove_icon');
@@ -737,10 +746,12 @@ postile.view.post_in_board.Post.prototype.edit = function() {
         instance.post_author_el.style.display = 'none'; // hide author name
         instance.comment_preview_el.style.display = 'none' // hide comment preview
 
-        // set placeholders for title and content views
-        postile.ui.makeLabeledInput(instance.post_content_el, '(ctrl + enter to submit)',
+        // set placeholders for title and content views 
+        if(option != "title"){
+            postile.ui.makeLabeledInput(instance.post_content_el, '(ctrl + enter to submit)',
                 'half_opaque');
-
+        }
+        
         postile.ui.makeLabeledInput(instance.post_title_el, postile._('post_title_prompt'),
                 'half_opaque', function() {
             instance.post_content_el.focus(); // when enter is pressd, change focus to content
