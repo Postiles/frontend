@@ -905,7 +905,7 @@ postile.view.post_board.PostBoard.prototype.createPost = function(info) {
 
     postile.ajax(['post', 'new'], req, function(data) {
         instance.renderArray([ { post: data.message.post, creator: data.message.creator } ]);
-        instance.currentPosts[data.message.post.id].edit(true);
+        instance.currentPosts[data.message.post.id].edit();
     });
 }
 
@@ -919,6 +919,8 @@ postile.view.post_board.PostBoard.prototype.createImagePost = function(info, ima
 
     postile.ajax(['post', 'new'], req, function(data) {
         instance.renderArray([ { post: data.message.post, creator: data.message.creator} ]);
+        console.log(data);
+        instance.currentPosts[data.message.post.id].edit("title");
         //postile.ajax(['post','submit_change'], {post_id: data.message.post.post_id},function(data){console.log(data);});
     });
 }
@@ -933,6 +935,7 @@ postile.view.post_board.PostBoard.prototype.createVideoPost = function(info, vid
 
     postile.ajax(['post', 'new'], req, function(data) {
         instance.renderArray([ { post: data.message.post, creator: data.message.creator} ]);
+        instance.currentPosts[data.message.post.id].edit("title");
     });
 }
 
