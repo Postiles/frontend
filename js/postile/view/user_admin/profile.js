@@ -36,6 +36,15 @@ postile.view.profile.ProfileView.prototype.displayableItems = [
     { name: 'hometown', description: 'Comes from ', icon: 'profile-preview/work-icon.png' }
 ];
 
+postile.view.profile.ProfileView.prototype.findDescriptionByName = function(name) {
+    for (var i in this.displayableItems) {
+        var item = this.displayableItems[i];
+        if (item.name == name) {
+            return item.description;
+        }
+    }
+}
+
 postile.view.profile.ProfileView.prototype.initItems = function() {
     /* init a container for all the editable profile items */
     this.profileItems = [ ];
@@ -102,13 +111,17 @@ postile.view.profile.ProfileView.prototype.initItems = function() {
             goog.dom.appendChild(newItemIcon, newItemIconImg);
 
             var newItemText = goog.dom.createDom('div', 'text');
+
+            var newItemTextTitle = goog.dom.createDom('span', 'title');
+
             if (!this.userData[item.name] && this.isSelfProfile) {
-                newItemText.innerHTML = item.name;
-                newItemText.style.opacity = '0.3';
+                newItemTextTitle.innerHTML = item.name;
+                newItemTextTitle.style.opacity = '0.3';
             } else {
-                newItemText.innerHTML = item.description;
+                newItemTextTitle.innerHTML = item.description;
             }
 
+            goog.dom.appendChild(newItemText, newItemTextTitle);
             goog.dom.appendChild(newItem, newItemText);
 
             var newItemTextData = goog.dom.createDom('span', 'data');
@@ -144,6 +157,7 @@ postile.view.profile.ProfileItem = function(baseDom, profileInstance) { // const
     this.item = this.baseDom.getAttribute('data-item');
 
     this.text_el = goog.dom.getElementByClass('text', this.baseDom);
+    this.title_el = goog.dom.getElementByClass('title', this.baseDom);
     this.data_el = goog.dom.getElementByClass('data', this.baseDom);
     this.edit_el = goog.dom.getElementByClass('edit', this.baseDom);
 
@@ -207,9 +221,17 @@ postile.view.profile.ProfileItem.prototype.saveTriggered = function() {
     postile.ajax([ 'profile', 'update_profile_item' ], 
             { item: this.item, value: this.input_el.value }, 
             function() {
-        console.log(this);
         this.data_el.innerHTML = this.input_el.value;
         this.edit_el.innerHTML = 'Edit';
+
+        if (this.data_el.innerHTML) {
+            var description = postile.view.profile.ProfileView.prototype.findDescriptionByName(this.item);
+            this.title_el.innerHTML = description;
+            this.title_el.style.opacity = 1.0;
+        } else {
+            this.title_el.innerHTML = this.item;
+            this.title_el.style.opacity = 0.3;
+        }
 
         this.clearEvent();
 
