@@ -161,17 +161,19 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
         }
     }.bind(this));
 
+    console.log(this);
+
     /* Adding a background for image post */
     if (this.post.image_url) {
         goog.dom.classes.add(this.wrap_el, 'picture_post');
         this.wrap_el.style.backgroundImage = 'url(' + postile.conf.uploadsResource([this.post.image_url]) + ')';
         this.wrap_el.style.backgroundSize = 'cover';
         this.wrap_el.style.backgroundPosition = 'center';
-    } else if (this.post.video_url) {
+    } else if (this.post.video_link) {
         goog.dom.classes.add(this.wrap_el, 'video_post');
         this.video_preivew_el = goog.dom.createDom('iframe', {
-            'class': 'video_post',
-            'src': this.embed_code
+            'class': 'video_iframe',
+            'src': this.post.video_link
         });
         goog.dom.appendChild(this.post_content_el, this.video_preivew_el);
     } else {
@@ -702,7 +704,7 @@ postile.view.post_in_board.Post.prototype.removeFromBoard = function() {
     */
 }
 
-postile.view.post_in_board.Post.prototype.edit = function() {
+postile.view.post_in_board.Post.prototype.edit = function(mode) {
     if (this.in_edit) {
         return;
     }
@@ -723,8 +725,11 @@ postile.view.post_in_board.Post.prototype.edit = function() {
         instance.post_content_el.innerHTML = postile.parseBBcode(instance.post.content);
         postile.bbcodePostProcess(instance.post_content_el);
 
+
+        if(mode != 'title'){
+            goog.dom.classes.add(instance.post_content_el, 'selectable');
+        }
         goog.dom.classes.add(instance.post_title_el, 'selectable');
-        goog.dom.classes.add(instance.post_content_el, 'selectable');
 
         // set title and text size for editing
         instance.post_title_el.style.width = instance.container_el.offsetWidth - 10 + 'px';
@@ -744,13 +749,22 @@ postile.view.post_in_board.Post.prototype.edit = function() {
         instance.comment_preview_el.style.display = 'none' // hide comment preview
 
         // set placeholders for title and content views
-        postile.ui.makeLabeledInput(instance.post_content_el, '(ctrl + enter to submit)',
-                'half_opaque');
 
-        postile.ui.makeLabeledInput(instance.post_title_el, postile._('post_title_prompt'),
-                'half_opaque', function() {
-            instance.post_content_el.focus(); // when enter is pressd, change focus to content
-        });
+        if(mode != "title"){
+            postile.ui.makeLabeledInput(instance.post_content_el, '(ctrl + enter to submit)',
+                    'half_opaque');
+
+            postile.ui.makeLabeledInput(instance.post_title_el, postile._('post_title_prompt'),
+                    'half_opaque', function() {
+                instance.post_content_el.focus(); // when enter is pressd, change focus to content
+            });
+        }
+        else {
+            postile.ui.makeLabeledInput(instance.post_title_el, '(ctrl + enter to submit)',
+                    'half_opaque', function(){
+                instance.post_title_el.focus();
+            });
+        }
 
         //hide the original bottom bar
         goog.dom.removeChildren(instance.post_middle_container_el);
