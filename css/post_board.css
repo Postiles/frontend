@@ -316,12 +316,12 @@ html, body {
 }
 
 .post_middle_container {
-  height: 14px;
+  height: 16px;
+  color: #024d61;
 }
 
 .post_like_container {
     margin-left: 10px;
-    color: #024d61;
 }
 
 .post_like_count_el {
@@ -334,6 +334,17 @@ html, body {
 }
 
 .post_like_button:hover {
+    color: whitesmoke;
+    background: #024d61;
+}
+
+.post_edit_button {
+    float: right;
+    color: #999;
+    cursor: pointer;
+}
+
+.post_edit_button:hover {
     text-decoration: underline;
 }
 

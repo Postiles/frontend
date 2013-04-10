@@ -42,7 +42,7 @@ goog.require('postile.view.onlinepeople');
  */
 postile.view.post_board.POST_WIDTH = 100;
 postile.view.post_board.POST_HEIGHT = 80;
-postile.view.post_board.POST_MARGIN = 4;
+postile.view.post_board.POST_MARGIN = 10;
 
 /**
  * Callback function for PostBoard.direction_controllers' mouseclick event.
