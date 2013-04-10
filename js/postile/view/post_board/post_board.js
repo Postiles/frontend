@@ -918,6 +918,7 @@ postile.view.post_board.PostBoard.prototype.createImagePost = function(info, ima
 
     postile.ajax(['post', 'new'], req, function(data) {
         instance.renderArray([ { post: data.message.post, creator: data.message.creator} ]);
+        //postile.ajax(['post','submit_change'], {post_id: data.message.post.post_id},function(data){console.log(data);});
     });
 }
 
