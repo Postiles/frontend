@@ -167,6 +167,9 @@ postile.view.post_in_board.VideoPost.prototype.edit = function() {
     this.edit_for_picture_and_video_post();
 }
 
+/**
+ * the edit function for picture and video posts, allows the user to edit the title of the post
+ */
 postile.view.post_in_board.Post.prototype.edit_for_picture_and_video_post = function() {
     postile.ajax(['post','start_edit'], { post_id: this.post.id }, function() {
         this.change_view_for_edit();
@@ -275,6 +278,7 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
         this.creator = data;
         this.post_author_el.innerHTML = this.creator.username;
 
+        /* render elements for the user's own post */
         if (this.creator.id == localStorage.postile_user_id) { // my own post
             this.post_content_el.style.cursor = 'auto';
             goog.events.listen(this.post_content_el, goog.events.EventType.CLICK, function() {
@@ -335,26 +339,6 @@ postile.view.post_in_board.Post.prototype.init_like_container = function() {
             }
         }.bind(this));
     }.bind(this));
-}
-
-/**
- * initialize the drop-down menu that contains extra buttons
- */
-postile.view.post_in_board.Post.prototype.extra_button_view_init = function() {
-    this.extra_button_container_el = goog.dom.createDom('div', 'extra-button-container');
-    goog.dom.appendChild(this.wrap_el, this.extra_button_container_el);
-
-    this.extra_comment_button = goog.dom.createDom('span', 'extra-button extra-comment-button');
-    this.extra_comment_button.innerHTML = 'comment';
-    goog.dom.appendChild(this.extra_button_container_el, this.extra_comment_button);
-
-    this.extra_share_button = goog.dom.createDom('span', 'extra-button extra-share-button');
-    this.extra_share_button.innerHTML = 'share';
-    goog.dom.appendChild(this.extra_button_container_el, this.extra_share_button);
-
-    this.extra_delete_button = goog.dom.createDom('span', 'extra-button extra-delete-button');
-    this.extra_delete_button.innerHTML = 'delete';
-    goog.dom.appendChild(this.extra_button_container_el, this.extra_delete_button);
 }
 
 postile.view.post_in_board.Post.prototype.set_max_displayable_top = function() {
@@ -859,7 +843,7 @@ postile.view.post_in_board.Post.prototype.change_view_for_edit = function() {
     goog.events.listen(delete_icon, goog.events.EventType.CLICK, function(e) {
         e.stopPropagation();
         new postile.view.confirm_delete.ConfirmDelete(this).open(delete_icon);
-    });
+    }.bind(this));
 
     this.post_author_el.style.display = 'none'; // hide author name
     this.comment_preview_el.style.display = 'none' // hide comment preview

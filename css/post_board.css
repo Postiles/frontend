@@ -814,34 +814,3 @@ html, body {
     width: 150px;
     padding: 6px;
 }
-
-.extra-button-container {
-    position: relative;
-    top: -14px;
-    left: 10px;
-    width: 150px;
-    height: 13px;
-    background: whitesmoke;
-    z-index: -1;
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
-    -webkit-box-shadow: 0px 0px 2px #024d61;
-    -webkit-transition: top 0.3s;
-}
-
-.post_wrap:hover .extra-button-container {
-    top: 0px;
-}
-
-.extra-button {
-    position: relative;
-    top: -3px;
-    font-size: 8pt;
-    color: #024d61;
-    padding: 0px 5px;
-    cursor: pointer;
-}
-
-.extra-button:hover {
-    text-decoration: underline;
-}
