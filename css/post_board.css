@@ -275,7 +275,7 @@ html, body {
 }
 
 .picture_post .post_inner_container {
-  background: rgba(0, 0, 0, 0.5);
+  background: -webkit-linear-gradient(top, rgba(0,0,0,0.5) 0%,rgba(0,0,0,0.5) 50%,rgba(0,0,0,0.2) 100%);
 }
 
 .post_top {
