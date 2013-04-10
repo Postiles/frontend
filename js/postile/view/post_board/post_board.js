@@ -8,6 +8,7 @@ goog.require('goog.events.KeyCodes');
 goog.require('goog.ui.Textarea');
 goog.require('goog.userAgent');
 goog.require('goog.events.KeyHandler');
+goog.require('postile.DelayedThrottle');
 goog.require('postile.conf');
 goog.require('postile.view.post_board.mask');
 goog.require('postile.view.post_board.MouseMoveScroll');
@@ -317,6 +318,12 @@ postile.view.post_board.PostBoard = function(board_id) {
      * @see updateSubscribeArea
      */
     this.subscribedArea = null;
+    
+    /**
+     * Throttle subscription updating when scrolling 
+     * @type {postile.delayedThrottle}
+     */
+    this.scrollUpdateThrottle = new postile.DelayedThrottle(function() { instance.updateSubscribeArea(); }, 500);
 
     // Initialize according to board_id
     postile.ajax([ 'board', 'enter_board' ], { board_id: board_id }, function(data) {
@@ -414,8 +421,8 @@ postile.view.post_board.PostBoard.prototype.bindMouseEvents = function() {
     goog.events.listen(this.viewport, goog.events.EventType.SCROLL, function() {
         instance.canvasCoord[0] = - instance.viewport.scrollLeft;
         instance.canvasCoord[1] = - instance.viewport.scrollTop;
-        // instance.updateSubscribeArea();
-    })
+        instance.scrollUpdateThrottle.kick();
+    });
 
     // Start: controllers for moving the viewport
     goog.dom.appendChild(this.catchall, this.right);
