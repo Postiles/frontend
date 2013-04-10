@@ -166,7 +166,7 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
         goog.dom.classes.add(this.wrap_el, 'picture_post');
         this.wrap_el.style.backgroundImage = 'url(' + postile.conf.uploadsResource([this.post.image_url]) + ')';
         this.wrap_el.style.backgroundSize = 'cover';
-        //this.post_content_el.style.background-position = 'center';
+        this.wrap_el.style.backgroundPosition = 'center';
     } else if (this.post.video_url) {
 
     } else {
