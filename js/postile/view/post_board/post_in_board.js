@@ -102,8 +102,10 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
     // display proper number of characters for title
     this.set_max_displayable_top();
 
+
     this.post_middle_container_el = goog.dom.createDom('div', 'post_middle_container');
     goog.dom.appendChild(this.inner_container_el, this.post_middle_container_el);
+
 
     this.post_like_container_el = goog.dom.createDom('div', 'post_like_container');
     goog.dom.appendChild(this.post_middle_container_el, this.post_like_container_el);
@@ -112,13 +114,14 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
     this.post_like_count_el.innerHTML = '+' + this.likes.length;
     goog.dom.appendChild(this.post_like_container_el, this.post_like_count_el);
 
+
     this.post_like_button_el = goog.dom.createDom('span', 'post_like_button');
     goog.dom.appendChild(this.post_like_container_el, this.post_like_button_el);
 
     var liked_user_id = this.likes.map(function(l) {
         return l.user_id;
     });
-    
+
     if (liked_user_id.indexOf(parseInt(localStorage.postile_user_id)) != -1) { // already liked
         this.post_like_button_el.innerHTML = 'unlike';
     } else {
