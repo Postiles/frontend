@@ -207,6 +207,7 @@ postile.view.profile.ProfileItem.prototype.saveTriggered = function() {
     postile.ajax([ 'profile', 'update_profile_item' ], 
             { item: this.item, value: this.input_el.value }, 
             function() {
+        console.log(this);
         this.data_el.innerHTML = this.input_el.value;
         this.edit_el.innerHTML = 'Edit';
 
