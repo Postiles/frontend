@@ -36,6 +36,8 @@ postile.view.post_board.PostCreator.prototype.open = function(imgUri, videoUri) 
         this.videoUri = videoUri;
         this.imgUri = imgUri;
         this.preview.style.backgroundImage = 'url(' + postile.conf.imageResource(imgUri) + ')';
+        this.preview.style.backgroundSize = '96px 96px';
+        this.preview.style.backgroundRepeat = 'no-repeat';
 
     } else {
         if(imgUri) {
@@ -168,7 +170,7 @@ postile.view.post_board.PostCreator.prototype.mouseup = function(e){
 
     } else if(this.videoMode){
         this.videoMode = false;
-
+        this.board.createVideoPost(this.position, this.videoUri);
         // TODO modify the createPost function for image and video.
     }else {
         this.board.createPost(this.position);
