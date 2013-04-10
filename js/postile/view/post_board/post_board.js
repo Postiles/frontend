@@ -323,7 +323,7 @@ postile.view.post_board.PostBoard = function(board_id) {
      * Throttle subscription updating when scrolling 
      * @type {postile.delayedThrottle}
      */
-    this.scrollUpdateThrottle = new postile.DelayedThrottle(function() { instance.updateSubscribeArea(); }, 500);
+    // this.scrollUpdateThrottle = new postile.DelayedThrottle(function() { instance.updateSubscribeArea(); }, 500);
 
     // Initialize according to board_id
     postile.ajax([ 'board', 'enter_board' ], { board_id: board_id }, function(data) {
