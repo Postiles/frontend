@@ -466,7 +466,8 @@ html, body {
   float: left; }
 
 .post_box_comment_item_datetime_text {
-  float: right; }
+  float: right;
+}
 
 .post_box_comment_item_content_text {
   clear: right;
@@ -550,10 +551,6 @@ html, body {
   text-decoration: underline;
 }
 
-.comment_middle {
-  margin: 0px 4px;
-}
-
 .comment_content {
   margin: 0px;
 }
@@ -561,6 +558,7 @@ html, body {
 .comment_time {
   color: #999;
   margin-top: 3px;
+  font-size: 8pt;
 }
 
 .comment_container_bottom {

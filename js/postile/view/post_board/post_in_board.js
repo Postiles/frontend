@@ -577,6 +577,9 @@ postile.view.post_in_board.Post.prototype.comment_preview_init = function() {
                         // add the new comment to list
                         this.inline_comments.push(comment);
                         this.appendInlineComment(comment);
+
+                        // scroll the comment list to the bottom
+                        this.comment_list_el.scrollTop = this.comment_list_el.scrollHeight;
                     }
 
                     this.hideNoCommentEl();
@@ -653,6 +656,7 @@ postile.view.post_in_board.Post.prototype.renderInlineComments = function(conten
 postile.view.post_in_board.Post.prototype.appendInlineComment = function(comment) {
     var cmt = new postile.view.post_in_board.InlineComment(
             this.comment_container_items_el, comment);
+
 }
 
 postile.view.post_in_board.Post.prototype.set_max_displayable_comment_preview = function(content) {
@@ -865,6 +869,7 @@ postile.view.post_in_board.resolveAtPerson = function(displayText) { //displayed
 /**
  * @constructor
  */
+/*
 postile.view.post_in_board.InlineCommentsBlock = function(postObj) {
     var instance = this;
     var tmp_el;
@@ -924,6 +929,7 @@ postile.view.post_in_board.InlineCommentsBlock = function(postObj) {
 }
 
 goog.inherits(postile.view.post_in_board.InlineCommentsBlock, postile.view.TipView);
+*/
 
 /* return the container element */
 postile.view.post_in_board.InlineComment = function(icb, single_comment_data) {
@@ -938,7 +944,7 @@ postile.view.post_in_board.InlineComment = function(icb, single_comment_data) {
         goog.dom.appendChild(this.name_content_container_el, this.name_el);
 
         this.middle_el = goog.dom.createDom('span', 'comment_middle');
-        this.middle_el.innerHTML = 'says:';
+        this.middle_el.innerHTML = ':&nbsp;';
         goog.dom.appendChild(this.name_content_container_el, this.middle_el);
 
         this.content_el = goog.dom.createDom("span", "comment_content");
