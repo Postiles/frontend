@@ -8,6 +8,7 @@ goog.require('goog.events.KeyCodes');
 goog.require('goog.ui.Textarea');
 goog.require('goog.userAgent');
 goog.require('goog.events.KeyHandler');
+goog.require('postile.DelayedThrottle');
 goog.require('postile.conf');
 goog.require('postile.view.post_board.mask');
 goog.require('postile.view.post_board.MouseMoveScroll');
@@ -186,7 +187,6 @@ postile.view.post_board.handlers.keypress = function(instance, e) {
  * @param {string} board_id Unique identifier for a board.
  */
 postile.view.post_board.PostBoard = function(board_id) {
-
     var i;
 
     /** @deprecated Dead code */
@@ -318,6 +318,12 @@ postile.view.post_board.PostBoard = function(board_id) {
      * @see updateSubscribeArea
      */
     this.subscribedArea = null;
+    
+    /**
+     * Throttle subscription updating when scrolling 
+     * @type {postile.delayedThrottle}
+     */
+    this.scrollUpdateThrottle = new postile.DelayedThrottle(function() { instance.updateSubscribeArea(); }, 500);
 
     // Initialize according to board_id
     postile.ajax([ 'board', 'enter_board' ], { board_id: board_id }, function(data) {
@@ -415,7 +421,8 @@ postile.view.post_board.PostBoard.prototype.bindMouseEvents = function() {
     goog.events.listen(this.viewport, goog.events.EventType.SCROLL, function() {
         instance.canvasCoord[0] = - instance.viewport.scrollLeft;
         instance.canvasCoord[1] = - instance.viewport.scrollTop;
-    })
+        instance.scrollUpdateThrottle.kick();
+    });
 
     // Start: controllers for moving the viewport
     goog.dom.appendChild(this.catchall, this.right);
@@ -834,9 +841,9 @@ postile.view.post_board.PostBoard.prototype.renderById = function(pid, callback)
     var instance = this;
     postile.ajax(['post', 'get_post'], { post_id: pid }, function(r) {
         if (r.message.post.board_id != instance.board_id) {
-            new postile.toast.Toast(10, "The post is not in the current board. [Click to go] to another board and view.", function() {
+            new postile.toast.Toast(10, "The post is not in the current board. [Click to go] to another board and view.", [function() {
                 postile.router.dispatch('board/' + r.message.post.board_id + '#' + pid);
-            });
+            }]);
             return;
         }
         instance.renderArray([r.message]);
@@ -904,7 +911,7 @@ postile.view.post_board.PostBoard.prototype.createPost = function(info) {
 
     postile.ajax(['post', 'new'], req, function(data) {
         instance.renderArray([ { post: data.message.post, creator: data.message.creator } ]);
-        instance.currentPosts[data.message.post.id].edit(true);
+        instance.currentPosts[data.message.post.id].edit();
     });
 }
 
@@ -918,19 +925,23 @@ postile.view.post_board.PostBoard.prototype.createImagePost = function(info, ima
 
     postile.ajax(['post', 'new'], req, function(data) {
         instance.renderArray([ { post: data.message.post, creator: data.message.creator} ]);
+        console.log(data);
+        instance.currentPosts[data.message.post.id].edit("title");
+        //postile.ajax(['post','submit_change'], {post_id: data.message.post.post_id},function(data){console.log(data);});
     });
 }
 
 postile.view.post_board.PostBoard.prototype.createVideoPost = function(info, video_uri){
     var req = goog.object.clone(info);
     req.is_video = true;
-    req.video_uri = video_uri;
+    req.video_link = video_uri;
     var ret = goog.object.clone(info);
     var instance = this;
     req.board_id = this.board_id;
 
     postile.ajax(['post', 'new'], req, function(data) {
         instance.renderArray([ { post: data.message.post, creator: data.message.creator} ]);
+        instance.currentPosts[data.message.post.id].edit("title");
     });
 }
 

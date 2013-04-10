@@ -29,19 +29,26 @@ postile.view.post_board.PostCreator.prototype.open = function(imgUri, videoUri) 
     if(this.board.disableMovingCanvas) { 
         return; 
     }
-    if(imgUri) {
-        this.imageMode = true;
-        this.imgUri = imgUri;
-        this.preview.style.backgroundImage = 'url(' + postile.conf.uploadsResource(imgUri) + ')';
-        console.log(postile.conf.uploadsResource(imgUri));
-    } else {
-        this.imageMode = false;
-        this.preview.style.backgroundImage = 'none';
-    }
 
     if(videoUri){
+        console.log('video mode');
         this.videoMode = true;
         this.videoUri = videoUri;
+        this.imgUri = imgUri;
+        this.preview.style.backgroundImage = 'url(' + postile.conf.imageResource(imgUri) + ')';
+        this.preview.style.backgroundSize = '96px 96px';
+        this.preview.style.backgroundRepeat = 'no-repeat';
+
+    } else {
+        if(imgUri) {
+            this.imageMode = true;
+            this.imgUri = imgUri;
+            this.preview.style.backgroundImage = 'url(' + postile.conf.uploadsResource(imgUri) + ')';
+            console.log(postile.conf.uploadsResource(imgUri));
+        } else {
+            this.imageMode = false;
+            this.preview.style.backgroundImage = 'none';
+        }
     }
 
     this.board.disableMovingCanvas = true;
@@ -159,19 +166,11 @@ postile.view.post_board.PostCreator.prototype.mouseup = function(e){
 
     if(this.imageMode){
         this.imageMode = false;
-        var width = this.position.span_x;
-        // Hight of header in a post
-        height_of_header = 20;
-        var height = this.position.span_y - height_of_header;
         this.board.createImagePost(this.position, this.imgUri);
 
     } else if(this.videoMode){
         this.videoMode = false;
-        var width = this.position.span_x;
-        // Hight of header in a post
-        height_of_header = 20;
-        var height = this.position.span_y - height_of_header;
-
+        this.board.createVideoPost(this.position, this.videoUri);
         // TODO modify the createPost function for image and video.
     }else {
         this.board.createPost(this.position);

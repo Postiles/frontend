@@ -102,44 +102,43 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
     // display proper number of characters for title
     this.set_max_displayable_top();
 
-
     this.post_middle_container_el = goog.dom.createDom('div', 'post_middle_container');
     goog.dom.appendChild(this.inner_container_el, this.post_middle_container_el);
-
 
     this.post_like_container_el = goog.dom.createDom('div', 'post_like_container');
     goog.dom.appendChild(this.post_middle_container_el, this.post_like_container_el);
 
-    this.post_like_count_el = goog.dom.createDom('span', 'post_like_count');
-    this.post_like_count_el.innerHTML = '+' + this.likes.length;
-    goog.dom.appendChild(this.post_like_container_el, this.post_like_count_el);
+    if (this.likes) {
+        this.post_like_count_el = goog.dom.createDom('span', 'post_like_count');
+        this.post_like_count_el.innerHTML = '+' + this.likes.length;
+        goog.dom.appendChild(this.post_like_container_el, this.post_like_count_el);
 
+        this.post_like_button_el = goog.dom.createDom('span', 'post_like_button');
+        goog.dom.appendChild(this.post_like_container_el, this.post_like_button_el);
 
-    this.post_like_button_el = goog.dom.createDom('span', 'post_like_button');
-    goog.dom.appendChild(this.post_like_container_el, this.post_like_button_el);
+        var liked_user_id = this.likes.map(function(l) {
+            return l.user_id;
+        });
+        
+        if (liked_user_id.indexOf(parseInt(localStorage.postile_user_id)) != -1) { // already liked
+            this.post_like_button_el.innerHTML = 'unlike';
+        } else {
+            this.post_like_button_el.innerHTML = 'like';
+        }
 
-    var liked_user_id = this.likes.map(function(l) {
-        return l.user_id;
-    });
-
-    if (liked_user_id.indexOf(parseInt(localStorage.postile_user_id)) != -1) { // already liked
-        this.post_like_button_el.innerHTML = 'unlike';
-    } else {
-        this.post_like_button_el.innerHTML = 'like';
-    }
-
-    goog.events.listen(this.post_like_button_el, goog.events.EventType.CLICK, function(e) {
-        var action = this.post_like_button_el.innerHTML;
-        postile.ajax([ 'post', action ], { post_id: this.post.id }, function(data) {
-            if (action == 'like') { // like
-                this.post_like_count_el.innerHTML = '+' + (++this.likes.length);
-                this.post_like_button_el.innerHTML = 'unlike';
-            } else { // unlike
-                this.post_like_count_el.innerHTML = '+' + (--this.likes.length);
-                this.post_like_button_el.innerHTML = 'like';
-            }
+        goog.events.listen(this.post_like_button_el, goog.events.EventType.CLICK, function(e) {
+            var action = this.post_like_button_el.innerHTML;
+            postile.ajax([ 'post', action ], { post_id: this.post.id }, function(data) {
+                if (action == 'like') { // like
+                    this.post_like_count_el.innerHTML = '+' + (++this.likes.length);
+                    this.post_like_button_el.innerHTML = 'unlike';
+                } else { // unlike
+                    this.post_like_count_el.innerHTML = '+' + (--this.likes.length);
+                    this.post_like_button_el.innerHTML = 'like';
+                }
+            }.bind(this));
         }.bind(this));
-    }.bind(this));
+    }
 
     /*
     // icon container
@@ -162,14 +161,21 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
         }
     }.bind(this));
 
+    console.log(this);
+
     /* Adding a background for image post */
     if (this.post.image_url) {
         goog.dom.classes.add(this.wrap_el, 'picture_post');
         this.wrap_el.style.backgroundImage = 'url(' + postile.conf.uploadsResource([this.post.image_url]) + ')';
         this.wrap_el.style.backgroundSize = 'cover';
-        //this.post_content_el.style.background-position = 'center';
-    } else if (this.post.video_url) {
-
+        this.wrap_el.style.backgroundPosition = 'center';
+    } else if (this.post.video_link) {
+        goog.dom.classes.add(this.wrap_el, 'video_post');
+        this.video_preivew_el = goog.dom.createDom('iframe', {
+            'class': 'video_iframe',
+            'src': this.post.video_link
+        });
+        goog.dom.appendChild(this.post_content_el, this.video_preivew_el);
     } else {
         /* end of image post part */
 
@@ -310,6 +316,7 @@ postile.view.post_in_board.Post.prototype.set_max_displayable_content = function
     this.post_content_el.innerHTML = content.substring(0, content.length - 3) + '...';
 }
 
+/*
 postile.view.post_in_board.Post.prototype.post_icon_container_init = function() {
     var instance = this;
 
@@ -382,7 +389,6 @@ postile.view.post_in_board.Post.prototype.post_icon_container_init = function() 
 
     // addIcon("share");
 
-    /*
     goog.events.listen(addIcon("comment"), goog.events.EventType.CLICK, function() {
         instance.inline_comments_block = new postile.view.post_in_board.InlineCommentsBlock(instance);
     });
@@ -698,7 +704,7 @@ postile.view.post_in_board.Post.prototype.removeFromBoard = function() {
     */
 }
 
-postile.view.post_in_board.Post.prototype.edit = function() {
+postile.view.post_in_board.Post.prototype.edit = function(mode) {
     if (this.in_edit) {
         return;
     }
@@ -719,6 +725,10 @@ postile.view.post_in_board.Post.prototype.edit = function() {
         instance.post_content_el.innerHTML = postile.parseBBcode(instance.post.content);
         postile.bbcodePostProcess(instance.post_content_el);
 
+
+        if(mode != 'title'){
+            goog.dom.classes.add(instance.post_content_el, 'selectable');
+        }
         goog.dom.classes.add(instance.post_title_el, 'selectable');
         goog.dom.classes.add(instance.post_content_el, 'selectable');
 
@@ -731,25 +741,35 @@ postile.view.post_in_board.Post.prototype.edit = function() {
         // delete icon on the top right corner
         var delete_icon = goog.dom.createDom('div', 'post_remove_icon');
         goog.dom.appendChild(instance.container_el, delete_icon);
-        goog.events.listen(delete_icon, goog.events.EventType.CLICK, function() {
-            new postile.view.confirm_delete.ConfirmDelete(instance).open(this);
+        goog.events.listen(delete_icon, goog.events.EventType.CLICK, function(e) {
+            e.stopPropagation();
+            new postile.view.confirm_delete.ConfirmDelete(instance).open(delete_icon);
         });
 
         instance.post_author_el.style.display = 'none'; // hide author name
         instance.comment_preview_el.style.display = 'none' // hide comment preview
 
         // set placeholders for title and content views
-        postile.ui.makeLabeledInput(instance.post_content_el, '(ctrl + enter to submit)',
-                'half_opaque');
 
-        postile.ui.makeLabeledInput(instance.post_title_el, postile._('post_title_prompt'),
-                'half_opaque', function() {
-            instance.post_content_el.focus(); // when enter is pressd, change focus to content
-        });
+        if(mode != "title"){
+            postile.ui.makeLabeledInput(instance.post_content_el, '(ctrl + enter to submit)',
+                    'half_opaque');
+
+            postile.ui.makeLabeledInput(instance.post_title_el, postile._('post_title_prompt'),
+                    'half_opaque', function() {
+                instance.post_content_el.focus(); // when enter is pressd, change focus to content
+            });
+        }
+        else {
+            postile.ui.makeLabeledInput(instance.post_title_el, '(ctrl + enter to submit)',
+                    'half_opaque', function(){
+                instance.post_title_el.focus();
+            });
+        }
 
         //hide the original bottom bar
-        goog.dom.removeChildren(instance.post_icon_container_el);
-        var y_editor = new postile.WYSIWYF.Editor(instance.post_content_el, instance.post_icon_container_el, instance);
+        goog.dom.removeChildren(instance.post_middle_container_el);
+        var y_editor = new postile.WYSIWYF.Editor(instance.post_content_el, instance.post_middle_container_el, instance);
         instance.board.disableMovingCanvas = true; //disable moving
         instance.enable();
 
