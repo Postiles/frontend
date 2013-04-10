@@ -168,7 +168,12 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
         this.wrap_el.style.backgroundSize = 'cover';
         this.wrap_el.style.backgroundPosition = 'center';
     } else if (this.post.video_url) {
-
+        goog.dom.classes.add(this.wrap_el, 'video_post');
+        this.video_preivew_el = goog.dom.createDom('iframe', {
+            'class': 'video_post',
+            'src': this.embed_code
+        });
+        goog.dom.appendChild(this.post_content_el, this.video_preivew_el);
     } else {
         /* end of image post part */
 
