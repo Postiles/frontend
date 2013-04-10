@@ -52,7 +52,7 @@ MIC: postile.view
 }
 
 .pop_popup {
-	display: table-cell; vertical-align: middle; margin: 0;
+	display: table-cell; vertical-align: middle; margin: 0; 
     z-index: 400;
 }
 

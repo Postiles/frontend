@@ -16,14 +16,14 @@ goog.require('postile.fx.effects');
 2. [optional, only when you need to load css] have a "unloaded_stylesheets" in its prototype,
   which is an array containing css files that need to be loaded.
 
-Just put your fucking things into this.container, and use "open" and "close" if needed
+Just put your things into this.container, and use "open" and "close" if needed
 
 === How to create a pop-up view ===
 
 1. Have a class inherits "postile.view.PopView".
 2. The same as normal view.
 
-Just put your fucking things into this.container, and use "open" and "close" if needed
+Just put your things into this.container, and use "open" and "close" if needed
 
 can set onclose method
 
@@ -38,7 +38,7 @@ can set onclose method
 1.  have a class inherits "postile.view.TipView".
 2. the same as normal view
 
-just put your fucking things into this.container, and use "open" and "close" if needed.
+just put your things into this.container, and use "open" and "close" if needed.
 
 the "open: functon will receive a parameter indicating the reference element and container element of the tip view. If the reference element is not set, the parent element of the reference element will be used
 
@@ -115,7 +115,6 @@ postile.view.PopView = function() {
     this.mask.style.position = 'absolute';
     this.mask.style.top = '0px';
     this.mask.style.zIndex = '300';
-    this.mask.style.zIndex = '300';
 
     goog.dom.appendChild(this.mask, this.container_wrap);
 }
@@ -136,7 +135,7 @@ postile.view.PopView.prototype.open = function(opt_width) {
     }
 
     goog.dom.appendChild(document.body, this.mask);
-    postile.fx.effects.resizeIn(this.container);
+    postile.fx.effects.flowDown(this.container);
     new postile.fx.Animate(goog.bind(function(i) {
         this.mask.style.opacity = i;
     }, this), 400);
@@ -207,9 +206,8 @@ postile.view.FullScreenView.prototype.html_segment = null;
  * deletion confirmation dialog, notification
  * @constructor
  */
-postile.view.TipView = function() {
+postile.view.AbstractTipView = function() {
     goog.base(this);
-    var instance = this;
     this.container = goog.dom.createDom('div');
     this.container.style.position = 'absolute';
 
@@ -217,7 +215,68 @@ postile.view.TipView = function() {
     this.container_wrap.style.position = 'absolute';
 
     goog.dom.appendChild(this.container_wrap, this.container);
+}
 
+goog.inherits(postile.view.AbstractTipView, postile.view.View);
+
+postile.view.AbstractTipView.prototype.open = function(reference, parent) {
+    if (!parent) {
+        parent = reference.parentNode;
+    }
+    var coord = goog.style.getRelativePosition(reference, parent);
+    goog.style.setPosition(this.container_wrap, coord);
+    goog.dom.appendChild(parent, this.container_wrap);
+    this.container_handler.listen();
+    this.close_handler.listen();
+    this.should_close = false;
+}
+
+postile.view.AbstractTipView.prototype.close = function() {
+    this.should_close = true;
+    this.close_handler.unlisten();
+    this.container_handler.unlisten();
+    if (this.onclose) { this.onclose(); }
+    goog.dom.removeNode(this.container_wrap);
+}
+
+/**
+ * So-called hover TipView. Opened by hovering and closed by mouseout.
+ * @constructor
+ */
+postile.view.HoverTipView = function() {
+    goog.base(this);
+    
+    this.timer = null;
+    
+    var prepareClosing = function() {
+        this.close();
+    }
+  
+    // When user clicks on the background: close this view.
+    this.close_handler = new postile.events.EventHandler(
+        this.container, goog.events.EventType.MOUSEOUT, function(){
+            if (this.timer) { clearTimeout(this.timer); }
+            this.timer = setTimeout(prepareClosing, 500);
+        });
+
+    // When user clicks on this view: prevent its parent from
+    // receiving the event.
+    this.container_handler = new postile.events.EventHandler(
+        this.container, goog.events.EventType.MOUSEOVER, function(evt){
+            if (this.timer) { clearTimeout(this.timer); }
+    });
+}
+
+goog.inherits(postile.view.HoverTipView, postile.view.AbstractTipView);
+
+ /**
+ * So-called traditional TipView. Opened by clicking and closed by clicking outside.
+ * @constructor
+ */
+postile.view.TipView = function() {
+    goog.base(this);
+    var instance = this;
+  
     // When user clicks on the background: close this view.
     this.close_handler = new postile.events.EventHandler(document.body,
         goog.events.EventType.CLICK,
@@ -232,27 +291,8 @@ postile.view.TipView = function() {
         evt.stopPropagation();
     });
 }
-goog.inherits(postile.view.TipView, postile.view.View);
 
-postile.view.TipView.prototype.open = function(reference, parent) {
-    if (!parent) {
-        parent = reference.parentNode;
-    }
-    var coord = goog.style.getRelativePosition(reference, parent);
-    goog.style.setPosition(this.container_wrap, coord);
-    goog.dom.appendChild(parent, this.container_wrap);
-    this.container_handler.listen();
-    this.close_handler.listen();
-    this.should_close = false;
-}
-
-postile.view.TipView.prototype.close = function() {
-    this.should_close = true;
-    this.close_handler.unlisten();
-    this.container_handler.unlisten();
-    if (this.onclose) { this.onclose(); }
-    goog.dom.removeNode(this.container_wrap);
-}
+goog.inherits(postile.view.TipView, postile.view.AbstractTipView);
 
 postile.view.NormalView = function() {
     postile.view.View.call(this);
