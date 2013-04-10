@@ -24,6 +24,12 @@ postile.view.onlinepeople.OnlinePeople = function(header) {
             postile.conf.staticResource(['_onlinepeople.html']));
     this.container.style.top = '0px';
     this.container.style.left = '0px';
+
+    this.online_bar = postile.dom.getDescendantById(
+        this.container,'online_people_bar');
+    this.online_list = postile.dom.getDescendantById(
+        this.container,'online_people_list');
+
     this.expanded = false;
     goog.events.listen(this.container, goog.events.EventType.CLICK, function() {
         console.log("Expanding");
@@ -36,6 +42,14 @@ goog.inherits(postile.view.onlinepeople.OnlinePeople, postile.view.TipView);
 
 postile.view.onlinepeople.OnlinePeople.prototype.render = function() {
     var title_bar_bound = goog.style.getBounds(this.title_bar.container);
+    //Testing code here ===============
+    var item = new postile.view.onlinepeople.Item();
+    item.renderItem(this,"Testing ");
+    //Testing end =====================
+
+
+
+    console.log(title_bar_bound);
     var coord = new goog.math.Coordinate(title_bar_bound.width,
                              title_bar_bound.height);
     coord.x = coord.x - this.BAR_WIDTH;
@@ -44,3 +58,27 @@ postile.view.onlinepeople.OnlinePeople.prototype.render = function() {
 }
 
 postile.view.onlinepeople.OnlinePeople.prototype.unloaded_stylesheets = ['onlinepeople.css'];
+
+postile.view.onlinepeople.Item = function() {
+}
+
+postile.view.onlinepeople.Item.prototype.renderItem =
+        function(parent, activity_str, status, user) {
+    var container = parent.online_list;
+    this.item_container = goog.dom.createDom('div', 'item_container');
+    postile.ui.load(this.item_container,
+                postile.conf.staticResource(['_online_people_item.html']));
+    this.profile_img = postile.dom.getDescendantByClass(
+        this.item_container,
+        'onlinepeople_profile');
+    this.name_container = postile.dom.getDescendantByClass(
+        this.item_container,'name');
+    this.act_container = postile.dom.getDescendantByClass(
+        this.item_container,'activity');
+
+    this.name_container.innerHTML = "User name holder";
+    this.act_container.innerHTML = activity_str;
+
+
+    goog.dom.appendChild(container,this.item_container);
+}

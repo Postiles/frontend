@@ -308,6 +308,7 @@ postile.view.post_in_board.Post.prototype.set_max_displayable_content = function
     this.post_content_el.innerHTML = content.substring(0, content.length - 3) + '...';
 }
 
+/*
 postile.view.post_in_board.Post.prototype.post_icon_container_init = function() {
     var instance = this;
 
@@ -380,12 +381,11 @@ postile.view.post_in_board.Post.prototype.post_icon_container_init = function() 
 
     // addIcon("share");
 
-    /*
     goog.events.listen(addIcon("comment"), goog.events.EventType.CLICK, function() {
         instance.inline_comments_block = new postile.view.post_in_board.InlineCommentsBlock(instance);
     });
-    */
 }
+*/
 
 postile.view.post_in_board.Post.prototype.comment_preview_init = function() {
     // comment preview
@@ -470,7 +470,7 @@ postile.view.post_in_board.Post.prototype.comment_preview_init = function() {
     goog.events.listen(this.comment_list_close_button_el, goog.events.EventType.CLICK, function(e) {
         this.comment_container_el.style.display = 'none';
     }.bind(this));
-
+    
     if (this.inline_comments && this.inline_comments.length > 0) { // at least one comment
         this.comment_preview_middle_el.innerHTML = ': ';
 
@@ -729,8 +729,9 @@ postile.view.post_in_board.Post.prototype.edit = function() {
         // delete icon on the top right corner
         var delete_icon = goog.dom.createDom('div', 'post_remove_icon');
         goog.dom.appendChild(instance.container_el, delete_icon);
-        goog.events.listen(delete_icon, goog.events.EventType.CLICK, function() {
-            new postile.view.confirm_delete.ConfirmDelete(instance).open(this);
+        goog.events.listen(delete_icon, goog.events.EventType.CLICK, function(e) {
+            e.stopPropagation();
+            new postile.view.confirm_delete.ConfirmDelete(instance).open(delete_icon);
         });
 
         instance.post_author_el.style.display = 'none'; // hide author name
@@ -746,8 +747,8 @@ postile.view.post_in_board.Post.prototype.edit = function() {
         });
 
         //hide the original bottom bar
-        goog.dom.removeChildren(instance.post_icon_container_el);
-        var y_editor = new postile.WYSIWYF.Editor(instance.post_content_el, instance.post_icon_container_el, instance);
+        goog.dom.removeChildren(instance.post_middle_container_el);
+        var y_editor = new postile.WYSIWYF.Editor(instance.post_content_el, instance.post_middle_container_el, instance);
         instance.board.disableMovingCanvas = true; //disable moving
         instance.enable();
 

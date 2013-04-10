@@ -414,6 +414,7 @@ postile.view.post_board.PostBoard.prototype.bindMouseEvents = function() {
     goog.events.listen(this.viewport, goog.events.EventType.SCROLL, function() {
         instance.canvasCoord[0] = - instance.viewport.scrollLeft;
         instance.canvasCoord[1] = - instance.viewport.scrollTop;
+        instance.updateSubscribeArea();
     })
 
     // Start: controllers for moving the viewport
@@ -833,9 +834,9 @@ postile.view.post_board.PostBoard.prototype.renderById = function(pid, callback)
     var instance = this;
     postile.ajax(['post', 'get_post'], { post_id: pid }, function(r) {
         if (r.message.post.board_id != instance.board_id) {
-            new postile.toast.Toast(10, "The post is not in the current board. [Click to go] to another board and view.", function() {
+            new postile.toast.Toast(10, "The post is not in the current board. [Click to go] to another board and view.", [function() {
                 postile.router.dispatch('board/' + r.message.post.board_id + '#' + pid);
-            });
+            }]);
             return;
         }
         instance.renderArray([r.message]);
@@ -917,6 +918,7 @@ postile.view.post_board.PostBoard.prototype.createImagePost = function(info, ima
 
     postile.ajax(['post', 'new'], req, function(data) {
         instance.renderArray([ { post: data.message.post, creator: data.message.creator} ]);
+        //postile.ajax(['post','submit_change'], {post_id: data.message.post.post_id},function(data){console.log(data);});
     });
 }
 

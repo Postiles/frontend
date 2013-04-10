@@ -330,6 +330,26 @@ html, body {
 .post_like_button:hover {
     text-decoration: underline;
 }
+
+.post_icon {
+  float: left;
+  cursor: pointer;
+  margin-right: 8px;
+  width: 13px;
+  height: 13px;
+  background-repeat: no-repeat;
+  position: relative;
+  background-position: center; }
+  
+.post_remove_icon {
+  background-image: url("../images/new_delete.png");
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  right: -10px;
+  top: -10px;
+}
  
 /*
   

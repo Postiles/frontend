@@ -1,18 +1,45 @@
 $background-color: #f2f7f7;
 $main-color: #024d61;
 $light-main: #436b77;
+$grey:#9e9e9e;
 
 #onlinepeople_container {
+    z-index:-1;
     font-family: OxygenLight;
     width:300px;
     line-height:100%;
     position:fix !important;
     background:$background-color;
+    box-shadow: -1.5px 0px 3px 1px #888888;
     p {
         margin: 0px;
         padding: 0px;
     }
-    .online_people_bar{
+    #online_people_list {
+        height:50px;
+        position:relative;
+        img.onlinepeople_profile{
+            float: left;
+            width:40px;
+            height:40px;
+            margin:5px;
+            background:$main-color;
+        }
+        .title{
+            padding:10px;
+            padding-left:15px;
+            p.name {
+                font-size:13px;
+                color:#000;
+            }
+            p.activity{
+                font-size:10px;
+                color:$grey;
+            }
+        }
+
+    }
+    #online_people_bar{
         background: $light-main;
         height:15px;
         color:#FFF;
