@@ -561,6 +561,7 @@ html, body {
 }
 
 .comment_container_bottom {
+  padding-top: 2px;
   height: 24px;
 }
 

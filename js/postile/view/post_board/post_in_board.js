@@ -206,7 +206,6 @@ postile.view.post_in_board.Post.prototype.render = function(data, isNew) {
     this.wrap_el.rel_data = this;
 
     if (isNew) {
-
         this.post.coord_x_end = this.post.pos_x + this.post.span_x; //precalculate this two so that future intersect test will be faster
         this.post.coord_y_end = this.post.pos_y + this.post.span_y;
 
@@ -257,11 +256,18 @@ postile.view.post_in_board.Post.prototype.render = function(data, isNew) {
                 this.post_middle_container_el, 'post_like_container');
 
         if (this.likes) {
+            this.post_like_container_el.style.display = 'inline';
             this.init_like_container();
+        } else {
+            this.post_like_container_el.style.display = 'none';
         }
 
         /* set content parts */
         this.post_content_el = postile.dom.getDescendantByClass(this.inner_container_el, "post_content");
+
+        /* add edit button */
+        this.post_edit_button_el = postile.dom.getDescendantByClass(
+                this.post_middle_container_el, 'post_edit_button')
 
         postile.data_manager.getUserData(this.post.creator_id, function(data) {
             this.creator = data;
@@ -274,13 +280,11 @@ postile.view.post_in_board.Post.prototype.render = function(data, isNew) {
                     instance.edit();
                 });
 
-                /* add edit button */
-                this.post_edit_button_el = postile.dom.getDescendantByClass(
-                        this.post_middle_container_el, 'post_edit_button')
-
                 goog.events.listen(this.post_edit_button_el, goog.events.EventType.CLICK, function(e) {
                     this.edit();
                 }.bind(this));
+            } else {
+                this.post_edit_button_el.style.display = 'none';
             }
         }.bind(this));
 
@@ -601,11 +605,11 @@ postile.view.post_in_board.Post.prototype.comment_preview_init = function() {
     // comment preview clicked, open comment container
     goog.events.listen(this.comment_preview_el, goog.events.EventType.CLICK, function(e) {
         this.comment_container_el.style.height = this.wrap_el.offsetHeight - 25 + 'px';
-        this.comment_container_el.style.display = 'block';
 
         this.comment_list_el.style.height = this.wrap_el.offsetHeight - 57 + 'px';
         this.renderInlineComments();
 
+        this.comment_container_el.style.display = 'block';
         this.comment_container_input_el.focus();
     }.bind(this));
 }
