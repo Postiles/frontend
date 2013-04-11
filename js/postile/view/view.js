@@ -294,6 +294,13 @@ postile.view.TipView = function() {
     }));
 }
 
+/**
+* For handling event of changing buttons
+*/
+postile.view.TipView.prototype.changeIcon = function(turn_on){
+    
+}
+
 goog.inherits(postile.view.TipView, postile.view.AbstractTipView);
 
 postile.view.NormalView = function() {

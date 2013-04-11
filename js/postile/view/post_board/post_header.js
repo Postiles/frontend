@@ -64,13 +64,13 @@ postile.view.post_board.Header = function(board) {
 
     // preload images for switching
     var switch_board_active = new Image();
-    switch_board_active.src = postile.imageResource('switch_board_active');
+    switch_board_active.src = postile.conf.imageResource(['switch_board_active']);
     var popup_icon_active = new Image();
-    popup_icon_active.src = postile.imageResource('popup_icon_active');
+    popup_icon_active.src = postile.conf.imageResource(['popup_icon_active']);
     var search_icon_active = new Image();
-    search_icon_active.src = postile.imageResource('search_icon_active');
+    search_icon_active.src = postile.conf.imageResource(['search_icon_active']);
     var message_icon_active = new Image();
-    message_icon_active.src = postile.imageResource('message_icon_active');
+    message_icon_active.src = postile.conf.imageResource(['message_icon_active']);
 
 
     this.alert_wrapper = goog.dom.createDom('div', 'notificatoin_number_wrapper');
@@ -88,6 +88,7 @@ postile.view.post_board.Header = function(board) {
     this.sBTip = new postile.view.search_box.SearchBox(this.search_button);
     goog.events.listen(this.search_button, goog.events.EventType.CLICK, function(e) {
         e.stopPropagation();
+        this.iconHandler('search');
         this.notification.close();
         this.switchBoardTip.close();
         this.sBTip.open(search_button);
@@ -98,6 +99,7 @@ postile.view.post_board.Header = function(board) {
     this.switch_board_button = postile.dom.getDescendantById(instance.container, "switch_board_button");
     goog.events.listen(this.switch_board_button, goog.events.EventType.CLICK, function(e) {
         e.stopPropagation();
+        this.iconHandler('switch_board');
         this.notification.close();
         this.sBTip.close();
         this.switchBoardTip.open(switch_board_button);
@@ -123,6 +125,7 @@ postile.view.post_board.Header = function(board) {
     this.notification = new postile.view.notification.Notification(this);
     goog.events.listen(this.message_button, goog.events.EventType.CLICK, function(e) {
         e.stopPropagation();
+        this.iconHandler('message');
         this.switchBoardTip.close();
         this.sBTip.close();
         this.notification.open(message_button);
@@ -132,9 +135,10 @@ postile.view.post_board.Header = function(board) {
 
     this.more_button = postile.dom.getDescendantById(instance.container, "popup_button");
     this.moreButtonPop = new postile.view.board_more_pop.BoardMorePop(this.more_button);
-    goog.events.listen(more_button, goog.events.EventType.CLICK, function(e) {
+    goog.events.listen(this.more_button, goog.events.EventType.CLICK, function(e) {
         e.stopPropagation();
-        this.moreButtonPop.open(more_button);
+        this.iconHandler('popup');
+        this.moreButtonPop.open(this.more_button);
         this.moreButtonPopOpened = true;
     }.bind(this));
 }
@@ -157,32 +161,45 @@ postile.view.post_board.Header.prototype.dismissOthers = function() {
 postile.view.post_board.Header.prototype.iconHandler = function(currentClick){
     // change current icon background back to the original one
     if(this.curIcon == 'switch_board'){
+        console.log(this.switch_board_button);
         var imgTag = goog.dom.getElementsByTagNameAndClass('img', '', this.switch_board_button);
-        imgTag.setAttribute('src', postile.imageResource(['switch_board_icon.png']));
+        this.switch_board_button.style.background = '#fff';
+        console.log(imgTag);
+        imgTag[0].setAttribute('src', postile.conf.imageResource(['switch_board_icon.png']));
     }else if(this.curIcon == 'message'){
         var imgTag = goog.dom.getElementsByTagNameAndClass('img', '', this.message_button);
-        imgTag.setAttribute('src', postile.imageResource(['message_icon.png']));
+        this.message_button.style.background = '#fff';
+        imgTag[0].setAttribute('src', postile.conf.imageResource(['message_icon.png']));
     }else if(this.curIcon == 'search'){
         var imgTag = goog.dom.getElementsByTagNameAndClass('img', '', this.search_button);
-        imgTag.setAttribute('src', postile.imageResource(['search_icon.png']));
-    }else if(this.curIcon == 'more'){
+        this.search_button.style.background = '#fff';
+        imgTag[0].setAttribute('src', postile.conf.imageResource(['search_icon.png']));
+    }else if(this.curIcon == 'popup'){
         var imgTag = goog.dom.getElementsByTagNameAndClass('img', '', this.more_button);
-        imgTag.setAttribute('src', postile.imageResource(['popup_icon.png']));
+        this.more_button.style.background = '#fff';
+        imgTag[0].setAttribute('src', postile.conf.imageResource(['popup_icon.png']));
     }
 
+    this.curIcon = currentClick;
     // change current icon accordingly
     if(currentClick == 'switch_board'){
+        console.log(this.switch_board_button);
         var imgTag = goog.dom.getElementsByTagNameAndClass('img', '', this.switch_board_button);
-        imgTag.setAttribute('src', postile.imageResource(['switch_board_active.png']));
+        this.switch_board_button.style.background = '#024d61';
+        console.log(imgTag);
+        imgTag[0].setAttribute('src', postile.conf.imageResource(['switch_board_active.png']));
     }else if(currentClick == 'message'){
         var imgTag = goog.dom.getElementsByTagNameAndClass('img', '', this.message_button);
-        imgTag.setAttribute('src', postile.imageResource(['message_icon_active.png']));
+        this.message_button.style.background = '#024d61';
+        imgTag[0].setAttribute('src', postile.conf.imageResource(['message_icon_active.png']));
     }else if(currentClick == 'search'){
         var imgTag = goog.dom.getElementsByTagNameAndClass('img', '', this.search_button);
-        imgTag.setAttribute('src', postile.imageResource(['search_icon_actice.png']));
-    }else if(currentClick == 'more'){
+        this.search_button.style.background = '#024d61';
+        imgTag[0].setAttribute('src', postile.conf.imageResource(['search_icon_active.png']));
+    }else if(currentClick == 'popup'){
         var imgTag = goog.dom.getElementsByTagNameAndClass('img', '', this.more_button);
-        imgTag.setAttribute('src', postile.imageResource(['popup_icon_active.png']));
+        this.more_button.style.background = '#024d61';
+        imgTag[0].setAttribute('src', postile.conf.imageResource(['popup_icon_active.png']));
     }
 }
 
