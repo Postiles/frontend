@@ -2,12 +2,12 @@
 body {
   margin: 0px;
   padding: 0px;
-  z-index: 200;
-  font-family: OxygenLight; }
+  font-family: OxygenLight;
+  z-index: 200; }
 
 #board_more {
   position: fixed !important;
-  top: 43px !important;
+  top: 44px !important;
   right: 0px !important;
   left: auto !important;
   width: 40px;
@@ -60,7 +60,7 @@ body {
     height: 40px;
     color: #fff; }
     #other_boards .other_header h3 {
-      font-size: 11pt;
+      font-size: 14px;
       float: left;
       margin: 10px;
       margin-left: 14px; }
@@ -68,7 +68,7 @@ body {
       float: right;
       margin-top: 14px;
       margin-right: 15px;
-      font-size: 10pt;
+      font-size: 10px;
       cursor: pointer; }
       #other_boards .other_header p:hover {
         color: #FF8C00; }
@@ -82,14 +82,13 @@ body {
     #other_boards .other_header .arrow_up_back {
       border-left: 12px solid transparent;
       border-right: 12px solid transparent;
-      border-bottom: 12px solid #fff;
+      border-bottom: 12px solid #f5f5f5;
       position: absolute;
       left: 162px;
       top: -12px; }
   #other_boards #board_list {
     max-height: 400px;
-    width: 100%;
-    overflow: auto; }
+    overflow: scroll; }
     #other_boards #board_list .up_roll {
       height: 10px;
       background-color: #f2f7f7;
@@ -128,7 +127,7 @@ body {
       height: 50px;
       cursor: pointer; }
       #other_boards #board_list .listed_board h3.board_title {
-        font-size: 11pt;
+        font-size: 14px;
         margin-top: 0px;
         margin-bottom: 0px;
         margin-left: 14px;
@@ -136,7 +135,7 @@ body {
       #other_boards #board_list .listed_board p.board_discription {
         margin-left: 14px;
         margin-top: 3px;
-        font-size: 10pt;
+        font-size: 10px;
         width: 200px; }
       #other_boards #board_list .listed_board .selected_icon {
         opacity: 0;
@@ -150,7 +149,7 @@ body {
         background: #cedadd;
         position: relative; }
         #other_boards #board_list .listed_board:hover h3.board_title {
-          font-size: 11pt;
+          font-size: 14px;
           margin-bottom: 0px;
           margin-left: 14px; }
         #other_boards #board_list .listed_board:hover .selected_icon {
@@ -160,7 +159,7 @@ body {
       color: #c2d6ad;
       position: relative; }
       #other_boards #board_list .selected_board h3.board_title {
-        font-size: 11pt;
+        font-size: 14px;
         margin-bottom: 0px;
         margin-left: 14px;
         color: #fff !important; }

@@ -132,7 +132,6 @@ postile.view.notification.Notification.prototype.seeMore = function() {
 }
 
 postile.view.notification.Notification.prototype.appendOneMore = function() {
-
     if(this.numberOfUnread > this.currentMax) { // still can append
         console.log(this.currentIndex);
         this.listedNotification[this.currentIndex] = new postile.view.notification.InfoItem();
