@@ -8,7 +8,7 @@ goog.provide('postile.faye');
 goog.require('postile.conf');
 goog.require('goog.net.jsloader');
 
-postile.ajax = function(url, data, onsuccess, onfail, notifier_text) { 
+postile.ajax = function(url, data, onsuccess, onfail, notifier_text) {
     var xhr, formData, i;
 
     data.user_id = localStorage.postile_user_id;
@@ -124,8 +124,8 @@ postile.ajax.fetchedHandler = function(onsuccess, onfail, receivedText) {
         } else if (typeof onfail == 'function') {
             onfail(received);
         }
-    } else if (typeof onsuccess == 'function') { 
-        onsuccess(received); 
+    } else if (typeof onsuccess == 'function') {
+        onsuccess(received);
     }
     postile.ajax.notifier.hide();
 };

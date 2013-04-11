@@ -318,9 +318,9 @@ postile.view.post_board.PostBoard = function(board_id) {
      * @see updateSubscribeArea
      */
     this.subscribedArea = null;
-    
+
     /**
-     * Throttle subscription updating when scrolling 
+     * Throttle subscription updating when scrolling
      * @type {postile.delayedThrottle}
      */
     // this.scrollUpdateThrottle = new postile.DelayedThrottle(function() { instance.updateSubscribeArea(); }, 500);
@@ -336,6 +336,19 @@ postile.view.post_board.PostBoard = function(board_id) {
 
             postile.faye.subscribe(instance.channel_str, function(status, data) {
                 instance.fayeHandler(status, data);
+            });
+            postile.faye.subscribe('status/'+instance.boardData.id, function(status, data){
+                if(status == "online"){
+                    console.log("new online");
+                    //console.log(instance.onlinepeople.count);
+                }
+                if(status == "offline") {
+                    console.log("new offline");
+                }
+                instance.onlinepeople.count = data.count;
+                console.log(instance.onlinepeople.count);
+                instance.updateOnlineCount();
+
             });
 
             instance.initView();
@@ -382,6 +395,7 @@ postile.view.post_board.PostBoard.prototype.initView = function() {
     // otherwise there is no way to get the size of the header bar.
     this.onlinepeople = new Object();
     this.onlinepeople.view = new postile.view.onlinepeople.OnlinePeople(this.header);
+    this.onlinepeople.count = 0;
     this.onlinepeople.view.render();
 
     /**
@@ -898,6 +912,17 @@ postile.view.post_board.PostBoard.prototype.fayeHandler = function(status, data)
             }
             break;
     }
+}
+
+postile.view.post_board.PostBoard.prototype.updateOnlineCount = function() {
+    var thecount = this.onlinepeople.count;
+    console.log("Count:"+thecount);
+    console.log(this.onlinepeople.view.container);
+    var count_container = postile.dom.getDescendantById(this.onlinepeople.view.container
+        ,'count');
+    console.log(count_container);
+    count_container.innerHTML = thecount;
+
 }
 
 postile.view.post_board.PostBoard.prototype.createPost = function(info) {
