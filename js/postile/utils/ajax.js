@@ -180,6 +180,14 @@ postile.faye.subscribe = function(channel, listener) {
     }
 };
 
+postile.faye.publish(channel, status, data) {
+    msg = {
+        status: status,
+        msg:data
+    };
+    client.publish('/faye/'+channel, msg);
+};
+
 postile.faye.unsubscribe = function(channel) {
     if (!postile.faye.client) { return; }
     postile.faye.client.unsubscribe(channel);
