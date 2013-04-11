@@ -156,7 +156,7 @@ postile.view.post_in_board.VideoPost.prototype.render = function(data, animation
     goog.dom.classes.add(this.wrap_el, 'video_post');
     this.video_preivew_el = goog.dom.createDom('iframe', {
         'class': 'video_iframe',
-        'src': this.post.video_link
+        'src': this.post.video_link,
     });
     goog.dom.appendChild(this.post_content_el, this.video_preivew_el);
 }
@@ -172,6 +172,7 @@ postile.view.post_in_board.VideoPost.prototype.edit = function() {
  */
 postile.view.post_in_board.Post.prototype.edit_for_picture_and_video_post = function() {
     postile.ajax(['post','start_edit'], { post_id: this.post.id }, function() {
+        this.post_edit_button_el.style.display = 'none';
         this.change_view_for_edit();
 
         postile.ui.makeLabeledInput(this.post_title_el, '(picture description here and enter to submit)',
@@ -180,6 +181,7 @@ postile.view.post_in_board.Post.prototype.edit_for_picture_and_video_post = func
                     postile._('post_title_prompt') ? '' : this.post_title_el.innerHTML;
 
             this.submitEdit({ post_id: this.post.id, title: title }, function() {
+                this.post_edit_button_el.style.display = 'block';
                 this.in_edit = false;
             });
         }.bind(this));
@@ -188,7 +190,7 @@ postile.view.post_in_board.Post.prototype.edit_for_picture_and_video_post = func
     }.bind(this));
 }
 
-postile.view.post_in_board.Post.prototype.render = function(data, animation) { //animation is usually ommited (false by default)
+postile.view.post_in_board.Post.prototype.render = function(data, isNew) {
     if (this.disabled) {
         return;
     }
@@ -199,113 +201,105 @@ postile.view.post_in_board.Post.prototype.render = function(data, animation) { /
         goog.object.extend(this, data);
     }
 
-    this.post.coord_x_end = this.post.pos_x + this.post.span_x; //precalculate this two so that future intersect test will be faster
-    this.post.coord_y_end = this.post.pos_y + this.post.span_y;
+    if (isNew) {
+        this.post.coord_x_end = this.post.pos_x + this.post.span_x; //precalculate this two so that future intersect test will be faster
+        this.post.coord_y_end = this.post.pos_y + this.post.span_y;
 
-    this.wrap_el.style.left = this.board.xPosTo(this.post.pos_x) + 'px';
-    this.wrap_el.style.top = this.board.yPosTo(this.post.pos_y) + 'px';
-    this.wrap_el.style.width = this.board.widthTo(this.post.span_x) + 'px';
-    this.wrap_el.style.height = this.board.heightTo(this.post.span_y) + 'px';
+        this.wrap_el.style.left = this.board.xPosTo(this.post.pos_x) + 'px';
+        this.wrap_el.style.top = this.board.yPosTo(this.post.pos_y) + 'px';
+        this.wrap_el.style.width = this.board.widthTo(this.post.span_x) + 'px';
+        this.wrap_el.style.height = this.board.heightTo(this.post.span_y) + 'px';
 
-    if (this.container_el) { // if the post already exists, delete the original one
-        goog.dom.removeNode(this.container_el);
-    }
+        this.container_el = goog.dom.createDom('div', 'post_container');
+        goog.dom.appendChild(this.wrap_el, this.container_el);
 
-    this.container_el = goog.dom.createDom('div', 'post_container');
-    goog.dom.appendChild(this.wrap_el, this.container_el);
+        this.inner_container_el = goog.dom.createDom('div', 'post_inner_container');
+        goog.dom.appendChild(this.container_el, this.inner_container_el);
 
-    this.inner_container_el = goog.dom.createDom('div', 'post_inner_container');
-    goog.dom.appendChild(this.container_el, this.inner_container_el);
+        goog.events.listen(this.container_el, goog.events.EventType.DBLCLICK, function(e) {
+            e.stopPropagation(); // prevent displaying mask by stopping event propagation
+        });
 
-    goog.events.listen(this.container_el, goog.events.EventType.DBLCLICK, function(e) {
-        e.stopPropagation(); // prevent displaying mask by stopping event propagation
-    });
+        /* set top parts */
+        this.post_top_el = goog.dom.createDom("div", "post_top");
+        goog.dom.appendChild(this.inner_container_el, this.post_top_el);
 
-    /* set top parts */
-    this.post_top_el = goog.dom.createDom("div", "post_top");
-    goog.dom.appendChild(this.inner_container_el, this.post_top_el);
+        this.post_title_el = goog.dom.createDom("div", "post_title");
+        goog.dom.appendChild(this.post_top_el, this.post_title_el);
+        this.post_title_el.innerHTML = this.post.title;
 
-    this.post_title_el = goog.dom.createDom("div", "post_title");
-    goog.dom.appendChild(this.post_top_el, this.post_title_el);
-    this.post_title_el.innerHTML = this.post.title;
+        this.wrap_el.rel_data = this;
 
-    this.wrap_el.rel_data = this;
+        // post title clicked, should display post expanded
+        this.post_author_el = goog.dom.createDom("span", "post_author");
 
-    // post title clicked, should display post expanded
-    this.post_author_el = goog.dom.createDom("span", "post_author");
+        // listen for title click event, open post expand view
+        this.post_expand_listener = new postile.events.EventHandler(this.post_title_el, 
+                goog.events.EventType.CLICK, function(e) {
+            var postExpand = new postile.view.post.PostExpand(instance.post);
+            postExpand.open();
+        });
+        this.post_expand_listener.listen();
 
-    // no title, no margin left for author
-    if (!this.post.title) {
-        this.post_author_el.style.marginLeft = '0px';
-    }
+        // author display
+        goog.dom.appendChild(this.post_top_el, this.post_author_el);
 
-    // listen for title click event, open post expand view
-    this.post_expand_listener = new postile.events.EventHandler(this.post_title_el, 
-            goog.events.EventType.CLICK, function(e) {
-        var postExpand = new postile.view.post.PostExpand(instance.post);
-        postExpand.open();
-    });
-    this.post_expand_listener.listen();
+        // username clicked, should display user profile
+        this.author_profile_display_listener = new postile.events.EventHandler(this.post_author_el,
+                goog.events.EventType.CLICK, function(e) {
+            var profileView = new postile.view.profile.ProfileView(instance.creator.id);
+        });
+        this.author_profile_display_listener.listen();
 
-    // author display
-    goog.dom.appendChild(this.post_top_el, this.post_author_el);
+        // display proper number of characters for title
+        this.set_max_displayable_top();
 
-    // username clicked, should display user profile
-    this.author_profile_display_listener = new postile.events.EventHandler(this.post_author_el,
-            goog.events.EventType.CLICK, function(e) {
-        var profileView = new postile.view.profile.ProfileView(instance.creator.id);
-    });
-    this.author_profile_display_listener.listen();
+        this.post_middle_container_el = goog.dom.createDom('div', 'post_middle_container');
+        goog.dom.appendChild(this.inner_container_el, this.post_middle_container_el);
 
-    // display proper number of characters for title
-    this.set_max_displayable_top();
+        this.post_like_container_el = goog.dom.createDom('span', 'post_like_container');
+        goog.dom.appendChild(this.post_middle_container_el, this.post_like_container_el);
 
-    this.post_middle_container_el = goog.dom.createDom('div', 'post_middle_container');
-    goog.dom.appendChild(this.inner_container_el, this.post_middle_container_el);
-
-    this.post_like_container_el = goog.dom.createDom('span', 'post_like_container');
-    goog.dom.appendChild(this.post_middle_container_el, this.post_like_container_el);
-
-    if (this.likes) {
-        this.init_like_container();
-    }
-
-    /* set content parts */
-    this.post_content_el = goog.dom.createDom("div", "post_content");
-    goog.dom.appendChild(this.inner_container_el, this.post_content_el);
-
-    postile.data_manager.getUserData(this.post.creator_id, function(data) {
-        this.creator = data;
-        this.post_author_el.innerHTML = this.creator.username;
-
-        /* render elements for the user's own post */
-        if (this.creator.id == localStorage.postile_user_id) { // my own post
-            this.post_content_el.style.cursor = 'auto';
-            goog.events.listen(this.post_content_el, goog.events.EventType.CLICK, function() {
-                instance.edit();
-            });
-
-            /* add edit button */
-            this.post_edit_button_el = goog.dom.createDom('span', 'post_edit_button');
-            this.post_edit_button_el.innerHTML = 'edit';
-            goog.dom.appendChild(this.post_middle_container_el, this.post_edit_button_el);
-
-            goog.events.listen(this.post_edit_button_el, goog.events.EventType.CLICK, function(e) {
-                this.edit();
-            }.bind(this));
+        if (this.likes) {
+            this.init_like_container();
         }
-    }.bind(this));
 
-    // post bottom
-    this.post_bottom_el = goog.dom.createDom("div", "post_bottom");
-    goog.dom.appendChild(this.container_el, this.post_bottom_el);
+        /* set content parts */
+        this.post_content_el = goog.dom.createDom("div", "post_content");
+        goog.dom.appendChild(this.inner_container_el, this.post_content_el);
 
-    // this.extra_button_view_init();
+        postile.data_manager.getUserData(this.post.creator_id, function(data) {
+            this.creator = data;
+            this.post_author_el.innerHTML = this.creator.username;
 
-    this.comment_preview_init();
+            /* render elements for the user's own post */
+            if (this.creator.id == localStorage.postile_user_id) { // my own post
+                this.post_content_el.style.cursor = 'auto';
+                goog.events.listen(this.post_content_el, goog.events.EventType.CLICK, function() {
+                    instance.edit();
+                });
 
-    if (animation) {
+                /* add edit button */
+                this.post_edit_button_el = goog.dom.createDom('span', 'post_edit_button');
+                this.post_edit_button_el.innerHTML = 'Edit';
+                goog.dom.appendChild(this.post_middle_container_el, this.post_edit_button_el);
+
+                goog.events.listen(this.post_edit_button_el, goog.events.EventType.CLICK, function(e) {
+                    this.edit();
+                }.bind(this));
+            }
+        }.bind(this));
+
+        // post bottom
+        this.post_bottom_el = goog.dom.createDom("div", "post_bottom");
+        goog.dom.appendChild(this.container_el, this.post_bottom_el);
+
+        // this.extra_button_view_init();
+
+        this.comment_preview_init();
+
         postile.fx.effects.resizeIn(this.wrap_el);
+    } else {
     }
 }
 
@@ -322,9 +316,9 @@ postile.view.post_in_board.Post.prototype.init_like_container = function() {
     });
     
     if (liked_user_id.indexOf(parseInt(localStorage.postile_user_id)) != -1) { // already liked
-        this.post_like_button_el.innerHTML = 'unlike';
+        this.post_like_button_el.innerHTML = 'Unlike';
     } else {
-        this.post_like_button_el.innerHTML = 'like';
+        this.post_like_button_el.innerHTML = 'Like';
     }
 
     goog.events.listen(this.post_like_button_el, goog.events.EventType.CLICK, function(e) {
@@ -332,10 +326,10 @@ postile.view.post_in_board.Post.prototype.init_like_container = function() {
         postile.ajax([ 'post', action ], { post_id: this.post.id }, function(data) {
             if (action == 'like') { // like
                 this.post_like_count_el.innerHTML = '+' + (++this.likes.length);
-                this.post_like_button_el.innerHTML = 'unlike';
+                this.post_like_button_el.innerHTML = 'Unlike';
             } else { // unlike
                 this.post_like_count_el.innerHTML = '+' + (--this.likes.length);
-                this.post_like_button_el.innerHTML = 'like';
+                this.post_like_button_el.innerHTML = 'Like';
             }
         }.bind(this));
     }.bind(this));
@@ -562,7 +556,7 @@ postile.view.post_in_board.Post.prototype.comment_preview_init = function() {
     // input for new comments
     this.comment_container_input_el = goog.dom.createDom('input', 'comment_container_input');
     this.comment_container_input_el.style.width = this.wrap_el.offsetWidth - 60 + 'px';
-    this.comment_container_input_el.placeholder = 'enter your comment here...';
+    this.comment_container_input_el.placeholder = 'Enter your comment here...';
     goog.dom.appendChild(this.comment_container_bottom_el, this.comment_container_input_el);
 
     goog.events.listen(this.comment_container_input_el, goog.events.EventType.KEYDOWN, function(e) {
@@ -831,6 +825,8 @@ postile.view.post_in_board.Post.prototype.change_view_for_edit = function() {
     this.in_edit = true;
     this.post_expand_listener.unlisten();
     this.author_profile_display_listener.unlisten();
+
+    // this.wrap_el.style.boxShadow = '0px 0px 4px #537cbe';
 
     // remove effects in the view mode
     this.post_title_el.style.textDecoration = 'none';

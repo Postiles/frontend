@@ -7,7 +7,7 @@ html, body {
 #wrapper {
   width: 100%;
   height: 100%;
-  font-family: Oxygen;
+  font-family: Roboto;
 }
 
 #title_bar {
@@ -257,8 +257,10 @@ html, body {
   background: whitesmoke;
   font-size: 10pt;
   z-index: 100;
+  /*
   border-top: 3px solid #024d61; 
   border-bottom: 1px solid #024d61; 
+  */
   box-sizing: border-box;
   box-shadow: inset 0 0 4px -1px rgba(2, 77, 97, 0.6);
 }
@@ -271,7 +273,7 @@ html, body {
 }
 
 .post_inner_container {
-  padding: 2px 5px;
+  padding: 5px 12px;
 }
 
 .picture_post .post_inner_container {
@@ -300,7 +302,7 @@ html, body {
 
 .post_title {
   float: left;
-  font-family: OxygenBold;
+  font-family: Roboto;
   white-space: nowrap;
   overflow: hidden;
   cursor: pointer;
@@ -313,6 +315,7 @@ html, body {
 .post_author {
   float: right;
   cursor: pointer;
+  color: #537cbe;
 }
 
 .post_author:hover {
@@ -320,12 +323,13 @@ html, body {
 }
 
 .post_middle_container {
-  height: 16px;
-  color: #024d61;
+  margin-top: -2px;
+  height: 17px;
+  font-size: 8pt;
 }
 
 .post_like_container {
-    margin-left: 5px;
+    color: #537cbe;
 }
 
 .post_like_count_el {
@@ -343,7 +347,7 @@ html, body {
 
 .post_edit_button {
     float: right;
-    color: #999;
+    color: #aaa;
     cursor: pointer;
 }
 
@@ -461,7 +465,7 @@ html, body {
   cursor: default; }
 
 .post_box_comment_item_username_text {
-  font-family: OxygenBold;
+  font-family: Roboto;
   color: #3d7d8e;
   float: left; }
 
@@ -484,7 +488,7 @@ html, body {
 
 .comment_preview {
   font-size: 9pt;
-  padding: 2px 5px;
+  padding: 2px 12px;
   background: #cfdade;
   white-space: nowrap;
   overflow: hidden;
@@ -492,7 +496,7 @@ html, body {
 
 .comment_preview_author {
   cursor: pointer;
-  color: #024d61;
+  color: #537cbe;
 }
 
 .comment_preview_author:hover {
@@ -557,7 +561,6 @@ html, body {
 
 .comment_time {
   color: #999;
-  margin-top: 3px;
   font-size: 8pt;
 }
 
@@ -613,7 +616,7 @@ html, body {
   width: 5000px;
   height: 4000px;
   position: absolute;
-  background: url(/images/paper_bg.png);
+  background: url(/images/noisy_grid.png);
   display: none; }
 
 .post_content {
