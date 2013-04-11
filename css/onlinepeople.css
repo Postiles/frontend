@@ -1,6 +1,5 @@
 #onlinepeople_container {
   z-index: -1;
-  font-family: OxygenLight;
   width: 300px;
   line-height: 100%;
   position: fix !important;

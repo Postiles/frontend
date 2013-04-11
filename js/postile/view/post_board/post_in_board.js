@@ -44,6 +44,8 @@ postile.view.post_in_board.Post = function(data, board) {
     this.in_edit = false;
     this.wrap_el = goog.dom.createDom('div', 'post_wrap');
     goog.dom.appendChild(this.board.canvas, this.wrap_el);
+
+    postile.ui.load(this.wrap_el, postile.conf.staticResource([ '_post_in_board.html' ]));
 }
 
 /**
@@ -201,7 +203,10 @@ postile.view.post_in_board.Post.prototype.render = function(data, isNew) {
         goog.object.extend(this, data);
     }
 
+    this.wrap_el.rel_data = this;
+
     if (isNew) {
+
         this.post.coord_x_end = this.post.pos_x + this.post.span_x; //precalculate this two so that future intersect test will be faster
         this.post.coord_y_end = this.post.pos_y + this.post.span_y;
 
@@ -210,28 +215,22 @@ postile.view.post_in_board.Post.prototype.render = function(data, isNew) {
         this.wrap_el.style.width = this.board.widthTo(this.post.span_x) + 'px';
         this.wrap_el.style.height = this.board.heightTo(this.post.span_y) + 'px';
 
-        this.container_el = goog.dom.createDom('div', 'post_container');
-        goog.dom.appendChild(this.wrap_el, this.container_el);
+        this.container_el = postile.dom.getDescendantByClass(this.wrap_el, 'post_container');
 
-        this.inner_container_el = goog.dom.createDom('div', 'post_inner_container');
-        goog.dom.appendChild(this.container_el, this.inner_container_el);
+        this.inner_container_el = postile.dom.getDescendantByClass(this.container_el, 'post_inner_container')
 
         goog.events.listen(this.container_el, goog.events.EventType.DBLCLICK, function(e) {
             e.stopPropagation(); // prevent displaying mask by stopping event propagation
         });
 
         /* set top parts */
-        this.post_top_el = goog.dom.createDom("div", "post_top");
-        goog.dom.appendChild(this.inner_container_el, this.post_top_el);
+        this.post_top_el = postile.dom.getDescendantByClass(this.inner_container_el, 'post_top');
 
-        this.post_title_el = goog.dom.createDom("div", "post_title");
-        goog.dom.appendChild(this.post_top_el, this.post_title_el);
+        this.post_title_el = postile.dom.getDescendantByClass(this.post_top_el, 'post_title');
         this.post_title_el.innerHTML = this.post.title;
 
-        this.wrap_el.rel_data = this;
-
         // post title clicked, should display post expanded
-        this.post_author_el = goog.dom.createDom("span", "post_author");
+        this.post_author_el = postile.dom.getDescendantByClass(this.post_top_el, "post_author");
 
         // listen for title click event, open post expand view
         this.post_expand_listener = new postile.events.EventHandler(this.post_title_el, 
@@ -240,9 +239,6 @@ postile.view.post_in_board.Post.prototype.render = function(data, isNew) {
             postExpand.open();
         });
         this.post_expand_listener.listen();
-
-        // author display
-        goog.dom.appendChild(this.post_top_el, this.post_author_el);
 
         // username clicked, should display user profile
         this.author_profile_display_listener = new postile.events.EventHandler(this.post_author_el,
@@ -254,19 +250,18 @@ postile.view.post_in_board.Post.prototype.render = function(data, isNew) {
         // display proper number of characters for title
         this.set_max_displayable_top();
 
-        this.post_middle_container_el = goog.dom.createDom('div', 'post_middle_container');
-        goog.dom.appendChild(this.inner_container_el, this.post_middle_container_el);
+        this.post_middle_container_el = postile.dom.getDescendantByClass(
+                this.inner_container_el, 'post_middle_container');
 
-        this.post_like_container_el = goog.dom.createDom('span', 'post_like_container');
-        goog.dom.appendChild(this.post_middle_container_el, this.post_like_container_el);
+        this.post_like_container_el = postile.dom.getDescendantByClass(
+                this.post_middle_container_el, 'post_like_container');
 
         if (this.likes) {
             this.init_like_container();
         }
 
         /* set content parts */
-        this.post_content_el = goog.dom.createDom("div", "post_content");
-        goog.dom.appendChild(this.inner_container_el, this.post_content_el);
+        this.post_content_el = postile.dom.getDescendantByClass(this.inner_container_el, "post_content");
 
         postile.data_manager.getUserData(this.post.creator_id, function(data) {
             this.creator = data;
@@ -280,9 +275,8 @@ postile.view.post_in_board.Post.prototype.render = function(data, isNew) {
                 });
 
                 /* add edit button */
-                this.post_edit_button_el = goog.dom.createDom('span', 'post_edit_button');
-                this.post_edit_button_el.innerHTML = 'Edit';
-                goog.dom.appendChild(this.post_middle_container_el, this.post_edit_button_el);
+                this.post_edit_button_el = postile.dom.getDescendantByClass(
+                        this.post_middle_container_el, 'post_edit_button')
 
                 goog.events.listen(this.post_edit_button_el, goog.events.EventType.CLICK, function(e) {
                     this.edit();
@@ -291,8 +285,7 @@ postile.view.post_in_board.Post.prototype.render = function(data, isNew) {
         }.bind(this));
 
         // post bottom
-        this.post_bottom_el = goog.dom.createDom("div", "post_bottom");
-        goog.dom.appendChild(this.container_el, this.post_bottom_el);
+        this.post_bottom_el = postile.dom.getDescendantByClass(this.container_el, 'post_bottom');
 
         // this.extra_button_view_init();
 
@@ -304,13 +297,15 @@ postile.view.post_in_board.Post.prototype.render = function(data, isNew) {
 }
 
 postile.view.post_in_board.Post.prototype.init_like_container = function() {
-    this.post_like_count_el = goog.dom.createDom('span', 'post_like_count');
-    this.post_like_count_el.innerHTML = '+' + this.likes.length;
-    goog.dom.appendChild(this.post_like_container_el, this.post_like_count_el);
+    this.post_like_count_el = postile.dom.getDescendantByClass(
+            this.post_like_container_el, 'post_like_count');
+    this.post_like_count_el.innerHTML = '♡ ' + this.likes.length;
+    console.log(this.post_like_count_el);
 
-    this.post_like_button_el = goog.dom.createDom('span', 'post_like_button');
-    goog.dom.appendChild(this.post_like_container_el, this.post_like_button_el);
+    this.post_like_button_el = postile.dom.getDescendantByClass(
+            this.post_like_container_el, 'post_like_button');
 
+    // all the id of all the users that likes this post
     var liked_user_id = this.likes.map(function(l) {
         return l.user_id;
     });
@@ -325,7 +320,7 @@ postile.view.post_in_board.Post.prototype.init_like_container = function() {
         var action = this.post_like_button_el.innerHTML;
         postile.ajax([ 'post', action ], { post_id: this.post.id }, function(data) {
             if (action == 'like') { // like
-                this.post_like_count_el.innerHTML = '+' + (++this.likes.length);
+                this.post_like_count_el.innerHTML = '♡ ' + (++this.likes.length);
                 this.post_like_button_el.innerHTML = 'Unlike';
             } else { // unlike
                 this.post_like_count_el.innerHTML = '+' + (--this.likes.length);
@@ -507,57 +502,50 @@ postile.view.post_in_board.Post.prototype.post_icon_container_init = function() 
 
 postile.view.post_in_board.Post.prototype.comment_preview_init = function() {
     // comment preview
-    this.comment_preview_el = goog.dom.createDom('div', 'comment_preview');
-    goog.dom.appendChild(this.post_bottom_el, this.comment_preview_el);
+    this.comment_preview_el = postile.dom.getDescendantByClass(
+            this.post_bottom_el, 'comment_preview');
 
     // author
-    this.comment_preview_author_el = goog.dom.createDom('span', 'comment_preview_author');
-    goog.dom.appendChild(this.comment_preview_el, this.comment_preview_author_el);
+    this.comment_preview_author_el = postile.dom.getDescendantByClass(
+            this.comment_preview_el, 'comment_preview_author');
 
     // middle: displays ": " after username
-    this.comment_preview_middle_el = goog.dom.createDom('span');
-    goog.dom.appendChild(this.comment_preview_el, this.comment_preview_middle_el);
+    this.comment_preview_middle_el = postile.dom.getDescendantByClass(
+            this.comment_preview_el, 'comment_preview_middle');
 
     // author
-    this.comment_preview_author_el = goog.dom.createDom('span', 'comment_preview_author');
-    goog.dom.appendChild(this.comment_preview_el, this.comment_preview_author_el);
-
-    // middle: displays ": " after username
-    this.comment_preview_middle_el = goog.dom.createDom('span', 'comment_preview_midlle');
-    goog.dom.appendChild(this.comment_preview_el, this.comment_preview_middle_el);
+    this.comment_preview_author_el = postile.dom.getDescendantByClass(
+            this.comment_preview_el, 'comment_preview_author');
 
     // content
-    this.comment_preview_content_el = goog.dom.createDom('span', 'comment_preview_content');
-    goog.dom.appendChild(this.comment_preview_el, this.comment_preview_content_el);
-    goog.dom.appendChild(this.post_bottom_el, this.comment_preview_el);
+    this.comment_preview_content_el = postile.dom.getDescendantByClass(
+            this.comment_preview_el, 'comment_preview_content');
 
     /* the following code displays all the inline comments in a container */
     // comment container
-    this.comment_container_el = goog.dom.createDom('div', 'comment_container');
-    goog.dom.appendChild(this.post_bottom_el, this.comment_container_el);
+    this.comment_container_el = postile.dom.getDescendantByClass(
+            this.post_bottom_el, 'comment_container');
 
     // comment list
-    this.comment_list_el = goog.dom.createDom('div', 'comment_list');
-    goog.dom.appendChild(this.comment_container_el, this.comment_list_el);
+    this.comment_list_el = postile.dom.getDescendantByClass(
+            this.comment_container_el, 'comment_list');
 
     // "no comment"
-    this.comment_container_no_comment_el = goog.dom.createDom('div', 'comment_container_no_comment');
-    this.comment_container_no_comment_el.innerHTML = 'no comment yet, be the first one to comment!';
-    goog.dom.appendChild(this.comment_list_el, this.comment_container_no_comment_el);
+    this.comment_container_no_comment_el = postile.dom.getDescendantByClass(
+            this.comment_list_el, 'comment_container_no_comment');
 
     // comment items
-    this.comment_container_items_el = goog.dom.createDom('div', 'comment_container_items');
-    goog.dom.appendChild(this.comment_list_el, this.comment_container_items_el);
+    this.comment_container_items_el = postile.dom.getDescendantByClass(
+            this.comment_list_el, 'comment_container_items');
 
     // bottom (including input and close button)
-    this.comment_container_bottom_el = goog.dom.createDom('div', 'comment_container_bottom');
-    goog.dom.appendChild(this.comment_container_el, this.comment_container_bottom_el);
+    this.comment_container_bottom_el = postile.dom.getDescendantByClass(
+            this.comment_container_el, 'comment_container_bottom');
 
     // input for new comments
-    this.comment_container_input_el = goog.dom.createDom('input', 'comment_container_input');
+    this.comment_container_input_el = postile.dom.getDescendantByClass(
+            this.comment_container_bottom_el, 'comment_container_input');
     this.comment_container_input_el.style.width = this.wrap_el.offsetWidth - 60 + 'px';
-    this.comment_container_input_el.placeholder = 'Enter your comment here...';
-    goog.dom.appendChild(this.comment_container_bottom_el, this.comment_container_input_el);
 
     goog.events.listen(this.comment_container_input_el, goog.events.EventType.KEYDOWN, function(e) {
         if (this.comment_container_input_el.value.length > 0) { // must have something in the input
@@ -585,9 +573,8 @@ postile.view.post_in_board.Post.prototype.comment_preview_init = function() {
     }.bind(this));
 
     // button that closes comment container
-    this.comment_list_close_button_el = goog.dom.createDom('div', 'comment_list_close_button');
-    this.comment_list_close_button_el.innerHTML = 'close';
-    goog.dom.appendChild(this.comment_container_bottom_el, this.comment_list_close_button_el);
+    this.comment_list_close_button_el = postile.dom.getDescendantByClass(
+            this.comment_container_bottom_el, 'comment_list_close_button');
     goog.events.listen(this.comment_list_close_button_el, goog.events.EventType.CLICK, function(e) {
         this.comment_container_el.style.display = 'none';
     }.bind(this));

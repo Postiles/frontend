@@ -1,6 +1,5 @@
 .profile-preview {
   position: relative;
-  font-family: RobotoRegular;
   font-size: 10pt;
   display: table-cell;
   z-index: 300;
@@ -71,7 +70,6 @@
       color: #ececec;
       box-shadow: 0px 0px 8px #024d61; }
       .profile-preview .info-container .top .name {
-        font-family: Oxygen;
         font-size: 13pt; }
       .profile-preview .info-container .top .signiture {
         margin-top: 15px; }
