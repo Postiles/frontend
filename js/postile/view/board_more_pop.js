@@ -43,6 +43,25 @@ postile.view.board_more_pop.BoardMorePop = function(input_instance) {
 goog.inherits(postile.view.board_more_pop.BoardMorePop, postile.view.TipView);
 postile.view.board_more_pop.BoardMorePop.prototype.unloaded_stylesheets = ['board_more_pop.css'];
 
+postile.view.board_more_pop.BoardMorePop.prototype.open = function(a,b){
+    postile.view.TipView.prototype.open.call(this,a,b);
+    // save the icon button that trigger open html
+    this.triggerButton = a;
+    this.triggerButton.style.background = '#024d61';
+    var imgTag = goog.dom.getElementsByTagNameAndClass('img', '', this.triggerButton);
+    imgTag[0].setAttribute('src', postile.conf.imageResource(['popup_icon_active.png']));
+}
+
+postile.view.board_more_pop.BoardMorePop.prototype.close = function(){
+    postile.view.TipView.prototype.close.call(this);
+    // change triggerButton's background
+    if(this.triggerButton){
+        var imgTag = goog.dom.getElementsByTagNameAndClass('img', '', this.triggerButton);
+        this.triggerButton.style.background = '#f5f5f5';
+        imgTag[0].setAttribute('src', postile.conf.imageResource(['popup_icon.png']));
+    }
+}
+
 postile.view.board_more_pop.OtherBoard = function(in_board_instance) {
     var board_instance = in_board_instance;
     this.curId = board_instance.boardData.topic_id;
@@ -71,7 +90,29 @@ postile.view.board_more_pop.OtherBoard = function(in_board_instance) {
 }
 
 goog.inherits(postile.view.board_more_pop.OtherBoard, postile.view.TipView);
+
 postile.view.board_more_pop.OtherBoard.prototype.unloaded_stylesheets = ['board_more_pop.css'];
+
+postile.view.board_more_pop.OtherBoard.prototype.open = function(a,b){
+    postile.view.TipView.prototype.open.call(this,a,b);
+
+    // save the icon button that trigger open html
+    this.triggerButton = a;
+    this.triggerButton.style.background = '#024d61';
+    var imgTag = goog.dom.getElementsByTagNameAndClass('img', '', this.triggerButton);
+    imgTag[0].setAttribute('src', postile.conf.imageResource(['switch_board_icon_active.png']));
+}
+
+postile.view.board_more_pop.OtherBoard.prototype.close = function(){
+    postile.view.TipView.prototype.close.call(this);
+
+    // change triggerButton's background
+    if(this.triggerButton){
+        var imgTag = goog.dom.getElementsByTagNameAndClass('img', '', this.triggerButton);
+        this.triggerButton.style.background = '#f5f5f5';
+        imgTag[0].setAttribute('src', postile.conf.imageResource(['switch_board_icon.png']));
+    }
+}
 
 
 postile.view.board_more_pop.OtherBoard.prototype.renderBoardListItem = function(data) {

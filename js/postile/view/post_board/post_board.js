@@ -345,9 +345,9 @@ postile.view.post_board.PostBoard = function(board_id) {
                 if(status == "offline") {
                     console.log("new offline");
                 }
-                //instance.onlinepeople.count = data.count;
+                instance.onlinepeople.count = data.count;
                 console.log(instance.onlinepeople.count);
-                //instance.updateOnlineCount();
+                instance.updateOnlineCount();
 
             });
 
