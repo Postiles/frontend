@@ -128,6 +128,7 @@ postile.view.post_in_board.PicturePost.prototype.render = function(data, animati
     goog.base(this, 'render', data, animation);
 
     goog.dom.classes.add(this.wrap_el, 'picture_post');
+    console.log(this.post.image_url);
     this.wrap_el.style.backgroundImage = 'url(' + postile.conf.uploadsResource([this.post.image_url]) + ')';
     this.wrap_el.style.backgroundSize = 'cover';
     this.wrap_el.style.backgroundPosition = 'center';
@@ -159,6 +160,8 @@ postile.view.post_in_board.VideoPost.prototype.render = function(data, animation
         'src': this.post.video_link
     });
     goog.dom.appendChild(this.post_content_el, this.video_preivew_el);
+    var video_height = this.wrap_el.offsetHeight - 60;
+    this.video_preivew_el.style.height = video_height + 'px';
 }
 
 postile.view.post_in_board.VideoPost.prototype.edit = function() {

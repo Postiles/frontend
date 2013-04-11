@@ -63,10 +63,17 @@ postile.view.notification.Notification.prototype.open = function(a, b) {
             /* handle the data return after getting the boards information back */
 
             notificationList = data.message.notifications;
+
+            if(notificationList == this.notificationList){
+                return;
+            }
+
             console.log(notificationList[0]);
             this.numberOfNotification.innerHTML = notificationList.length;
             this.numberOfUnread = notificationList.length;
 
+
+            // handle data lag problem
             goog.events.listen(this.markRead, goog.events.EventType.CLICK, function() {
                 postile.ajax([ 'notification', 'dismiss_all' ], {}, function(data) {
                     // Nothing to do

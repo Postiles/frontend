@@ -64,13 +64,13 @@ postile.view.post_board.Header = function(board) {
 
     // preload images for switching
     var switch_board_active = new Image();
-    switch_board_active.src = postile.conf.imageResource(['switch_board_active']);
+    switch_board_active.src = postile.conf.imageResource(['switch_board_icon_active.png']);
     var popup_icon_active = new Image();
-    popup_icon_active.src = postile.conf.imageResource(['popup_icon_active']);
+    popup_icon_active.src = postile.conf.imageResource(['popup_icon_active.png']);
     var search_icon_active = new Image();
-    search_icon_active.src = postile.conf.imageResource(['search_icon_active']);
+    search_icon_active.src = postile.conf.imageResource(['search_icon_active.png']);
     var message_icon_active = new Image();
-    message_icon_active.src = postile.conf.imageResource(['message_icon_active']);
+    message_icon_active.src = postile.conf.imageResource(['message_icon_active.png']);
 
 
     this.alert_wrapper = goog.dom.createDom('div', 'notificatoin_number_wrapper');
