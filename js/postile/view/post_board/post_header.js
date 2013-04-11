@@ -6,6 +6,10 @@ goog.require('postile.dom');
 goog.require('postile.view.notification');
 
 postile.view.post_board.Header = function(board) {
+
+    // this variable is for identifying current active icon
+    this.curIcon = '';
+
     postile.view.NormalView.call(this);
 
     var instance = this;
@@ -57,6 +61,18 @@ postile.view.post_board.Header = function(board) {
     this.profileImageContainerImg_el = goog.dom.getElementByClass('image', this.profileImageContainer_el);
     this.profileImageContainerImg_el.src = postile.conf.uploadsResource([ this.board.userData.image_small_url ]);
 
+
+    // preload images for switching
+    var switch_board_active = new Image();
+    switch_board_active.src = postile.conf.imageResource(['switch_board_active']);
+    var popup_icon_active = new Image();
+    popup_icon_active.src = postile.conf.imageResource(['popup_icon_active']);
+    var search_icon_active = new Image();
+    search_icon_active.src = postile.conf.imageResource(['search_icon_active']);
+    var message_icon_active = new Image();
+    message_icon_active.src = postile.conf.imageResource(['message_icon_active']);
+
+
     this.alert_wrapper = goog.dom.createDom('div', 'notificatoin_number_wrapper');
     goog.dom.appendChild(this.container, this.alert_wrapper);
 
@@ -68,9 +84,9 @@ postile.view.post_board.Header = function(board) {
         new postile.view.post_board.FunctionButton(this.function_buttons[i]);
     }
 
-    var search_button = postile.dom.getDescendantById(instance.container, "search_button");
-    this.sBTip = new postile.view.search_box.SearchBox(search_button);
-    goog.events.listen(search_button, goog.events.EventType.CLICK, function(e) {
+    this.search_button = postile.dom.getDescendantById(instance.container, "search_button");
+    this.sBTip = new postile.view.search_box.SearchBox(this.search_button);
+    goog.events.listen(this.search_button, goog.events.EventType.CLICK, function(e) {
         e.stopPropagation();
         this.notification.close();
         this.switchBoardTip.close();
@@ -79,15 +95,16 @@ postile.view.post_board.Header = function(board) {
 
     /* Buttons on the right up corner */
     this.switchBoardTip = new postile.view.board_more_pop.OtherBoard(this.board);
-    var switch_board_button = postile.dom.getDescendantById(instance.container, "switch_board_button");
-    goog.events.listen(switch_board_button, goog.events.EventType.CLICK, function(e) {
+    this.switch_board_button = postile.dom.getDescendantById(instance.container, "switch_board_button");
+    goog.events.listen(this.switch_board_button, goog.events.EventType.CLICK, function(e) {
         e.stopPropagation();
+        //this.iconHandler('switch_board');
         this.notification.close();
         this.sBTip.close();
         this.switchBoardTip.open(switch_board_button);
     }.bind(this));
 
-    var message_button = postile.dom.getDescendantById(instance.container, "message_button");
+    this.message_button = postile.dom.getDescendantById(instance.container, "message_button");
 
     var notificationList;
     /* get hte number of new notifications from server */
@@ -105,7 +122,7 @@ postile.view.post_board.Header = function(board) {
     });
 
     this.notification = new postile.view.notification.Notification(this);
-    goog.events.listen(message_button, goog.events.EventType.CLICK, function(e) {
+    goog.events.listen(this.message_button, goog.events.EventType.CLICK, function(e) {
         e.stopPropagation();
         this.switchBoardTip.close();
         this.sBTip.close();
@@ -113,12 +130,11 @@ postile.view.post_board.Header = function(board) {
         this.notificationHandlerClear();
     }.bind(this));
 
-
-    var more_button = postile.dom.getDescendantById(instance.container, "popup_button");
-    this.moreButtonPop = new postile.view.board_more_pop.BoardMorePop(more_button);
-    goog.events.listen(more_button, goog.events.EventType.CLICK, function(e) {
+    this.more_button = postile.dom.getDescendantById(instance.container, "popup_button");
+    this.moreButtonPop = new postile.view.board_more_pop.BoardMorePop(this.more_button);
+    goog.events.listen(this.more_button, goog.events.EventType.CLICK, function(e) {
         e.stopPropagation();
-        this.moreButtonPop.open(more_button);
+        this.moreButtonPop.open(this.more_button);
         this.moreButtonPopOpened = true;
     }.bind(this));
 }

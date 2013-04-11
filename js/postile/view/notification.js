@@ -37,11 +37,25 @@ postile.view.notification.Notification.prototype.close = function() {
             goog.dom.removeNode(this.listedNotification[i].notificationItem);
         }
     }
+
+    // change triggerButton's background
+    if(this.triggerButton){
+        var imgTag = goog.dom.getElementsByTagNameAndClass('img', '', this.triggerButton);
+        this.triggerButton.style.background = '#f5f5f5';
+        imgTag[0].setAttribute('src', postile.conf.imageResource(['message_icon.png']));
+    }
 }
 
 postile.view.notification.Notification.prototype.open = function(a, b) {
     if(this.opened == false){
         postile.view.TipView.prototype.open.call(this,a,b);
+
+        // save the icon button that trigger open html
+        this.triggerButton = a;
+        this.triggerButton.style.background = '#024d61';
+        var imgTag = goog.dom.getElementsByTagNameAndClass('img', '', this.triggerButton);
+        imgTag[0].setAttribute('src', postile.conf.imageResource(['message_icon_active.png']));
+
         this.currentIndex = 0;
         this.currentMax = 4;
         this.opened = true;
