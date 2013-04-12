@@ -37,11 +37,25 @@ postile.view.notification.Notification.prototype.close = function() {
             goog.dom.removeNode(this.listedNotification[i].notificationItem);
         }
     }
+
+    // change triggerButton's background
+    if(this.triggerButton){
+        var imgTag = goog.dom.getElementsByTagNameAndClass('img', '', this.triggerButton);
+        this.triggerButton.style.background = '#f5f5f5';
+        imgTag[0].setAttribute('src', postile.conf.imageResource(['message_icon.png']));
+    }
 }
 
 postile.view.notification.Notification.prototype.open = function(a, b) {
     if(this.opened == false){
         postile.view.TipView.prototype.open.call(this,a,b);
+
+        // save the icon button that trigger open html
+        this.triggerButton = a;
+        this.triggerButton.style.background = '#024d61';
+        var imgTag = goog.dom.getElementsByTagNameAndClass('img', '', this.triggerButton);
+        imgTag[0].setAttribute('src', postile.conf.imageResource(['message_icon_active.png']));
+
         this.currentIndex = 0;
         this.currentMax = 4;
         this.opened = true;
@@ -49,10 +63,17 @@ postile.view.notification.Notification.prototype.open = function(a, b) {
             /* handle the data return after getting the boards information back */
 
             notificationList = data.message.notifications;
+
+            if(notificationList == this.notificationList){
+                return;
+            }
+
             console.log(notificationList[0]);
             this.numberOfNotification.innerHTML = notificationList.length;
             this.numberOfUnread = notificationList.length;
 
+
+            // handle data lag problem
             goog.events.listen(this.markRead, goog.events.EventType.CLICK, function() {
                 postile.ajax([ 'notification', 'dismiss_all' ], {}, function(data) {
                     // Nothing to do
@@ -118,7 +139,6 @@ postile.view.notification.Notification.prototype.seeMore = function() {
 }
 
 postile.view.notification.Notification.prototype.appendOneMore = function() {
-
     if(this.numberOfUnread > this.currentMax) { // still can append
         console.log(this.currentIndex);
         this.listedNotification[this.currentIndex] = new postile.view.notification.InfoItem();

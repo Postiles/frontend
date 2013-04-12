@@ -161,6 +161,8 @@ postile.view.post_in_board.VideoPost.prototype.render = function(data, animation
         'src': this.post.video_link,
     });
     goog.dom.appendChild(this.post_content_el, this.video_preivew_el);
+    var video_height = this.wrap_el.offsetHeight - 60;
+    this.video_preivew_el.style.height = video_height + 'px';
 }
 
 postile.view.post_in_board.VideoPost.prototype.edit = function() {
@@ -179,7 +181,7 @@ postile.view.post_in_board.Post.prototype.edit_for_picture_and_video_post = func
 
         postile.ui.makeLabeledInput(this.post_title_el, '(picture description here and enter to submit)',
                 'half_opaque', function(){
-            var title = this.post_title_el.innerHTML == 
+            var title = this.post_title_el.innerHTML ==
                     postile._('post_title_prompt') ? '' : this.post_title_el.innerHTML;
 
             this.submitEdit({ post_id: this.post.id, title: title }, function() {
@@ -297,6 +299,7 @@ postile.view.post_in_board.Post.prototype.render = function(data, isNew) {
 
         postile.fx.effects.resizeIn(this.wrap_el);
     } else {
+        console.log(this.post_title_el);
     }
 }
 
@@ -313,7 +316,7 @@ postile.view.post_in_board.Post.prototype.init_like_container = function() {
     var liked_user_id = this.likes.map(function(l) {
         return l.user_id;
     });
-    
+
     if (liked_user_id.indexOf(parseInt(localStorage.postile_user_id)) != -1) { // already liked
         this.post_like_button_el.innerHTML = 'Unlike';
     } else {
@@ -582,7 +585,7 @@ postile.view.post_in_board.Post.prototype.comment_preview_init = function() {
     goog.events.listen(this.comment_list_close_button_el, goog.events.EventType.CLICK, function(e) {
         this.comment_container_el.style.display = 'none';
     }.bind(this));
-    
+
     if (this.inline_comments && this.inline_comments.length > 0) { // at least one comment
         this.comment_preview_middle_el.innerHTML = ': ';
 
@@ -840,13 +843,13 @@ postile.view.post_in_board.Post.prototype.change_view_for_edit = function() {
     this.comment_preview_el.style.display = 'none' // hide comment preview
 }
 
+postile.view.post_in_board.Post.prototype.change_view_after_edit = function() {
+}
+
 postile.view.post_in_board.Post.prototype.edit = function() {
-    if (this.in_edit) {
+    if (this.in_edit) { // already in edit mode
         return;
     }
-
-    var instance = this;
-    this.disable();
 }
 
 postile.view.post_in_board.resolveAtPerson = function(displayText) { //displayed -> shown

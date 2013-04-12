@@ -88,16 +88,26 @@ postile.uploader.submit = function(){ //  TODO check if browser is good
     if(postile.uploader.formData !== null){
         postile.ajax.upload( ['application', 'upload_image' ], postile.uploader.formData, function(data) {
             var filename = data.message.filename;
-             //TODO change the image path after backend is done
-            if(postile.uploader.upload_path == 'profile'){
+             // change the image path after backend is done
+            if(postile.uploader.upload_path == 'profile_image'){
+
+                // This is not an elegent solution. Just find the div by searching class
+                var picture_el = goog.dom.getElementByClass('picture');
+                var pictureImg_el = goog.dom.getElementsByTagNameAndClass('img', null, picture_el)[0];
+                if(pictureImg_el){
+                    pictureImg_el.src = postile.conf.uploadsResource(['profile_image',filename]);
+                }
+
+                // Change the profile in the database
+                postile.ajax(['profile', 'update_profile_image'],{image_url: 'profile_image/' + filename}, function(data){
+
+                });
                 
             } else if(postile.uploader.upload_path == 'post_image') {
-                //TODO a handler to handle normal user upload
+                // a handler to handle normal user upload
 
                 if (postile.router.current_view instanceof postile.view.post_board.PostBoard) {
-                    console.log(data);
-                    console.log(postile.router.current_view);
-                    postile.router.current_view.postCreator.open([filename]);
+                    postile.router.current_view.postCreator.open(['post_image/' + filename]);
                 }
                 
             }

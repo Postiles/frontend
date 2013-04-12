@@ -35,6 +35,30 @@ goog.inherits(postile.view.search_box.SearchBox, postile.view.TipView);
 
 postile.view.search_box.SearchBox.prototype.unloaded_stylesheets = ['_search_box.css'];
 
+
+postile.view.search_box.SearchBox.prototype.open = function(a, b){
+    postile.view.TipView.prototype.open.call(this,a,b);
+
+    // Change trigger button background 
+
+    this.triggerButton = a;
+    this.triggerButton.style.background = '#024d61';
+    var imgTag = goog.dom.getElementsByTagNameAndClass('img', '', this.triggerButton);
+    imgTag[0].setAttribute('src', postile.conf.imageResource(['search_icon_active.png']));   
+
+}
+
+postile.view.search_box.SearchBox.prototype.close = function(){
+    postile.view.TipView.prototype.close.call(this);
+
+    // change triggerButton's background
+    if(this.triggerButton){
+        var imgTag = goog.dom.getElementsByTagNameAndClass('img', '', this.triggerButton);
+        this.triggerButton.style.background = '#f5f5f5';
+        imgTag[0].setAttribute('src', postile.conf.imageResource(['search_icon.png']));
+    }
+}
+
 postile.view.search_box.SearchBox.prototype.search = function(instance) {
     var search_value = postile.dom.getDescendantById(this.container, "search_input_field").value;
 
