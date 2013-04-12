@@ -88,7 +88,7 @@ body {
       top: -12px; }
   #other_boards #board_list {
     max-height: 400px;
-    overflow: scroll; }
+    overflow: auto; }
     #other_boards #board_list .up_roll {
       height: 10px;
       background-color: #f2f7f7;

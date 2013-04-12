@@ -17,8 +17,9 @@ postile.router.init = function() {
  * @param {string} route the actual url to map.
  */
 postile.router.dispatch = function(route) {
-    history.pushState("Postiles", null, '/' + route);
-    postile.router.execute(route);
+    var splitted = route.split('#', 1);
+    history.pushState(splitted[1], null, '/' + route);
+    postile.router.execute(splitted[0]);
 }
 
 /**
@@ -26,7 +27,6 @@ postile.router.dispatch = function(route) {
  * @param {string} route the actual url to map.
  */
 postile.router.execute = function(route) {
-    route = route.split('#', 1)[0];
     var args = route.split('/');
     var kwd = args.shift();
     if (kwd in postile.router.map) { //route found
