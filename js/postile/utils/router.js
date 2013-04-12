@@ -20,6 +20,7 @@ postile.router.init = function() {
     goog.events.listen(postile.router.googHistoryObj, goog.history.EventType.NAVIGATE, function(e) {
         postile.router.execute(e.token);
     });
+    postile.router.execute(window.location.pathname.substr(1));
 }
 
 /**
