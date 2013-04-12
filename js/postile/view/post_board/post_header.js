@@ -85,39 +85,26 @@ postile.view.post_board.Header = function(board) {
     }
 
     // bool for if this opened
-    this.sBTip_isOpened = false;
     this.search_button = postile.dom.getDescendantById(instance.container, "search_button");
     this.sBTip = new postile.view.search_box.SearchBox(this.search_button);
     goog.events.listen(this.search_button, goog.events.EventType.CLICK, function(e) {
         e.stopPropagation();
+        console.log("sBTip");
         this.notification.close();
         this.switchBoardTip.close();
-        if(this.sBTip_isOpened){
-            this.sBTip.close();
-            this.sBTip_isOpened = false;
-        }else{
-            this.sBTip.open(search_button);
-            this.sBTip_isOpened = true;
-        }
-    }.bind(this));
+        this.sBTip.open(search_button);
+    }.bind(this), true);
 
     /* Buttons on the right up corner */
-    this.switchBoardTip_isOpened = false;
     this.switchBoardTip = new postile.view.board_more_pop.OtherBoard(this.board);
     this.switch_board_button = postile.dom.getDescendantById(instance.container, "switch_board_button");
     goog.events.listen(this.switch_board_button, goog.events.EventType.CLICK, function(e) {
         e.stopPropagation();
-        //this.iconHandler('switch_board');
+        console.log("switchBoard");
         this.notification.close();
         this.sBTip.close();
-        if(this.switchBoardTip_isOpened){
-            this.switchBoardTip.close();
-            this.switchBoardTip_isOpened = false;
-        }else{
-            this.switchBoardTip.open(switch_board_button);
-            this.switchBoardTip_isOpened = true;
-        }
-    }.bind(this));
+        this.switchBoardTip.open(switch_board_button);
+    }.bind(this), true);
 
     this.message_button = postile.dom.getDescendantById(instance.container, "message_button");
 
@@ -139,18 +126,12 @@ postile.view.post_board.Header = function(board) {
     this.notification = new postile.view.notification.Notification(this);
     goog.events.listen(this.message_button, goog.events.EventType.CLICK, function(e) {
         e.stopPropagation();
+        console.log("msgB");
         this.switchBoardTip.close();
-        this.sBTip.close();
-        if(this.notification_isOpened){
-            this.notification_isOpened = false;
-            this.notification.close();
-        }else{
-            this.notification_isOpened = true;
-            this.notification.close();
-            this.notification.open(message_button);
-            this.notificationHandlerClear();
-        }
-    }.bind(this));
+        this.sBTip.close();  
+        this.notification.open(message_button);
+        this.notificationHandlerClear();
+    }.bind(this), true);
 
     this.moreButtonPop_isOpened = false;
     this.more_button = postile.dom.getDescendantById(instance.container, "popup_button");
