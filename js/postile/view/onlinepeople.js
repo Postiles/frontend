@@ -76,7 +76,7 @@ postile.view.onlinepeople.Item.prototype.renderItem =
     this.act_container = postile.dom.getDescendantByClass(
         this.item_container,'activity');
 
-    this.name_container.innerHTML = "User name holder";
+    this.name_container.innerHTML = "User Id:"+user;
     this.act_container.innerHTML = activity_str;
 
 

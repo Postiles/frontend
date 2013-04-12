@@ -180,12 +180,12 @@ postile.faye.subscribe = function(channel, listener) {
     }
 };
 
-postile.faye.publish(channel, status, data) {
-    msg = {
+postile.faye.publish = function(channel, status, data) {
+    var msg = {
         status: status,
         msg:data
     };
-    client.publish('/faye/'+channel, msg);
+    postile.faye.client.publish('/faye/'+channel, msg);
 };
 
 postile.faye.unsubscribe = function(channel) {
