@@ -187,11 +187,6 @@ postile.view.post_board.handlers.keypress = function(instance, e) {
  * @param {string} board_id Unique identifier for a board.
  */
 postile.view.post_board.PostBoard = function(board_id) {
-    var i;
-
-    /** @deprecated Dead code */
-    var keyHandler;
-
     var instance = this;
 
     postile.view.FullScreenView.call(this);
@@ -344,16 +339,20 @@ postile.view.post_board.PostBoard = function(board_id) {
                 console.log(instance.onlinepeople.count);
                 instance.updateOnlinePeople();
             });
-            postile.faye.subscribe('status/board/'+instance.boardData.id+''
-                                   +'/user/'+instance.userData.id, function(status, data) {
+            postile.faye.subscribe('status/board/'+instance.boardData.id+'/user/'+instance.userData.id, function(status, data) {
             });
-
 
             instance.initView();
             instance.initEvents();
 
             // Initialize viewport size
             postile.view.post_board.handlers.resize(instance);
+            
+            // Get to the post, if set in URL
+            var new_post = parseInt(window.location.hash.substr(1));
+            if (new_post) {
+                instance.moveToPost(new_post);
+            }
         });
     });
 }
