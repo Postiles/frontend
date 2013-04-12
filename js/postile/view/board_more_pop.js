@@ -125,8 +125,7 @@ postile.view.board_more_pop.OtherBoard.prototype.renderBoardListItem = function(
     goog.dom.appendChild(this.boardList, this.listedBoard);
 
     goog.events.listen(this.listedBoard, goog.events.EventType.CLICK, function(){
-        console.log("try to redirect");
-        window.location="/test/" + nextBoardId + "/" + postile.conf.dport;
+        postile.router.dispatch('board/' + nextBoardId);
     });
 
     this.listedTitle = goog.dom.createDom('h3', 'board_title', boardName);

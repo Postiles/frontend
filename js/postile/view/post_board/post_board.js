@@ -991,7 +991,6 @@ postile.view.post_board.FunctionButton = function(dom) { // constructor
     this.id = this.body_el.id;
 
     goog.events.listen(this.body_el, goog.events.EventType.CLICK, function(e) {
-        log(this);
         this.open();
     }.bind(this));
 }
