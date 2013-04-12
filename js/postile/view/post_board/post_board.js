@@ -338,18 +338,16 @@ postile.view.post_board.PostBoard = function(board_id) {
                 instance.fayeHandler(status, data);
             });
             postile.faye.subscribe('status/'+instance.boardData.id, function(status, data){
-                if(status == "online"){
-                    console.log("new online");
-                    //console.log(instance.onlinepeople.count);
-                }
-                if(status == "offline") {
-                    console.log("new offline");
-                }
+                console.log(data.users);
                 instance.onlinepeople.count = data.count;
+                instance.onlinepeople.id = data.users;
                 console.log(instance.onlinepeople.count);
-                instance.updateOnlineCount();
-
+                instance.updateOnlinePeople();
             });
+            postile.faye.subscribe('status/board/'+instance.boardData.id+''
+                                   +'/user/'+instance.userData.id, function(status, data) {
+            });
+
 
             instance.initView();
             instance.initEvents();
@@ -914,7 +912,7 @@ postile.view.post_board.PostBoard.prototype.fayeHandler = function(status, data)
     }
 }
 
-postile.view.post_board.PostBoard.prototype.updateOnlineCount = function() {
+postile.view.post_board.PostBoard.prototype.updateOnlinePeople = function() {
     var thecount = this.onlinepeople.count;
     console.log("Count:"+thecount);
     console.log(this.onlinepeople.view.container);
@@ -922,7 +920,15 @@ postile.view.post_board.PostBoard.prototype.updateOnlineCount = function() {
         ,'count');
     console.log(count_container);
     count_container.innerHTML = thecount;
-
+    var online_list = this.onlinepeople.view.online_list;
+    online_list.innerHTML="";
+    console.log('haha');
+    console.log(this.onlinepeople.id.users);
+    for(var i = 0; i < this.onlinepeople.id.users.length; i++) {
+        console.log("rendering item");
+        var item = new postile.view.onlinepeople.Item();
+        item.renderItem(this.onlinepeople.view,"Testing ", "haha", this.onlinepeople.id.users[i]);
+    }
 }
 
 postile.view.post_board.PostBoard.prototype.createPost = function(info) {
