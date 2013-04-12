@@ -3,14 +3,14 @@
   line-height: 100%;
   position: fixed !important;
   top: 46px !important;
-  right: 38px !important;
+  right: 45px !important;
   z-index: 200;
 }
 
 #search_box_arrow {
   position: absolute;
   top: -9px;
-  left: 268px;
+  left: 275px;
   width: 0;
   height: 0;
   border-left: 10px solid transparent;
@@ -20,7 +20,7 @@
 
 #search_box_arrow_back {
   position: absolute;
-  left: 266px;
+  left: 274px;
   top: -13px;
   width: 0;
   height: 0;
@@ -32,7 +32,7 @@
 #search_box_container {
   width: 300px;
   background: #024d61;
-  box-shadow: 3px 3px 20px 1px #888888;
+  box-shadow: 3px 3px 10px 1px #888888;
 }
 
 #search_bar {

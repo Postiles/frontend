@@ -19,7 +19,6 @@ postile.view.profile.ProfileView = function(id) { // constructor
         this.initItems();
 
         this.addCloseButton(this.profile_el);
-
         this.open(710);
     }.bind(this));
 }
@@ -53,6 +52,7 @@ postile.view.profile.ProfileView.prototype.initItems = function() {
     this.pictureImg_el = goog.dom.getElementsByTagNameAndClass('img', null, this.picture_el)[0];
     this.pictureImg_el.src = postile.conf.uploadsResource([ this.userData.image_url ]);
 
+
     this.name_el = goog.dom.getElementByClass('name', this.container);
     this.name_el.innerHTML = this.userData.first_name + ' ' + this.userData.last_name;
 
@@ -77,8 +77,11 @@ postile.view.profile.ProfileView.prototype.initItems = function() {
         this.pictureEdit_el.innerHTML = 'Edit Profile Picture';
         goog.dom.appendChild(this.picture_el, this.pictureEdit_el);
 
+        this.imageUploadPop = new postile.view.image_upload.ImageUploadBlock(this);
         goog.events.listen(this.pictureEdit_el, goog.events.EventType.CLICK, function(e) {
             // this.mask.style.display = 'hidden';
+            postile.uploader.upload_path = 'profile_image';
+            this.imageUploadPop.open(this);
         }.bind(this));
 
         this.signitureEdit_el = goog.dom.createDom('span', 'edit');
@@ -144,6 +147,10 @@ postile.view.profile.ProfileView.prototype.initItems = function() {
     for (i in this.profileItems) {
         new postile.view.profile.ProfileItem(this.profileItems[i], this);
     }
+}
+
+postile.view.profile.ProfileView.prototype.changePicture = function(image_link){
+    this.pictureImg_el.src = postile.conf.uploadsResource([ this.userData.image_url ]);
 }
 
 postile.view.profile.ProfileView.prototype.isSelfProfile = function() {
