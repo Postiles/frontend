@@ -73,7 +73,7 @@ postile.view.post_board.Header = function(board) {
     message_icon_active.src = postile.conf.imageResource(['message_icon_active.png']);
 
 
-    this.alert_wrapper = goog.dom.createDom('div', 'notificatoin_number_wrapper');
+    this.alert_wrapper = goog.dom.createDom('div', 'notification_number_wrapper');
     goog.dom.appendChild(this.container, this.alert_wrapper);
 
     this.redCircle = goog.dom.createDom('div', 'notification_redCircle');

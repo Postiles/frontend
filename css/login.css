@@ -60,10 +60,6 @@ html, body {
   position: absolute;
   border: 3px solid #eaeaea;
   border-radius: 3px;
-  -moz-border-radius: 3px;
-  -o-border-radius: 3px;
-  -ms-border-radius: 3px;
-  -webkit-border-radius: 3px;
 }
 
 #page-1 {
@@ -120,10 +116,6 @@ html, body {
   background: rgba(2, 77, 97, 0.53);
   z-index: -1;
   border-radius: 8px;
-  -moz-border-radius: 8px;
-  -o-border-radius: 8px;
-  -ms-border-radius: 8px;
-  -webkit-border-radius: 8px;
   color: #eaeaea;
   text-align: center;
   cursor: pointer;
@@ -165,15 +157,7 @@ html, body {
   padding: 20px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.8);
   border-top-right-radius: 10px;
-  -moz-border-top-right-radius: 10px;
-  -o-border-top-right-radius: 10px;
-  -ms-border-top-right-radius: 10px;
-  -webkit-border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
-  -moz-border-bottom-right-radius: 10px;
-  -o-border-bottom-right-radius: 10px;
-  -ms-border-bottom-right-radius: 10px;
-  -webkit-border-bottom-right-radius: 10px;
 }
 
 #login-form-container .text-container {
@@ -225,10 +209,6 @@ html, body {
   outline: none;
   font-family: RobotoRegular;
   border-radius: 3px;
-  -moz-border-radius: 3px;
-  -o-border-radius: 3px;
-  -ms-border-radius: 3px;
-  -webkit-border-radius: 3px;
   box-shadow: inset 0px 0px 8px #666666;
   transition: box-shadow 0.3s;
   -moz-transition: box-shadow 0.3s;
@@ -294,10 +274,6 @@ html, body {
   background: #024d61;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.4), 0px 0px 150px #ffc873;
   border-radius: 60px;
-  -moz-border-radius: 60px;
-  -o-border-radius: 60px;
-  -ms-border-radius: 60px;
-  -webkit-border-radius: 60px;
   transition: box-shadow 0.4s;
   -moz-transition: box-shadow 0.4s;
   -o-transition: box-shadow 0.4s;
@@ -317,10 +293,6 @@ html, body {
   top: 10px;
   background: #024d61;
   border-radius: 50px;
-  -moz-border-radius: 50px;
-  -o-border-radius: 50px;
-  -ms-border-radius: 50px;
-  -webkit-border-radius: 50px;
   transition: background 0.4s;
   -moz-transition: background 0.4s;
   -o-transition: background 0.4s;
@@ -371,15 +343,7 @@ html, body {
   padding: 10px;
   z-index: -2;
   border-bottom-left-radius: 6px;
-  -moz-border-bottom-left-radius: 6px;
-  -o-border-bottom-left-radius: 6px;
-  -ms-border-bottom-left-radius: 6px;
-  -webkit-border-bottom-left-radius: 6px;
   border-bottom-right-radius: 6px;
-  -moz-border-bottom-right-radius: 6px;
-  -o-border-bottom-right-radius: 6px;
-  -ms-border-bottom-right-radius: 6px;
-  -webkit-border-bottom-right-radius: 6px;
   transition: top 0.5s;
   -moz-transition: top 0.5s;
   -o-transition: top 0.5s;
@@ -427,10 +391,6 @@ html, body {
   color: #024d61;
   font-family: RobotoRegular;
   border-radius: 3px;
-  -moz-border-radius: 3px;
-  -o-border-radius: 3px;
-  -ms-border-radius: 3px;
-  -webkit-border-radius: 3px;
   box-shadow: inset 0px 0px 8px #666666;
   transition: box-shadow 0.3s;
   -moz-transition: box-shadow 0.3s;

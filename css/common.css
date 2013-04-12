@@ -42,7 +42,6 @@ MIC: postile.view
     /* IE9 SVG, needs conditional override of 'filter' to 'none' */
     background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPHJhZGlhbEdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgY3g9IjUwJSIgY3k9IjUwJSIgcj0iNzUlIj4KICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiMwMDAwMDAiIHN0b3Atb3BhY2l0eT0iMC4zIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMwMDAwMDAiIHN0b3Atb3BhY2l0eT0iMC43NSIvPgogIDwvcmFkaWFsR3JhZGllbnQ+CiAgPHJlY3QgeD0iLTUwIiB5PSItNTAiIHdpZHRoPSIxMDEiIGhlaWdodD0iMTAxIiBmaWxsPSJ1cmwoI2dyYWQtdWNnZy1nZW5lcmF0ZWQpIiAvPgo8L3N2Zz4=);
     background: -moz-radial-gradient(center, ellipse cover, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.75) 100%); /* FF3.6+ */
-    background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgba(0,0,0,0.3)), color-stop(100%,rgba(0,0,0,0.75))); /* Chrome,Safari4+ */
     background: -webkit-radial-gradient(center, ellipse cover, rgba(0,0,0,0.3) 0%,rgba(0,0,0,0.75) 100%); /* Chrome10+,Safari5.1+ */
     background: -o-radial-gradient(center, ellipse cover, rgba(0,0,0,0.3) 0%,rgba(0,0,0,0.75) 100%); /* Opera 12+ */
     background: -ms-radial-gradient(center, ellipse cover, rgba(0,0,0,0.3) 0%,rgba(0,0,0,0.75) 100%); /* IE10+ */

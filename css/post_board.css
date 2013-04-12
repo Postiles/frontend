@@ -25,10 +25,6 @@ html, body {
   height: 60px;
   background: #024d61;
   border-radius: 5px;
-  -webkit-border-radius: 5px;
-  -moz-radius: 5px;
-  -o-radius: 5px;
-  -ms-radius: 5px;
 }
 
 #topic_image_container img {
@@ -82,10 +78,6 @@ html, body {
   background: #024d61;
   cursor: pointer;
   border-radius: 5px;
-  -webkit-border-radius: 5px;
-  -moz-radius: 5px;
-  -o-radius: 5px;
-  -ms-radius: 5px;
 }
 
 #profile_image_container img {
@@ -165,15 +157,13 @@ html, body {
 }
 
 
-.notificatoin_number_wrapper {
+.notification_number_wrapper {
   width: 12px;
   height: 12px;
   position: absolute;
   top: 7px !important;
   right: 83px !important;
   left: auto !important;
-  -webkit-border-radius: 10px; 
-  -moz-border-radius: 10px;
   border-radius: 10px;
   background: #fff;
   display:none;
@@ -184,8 +174,6 @@ html, body {
   left: 1px;
   width: 10px;
   height: 10px;
-  -webkit-border-radius: 10px; 
-  -moz-border-radius: 10px;
   border-radius: 10px;
   background: #f00;
   text-align: center;
@@ -276,7 +264,6 @@ html, body {
 }
 
 .picture_post .post_inner_container {
-  /* background: -webkit-linear-gradient(top, rgba(0,0,0,0.5) 0%,rgba(0,0,0,0.5) 50%,rgba(0,0,0,0.2) 100%); */
   background: rgba(0, 0, 0, 0.5);
 }
 
@@ -600,6 +587,8 @@ html, body {
   width: 100%;
   height: 100%;
   overflow: hidden;
+  user-select: none;
+  -moz-user-select: none;
   -webkit-user-select: none;
   position: relative; 
 }
@@ -623,6 +612,8 @@ html, body {
 }
 
 .selectable {
+  user-select: text;
+  -moz-user-select: text;
   -webkit-user-select: text; }
 
 /*Mask */
@@ -653,6 +644,10 @@ html, body {
   box-shadow: inset 0 0 3px 1px rgba(2, 77, 97, 0.8);
   box-sizing: border-box;
   z-index: 100;
+  transition-duration: 0.3s;
+  transition-property: left, top, width, height;
+  -moz-transition-duration: 0.3s;
+  -moz-transition-property: left, top, width, height;
   -webkit-transition-duration: 0.3s;
   -webkit-transition-property: left, top, width, height;
   display: none; }
