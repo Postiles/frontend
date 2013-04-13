@@ -366,7 +366,7 @@ goog.inherits(postile.view.post_board.PostBoard, postile.view.FullScreenView);
  * "Postile.view.View required component."
  * @override
  */
-postile.view.post_board.PostBoard.prototype.unloaded_stylesheets = ['fonts.css', 'post_board.css', '_post_in_board.css'];
+postile.view.post_board.PostBoard.prototype.unloaded_stylesheets = ['post_board.css', '_post_in_board.css'];
 
 /**
  * @type {string}

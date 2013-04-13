@@ -22,7 +22,7 @@ postile.view.login.LoginView = function() { //constructor
 
 goog.inherits(postile.view.login.LoginView, postile.view.FullScreenView);
 
-postile.view.login.LoginView.prototype.unloaded_stylesheets = ['fonts.css', 'login.css'];
+postile.view.login.LoginView.prototype.unloaded_stylesheets = ['login.css'];
 
 postile.view.login.LoginView.prototype.html_segment = postile.conf.staticResource(['login.html']);
 

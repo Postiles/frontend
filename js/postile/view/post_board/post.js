@@ -271,10 +271,23 @@ postile.view.post.Post.prototype.eventHandlers = {
     },
     commentKeyDown: function(e) {
         if (e.keyCode == 13) { // enter pressed
-            var content = this.commentModeElements.commentInput_el.value;
-            if (content) {
-                // TODO: submit inline comment
-            }
+           var content = goog.string.trim(this.commentModeElements.commentInput_el.value);
+           if (content.length) {
+                postile.ajax([ 'inline_comment', 'new' ], {
+                    post_id: this.postData.post.id,
+                    content: content,
+                }, function(data) {
+                    var comment = data.message;
+                    // add the new comment to list
+                    this.postData.inline_comments.push(comment);
+                    new postile.view.post.InlineComment(this.commentModeElements.commentItems_el, comment);
+
+                    // scroll the comment list to the bottom
+                    this.commentModeElements.commentList_el.scrollTop = this.commentModeElements.commentList_el.scrollHeight;
+                    this.commentModeElements.commentContainerNoComment_el.style.display = 'none';
+                }.bind(this));
+                this.commentModeElements.commentInput_el.value = ''; // clear the input field
+           }
         }
     },
     postTitleKeyDown: function(e) {
@@ -510,6 +523,7 @@ postile.view.post.Post.prototype.enterCommentMode = function() {
     elements.postAuthor_el.innerHTML = this.postData.creator.username;
     elements.commentContainer_el.style.height = 
             this.wrap_el.offsetHeight - elements.postInnerContainer_el.offsetHeight + 'px';
+    elements.commentList_el.style.height = parseInt(elements.commentContainer_el.style.height) - 34 + 'px'
     elements.commentInput_el.style.width = 
             this.wrap_el.offsetWidth - 60 + 'px';
 
@@ -518,8 +532,12 @@ postile.view.post.Post.prototype.enterCommentMode = function() {
     }
 
     var comments = this.postData.inline_comments;
+    goog.dom.removeChildren(elements.commentItems_el);
     if (comments.length > 0) {
         elements.commentContainerNoComment_el.style.display = 'none';
+        for (var i in comments) {
+            new postile.view.post.InlineComment(elements.commentItems_el, comments[i]);
+        }
     } else { // no comment
         for (var i in comments) {
             // TODO
@@ -610,4 +628,40 @@ postile.view.post.Post.prototype.enterConfirmDeleteMode = function() {
 
 postile.view.post.Post.prototype.isSelfPost = function() {
     return postile.conf.currentUserId == this.postData.post.creator_id;
+}
+
+postile.view.post.InlineComment = function(icb, single_comment_data) {
+    this.comment_container = goog.dom.createDom("div", "post_comment");
+
+    postile.data_manager.getUserData(single_comment_data.inline_comment.creator_id, function(data) {
+        this.name_content_container_el = goog.dom.createDom('div', 'name_content_container');
+        goog.dom.appendChild(this.comment_container, this.name_content_container_el);
+
+        this.name_el = goog.dom.createDom("span", "comment_name");
+        this.name_el.innerHTML = data.username;
+        goog.dom.appendChild(this.name_content_container_el, this.name_el);
+
+        this.middle_el = goog.dom.createDom('span', 'comment_middle');
+        this.middle_el.innerHTML = ':&nbsp;';
+        goog.dom.appendChild(this.name_content_container_el, this.middle_el);
+
+        this.content_el = goog.dom.createDom("span", "comment_content");
+        this.content_el.innerHTML = single_comment_data.inline_comment.content.replace(/ @(\d+)/g, '<span class="at_person" at-person="$1">@[Username pending]</span>');
+        goog.dom.appendChild(this.name_content_container_el, this.content_el);
+
+        this.time_el = goog.dom.createDom("span", "comment_time");
+        this.time_el.innerHTML = postile.date(single_comment_data.inline_comment.created_at, 'inline');
+        goog.dom.appendChild(this.comment_container, this.time_el);
+
+        var all_atp = postile.dom.getDescendantsByCondition(this.content_el, function(el) {
+            return el.tagName && el.tagName.toUpperCase() == 'SPAN' && el.className == 'at_person';
+        });
+
+        for (var i in all_atp) {
+            fetchUsername(all_atp[i]);
+        }
+
+        goog.dom.appendChild(icb, this.comment_container);
+
+    }.bind(this));
 }
