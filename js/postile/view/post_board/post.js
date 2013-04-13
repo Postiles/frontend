@@ -422,7 +422,6 @@ postile.view.post.Post.prototype.enterDisplayMode = function() {
     this.newModePost_el.style.display = 'none';
     this.confirmDeleteModePost_el.style.display = 'none';
 
-
     var elements = this.displayModeElements;
     elements.postTitle_el.innerHTML = this.postData.post.title;
     elements.postLikeCount_el.innerHTML = this.postData.likes.length;
