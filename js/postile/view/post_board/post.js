@@ -462,7 +462,7 @@ postile.view.post.Post.prototype.enterDisplayMode = function() {
     postile.data_manager.getUserData(this.postData.post.creator_id, function(data) {
         this.postData.creator = data;
         elements.postAuthor_el.innerHTML = data.username;
-        console.log(this.wrap_el.offsetWidth - elements.postAuthor_el.offsetWidth - 26 + 'px');
+
         elements.postTitle_el.style.width = this.wrap_el.offsetWidth - 
                 elements.postAuthor_el.offsetWidth - 40 + 'px';
     }.bind(this));
@@ -520,7 +520,15 @@ postile.view.post.Post.prototype.enterCommentMode = function() {
 
     var elements = this.commentModeElements;
     elements.postTitle_el.innerHTML = this.postData.post.title;
-    elements.postAuthor_el.innerHTML = this.postData.creator.username;
+
+    postile.data_manager.getUserData(this.postData.post.creator_id, function(data) {
+        this.postData.creator = data;
+
+        elements.postAuthor_el.innerHTML = this.postData.creator.username;
+        elements.postTitle_el.style.width = this.wrap_el.offsetWidth - 
+                elements.postAuthor_el.offsetWidth - 40 + 'px';
+    }.bind(this));
+
     elements.commentContainer_el.style.height = 
             this.wrap_el.offsetHeight - elements.postInnerContainer_el.offsetHeight + 'px';
     elements.commentList_el.style.height = parseInt(elements.commentContainer_el.style.height) - 34 + 'px'
