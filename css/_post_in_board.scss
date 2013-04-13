@@ -118,6 +118,9 @@
     .locked_mode_post {
         position: absolute;
         top: 0;
+        background: whitesmoke;
+        opacity: 0.8;
+
         .lock_display {
             color: #024d61;
             text-align: center;
@@ -147,6 +150,35 @@
                 &:hover {
                     text-decoration: underline;
                 }
+            }
+        }
+    }
+
+    .confirm_delete_mode_post {
+        position: absolute;
+        top: 0;
+        background: whitesmoke;
+        opacity: 0.8;
+
+        .confirm_display {
+            color: #024d61;
+            text-align: center;
+            margin-top: 30px;
+
+            .confirm_item {
+                cursor: pointer;
+                color: #537cbe;
+                padding: 0px 5px;
+
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
+
+            .confirm_ok {
+            }
+
+            .confirm_cancel {
             }
         }
     }
@@ -241,12 +273,12 @@
         cursor: pointer;
         margin-right: 8px;
         width: 13px;
-        height: 13px;
+        bottom: 13px;
         background-repeat: no-repeat;
         position: relative;
         background-position: center; }
 
-    .post_remove_icon {
+    .post_delete_icon {
         background-image: url("../images/new_delete.png");
         position: absolute;
         width: 20px;
