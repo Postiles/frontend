@@ -3,6 +3,9 @@ goog.provide('postile.view.post_board.mask');
 goog.require('goog.events');
 goog.require('goog.dom');
 
+postile.view.post_board.MIN_SIZE = 2;
+postile.view.post_board.MAX_SIZE = 4;
+
 postile.view.post_board.PostCreator = function(post_board_obj) {
     var instance = this;
     this.board = post_board_obj;
@@ -137,7 +140,7 @@ postile.view.post_board.PostCreator.prototype.mousemove = function(e) {
     this.preview.style.width = this.board.widthTo(this.position.span_x) + 'px';
     this.preview.style.height = this.board.heightTo(this.position.span_y) + 'px';
 
-    this.legal = (!intersect) && this.position.span_x > 1 && this.position.span_y > 1;
+    this.legal = (!intersect) && this.position.span_x >= postile.view.post_board.MIN_SIZE && this.position.span_y >= postile.view.post_board.MIN_SIZE && this.position.span_x <= postile.view.post_board.MAX_SIZE && this.position.span_y <= postile.view.post_board.MAX_SIZE;
 
     if (!this.imageMode) {
         this.preview.style.backgroundColor = this.legal ? '#e4eee4': '#f4dcdc';
