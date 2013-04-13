@@ -51,5 +51,6 @@ postile.view.post.picture_post.PicturePost.prototype.submitChange = function() {
             function(data) {
                 this.postData.post.title = title;
                 this.enterDisplayMode();
+                this.board.disableMovingCanvas = false;
             }.bind(this));
 }

@@ -51,5 +51,6 @@ postile.view.post.text_post.TextPost.prototype.submitChange = function() {
                 this.postData.post.title = title;
                 this.postData.post.content = content;
                 this.enterDisplayMode();
+                this.board.disableMovingCanvas = false;
             }.bind(this));
 }

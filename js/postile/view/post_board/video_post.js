@@ -60,5 +60,6 @@ postile.view.post.video_post.VideoPost.prototype.submitChange = function() {
             function(data) {
                 this.postData.post.title = title;
                 this.enterDisplayMode();
+                this.board.disableMovingCanvas = false;
             }.bind(this));
 }

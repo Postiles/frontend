@@ -520,6 +520,8 @@ postile.view.post.Post.prototype.enterEditMode = function(req) {
         return;
     }
 
+    this.board.disableMovingCanvas = true;
+
     this.currMode = postile.view.post.Post.PostMode.EDIT;
 
     this.editModePost_el.style.display = '';
