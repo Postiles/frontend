@@ -495,8 +495,11 @@ postile.view.post_board.PostBoard.prototype.bindMouseEvents = function() {
 
     //    this.rel_data.moveCanvas(dx / 2 / length * this.offsetWidth, dy / 2 / length * this.offsetHeight);
     //});
-    //goog.events.listen(this.canvas, goog.events.EventType.DBLCLICK,
-    //        function(){ instance.postCreator.open(); });
+
+    goog.events.listen(this.canvas, goog.events.EventType.DBLCLICK, function(){
+        if (instance.disableMovingCanvas) { return; }
+        instance.postCreator.open();
+    });
 };
 
 /**

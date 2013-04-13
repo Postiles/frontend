@@ -91,6 +91,8 @@ postile.view.post_board.MouseMoveScroll.prototype.viewport_mouseup = function(e)
             });
     }
 
+    //disabled due to issue fucking 12
+    /*
     //update display status of dirction control arrows
     if (this.shadowCoord[1] <= 0) { 
         post_board.direction_controllers['up'].style.display = 'block'; 
@@ -107,6 +109,7 @@ postile.view.post_board.MouseMoveScroll.prototype.viewport_mouseup = function(e)
     if (this.shadowCoord[0] <= 0) {
         post_board.direction_controllers['left'].style.display = 'block';
     }
+    */
 
     //update subscribe area
     post_board.updateSubscribeArea();
