@@ -276,7 +276,7 @@ postile.view.post.Post.prototype.eventHandlers = {
             this.submitChange();
         }
     },
-    confirmDelete: function() {
+    okDelete: function() {
         var id = this.postData.post.id;
         postile.ajax(['post','delete'], { post_id: id }, function(data) {
             this.board.removePost(id);
@@ -398,7 +398,7 @@ postile.view.post.Post.prototype.initConfirmDeleteModeListener = function() {
         // ok clicked
         confirmOk: new postile.events.EventHandler(
                 elements.confirmOk_el, goog.events.EventType.CLICK,
-                this.eventHandlers.confirmDelete.bind(this)),
+                this.eventHandlers.okDelete.bind(this)),
         // cancel clicked
         confirmCancel: new postile.events.EventHandler(
                 elements.confirmCancel_el, goog.events.EventType.CLICK,

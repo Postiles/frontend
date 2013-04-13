@@ -916,7 +916,7 @@ postile.view.post_board.PostBoard.prototype.fayeHandler = function(status, data)
         // Someone (could be this user) deleted a post.
         if (data.post.id in this.currentPosts) {
             // If that post is loaded: remove it from the view.
-            this.currentPosts[data.post.id].removeFromBoard();
+            this.removePost(data.post.id);
         }
         break;
     case postile.view.post_board.faye_status.INLINE_COMMENT:
