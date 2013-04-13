@@ -74,21 +74,25 @@
     .post_wrap .locked_mode_post .lock_display {
       color: #024d61;
       text-align: center;
-      margin-top: 30px; }
+      position: relative;
+      top: 30px; }
       .post_wrap .locked_mode_post .lock_display .lock_username {
         cursor: pointer;
         color: #537cbe; }
         .post_wrap .locked_mode_post .lock_display .lock_username:hover {
           text-decoration: underline; }
-  .post_wrap .new_mode_post .new_display {
-    color: #024d61;
-    text-align: center;
-    margin-top: 30px; }
-    .post_wrap .new_mode_post .new_display .new_username {
-      cursor: pointer;
-      color: #537cbe; }
-      .post_wrap .new_mode_post .new_display .new_username:hover {
-        text-decoration: underline; }
+  .post_wrap .new_mode_post {
+    background: whitesmoke; }
+    .post_wrap .new_mode_post .new_display {
+      color: #024d61;
+      text-align: center;
+      position: relative;
+      top: 30px; }
+      .post_wrap .new_mode_post .new_display .new_username {
+        cursor: pointer;
+        color: #537cbe; }
+        .post_wrap .new_mode_post .new_display .new_username:hover {
+          text-decoration: underline; }
   .post_wrap .confirm_delete_mode_post {
     position: absolute;
     top: 0;
@@ -97,7 +101,8 @@
     .post_wrap .confirm_delete_mode_post .confirm_display {
       color: #024d61;
       text-align: center;
-      margin-top: 30px; }
+      position: relative;
+      top: 30px; }
       .post_wrap .confirm_delete_mode_post .confirm_display .confirm_item {
         cursor: pointer;
         color: #537cbe;
@@ -113,18 +118,12 @@
   overflow: hidden; }
   .post_container .post_inner_container {
     padding: 6px 12px; }
-  .post_container .picture_post .post_inner_container {
-    background: rgba(0, 0, 0, 0.5); }
   .post_container .video_post .video_iframe {
     width: 100%; }
   .post_container .post_top {
     height: 18px;
     color: #024d61;
     font-size: 10pt; }
-  .post_container .picture_post .post_top {
-    color: whitesmoke; }
-  .post_container .picture_post .post_like_container {
-    color: whitesmoke; }
   .post_container .post_title_container {
     float: left;
     white-space: nowrap;
@@ -200,10 +199,10 @@
   background-size: cover; }
   .picture_post .post_inner_container {
     background: rgba(0, 0, 0, 0.5); }
-    .picture_post .post_inner_container .post_title_container {
-      color: whitesmoke; }
+    .picture_post .post_inner_container .post_title {
+      color: whitesmoke !important; }
     .picture_post .post_inner_container .post_author {
-      color: whitesmoke; }
+      color: whitesmoke !important; }
     .picture_post .post_inner_container .post_like_container {
       color: whitesmoke; }
     .picture_post .post_inner_container .post_content {

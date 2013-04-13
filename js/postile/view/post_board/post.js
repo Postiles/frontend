@@ -78,7 +78,9 @@ postile.view.post.Post.prototype.changeCurrentMode = function(mode) {
         this.enterCommentMode();
         break;
     case postile.view.post.Post.PostMode.EDIT:
-        this.enterEditMode(true);
+        postile.ajax([ 'post', 'start_edit' ], { post_id: this.postData.post.id }, function(data) {
+            this.enterEditMode(true);
+        }.bind(this));
         break;
     case postile.view.post.Post.PostMode.LOCKED:
         this.enterLockedMode();
@@ -246,22 +248,22 @@ postile.view.post.Post.prototype.eventHandlers = {
         var profileView = new postile.view.profile.ProfileView(this.postData.creator.id);
     },
     displayMode: function() {
-        this.enterDisplayMode();
+        this.changeCurrentMode(postile.view.post.Post.PostMode.DISPLAY);
     },
     commentMode: function() {
-        this.enterCommentMode();
+        this.changeCurrentMode(postile.view.post.Post.PostMode.COMMENT);
     },
     editMode: function() {
-        this.enterEditMode(true);
+        this.changeCurrentMode(postile.view.post.Post.PostMode.EDIT);
     },
     lockedMode: function() {
-        this.enterLockedMode();
+        this.changeCurrentMode(postile.view.post.Post.PostMode.LOCKED);
     },
     newMode: function() {
-        this.enterNewMode();
+        this.changeCurrentMode(postile.view.post.Post.PostMode.NEW);
     },
     confirmDeleteMode: function() {
-        this.enterConfirmDeleteMode();
+        this.changeCurrentMode(postile.view.post.Post.PostMode.CONFIRM_DELETE);
     },
     commentKeyDown: function(e) {
         if (e.keyCode == 13) { // enter pressed
@@ -517,36 +519,22 @@ postile.view.post.Post.prototype.enterEditMode = function(req) {
         return;
     }
 
+    this.currMode = postile.view.post.Post.PostMode.EDIT;
+
+    this.editModePost_el.style.display = '';
+
+    this.displayModePost_el.style.display = 'none';
+    this.commentModePost_el.style.display = 'none';
+    this.lockedModePost_el.style.display = 'none';
+    this.newModePost_el.style.display = 'none';
+    this.confirmDeleteModePost_el.style.display = 'none';
+
+    var elements = this.editModeElements;
+    elements.postTitle_el.style.width = this.wrap_el.offsetWidth - 26 + 'px';
+
     if (req) {
-        postile.ajax([ 'post', 'start_edit' ], { post_id: this.postData.post.id }, function(data) {
-            this.currMode = postile.view.post.Post.PostMode.EDIT;
-
-            this.editModePost_el.style.display = '';
-
-            this.displayModePost_el.style.display = 'none';
-            this.commentModePost_el.style.display = 'none';
-            this.lockedModePost_el.style.display = 'none';
-            this.newModePost_el.style.display = 'none';
-            this.confirmDeleteModePost_el.style.display = 'none';
-
-            var elements = this.editModeElements;
-
-            elements.postTitle_el.innerHTML = this.postData.post.title;
-            elements.postTitle_el.style.width = this.wrap_el.offsetWidth - 26 + 'px';
-        }.bind(this));
+        elements.postTitle_el.innerHTML = this.postData.post.title;
     } else {
-        this.currMode = postile.view.post.Post.PostMode.EDIT;
-
-        this.editModePost_el.style.display = '';
-
-        this.displayModePost_el.style.display = 'none';
-        this.commentModePost_el.style.display = 'none';
-        this.lockedModePost_el.style.display = 'none';
-        this.newModePost_el.style.display = 'none';
-        this.confirmDeleteModePost_el.style.display = 'none';
-
-        var elements = this.editModeElements;
-
         elements.deleteIcon_el.style.display = '';
     }
 }
@@ -580,7 +568,6 @@ postile.view.post.Post.prototype.enterNewMode = function() {
     this.editModePost_el.style.display = 'none';
     this.lockedModePost_el.style.display = 'none';
     this.confirmDeleteModePost_el.style.display = 'none';
-
 
     var elements = this.newModeElements;
 

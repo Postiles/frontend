@@ -6,6 +6,9 @@ postile.view.post.picture_post.PicturePost = function(postData, board, mode) {
     goog.base(this, postData, board, mode);
 
     goog.dom.classes.add(this.wrap_el, 'picture_post');
+
+    this.wrap_el.style.backgroundImage = 'url(' 
+            + postile.conf.uploadsResource([this.postData.post.image_url]) + ')';
 }
 
 goog.inherits(postile.view.post.picture_post.PicturePost, postile.view.post.Post);
@@ -14,9 +17,6 @@ postile.view.post.picture_post.PicturePost.prototype.enterDisplayMode = function
     goog.base(this, 'enterDisplayMode');
 
     var elements = this.displayModeElements;
-
-    this.wrap_el.style.backgroundImage = 'url(' 
-            + postile.conf.uploadsResource([this.postData.post.image_url]) + ')';
 }
 
 postile.view.post.picture_post.PicturePost.prototype.enterEditMode = function(req) {

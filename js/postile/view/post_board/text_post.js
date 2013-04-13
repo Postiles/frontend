@@ -23,9 +23,12 @@ postile.view.post.text_post.TextPost.prototype.enterEditMode = function(req) {
 
     var elements = this.editModeElements;
 
-    elements.postContent_el.innerHTML = this.postData.post.content;
-    elements.postContent_el.style.cursor = 'auto';
     elements.postContent_el.focus();
+    elements.postContent_el.style.cursor = 'auto';
+
+    if (req) {
+        elements.postContent_el.innerHTML = this.postData.post.content;
+    }
 }
 
 postile.view.post.text_post.TextPost.prototype.submitChange = function() {

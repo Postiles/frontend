@@ -872,7 +872,7 @@ postile.view.post_board.PostBoard.prototype.renderPost = function(postData, mode
         this.currentPosts[postId] = postile.view.post.createPostFromJSON(postData, this, mode);
     }
 
-    if (postData.post.in_edit) {
+    if (postData.post.in_edit && mode != postile.view.post.Post.PostMode.NEW) {
         if (!this.currentPosts[postId].isSelfPost()) {
             this.currentPosts[postId].changeCurrentMode(postile.view.post.Post.PostMode.LOCKED);
         }
@@ -986,9 +986,7 @@ postile.view.post_board.PostBoard.prototype.createImagePost = function(info, ima
     req.board_id = this.board_id;
 
     postile.ajax(['post', 'new'], req, function(data) {
-        instance.renderArray([ { post: data.message.post, creator: data.message.creator} ]);
-        instance.currentPosts[data.message.post.id].edit("title");
-        //postile.ajax(['post','submit_change'], {post_id: data.message.post.post_id},function(data){console.log(data);});
+        instance.renderPost(data.message, postile.view.post.Post.PostMode.EDIT);
     });
 }
 
@@ -1001,8 +999,7 @@ postile.view.post_board.PostBoard.prototype.createVideoPost = function(info, vid
     req.board_id = this.board_id;
 
     postile.ajax(['post', 'new'], req, function(data) {
-        instance.renderArray([ { post: data.message.post, creator: data.message.creator} ]);
-        instance.currentPosts[data.message.post.id].edit("title");
+        instance.renderPost(data.message, postile.view.post.Post.PostMode.EDIT);
     });
 }
 

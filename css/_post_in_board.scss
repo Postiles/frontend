@@ -124,7 +124,8 @@
         .lock_display {
             color: #024d61;
             text-align: center;
-            margin-top: 30px;
+            position: relative;
+            top: 30px;
 
             .lock_username {
                 cursor: pointer;
@@ -138,10 +139,13 @@
     }
 
     .new_mode_post {
+        background: whitesmoke;
+
         .new_display {
             color: #024d61;
             text-align: center;
-            margin-top: 30px;
+            position: relative;
+            top: 30px;
 
             .new_username {
                 cursor: pointer;
@@ -163,7 +167,8 @@
         .confirm_display {
             color: #024d61;
             text-align: center;
-            margin-top: 30px;
+            position: relative;
+            top: 30px;
 
             .confirm_item {
                 cursor: pointer;
@@ -194,10 +199,6 @@
         padding: 6px 12px;
     }
 
-    .picture_post .post_inner_container {
-        background: rgba(0, 0, 0, 0.5);
-    }
-
     .video_post .video_iframe {
         width: 100%;
     }
@@ -206,14 +207,6 @@
         height: 18px;
         color: #024d61;
         font-size: 10pt;
-    }
-
-    .picture_post .post_top {
-        color: whitesmoke;
-    }
-
-    .picture_post .post_like_container {
-        color: whitesmoke;
     }
 
     .post_title_container {
@@ -334,12 +327,12 @@
     .post_inner_container {
         background: rgba(0, 0, 0, 0.5);
 
-        .post_title_container {
-            color: whitesmoke;
+        .post_title {
+            color: whitesmoke !important;
         }
 
         .post_author {
-            color: whitesmoke;
+            color: whitesmoke !important;
         }
 
         .post_like_container {
