@@ -8,6 +8,7 @@
     background: #cfdade;
     box-shadow: 0 0 6px rgba(2, 77, 97, 0.4);
     height: 100%;
+    cursor: pointer;
 }
 
 .board_list .subject {

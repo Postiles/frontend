@@ -190,6 +190,7 @@ postile.view.FullScreenView = function() {
     }
     goog.base(this);
     this.container = document.body;
+    this.container.className = '';
     postile.ui.load(this.container, this.html_segment);
 }
 goog.inherits(postile.view.FullScreenView, postile.view.View);

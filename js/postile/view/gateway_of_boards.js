@@ -48,6 +48,9 @@ postile.view.BoardList.prototype.renderBoardListItem = function(data) {
     postile.data_manager.getUserData(data.board.creator_id, function(data) {
         meta_creator_el.innerHTML = 'Created by <i>' + data.username + '</i>';
     });
+    goog.events.listen(item_el, goog.events.EventType.CLICK, function() {
+        postile.router.dispatch('board/'+data.board.id);
+    });
     goog.dom.appendChild(item_el, img_el);
     goog.dom.appendChild(meta_el, title_el);
     goog.dom.appendChild(meta_el, description_el);
