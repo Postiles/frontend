@@ -860,10 +860,22 @@ postile.view.post_board.PostBoard.prototype.renderPost = function(postData, mode
     var postId = postData.post.id;
 
     if (postId in this.currentPosts) { // old post to update
-        this.currentPosts[postId].postData = postData;
+        // update postData attributes
+        for (var i in this.currentPosts[postId].postData.post) {
+            if (postData.post[i] && this.currentPosts[postId].postData.post[i] != postData.post[i]) {
+                this.currentPosts[postId].postData.post[i] = postData.post[i];
+            }
+        }
+
         this.currentPosts[postId].changeCurrentMode(mode);
     } else { // new post to add to list
         this.currentPosts[postId] = postile.view.post.createPostFromJSON(postData, this, mode);
+    }
+
+    if (postData.post.in_edit) {
+        if (!this.currentPosts[postId].isSelfPost()) {
+            this.currentPosts[postId].changeCurrentMode(postile.view.post.Post.PostMode.LOCKED);
+        }
     }
 }
 
@@ -913,10 +925,11 @@ postile.view.post_board.PostBoard.prototype.fayeHandler = function(status, data)
         break;
 
     case postile.view.post_board.faye_status.DELETE:
-        // Someone (could be this user) deleted a post.
+        var currPost = this.currentPosts[data.post.id];
         if (data.post.id in this.currentPosts) {
-            // If that post is loaded: remove it from the view.
-            this.currentPosts[data.post.id].removeFromBoard();
+            if (!currPost.isSelfPost()) {
+                this.removePost(data.post.id);
+            }
         }
         break;
     case postile.view.post_board.faye_status.INLINE_COMMENT:

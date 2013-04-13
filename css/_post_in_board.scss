@@ -105,7 +105,7 @@
     }
 
     .edit_mode_post {
-        .post_title {
+        .post_title_container {
             &:hover {
                 text-decoration: none !important;
                 cursor: auto !important;
@@ -118,6 +118,9 @@
     .locked_mode_post {
         position: absolute;
         top: 0;
+        background: whitesmoke;
+        opacity: 0.8;
+
         .lock_display {
             color: #024d61;
             text-align: center;
@@ -150,6 +153,35 @@
             }
         }
     }
+
+    .confirm_delete_mode_post {
+        position: absolute;
+        top: 0;
+        background: whitesmoke;
+        opacity: 0.8;
+
+        .confirm_display {
+            color: #024d61;
+            text-align: center;
+            margin-top: 30px;
+
+            .confirm_item {
+                cursor: pointer;
+                color: #537cbe;
+                padding: 0px 5px;
+
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
+
+            .confirm_ok {
+            }
+
+            .confirm_cancel {
+            }
+        }
+    }
 }
 
 .post_container {
@@ -171,9 +203,9 @@
     }
 
     .post_top {
+        height: 18px;
         color: #024d61;
         font-size: 10pt;
-        display: table-cell;
     }
 
     .picture_post .post_top {
@@ -184,7 +216,7 @@
         color: whitesmoke;
     }
 
-    .post_title {
+    .post_title_container {
         float: left;
         white-space: nowrap;
         overflow: hidden;
@@ -192,6 +224,13 @@
 
         &:hover {
             text-decoration: underline;
+        }
+
+        .post_no_title {
+            color: #aaa;
+            &:hover {
+                text-decoration: underline;
+            }
         }
     }
 
@@ -241,12 +280,12 @@
         cursor: pointer;
         margin-right: 8px;
         width: 13px;
-        height: 13px;
+        bottom: 13px;
         background-repeat: no-repeat;
         position: relative;
         background-position: center; }
 
-    .post_remove_icon {
+    .post_delete_icon {
         background-image: url("../images/new_delete.png");
         position: absolute;
         width: 20px;
@@ -295,7 +334,7 @@
     .post_inner_container {
         background: rgba(0, 0, 0, 0.5);
 
-        .post_title {
+        .post_title_container {
             color: whitesmoke;
         }
 

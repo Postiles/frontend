@@ -18,8 +18,8 @@ postile.view.post.text_post.TextPost.prototype.enterDisplayMode = function() {
     elements.postContent_el.innerHTML = this.postData.post.content;
 }
 
-postile.view.post.text_post.TextPost.prototype.enterEditMode = function() {
-    goog.base(this, 'enterEditMode');
+postile.view.post.text_post.TextPost.prototype.enterEditMode = function(req) {
+    goog.base(this, 'enterEditMode', req);
 
     var elements = this.editModeElements;
 
@@ -47,6 +47,6 @@ postile.view.post.text_post.TextPost.prototype.submitChange = function() {
             function(data) {
                 this.postData.post.title = title;
                 this.postData.post.content = content;
-                this.changeCurrentMode(postile.view.post.Post.PostMode.DISPLAY);
+                this.enterDisplayMode();
             }.bind(this));
 }

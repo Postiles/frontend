@@ -58,7 +58,8 @@ postile.view.post.Post = function(postData, board, mode) {
     this.wrap_el.style.height = this.board.heightTo(this.postData.post.span_y) + 'px';
 
     goog.dom.appendChild(this.board.canvas, this.wrap_el);
-    this.changeCurrentMode(this.currMode);
+
+    this.changeCurrentMode(mode);
 
     // disable double click entering mask mode
     goog.events.listen(this.wrap_el, goog.events.EventType.DBLCLICK, function(e) {
@@ -66,6 +67,29 @@ postile.view.post.Post = function(postData, board, mode) {
     });
 
     // NOTE: do not add any other event listener here unless it is for wrap_el
+}
+
+postile.view.post.Post.prototype.changeCurrentMode = function(mode) {
+    switch (mode) {
+    case postile.view.post.Post.PostMode.DISPLAY:
+        this.enterDisplayMode();
+        break;
+    case postile.view.post.Post.PostMode.COMMENT:
+        this.enterCommentMode();
+        break;
+    case postile.view.post.Post.PostMode.EDIT:
+        this.enterEditMode(true);
+        break;
+    case postile.view.post.Post.PostMode.LOCKED:
+        this.enterLockedMode();
+        break;
+    case postile.view.post.Post.PostMode.NEW:
+        this.enterNewMode();
+        break;
+    case postile.view.post.Post.PostMode.CONFIRM_DELETE:
+        this.enterConfirmDeleteMode();
+        break;
+    }
 }
 
 /**
@@ -77,6 +101,7 @@ postile.view.post.Post.PostMode = {
     EDIT: 'edit',
     LOCKED: 'locked', // other users are editing
     NEW: 'new', // newly created
+    CONFIRM_DELETE: 'confirm_delete',
 }
 
 /**
@@ -95,6 +120,7 @@ postile.view.post.Post.prototype.loadUIComponents = function() {
     this.loadEditModeUIComponents();
     this.loadLockedModeUIComponents();
     this.loadNewModeUIComponents();
+    this.loadConfirmDeleteModeUIComponents();
 }
 
 postile.view.post.Post.prototype.loadDisplayModeUIComponents = function() {
@@ -109,6 +135,8 @@ postile.view.post.Post.prototype.loadDisplayModeUIComponents = function() {
     this.displayModeElements = {
         container_el: $('post_container'),
         postInnerContainer_el: $('post_inner_container'),
+        postTitleContainer_el: $('post_title_container'),
+        postNoTitle_el: $('post_no_title'),
         postTitle_el: $('post_title'),
         postAuthor_el: $('post_author'),
         postContent_el: $('post_content'),
@@ -136,6 +164,8 @@ postile.view.post.Post.prototype.loadCommentModeUIComponents = function() {
     this.commentModeElements = {
         container_el: $('post_container'),
         postInnerContainer_el: $('post_inner_container'),
+        postTitleContainer_el: $('post_title_container'),
+        postNoTitle_el: $('post_no_title'),
         postTitle_el: $('post_title'),
         postAuthor_el: $('post_author'),
         commentContainer_el: $('comment_container'),
@@ -159,6 +189,7 @@ postile.view.post.Post.prototype.loadEditModeUIComponents = function() {
         postTitle_el: $('post_title'),
         postAuthor_el: $('post_author'),
         postContent_el: $('post_content'),
+        deleteIcon_el: $('post_delete_icon'),
     }
 }
 
@@ -188,6 +219,21 @@ postile.view.post.Post.prototype.loadNewModeUIComponents = function() {
     }
 }
 
+postile.view.post.Post.prototype.loadConfirmDeleteModeUIComponents = function() {
+    this.confirmDeleteModePost_el = postile.dom.getDescendantByClass(
+            this.wrap_el, 'confirm_delete_mode_post');
+
+    var $ = function(nodeCls) {
+        return postile.dom.getDescendantByClass(this.confirmDeleteModePost_el, nodeCls);
+    }.bind(this);
+
+    this.confirmDeleteModeElements = {
+        container_el: $('post_container'),
+        confirmOk_el: $('confirm_ok'),
+        confirmCancel_el: $('confirm_cancel'),
+    }
+}
+
 /**
  * Define the global event handles for the post
  */
@@ -200,16 +246,22 @@ postile.view.post.Post.prototype.eventHandlers = {
         var profileView = new postile.view.profile.ProfileView(this.postData.creator.id);
     },
     displayMode: function() {
-        this.changeCurrentMode(postile.view.post.Post.PostMode.DISPLAY);
+        this.enterDisplayMode();
     },
     commentMode: function() {
-        this.changeCurrentMode(postile.view.post.Post.PostMode.COMMENT);
+        this.enterCommentMode();
     },
     editMode: function() {
-        this.changeCurrentMode(postile.view.post.Post.PostMode.EDIT);
+        this.enterEditMode(true);
     },
     lockedMode: function() {
-        this.changeCurrentMode(postile.view.post.Post.PostMode.LOCKED);
+        this.enterLockedMode();
+    },
+    newMode: function() {
+        this.enterNewMode();
+    },
+    confirmDeleteMode: function() {
+        this.enterConfirmDeleteMode();
     },
     commentKeyDown: function(e) {
         if (e.keyCode == 13) { // enter pressed
@@ -228,6 +280,15 @@ postile.view.post.Post.prototype.eventHandlers = {
             this.submitChange();
         }
     },
+    okDelete: function() {
+        var id = this.postData.post.id;
+        postile.ajax(['post','delete'], { post_id: id }, function(data) {
+            this.board.removePost(id);
+        }.bind(this));
+    },
+    cancelDelete: function() {
+        this.enterEditMode(false);
+    },
 }
 
 /**
@@ -239,6 +300,7 @@ postile.view.post.Post.prototype.initEventListeners = function() {
     this.initEditModeListener();
     this.initLockedModeListener();
     this.initNewModeListener();
+    this.initConfirmDeleteModeListener();
 }
 
 postile.view.post.Post.prototype.initDisplayModeListener = function() {
@@ -246,7 +308,7 @@ postile.view.post.Post.prototype.initDisplayModeListener = function() {
     this.displayModeListeners = {
         // expand post
         titleClick: new postile.events.EventHandler(
-                elements.postTitle_el, goog.events.EventType.CLICK, 
+                elements.postTitleContainer_el, goog.events.EventType.CLICK, 
                 this.eventHandlers.postExpandHandler.bind(this)),
         // display user profile
         authorClick: new postile.events.EventHandler(
@@ -265,11 +327,20 @@ postile.view.post.Post.prototype.initDisplayModeListener = function() {
                 elements.commentPreview_el, goog.events.EventType.CLICK,
                 this.eventHandlers.commentMode.bind(this)),
     }
+
+    // enable all the listeners
+    for (var i in this.displayModeListeners) {
+        this.displayModeListeners[i].listen();
+    }
 }
 
 postile.view.post.Post.prototype.initCommentModeListener = function() {
     var elements = this.commentModeElements;
     this.commentModeListeners = {
+        // expand post
+        titleClick: new postile.events.EventHandler(
+                elements.postTitleContainer_el, goog.events.EventType.CLICK, 
+                this.eventHandlers.postExpandHandler.bind(this)),
         // enter pressed for comment input
         inputEnterKey: new postile.events.EventHandler(
                 elements.commentInput_el, goog.events.EventType.KEYDOWN,
@@ -278,6 +349,11 @@ postile.view.post.Post.prototype.initCommentModeListener = function() {
         closeClick: new postile.events.EventHandler(
                 elements.commentCloseButton_el, goog.events.EventType.CLICK,
                 this.eventHandlers.displayMode.bind(this)),
+    }
+
+    // enable all the listeners
+    for (var i in this.commentModeListeners) {
+        this.commentModeListeners[i].listen();
     }
 }
 
@@ -288,6 +364,15 @@ postile.view.post.Post.prototype.initEditModeListener = function() {
         postContentCtrlEnter: new postile.events.EventHandler(
                 elements.postContent_el, goog.events.EventType.KEYDOWN,
                 this.eventHandlers.postContentKeyDown.bind(this)),
+        // delete icon clicked
+        deleteIconClick: new postile.events.EventHandler(
+                elements.deleteIcon_el, goog.events.EventType.CLICK,
+                this.eventHandlers.confirmDeleteMode.bind(this)),
+    }
+
+    // enable all the listeners
+    for (var i in this.editModeListeners) {
+        this.editModeListeners[i].listen();
     }
 }
 
@@ -296,6 +381,11 @@ postile.view.post.Post.prototype.initLockedModeListener = function() {
     this.lockedModelListener = {
         // TODO
     }
+
+    // enable all the listeners
+    for (var i in this.lockedModelListener) {
+        this.lockedModelListener[i].listen();
+    }
 }
 
 postile.view.post.Post.prototype.initNewModeListener = function() {
@@ -303,28 +393,29 @@ postile.view.post.Post.prototype.initNewModeListener = function() {
     this.newModeListener = {
         // TODO
     }
+
+    // enable all the listeners
+    for (var i in this.newModeListener) {
+        this.newModeListener[i].listen();
+    }
 }
 
-/**
- * Change current mode, this function calls specific functions to do stuff
- */
-postile.view.post.Post.prototype.changeCurrentMode = function(mode) {
-    switch (mode) {
-    case postile.view.post.Post.PostMode.DISPLAY:
-        this.enterDisplayMode();
-        break;
-    case postile.view.post.Post.PostMode.COMMENT:
-        this.enterCommentMode();
-        break;
-    case postile.view.post.Post.PostMode.EDIT:
-        this.enterEditMode();
-        break;
-    case postile.view.post.Post.PostMode.LOCKED:
-        this.enterLockedMode();
-        break;
-    case postile.view.post.Post.PostMode.NEW:
-        this.enterNewMode();
-        break;
+postile.view.post.Post.prototype.initConfirmDeleteModeListener = function() {
+    var elements = this.confirmDeleteModeElements;
+    this.confirmDeleteModeListener = {
+        // ok clicked
+        confirmOk: new postile.events.EventHandler(
+                elements.confirmOk_el, goog.events.EventType.CLICK,
+                this.eventHandlers.okDelete.bind(this)),
+        // cancel clicked
+        confirmCancel: new postile.events.EventHandler(
+                elements.confirmCancel_el, goog.events.EventType.CLICK,
+                this.eventHandlers.cancelDelete.bind(this)),
+    }
+
+    // enable all the listeners
+    for (var i in this.confirmDeleteModeListener) {
+        this.confirmDeleteModeListener[i].listen();
     }
 }
 
@@ -332,17 +423,12 @@ postile.view.post.Post.prototype.enterDisplayMode = function() {
     this.currMode = postile.view.post.Post.PostMode.DISPLAY;
 
     this.displayModePost_el.style.display = '';
-    this.displayModePost_el.style.opacity = '1.0';
 
     this.commentModePost_el.style.display = 'none';
     this.editModePost_el.style.display = 'none';
     this.lockedModePost_el.style.display = 'none';
     this.newModePost_el.style.display = 'none';
-
-    // enable all the listeners
-    for (var i in this.displayModeListeners) {
-        this.displayModeListeners[i].listen();
-    }
+    this.confirmDeleteModePost_el.style.display = 'none';
 
     var elements = this.displayModeElements;
     elements.postTitle_el.innerHTML = this.postData.post.title;
@@ -353,8 +439,8 @@ postile.view.post.Post.prototype.enterDisplayMode = function() {
         elements.postAuthor_el.innerHTML = data.username;
     }.bind(this));
 
-    if (this.postData.post.title) { // title not empty
-        elements.postAuthor_el.style.marginLeft = '20px';
+    if (this.postData.post.title) { // title exists
+        elements.postNoTitle_el.style.display = 'none';
     }
 
     var liked_users = this.postData.likes.map(function(l) {
@@ -402,11 +488,7 @@ postile.view.post.Post.prototype.enterCommentMode = function() {
     this.editModePost_el.style.display = 'none';
     this.lockedModePost_el.style.display = 'none';
     this.newModePost_el.style.display = 'none';
-
-    // enable all the listeners
-    for (var i in this.commentModeListeners) {
-        this.commentModeListeners[i].listen();
-    }
+    this.confirmDeleteModePost_el.style.display = 'none';
 
     var elements = this.commentModeElements;
     elements.postTitle_el.innerHTML = this.postData.post.title;
@@ -415,6 +497,10 @@ postile.view.post.Post.prototype.enterCommentMode = function() {
             this.wrap_el.offsetHeight - elements.postInnerContainer_el.offsetHeight + 'px';
     elements.commentInput_el.style.width = 
             this.wrap_el.offsetWidth - 60 + 'px';
+
+    if (this.postData.post.title) { // title exists
+        elements.postNoTitle_el.style.display = 'none';
+    }
 
     var comments = this.postData.inline_comments;
     if (comments.length > 0) {
@@ -426,12 +512,29 @@ postile.view.post.Post.prototype.enterCommentMode = function() {
     }
 }
 
-postile.view.post.Post.prototype.enterEditMode = function() {
+postile.view.post.Post.prototype.enterEditMode = function(req) {
     if (!this.isSelfPost()) { // not my own post, cannot edit
         return;
     }
 
-    postile.ajax([ 'post', 'start_edit' ], { post_id: this.postData.post.id }, function(data) {
+    if (req) {
+        postile.ajax([ 'post', 'start_edit' ], { post_id: this.postData.post.id }, function(data) {
+            this.currMode = postile.view.post.Post.PostMode.EDIT;
+
+            this.editModePost_el.style.display = '';
+
+            this.displayModePost_el.style.display = 'none';
+            this.commentModePost_el.style.display = 'none';
+            this.lockedModePost_el.style.display = 'none';
+            this.newModePost_el.style.display = 'none';
+            this.confirmDeleteModePost_el.style.display = 'none';
+
+            var elements = this.editModeElements;
+
+            elements.postTitle_el.innerHTML = this.postData.post.title;
+            elements.postTitle_el.style.width = this.wrap_el.offsetWidth - 26 + 'px';
+        }.bind(this));
+    } else {
         this.currMode = postile.view.post.Post.PostMode.EDIT;
 
         this.editModePost_el.style.display = '';
@@ -440,33 +543,24 @@ postile.view.post.Post.prototype.enterEditMode = function() {
         this.commentModePost_el.style.display = 'none';
         this.lockedModePost_el.style.display = 'none';
         this.newModePost_el.style.display = 'none';
-
-        // enable all the listeners
-        for (var i in this.editModeListeners) {
-            this.editModeListeners[i].listen();
-        }
+        this.confirmDeleteModePost_el.style.display = 'none';
 
         var elements = this.editModeElements;
-        elements.postTitle_el.innerHTML = this.postData.post.title;
-        console.log(elements.postTitle_el);
-        elements.postTitle_el.style.width = this.wrap_el.offsetWidth - 26 + 'px';
-    }.bind(this));
+
+        elements.deleteIcon_el.style.display = '';
+    }
 }
 
 postile.view.post.Post.prototype.enterLockedMode = function() {
     this.currMode = postile.view.post.Post.PostMode.LOCKED;
 
     this.lockedModePost_el.style.display = '';
+    this.displayModePost_el.style.display = '';
 
-    this.displayModePost_el.style.opacity = '0.2';
     this.commentModePost_el.style.display = 'none';
     this.editModePost_el.style.display = 'none';
     this.newModePost_el.style.display = 'none';
-
-    // enable all the listeners
-    for (var i in this.lockedModelListener) {
-        this.lockedModelListener[i].listen();
-    }
+    this.confirmDeleteModePost_el.style.display = 'none';
 
     var elements = this.lockedModeElements;
 
@@ -485,19 +579,31 @@ postile.view.post.Post.prototype.enterNewMode = function() {
     this.commentModePost_el.style.display = 'none';
     this.editModePost_el.style.display = 'none';
     this.lockedModePost_el.style.display = 'none';
+    this.confirmDeleteModePost_el.style.display = 'none';
 
-    // enable all the listeners
-    for (var i in this.newModeListener) {
-        this.newModeListener[i].listen();
-    }
 
     var elements = this.newModeElements;
 
-    console.log(elements);
     postile.data_manager.getUserData(this.postData.post.creator_id, function(data) {
         this.postData.creator = data;
         elements.newUsername_el.innerHTML = data.username;
     }.bind(this));
+}
+
+postile.view.post.Post.prototype.enterConfirmDeleteMode = function() {
+    this.currMode = postile.view.post.Post.PostMode.CONFIRM_DELETE;
+
+    this.confirmDeleteModePost_el.style.display = '';
+
+    this.editModePost_el.style.display = '';
+    this.displayModePost_el.style.display = 'none';
+    this.commentModePost_el.style.display = 'none';
+    this.lockedModePost_el.style.display = 'none';
+    this.newModePost_el.style.display = 'none';
+
+    this.editModeElements.deleteIcon_el.style.display = 'none';
+
+    var elements = this.confirmDeleteModeElements;
 }
 
 postile.view.post.Post.prototype.isSelfPost = function() {

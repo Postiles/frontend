@@ -19,8 +19,8 @@ postile.view.post.picture_post.PicturePost.prototype.enterDisplayMode = function
             + postile.conf.uploadsResource([this.postData.post.image_url]) + ')';
 }
 
-postile.view.post.picture_post.PicturePost.prototype.enterEditMode = function() {
-    goog.base(this, 'enterEditMode');
+postile.view.post.picture_post.PicturePost.prototype.enterEditMode = function(req) {
+    goog.base(this, 'enterEditMode', req);
 
     var elements = this.editModeElements;
 
@@ -50,6 +50,6 @@ postile.view.post.picture_post.PicturePost.prototype.submitChange = function() {
             }, 
             function(data) {
                 this.postData.post.title = title;
-                this.changeCurrentMode(postile.view.post.Post.PostMode.DISPLAY);
+                this.enterDisplayMode();
             }.bind(this));
 }
