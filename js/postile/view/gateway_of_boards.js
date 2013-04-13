@@ -1,6 +1,7 @@
 goog.provide('postile.view.BoardList');
 
 goog.require('goog.dom');
+goog.require('postile.view.new_board');
 goog.require('postile.view');
 goog.require('goog.events');
 goog.require('postile.dom');
@@ -14,7 +15,11 @@ postile.view.BoardList = function(topic) {
     this.container.className = 'board_list_catchall';
     this.wrap_el = postile.dom.getDescendantByClass(this.container, "board_list");
     this.subject = postile.dom.getDescendantByClass(this.container, "subject");
-    this.subject.innerHTML = 'All boards in the current topic';
+    this.add = postile.dom.getDescendantByClass(this.subject, "add");
+    var new_board = new postile.view.new_board.NewBoard();
+    goog.events.listen(this.add, goog.events.EventType.CLICK, function() {
+        new_board.open(500);
+    });
     postile.ajax([ 'board', 'get_boards_in_topic' ], { topic_id: topic }, function(data) {
         /* handle the data return after getting the boards information back */
         var boardArray = data.message.boards;
@@ -47,6 +52,9 @@ postile.view.BoardList.prototype.renderBoardListItem = function(data) {
     });
     postile.data_manager.getUserData(data.board.creator_id, function(data) {
         meta_creator_el.innerHTML = 'Created by <i>' + data.username + '</i>';
+    });
+    goog.events.listen(item_el, goog.events.EventType.CLICK, function() {
+        postile.router.dispatch('board/'+data.board.id);
     });
     goog.dom.appendChild(item_el, img_el);
     goog.dom.appendChild(meta_el, title_el);

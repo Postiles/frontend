@@ -1,34 +1,34 @@
 @font-face {
     font-family: Oxygen;
-    src: url('../fonts/Oxygen-Regular.ttf');
+    src: url('/fonts/Oxygen-Regular.ttf');
 }
 
 @font-face {
     font-family: OxygenBold;
-    src: url('../fonts/Oxygen-Bold.ttf');
+    src: url('/fonts/Oxygen-Bold.ttf');
 }
 
 @font-face {
     font-family: OxygenLight;
-    src: url('../fonts/Oxygen-Light.ttf');
+    src: url('/fonts/Oxygen-Light.ttf');
 }
 
 @font-face {
     font-family: RobotoRegular;
-    src: url('../fonts/Roboto-Regular.ttf');
+    src: url('/fonts/Roboto-Regular.ttf');
 }
 
 @font-face  {
     font-family: Play;
-    src: url('../fonts/Play-Regular.ttf');
+    src: url('/fonts/Play-Regular.ttf');
 }
 
 @font-face  {
     font-family: PlayBold;
-    src: url('../fonts/Play-Bold.ttf');
+    src: url('/fonts/Play-Bold.ttf');
 }
 
 @font-face  {
     font-family: HelveticaNeue;
-    src: url('../fonts/HelveticaNeue.otf');
+    src: url('/fonts/HelveticaNeue.otf');
 }

@@ -8,6 +8,7 @@
     background: #cfdade;
     box-shadow: 0 0 6px rgba(2, 77, 97, 0.4);
     height: 100%;
+    cursor: pointer;
 }
 
 .board_list .subject {
@@ -17,6 +18,38 @@
     border-bottom: 1px solid #999;
     color: #333;
     margin-bottom: 28px;
+    position: relative;
+}
+
+.board_list .subject .add {
+    position: absolute;
+    right: 4px;
+    top: 32px;
+    background: #024d61;
+    height: 32px;
+    padding: 0 10px;
+    opacity: 0.9;
+}
+
+.board_list .subject .add:hover {
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.3) inset;
+    opacity: 1;
+}
+
+.board_list .subject .add  img {
+    margin-top: 7px;
+    float: left;
+    margin-right: 6px;
+}
+
+.board_list .subject .add  .text {
+    color: #FFF;
+    font-size: 12pt;
+    display: block;
+    float: left;
+    height: 20px;
+    line-height: 20px;
+    margin-top: 6px;
 }
 
 .board_list .board_single {

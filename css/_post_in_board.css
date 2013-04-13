@@ -209,3 +209,6 @@
       color: whitesmoke; }
     .picture_post .post_inner_container .post_content {
       display: none; }
+      .picture_post .comment_preview{ 
+        opacity: 0.8;
+      }

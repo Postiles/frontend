@@ -2,12 +2,12 @@ html, body {
 	padding: 0;
 	margin: 0;
 	border: 0 none;
-    font-family: Roboto;
     height: 100%;
 }
 
 * {
     outline: none !important;
+    font-family: RobotoRegular !important;
 }
 
 ::-webkit-scrollbar {

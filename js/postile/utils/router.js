@@ -32,7 +32,7 @@ postile.router.execute = function(route) {
     if (kwd in postile.router.map) { //route found
         postile.router.current_view = new (Function.prototype.bind.apply(postile.router.map[kwd], [null].concat(args)));
     } else { //rescue
-        postile.router.current_view = new postile.view.WelcomePage();
+        postile.router.dispatch("topic/1");
     }
 }
 
