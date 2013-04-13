@@ -33,15 +33,12 @@ postile.view.image_upload.ImageUploadBlock = function(input_instance) {
 	goog.dom.appendChild(this.uploadWord, goog.dom.createDom('span', 'upload_or', 'OR'));
 
 	/* do not have logic in view, give everything for js to uploader to handle */
-	var fakefile = goog.dom.createDom('div',{'class': 'fileinputs'});
+	this.fakefile = goog.dom.createDom('div',{'class': 'fileinputs'});
 	this.fileInput = goog.dom.createDom('input',{'class': 'file', 'name': 'image', 'type':'file'});
 
-	goog.dom.appendChild(this.uploadContent, fakefile);
-	goog.dom.appendChild(fakefile, this.fileInput);
-	goog.events.listen(this.fileInput, goog.events.EventType.CHANGE, function(e) {
-		postile.uploader.clickUpload(this.fileInput);
-		this.close();
-	}.bind(this));
+	goog.dom.appendChild(this.uploadContent, this.fakefile);
+	goog.dom.appendChild(this.fakefile, this.fileInput);
+	
 }
 goog.inherits(postile.view.image_upload.ImageUploadBlock, postile.view.PopView);
 
@@ -49,7 +46,17 @@ postile.view.image_upload.ImageUploadBlock.prototype.unloaded_stylesheets = ['up
 
 postile.view.image_upload.ImageUploadBlock.prototype.open = function(a) {
 	postile.view.PopView.prototype.open.call(this,a);
-	this.initFileUploads();
+	//this.initFileUploads();
+
+	goog.dom.removeNode(this.fileInput);
+	this.fileInput = goog.dom.createDom('input',{'class': 'file', 'name': 'image', 'type':'file'});
+	goog.dom.appendChild(this.fakefile, this.fileInput);
+
+	goog.events.listen(this.fileInput, goog.events.EventType.CHANGE, function(e) {
+		console.log('call upload');
+		postile.uploader.clickUpload(this.fileInput);
+		this.close();
+	}.bind(this));
 }
 
 
