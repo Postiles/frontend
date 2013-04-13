@@ -635,7 +635,7 @@ postile.view.post.Post.prototype.enterConfirmDeleteMode = function() {
 }
 
 postile.view.post.Post.prototype.isSelfPost = function() {
-    return postile.conf.currentUserId == this.postData.post.creator_id;
+    return localStorage.postile_user_id == this.postData.post.creator_id;
 }
 
 postile.view.post.InlineComment = function(icb, single_comment_data) {
