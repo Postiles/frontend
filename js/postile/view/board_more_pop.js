@@ -16,7 +16,7 @@ postile.view.board_more_pop.BoardMorePop = function(input_instance) {
     this.container.style.top = '0px';
     this.container.style.left = '0px';
 
-    var star_bt = postile.dom.getDescendantById(this.container, 'star');
+    // var star_bt = postile.dom.getDescendantById(this.container, 'star');
     var more_photo_button = postile.dom.getDescendantById(this.container, 'more_photo_button');
     var more_video_button = postile.dom.getDescendantById(this.container, 'more_video_button');
 
@@ -33,11 +33,11 @@ postile.view.board_more_pop.BoardMorePop = function(input_instance) {
         e.stopPropagation(); 
         this.VideoUploadPop.open(this);
     }.bind(this));  
-
+/*
     goog.events.listen(star_bt, goog.events.EventType.CLICK, function(e) {
         (new postile.view.star.Star(this)).open(star_bt);
     });  
-
+*/
 }
 
 goog.inherits(postile.view.board_more_pop.BoardMorePop, postile.view.TipView);
