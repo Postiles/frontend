@@ -79,9 +79,11 @@ postile.view.post.Post.prototype.changeCurrentMode = function(mode) {
         this.enterCommentMode();
         break;
     case postile.view.post.Post.PostMode.EDIT:
-        postile.ajax([ 'post', 'start_edit' ], { post_id: this.postData.post.id }, function(data) {
-            this.enterEditMode(true);
-        }.bind(this));
+        if (this.isSelfPost()) {
+            postile.ajax([ 'post', 'start_edit' ], { post_id: this.postData.post.id }, function(data) {
+                this.enterEditMode(true);
+            }.bind(this));
+        }
         break;
     case postile.view.post.Post.PostMode.LOCKED:
         this.enterLockedMode();
@@ -287,6 +289,7 @@ postile.view.post.Post.prototype.eventHandlers = {
         var id = this.postData.post.id;
         postile.ajax(['post','delete'], { post_id: id }, function(data) {
             this.board.removePost(id);
+            this.board.disableMovingCanvas = false;
         }.bind(this));
     },
     cancelDelete: function() {
@@ -435,11 +438,14 @@ postile.view.post.Post.prototype.enterDisplayMode = function() {
 
     var elements = this.displayModeElements;
     elements.postTitle_el.innerHTML = this.postData.post.title;
+
     elements.postLikeCount_el.innerHTML = this.postData.likes.length;
 
     postile.data_manager.getUserData(this.postData.post.creator_id, function(data) {
         this.postData.creator = data;
         elements.postAuthor_el.innerHTML = data.username;
+        elements.postTitle_el.style.width = this.wrap_el.offsetWidth - 
+                elements.postAuthor_el.innerHTML - 26 + 'px';
     }.bind(this));
 
     if (this.postData.post.title) { // title exists

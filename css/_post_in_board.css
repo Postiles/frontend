@@ -66,6 +66,8 @@
     .post_wrap .edit_mode_post .post_title_container:hover {
       text-decoration: none !important;
       cursor: auto !important; }
+    .post_wrap .edit_mode_post .post_title_container .post_title {
+      height: 20px; }
   .post_wrap .locked_mode_post {
     position: absolute;
     top: 0;
