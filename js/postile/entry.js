@@ -9,10 +9,12 @@ goog.require('postile.conf.useragent');
 goog.require('postile.router');
 goog.require('postile.user');
 goog.require('postile.view.post_board');
+goog.require('postile.view.BoardList');
 goog.require('postile.view.create_user');
 goog.require('postile.view.profile');
 goog.require('postile.ui');
 goog.require('postile.feedback');
+goog.require('postile.log');
 
 /**
  * Exported entry point.
@@ -29,6 +31,7 @@ postile.entry.main = function() {
  * Originally known as postile.init.
  */
 postile.entry.router_dispatch = function() {
+    postile.log.i('router_dispatch');
     postile.conf.initDbgConfiguration();
     postile.router.init();
     postile.entry.init_router_map();
@@ -45,6 +48,7 @@ postile.entry.router_dispatch = function() {
 postile.entry.init_router_map = function() {
     postile.router.map['board'] = postile.view.post_board.PostBoard;
     postile.router.map['login'] = postile.view.login.LoginView;
+    postile.router.map['topic'] = postile.view.BoardList;
 };
 
 goog.exportSymbol('postile.entry.main', postile.entry.main);
