@@ -68,7 +68,9 @@
       cursor: auto !important; }
   .post_wrap .locked_mode_post {
     position: absolute;
-    top: 0; }
+    top: 0;
+    background: whitesmoke;
+    opacity: 0.8; }
     .post_wrap .locked_mode_post .lock_display {
       color: #024d61;
       text-align: center;
@@ -87,6 +89,21 @@
       color: #537cbe; }
       .post_wrap .new_mode_post .new_display .new_username:hover {
         text-decoration: underline; }
+  .post_wrap .confirm_delete_mode_post {
+    position: absolute;
+    top: 0;
+    background: whitesmoke;
+    opacity: 0.8; }
+    .post_wrap .confirm_delete_mode_post .confirm_display {
+      color: #024d61;
+      text-align: center;
+      margin-top: 30px; }
+      .post_wrap .confirm_delete_mode_post .confirm_display .confirm_item {
+        cursor: pointer;
+        color: #537cbe;
+        padding: 0px 5px; }
+        .post_wrap .confirm_delete_mode_post .confirm_display .confirm_item:hover {
+          text-decoration: underline; }
 
 .post_container {
   padding-bottom: 25px;
@@ -143,11 +160,11 @@
     cursor: pointer;
     margin-right: 8px;
     width: 13px;
-    height: 13px;
+    bottom: 13px;
     background-repeat: no-repeat;
     position: relative;
     background-position: center; }
-  .post_container .post_remove_icon {
+  .post_container .post_delete_icon {
     background-image: url("../images/new_delete.png");
     position: absolute;
     width: 20px;

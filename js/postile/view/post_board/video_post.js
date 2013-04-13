@@ -18,8 +18,8 @@ postile.view.post.video_post.VideoPost.prototype.enterDisplayMode = function() {
     this.initVideo(elements);
 }
 
-postile.view.post.video_post.VideoPost.prototype.enterEditMode = function() {
-    goog.base(this, 'enterEditMode');
+postile.view.post.video_post.VideoPost.prototype.enterEditMode = function(req) {
+    goog.base(this, 'enterEditMode', req);
 
     var elements = this.editModeElements;
 
@@ -59,6 +59,6 @@ postile.view.post.video_post.VideoPost.prototype.submitChange = function() {
             }, 
             function(data) {
                 this.postData.post.title = title;
-                this.changeCurrentMode(postile.view.post.Post.PostMode.DISPLAY);
+                this.enterDisplayMode();
             }.bind(this));
 }
