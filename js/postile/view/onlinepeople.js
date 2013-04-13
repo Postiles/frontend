@@ -31,9 +31,6 @@ postile.view.onlinepeople.OnlinePeople = function(header) {
         this.container,'online_people_list');
 
     this.expanded = false;
-    goog.events.listen(this.container, goog.events.EventType.CLICK, function() {
-        console.log("Expanding");
-    });
 }
 
 
@@ -44,7 +41,7 @@ postile.view.onlinepeople.OnlinePeople.prototype.render = function() {
     var title_bar_bound = goog.style.getBounds(this.title_bar.container);
     //Testing code here ===============
     var item = new postile.view.onlinepeople.Item();
-    item.renderItem(this,"Testing ");
+    //item.renderItem(this,"Testing ");
     //Testing end =====================
 
 
@@ -62,8 +59,7 @@ postile.view.onlinepeople.OnlinePeople.prototype.unloaded_stylesheets = ['online
 postile.view.onlinepeople.Item = function() {
 }
 
-postile.view.onlinepeople.Item.prototype.renderItem =
-        function(parent, activity_str, status, user) {
+postile.view.onlinepeople.Item.prototype.renderItem = function(parent, user_id) {
     var container = parent.online_list;
     this.item_container = goog.dom.createDom('div', 'item_container');
     postile.ui.load(this.item_container,
@@ -76,8 +72,14 @@ postile.view.onlinepeople.Item.prototype.renderItem =
     this.act_container = postile.dom.getDescendantByClass(
         this.item_container,'activity');
 
-    this.name_container.innerHTML = "User Id:"+user;
-    this.act_container.innerHTML = activity_str;
+    if (postile.data_manager.userData[user_id] == undefined) { // found in local cache
+         postile.data_manager.getUserData(user_id, function() {});
+    }
+    var user = postile.data_manager.userData[user_id];
+    if(user){
+        this.name_container.innerHTML = user.username;
+        this.profile_img.src = postile.conf.uploadsResource([user.image_small_url]);
+    }
 
 
     goog.dom.appendChild(container,this.item_container);

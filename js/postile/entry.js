@@ -20,7 +20,6 @@ goog.require('postile.feedback');
 postile.entry.main = function() {
     goog.events.listen(window, goog.events.EventType.LOAD, function() {
         goog.events.listen(window, goog.events.EventType.ERROR, postile.conf.logError);
-        postile.entry.init_router_map();
         postile.conf.useragent.load(postile.entry.router_dispatch);
     });
 };
@@ -32,6 +31,10 @@ postile.entry.main = function() {
 postile.entry.router_dispatch = function() {
     postile.conf.initDbgConfiguration();
     postile.router.init();
+    postile.entry.init_router_map();
+    if (!goog.userAgent.WEBKIT) {
+        postile.router.dispatch(window.location.pathname.substr(1));
+    }
 };
 
 
@@ -42,43 +45,6 @@ postile.entry.router_dispatch = function() {
 postile.entry.init_router_map = function() {
     postile.router.map['board'] = postile.view.post_board.PostBoard;
     postile.router.map['login'] = postile.view.login.LoginView;
-    /*
-    postile.router.map('/test/:id/:domain/:port').to(function(){
-        postile.conf.dhost = this.params["domain"];
-        postile.conf.dport = this.params["port"];
-        postile.conf.fayeLocation = 'http://'+postile.conf.dhost+':9292/faye';
-        new postile.view.post_board.PostBoard(this.params["id"]);
-    });
-
-    postile.router.map('/sign_up').to(function() {
-        postile.ui.load(document.body, postile.conf.staticResource(['sign_up.html']));
-        postile.view.create_user.init();
-    });
-
-    postile.router.map('/login').to(function() {
-        postile.ui.load(document.body, postile.conf.staticResource(['login.html']));
-    });
-
-    postile.router.map('/_profile_preview').to(function() {
-        postile.ui.load(document.body, postile.conf.staticResource(['_profile_preview.html']));
-        postile.view.profile.init();
-    });
-
-    postile.router.map('/profile/:user_id/edit').to(function() {
-        postile.ui.load(document.body, postile.conf.staticResource(['profile_edit.html']));
-        postile.view.profile.get_profile_for_edit(this.params["user_id"]);
-    });
-
-    postile.router.map('/profile/:user_id').to(function() {
-        postile.ui.load(document.body, postile.conf.staticResource(['profile_display.html']));
-        postile.view.profile.get_profile(this.params["user_id"]);
-    });
-
-    postile.router.map('/renrenlogin').to(function() {
-        postile.ui.load(document.body, postile.conf.staticResource(['renren_test.html']));
-    });
-    */
 };
 
 goog.exportSymbol('postile.entry.main', postile.entry.main);
-

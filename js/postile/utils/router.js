@@ -1,33 +1,25 @@
 goog.provide('postile.router');
 
 goog.require('postile.view.WelcomePage');
-goog.require('goog.history.Html5History');
 goog.require('goog.events');
 
 /**
- * @type {goog.history.Html5History}
- */
-postile.router.googHistoryObj = null;
-
-/**
- * @see postile.entry.main
+ * Initialize
  */
 postile.router.init = function() {
-    postile.router.googHistoryObj = new goog.history.Html5History();
-    postile.router.googHistoryObj.setUseFragment(false);
-    postile.router.googHistoryObj.setPathPrefix('/');
-    postile.router.googHistoryObj.setEnabled(true);
-    goog.events.listen(postile.router.googHistoryObj, goog.history.EventType.NAVIGATE, function(e) {
-        postile.router.execute(e.token);
+    goog.events.listen(window, goog.events.EventType.POPSTATE, function() {
+        postile.router.execute(document.location.pathname.substr(1));
     });
-}
+} 
 
 /**
  * Always use this function to create a FullScreenView.
  * @param {string} route the actual url to map.
  */
 postile.router.dispatch = function(route) {
-    postile.router.googHistoryObj.setToken(route);
+    var splitted = route.split('#', 1);
+    history.pushState(splitted[1], null, '/' + route);
+    postile.router.execute(splitted[0]);
 }
 
 /**

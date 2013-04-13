@@ -165,7 +165,7 @@ html, body {
 }
 
 
-.notificatoin_number_wrapper {
+.notification_number_wrapper {
   width: 12px;
   height: 12px;
   position: absolute;
@@ -259,7 +259,9 @@ html, body {
 .canvas_viewport {
   width: 100%;
   height: 100%;
-  overflow: scroll;
+  overflow: hidden;
+  user-select: none;
+  -moz-user-select: none;
   -webkit-user-select: none;
   position: relative; 
 }
@@ -283,6 +285,8 @@ html, body {
 }
 
 .selectable {
+  user-select: text;
+  -moz-user-select: text;
   -webkit-user-select: text; }
 
 /*Mask */
@@ -313,6 +317,10 @@ html, body {
   box-shadow: inset 0 0 3px 1px rgba(2, 77, 97, 0.8);
   box-sizing: border-box;
   z-index: 100;
+  transition-duration: 0.3s;
+  transition-property: left, top, width, height;
+  -moz-transition-duration: 0.3s;
+  -moz-transition-property: left, top, width, height;
   -webkit-transition-duration: 0.3s;
   -webkit-transition-property: left, top, width, height;
   display: none; }

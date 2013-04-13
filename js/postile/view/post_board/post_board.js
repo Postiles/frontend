@@ -187,11 +187,6 @@ postile.view.post_board.handlers.keypress = function(instance, e) {
  * @param {string} board_id Unique identifier for a board.
  */
 postile.view.post_board.PostBoard = function(board_id) {
-    var i;
-
-    /** @deprecated Dead code */
-    var keyHandler;
-
     var instance = this;
 
     postile.view.FullScreenView.call(this);
@@ -338,14 +333,15 @@ postile.view.post_board.PostBoard = function(board_id) {
                 instance.fayeHandler(status, data);
             });
             postile.faye.subscribe('status/'+instance.boardData.id, function(status, data){
-                // console.log(data.users);
                 instance.onlinepeople.count = data.count;
                 instance.onlinepeople.id = data.users;
-                // console.log(instance.onlinepeople.count);
-                instance.updateOnlinePeople();
+                if(instance.onlinepeople.is_expended) {
+                    instance.updateOnlinePeople();
+                }else{
+                    instance.updateOnlineCount();
+                }
             });
-            postile.faye.subscribe('status/board/'+instance.boardData.id+''
-                                   +'/user/'+instance.userData.id, function(status, data) {
+            postile.faye.subscribe('status/board/'+instance.boardData.id+'/user/'+instance.userData.id, function(status, data) {
             });
 
 
@@ -354,6 +350,12 @@ postile.view.post_board.PostBoard = function(board_id) {
 
             // Initialize viewport size
             postile.view.post_board.handlers.resize(instance);
+
+            // Get to the post, if set in URL
+            var new_post = parseInt(window.location.hash.substr(1));
+            if (new_post) {
+                instance.moveToPost(new_post);
+            }
         });
     });
 }
@@ -395,6 +397,16 @@ postile.view.post_board.PostBoard.prototype.initView = function() {
     this.onlinepeople.view = new postile.view.onlinepeople.OnlinePeople(this.header);
     this.onlinepeople.count = 0;
     this.onlinepeople.view.render();
+    this.onlinepeople.is_expended = false;
+    goog.events.listen(this.onlinepeople.view.container, goog.events.EventType.CLICK, function() {
+        if(!instance.onlinepeople.is_expended){
+            instance.onlinepeople.is_expended = true;
+            instance.updateOnlinePeople();
+        }else {
+            instance.onlinepeople.is_expended = false;
+            instance.onlinepeople.view.online_list.innerHTML = " ";
+        }
+    });
 
     /**
      * Main viewport and canvas
@@ -923,22 +935,21 @@ postile.view.post_board.PostBoard.prototype.fayeHandler = function(status, data)
 }
 
 postile.view.post_board.PostBoard.prototype.updateOnlinePeople = function() {
-    var thecount = this.onlinepeople.count;
-    // console.log("Count:"+thecount);
-    // console.log(this.onlinepeople.view.container);
-    var count_container = postile.dom.getDescendantById(this.onlinepeople.view.container
-        ,'count');
-    // console.log(count_container);
-    count_container.innerHTML = thecount;
+    this.updateOnlineCount();
     var online_list = this.onlinepeople.view.online_list;
     online_list.innerHTML="";
-    // console.log(this.onlinepeople.id.users);
     for(var i = 0; i < this.onlinepeople.id.users.length; i++) {
         var item = new postile.view.onlinepeople.Item();
-        item.renderItem(this.onlinepeople.view,"Testing ", "haha", this.onlinepeople.id.users[i]);
+        item.renderItem(this.onlinepeople.view, this.onlinepeople.id.users[i]);
     }
 }
 
+postile.view.post_board.PostBoard.prototype.updateOnlineCount = function() {
+    var thecount = this.onlinepeople.count;
+    var count_container = postile.dom.getDescendantById(this.onlinepeople.view.container
+        ,'count');
+    count_container.innerHTML = thecount;
+}
 postile.view.post_board.PostBoard.prototype.createPost = function(info) {
     var req = goog.object.clone(info);
     var ret = goog.object.clone(info);
@@ -997,7 +1008,6 @@ postile.view.post_board.FunctionButton = function(dom) { // constructor
     this.id = this.body_el.id;
 
     goog.events.listen(this.body_el, goog.events.EventType.CLICK, function(e) {
-        log(this);
         this.open();
     }.bind(this));
 }

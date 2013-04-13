@@ -142,7 +142,9 @@ postile.view.notification.Notification.prototype.appendOneMore = function() {
     if(this.numberOfUnread > this.currentMax) { // still can append
         console.log(this.currentIndex);
         this.listedNotification[this.currentIndex] = new postile.view.notification.InfoItem();
-        this.listedNotification[this.currentIndex].render(this, this.notificationListView, this.notificationList[this.currentIndex].notification, this.notificationList[this.currentIndex].from_user_profile);
+        this.listedNotification[this.currentIndex].render(this, this.notificationListView,
+                                                          this.notificationList[this.currentIndex].notification,
+                                                          this.notificationList[this.currentIndex].from_user_profile);
         this.currentIndex++;
     }
     this.numberOfUnread--;
