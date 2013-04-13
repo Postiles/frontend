@@ -455,18 +455,20 @@ postile.view.post_board.PostBoard.prototype.bindMouseEvents = function() {
         e.preventDefault();
     });
 
-    goog.events.listen(this.catchall, goog.events.EventType.MOUSEDOWN, function(e) {
-        instance.click_start_point = [e.clientX, e.clientY];
+    // See issue #12 - disable right-click drag
+    // Also see below.
+    //goog.events.listen(this.catchall, goog.events.EventType.MOUSEDOWN, function(e) {
+    //    instance.click_start_point = [e.clientX, e.clientY];
 
-        if (!e.isButton(2)) {
-            // Right mouse button
-            return;
-        }
+    //    if (!e.isButton(2)) {
+    //        // Right mouse button
+    //        return;
+    //    }
 
-        instance.right.style.left = e.clientX - 53 + 'px'; // TODO: replace the magic number
-        instance.right.style.top = e.clientY - 53 + 'px'; // TODO: replace the magic number
-        instance.right.style.display = 'block';
-    });
+    //    instance.right.style.left = e.clientX - 53 + 'px'; // TODO: replace the magic number
+    //    instance.right.style.top = e.clientY - 53 + 'px'; // TODO: replace the magic number
+    //    instance.right.style.display = 'block';
+    //});
 
     goog.events.listen(this.catchall, goog.events.EventType.CLICK, function(e) {
         if (!instance.click_start_point) { return; }
@@ -478,24 +480,24 @@ postile.view.post_board.PostBoard.prototype.bindMouseEvents = function() {
         }
     }, true);
 
-    goog.events.listen(this.catchall, goog.events.EventType.MOUSEUP, function(e) {
-        var dy = e.clientY - instance.click_start_point[1];
-        var dx = e.clientX - instance.click_start_point[0];
+    // (Continued) disable right-click drag
+    //goog.events.listen(this.catchall, goog.events.EventType.MOUSEUP, function(e) {
+    //    var dy = e.clientY - instance.click_start_point[1];
+    //    var dx = e.clientX - instance.click_start_point[0];
 
-        if (!e.isButton(2) || Math.abs(dx) + Math.abs(dy) < 3) {
-            // Right mouse button
-            return;
-        }
+    //    if (!e.isButton(2) || Math.abs(dx) + Math.abs(dy) < 3) {
+    //        // Right mouse button
+    //        return;
+    //    }
 
-        this.rel_data.right.style.display = 'none';
-        var length = Math.sqrt(Math.pow(dx, 2)+Math.pow(dy, 2));
+    //    this.rel_data.right.style.display = 'none';
+    //    var length = Math.sqrt(Math.pow(dx, 2)+Math.pow(dy, 2));
 
-        this.rel_data.moveCanvas(dx / 2 / length * this.offsetWidth, dy / 2 / length * this.offsetHeight);
-    });
-
-    goog.events.listen(this.canvas, goog.events.EventType.DBLCLICK,
-            function(){ instance.postCreator.open(); });
-}
+    //    this.rel_data.moveCanvas(dx / 2 / length * this.offsetWidth, dy / 2 / length * this.offsetHeight);
+    //});
+    //goog.events.listen(this.canvas, goog.events.EventType.DBLCLICK,
+    //        function(){ instance.postCreator.open(); });
+};
 
 /**
  * Initialize key event listeners.
@@ -510,27 +512,30 @@ postile.view.post_board.PostBoard.prototype.bindKeyEvents = function() {
             });
     this.keyboard_event_handler.listen();
 
-    for (i in postile.view.post_board.direction_norm_to_css) {
-        this.direction_controllers[i] = goog.dom.createDom('div', ['arrow_detect', i]);
-        this.direction_controllers[i].direction = i;
+    // See issue #12 - disable arrow button move
+    return;
 
-        // Each one has a .button property pointing to the child
-        this.direction_controllers[i].button = goog.dom.createDom('div', 'arrow_button');
+    //for (i in postile.view.post_board.direction_norm_to_css) {
+    //    this.direction_controllers[i] = goog.dom.createDom('div', ['arrow_detect', i]);
+    //    this.direction_controllers[i].direction = i;
 
-        goog.dom.appendChild(this.direction_controllers[i], this.direction_controllers[i].button);
-        goog.dom.appendChild(this.direction_controllers[i].button, goog.dom.createDom('div'));
-        goog.dom.appendChild(this.direction_controllers[i], goog.dom.createDom('div', 'arrow_covering'));
-        goog.dom.appendChild(this.catchall, this.direction_controllers[i]);
+    //    // Each one has a .button property pointing to the child
+    //    this.direction_controllers[i].button = goog.dom.createDom('div', 'arrow_button');
 
-        goog.events.listen(this.direction_controllers[i], goog.events.EventType.CLICK,
-                postile.view.post_board.handlers.arrow_control_click);
-        goog.events.listen(this.direction_controllers[i], goog.events.EventType.MOUSEMOVE,
-                postile.view.post_board.handlers.arrow_control_mousemove);
-        goog.events.listen(this.direction_controllers[i], goog.events.EventType.MOUSEOVER,
-                postile.view.post_board.handlers.arrow_control_mouseover);
-        goog.events.listen(this.direction_controllers[i], goog.events.EventType.MOUSEOUT,
-                postile.view.post_board.handlers.arrow_control_mouseout);
-    }
+    //    goog.dom.appendChild(this.direction_controllers[i], this.direction_controllers[i].button);
+    //    goog.dom.appendChild(this.direction_controllers[i].button, goog.dom.createDom('div'));
+    //    goog.dom.appendChild(this.direction_controllers[i], goog.dom.createDom('div', 'arrow_covering'));
+    //    goog.dom.appendChild(this.catchall, this.direction_controllers[i]);
+
+    //    goog.events.listen(this.direction_controllers[i], goog.events.EventType.CLICK,
+    //            postile.view.post_board.handlers.arrow_control_click);
+    //    goog.events.listen(this.direction_controllers[i], goog.events.EventType.MOUSEMOVE,
+    //            postile.view.post_board.handlers.arrow_control_mousemove);
+    //    goog.events.listen(this.direction_controllers[i], goog.events.EventType.MOUSEOVER,
+    //            postile.view.post_board.handlers.arrow_control_mouseover);
+    //    goog.events.listen(this.direction_controllers[i], goog.events.EventType.MOUSEOUT,
+    //            postile.view.post_board.handlers.arrow_control_mouseout);
+    //}
 
 }
 
