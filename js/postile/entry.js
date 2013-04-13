@@ -49,6 +49,7 @@ postile.entry.init_router_map = function() {
     postile.router.map['board'] = postile.view.post_board.PostBoard;
     postile.router.map['login'] = postile.view.login.LoginView;
     postile.router.map['topic'] = postile.view.BoardList;
+    postile.router.map['console'] = postile.view.WelcomePage;
 };
 
 goog.exportSymbol('postile.entry.main', postile.entry.main);

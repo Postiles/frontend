@@ -14,7 +14,10 @@ postile.view.BoardList = function(topic) {
     this.container.className = 'board_list_catchall';
     this.wrap_el = postile.dom.getDescendantByClass(this.container, "board_list");
     this.subject = postile.dom.getDescendantByClass(this.container, "subject");
-    this.subject.innerHTML = 'All boards in the current topic';
+    this.add = postile.dom.getDescendantByClass(this.subject, "add");
+    goog.events.listen(this.add, goog.events.EventType.CLICK, function() {
+        alert("This function is under YuFei's 集中整治");
+    });
     postile.ajax([ 'board', 'get_boards_in_topic' ], { topic_id: topic }, function(data) {
         /* handle the data return after getting the boards information back */
         var boardArray = data.message.boards;
