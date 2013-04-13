@@ -335,17 +335,25 @@ postile.view.post_board.PostBoard = function(board_id) {
             postile.faye.subscribe('status/'+instance.boardData.id, function(status, data){
                 instance.onlinepeople.count = data.count;
                 instance.onlinepeople.id = data.users;
-                instance.updateOnlinePeople();
+                if(instance.onlinepeople.is_expended) {
+                    instance.updateOnlinePeople();
+                }else{
+                    instance.updateOnlineCount();
+                }
             });
             postile.faye.subscribe('status/board/'+instance.boardData.id+'/user/'+instance.userData.id, function(status, data) {
             });
+
+
+
+
 
             instance.initView();
             instance.initEvents();
 
             // Initialize viewport size
             postile.view.post_board.handlers.resize(instance);
-            
+
             // Get to the post, if set in URL
             var new_post = parseInt(window.location.hash.substr(1));
             if (new_post) {
@@ -392,6 +400,16 @@ postile.view.post_board.PostBoard.prototype.initView = function() {
     this.onlinepeople.view = new postile.view.onlinepeople.OnlinePeople(this.header);
     this.onlinepeople.count = 0;
     this.onlinepeople.view.render();
+    this.onlinepeople.is_expended = false;
+    goog.events.listen(this.onlinepeople.view.container, goog.events.EventType.CLICK, function() {
+        if(!instance.onlinepeople.is_expended){
+            instance.onlinepeople.is_expended = true;
+            instance.updateOnlinePeople();
+        }else {
+            instance.onlinepeople.is_expended = false;
+            instance.onlinepeople.view.online_list.innerHTML = " ";
+        }
+    });
 
     /**
      * Main viewport and canvas
@@ -910,18 +928,21 @@ postile.view.post_board.PostBoard.prototype.fayeHandler = function(status, data)
 }
 
 postile.view.post_board.PostBoard.prototype.updateOnlinePeople = function() {
-    var thecount = this.onlinepeople.count;
-    var count_container = postile.dom.getDescendantById(this.onlinepeople.view.container
-        ,'count');
-    count_container.innerHTML = thecount;
+    this.updateOnlineCount();
     var online_list = this.onlinepeople.view.online_list;
     online_list.innerHTML="";
     for(var i = 0; i < this.onlinepeople.id.users.length; i++) {
         var item = new postile.view.onlinepeople.Item();
-        item.renderItem(this.onlinepeople.view,"Testing ", "haha", this.onlinepeople.id.users[i]);
+        item.renderItem(this.onlinepeople.view, this.onlinepeople.id.users[i]);
     }
 }
 
+postile.view.post_board.PostBoard.prototype.updateOnlineCount = function() {
+    var thecount = this.onlinepeople.count;
+    var count_container = postile.dom.getDescendantById(this.onlinepeople.view.container
+        ,'count');
+    count_container.innerHTML = thecount;
+}
 postile.view.post_board.PostBoard.prototype.createPost = function(info) {
     var req = goog.object.clone(info);
     var ret = goog.object.clone(info);

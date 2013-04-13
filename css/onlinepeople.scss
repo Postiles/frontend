@@ -15,7 +15,9 @@ $grey:#9e9e9e;
         padding: 0px;
     }
     #online_people_list {
-        height:50px;
+        .item_container{
+            height:50px;
+        }
         position:relative;
         img.onlinepeople_profile{
             float: left;
