@@ -270,10 +270,23 @@ postile.view.post.Post.prototype.eventHandlers = {
     },
     commentKeyDown: function(e) {
         if (e.keyCode == 13) { // enter pressed
-            var content = this.commentModeElements.commentInput_el.value;
-            if (content) {
-                // TODO: submit inline comment
-            }
+           var content = goog.string.trim(this.commentModeElements.commentInput_el.value);
+           if (content.length) {
+                postile.ajax([ 'inline_comment', 'new' ], {
+                    post_id: this.postData.post.id,
+                    content: content,
+                }, function(data) {
+                    var comment = data.message;
+                    // add the new comment to list
+                    this.postData.inline_comments.push(comment);
+                    new postile.view.post.InlineComment(this.commentModeElements.commentItems_el, comment);
+
+                    // scroll the comment list to the bottom
+                    this.commentModeElements.commentList_el.scrollTop = this.commentModeElements.commentList_el.scrollHeight;
+                    this.commentModeElements.commentContainerNoComment_el.style.display = 'none';
+                }.bind(this));
+                this.commentModeElements.commentInput_el.value = ''; // clear the input field
+           }
         }
     },
     postContentKeyDown: function(e) {
@@ -504,6 +517,7 @@ postile.view.post.Post.prototype.enterCommentMode = function() {
     elements.postAuthor_el.innerHTML = this.postData.creator.username;
     elements.commentContainer_el.style.height = 
             this.wrap_el.offsetHeight - elements.postInnerContainer_el.offsetHeight + 'px';
+    elements.commentList_el.style.height = parseInt(elements.commentContainer_el.style.height) - 34 + 'px'
     elements.commentInput_el.style.width = 
             this.wrap_el.offsetWidth - 60 + 'px';
 
@@ -512,6 +526,7 @@ postile.view.post.Post.prototype.enterCommentMode = function() {
     }
 
     var comments = this.postData.inline_comments;
+    goog.dom.removeChildren(elements.commentItems_el);
     if (comments.length > 0) {
         elements.commentContainerNoComment_el.style.display = 'none';
         for (var i in comments) {
