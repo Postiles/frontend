@@ -342,10 +342,12 @@ html, body {
   height: 106px;
   background: url(/images/right.png);
   display: none;
+  z-index: 1000;
   position: absolute; }
 
 .arrow_detect {
   position: absolute;
+  z-index: 1000;
   background-repeat: no-repeat; }
 
 .arrow_detect.up, .arrow_detect.down {
