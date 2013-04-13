@@ -1,4 +1,4 @@
-goog.provide('postile.view.post');
+goog.provide('postile.view.post.PostExpand');
 
 goog.require('postile.view');
 goog.require('goog.dom');
