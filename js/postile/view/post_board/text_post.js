@@ -16,6 +16,10 @@ postile.view.post.text_post.TextPost.prototype.enterDisplayMode = function() {
     var elements = this.displayModeElements;
 
     elements.postContent_el.innerHTML = this.postData.post.content;
+    elements.postContent_el.style.height = this.wrap_el.offsetHeight - 70 + 'px';
+
+    // set gradient position
+    elements.postGradientMask_el.style.width = elements.postContent_el.offsetWidth + 'px';
 }
 
 postile.view.post.text_post.TextPost.prototype.enterEditMode = function(req) {
@@ -35,7 +39,7 @@ postile.view.post.text_post.TextPost.prototype.enterEditMode = function(req) {
 postile.view.post.text_post.TextPost.prototype.submitChange = function() {
     var elements = this.editModeElements;
 
-    var title = elements.postTitle_el.innerHTML;
+    var title = elements.postTitle_el.value;
     var content = elements.postContent_el.innerHTML;
 
     if (!content) { // content is empty

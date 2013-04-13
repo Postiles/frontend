@@ -25,16 +25,11 @@ postile.view.post.video_post.VideoPost.prototype.enterEditMode = function(req) {
 
     this.initVideo(elements);
 
-    postile.ui.makeLabeledInput(elements.postTitle_el, '(enter to submit)',
-            'half_opaque', function() {
-                this.submitChange();
-            }.bind(this));
-
     elements.postTitle_el.focus();
 }
 
 postile.view.post.video_post.VideoPost.prototype.initVideo = function(elements) {
-    if (!elements.postContent_el.innerHTML) { // if post content is empty, add video element to it
+    if (elements.postContent_el.innerHTML.length == 0) { // if post content is empty, add video element to it
         this.videoPreview_el = goog.dom.createDom('iframe', {
             'class': 'video_iframe',
             'src': this.postData.post.video_link,
@@ -50,7 +45,7 @@ postile.view.post.video_post.VideoPost.prototype.initVideo = function(elements) 
 postile.view.post.video_post.VideoPost.prototype.submitChange = function() {
     var elements = this.editModeElements;
 
-    var title = elements.postTitle_el.innerHTML;
+    var title = elements.postTitle_el.value;
 
     postile.ajax([ 'post', 'submit_change' ], 
             {

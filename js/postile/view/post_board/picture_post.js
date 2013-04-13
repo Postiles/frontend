@@ -24,11 +24,6 @@ postile.view.post.picture_post.PicturePost.prototype.enterEditMode = function(re
 
     var elements = this.editModeElements;
 
-    postile.ui.makeLabeledInput(elements.postTitle_el, '(enter to submit)',
-            'half_opaque', function() {
-                this.submitChange();
-            }.bind(this));
-
     elements.postTitle_el.focus();
 }
 
@@ -41,7 +36,7 @@ postile.view.post.picture_post.PicturePost.prototype.enterCommentMode = function
 postile.view.post.picture_post.PicturePost.prototype.submitChange = function() {
     var elements = this.editModeElements;
 
-    var title = elements.postTitle_el.innerHTML;
+    var title = elements.postTitle_el.value;
 
     postile.ajax([ 'post', 'submit_change' ], 
             {

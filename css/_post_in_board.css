@@ -8,6 +8,8 @@
   .post_wrap .mode {
     width: 100%;
     height: 100%; }
+  .post_wrap .display_mode_post .post_content {
+    overflow: hidden; }
   .post_wrap .comment_mode_post .post_bottom .comment_container {
     width: 100%;
     background: #cfdade; }
@@ -63,11 +65,17 @@
         text-decoration: underline; }
   .post_wrap .edit_mode_post {
     box-shadow: 0px 0px 8px #537cbe; }
-    .post_wrap .edit_mode_post .post_title_container:hover {
-      text-decoration: none !important;
-      cursor: auto !important; }
-    .post_wrap .edit_mode_post .post_title_container .post_title {
-      height: 20px; }
+    .post_wrap .edit_mode_post .post_title {
+      margin-left: -1px;
+      margin-top: -2px;
+      height: 20px;
+      border: none;
+      outline: none;
+      color: #024d61;
+      background: #f5f5f5;
+      font-size: 10pt; }
+    .post_wrap .edit_mode_post .post_content {
+      margin-top: 17px; }
   .post_wrap .locked_mode_post {
     position: absolute;
     top: 0;
@@ -128,15 +136,17 @@
     font-size: 10pt; }
   .post_container .post_title_container {
     float: left;
-    white-space: nowrap;
-    overflow: hidden;
     cursor: pointer; }
     .post_container .post_title_container:hover {
       text-decoration: underline; }
     .post_container .post_title_container .post_no_title {
-      color: #aaa; }
+      color: #ccc; }
       .post_container .post_title_container .post_no_title:hover {
         text-decoration: underline; }
+    .post_container .post_title_container .post_title {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis; }
   .post_container .post_author {
     float: right;
     cursor: pointer;
@@ -196,6 +206,12 @@
   .post_container .comment_preview_content {
     color: black; }
 
+.text_post .post_gradient_mask {
+  position: absolute;
+  bottom: 27px;
+  height: 40px;
+  background: -webkit-linear-gradient(top, rgba(244, 244, 244, 0) 0%, #f4f4f4 100%); }
+
 .picture_post {
   background-position: center;
   background-size: cover; }
@@ -209,6 +225,5 @@
       color: whitesmoke; }
     .picture_post .post_inner_container .post_content {
       display: none; }
-      .picture_post .comment_preview{ 
-        opacity: 0.8;
-      }
+    .picture_post .post_inner_container .comment_preview {
+      opacity: 0.8; }

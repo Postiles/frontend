@@ -145,6 +145,7 @@ postile.view.post.Post.prototype.loadDisplayModeUIComponents = function() {
         postTitle_el: $('post_title'),
         postAuthor_el: $('post_author'),
         postContent_el: $('post_content'),
+        postGradientMask_el: $('post_gradient_mask'),
         postEditButton_el: $('post_edit_button'),
         postLikeContainer_el: $('post_like_container'),
         postLikeCount_el: $('post_like_count'),
@@ -276,12 +277,13 @@ postile.view.post.Post.prototype.eventHandlers = {
             }
         }
     },
+    postTitleKeyDown: function(e) {
+        if (e.keyCode == 13) {
+            this.submitChange();
+        }
+    },
     postContentKeyDown: function(e) {
         if (e.keyCode == 13 && e.ctrlKey) {
-            /*
-            postile.ajax([ 'post', 'submit_change' ], { }, function(data) {
-            });
-            */
             this.submitChange();
         }
     },
@@ -366,6 +368,9 @@ postile.view.post.Post.prototype.initCommentModeListener = function() {
 postile.view.post.Post.prototype.initEditModeListener = function() {
     var elements = this.editModeElements;
     this.editModeListeners = {
+        postTitleEnter: new postile.events.EventHandler(
+                elements.postTitle_el, goog.events.EventType.KEYDOWN,
+                this.eventHandlers.postTitleKeyDown.bind(this)),
         // ctrl + enter pressed for post content
         postContentCtrlEnter: new postile.events.EventHandler(
                 elements.postContent_el, goog.events.EventType.KEYDOWN,
@@ -444,8 +449,9 @@ postile.view.post.Post.prototype.enterDisplayMode = function() {
     postile.data_manager.getUserData(this.postData.post.creator_id, function(data) {
         this.postData.creator = data;
         elements.postAuthor_el.innerHTML = data.username;
+        console.log(this.wrap_el.offsetWidth - elements.postAuthor_el.offsetWidth - 26 + 'px');
         elements.postTitle_el.style.width = this.wrap_el.offsetWidth - 
-                elements.postAuthor_el.innerHTML - 26 + 'px';
+                elements.postAuthor_el.offsetWidth - 40 + 'px';
     }.bind(this));
 
     if (this.postData.post.title) { // title exists
@@ -542,7 +548,7 @@ postile.view.post.Post.prototype.enterEditMode = function(req) {
     elements.postTitle_el.style.width = this.wrap_el.offsetWidth - 26 + 'px';
 
     if (req) {
-        elements.postTitle_el.innerHTML = this.postData.post.title;
+        elements.postTitle_el.value = this.postData.post.title;
     } else {
         elements.deleteIcon_el.style.display = '';
     }
