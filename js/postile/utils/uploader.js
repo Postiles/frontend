@@ -98,6 +98,13 @@ postile.uploader.submit = function(){ //  TODO check if browser is good
                     pictureImg_el.src = postile.conf.uploadsResource(['profile_image',filename]);
                 }
 
+                var small_pic_el = goog.dom.getElement('profile_image_container');
+                var small_pic_img_el = goog.dom.getElementsByTagNameAndClass('img', null, small_pic_el)[0];
+                console.log(small_pic_img_el);
+                if(small_pic_img_el){
+                    small_pic_img_el.src = postile.conf.uploadsResource(['profile_image',filename]);
+                }
+
                 // Change the profile in the database
                 postile.ajax(['profile', 'update_profile_image'],{image_url: 'profile_image/' + filename}, function(data){
 

@@ -4,6 +4,7 @@ goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('postile.conf');
 goog.require('postile.view');
+goog.require('postile.view.new_board');
 goog.require('postile.view.star');
 goog.require('postile.fx.effects');
 
@@ -71,8 +72,9 @@ postile.view.board_more_pop.OtherBoard = function(in_board_instance) {
 
     this.create_button = postile.dom.getDescendantByCondition(this.container, function(tag) { return tag.tagName && tag.tagName.toUpperCase() == 'P'; });
     
+    var new_board = new postile.view.new_board.NewBoard();
     goog.events.listen(this.create_button, goog.events.EventType.CLICK, function() {
-        new postile.view.new_board.NewBoard().open(500);
+        new_board.open(500);
     });
     
     this.boardList = postile.dom.getDescendantById(this.container, 'board_list');

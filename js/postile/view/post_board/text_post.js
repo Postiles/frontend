@@ -15,6 +15,30 @@ postile.view.post.text_post.TextPost.prototype.enterDisplayMode = function() {
 
     var elements = this.displayModeElements;
 
+    // This is really ugly
+    // If the text is too short, we need to put that in the center
+    var dummy_span = goog.dom.createDom('span', "dummy_span");
+    goog.dom.appendChild(this.wrap_el, dummy_span);
+    dummy_span.innerHTML = this.postData.post.content;
+    console.log(dummy_span);
+    var width = dummy_span.offsetWidth;
+    var height = dummy_span.offsetHeight;
+    console.log(width);
+
+    var wrapper_width = this.wrap_el.offsetWidth;
+    var wrapper_height = this.wrap_el.offsetHeight;
+    console.log(wrapper_width);
+    goog.dom.removeNode(dummy_span);
+
+    if(height < 20) { // one line only
+        if(wrapper_width > 1.5 * width){
+            elements.postContent_el.style.textAlign = 'center';
+            var marginTop = wrapper_height / 2 - 55; // by seeing the board....
+            elements.postContent_el.style.marginTop = marginTop + 'px';
+            elements.postContent_el.style.fontSize = '20px'
+        }
+    }
+
     elements.postContent_el.innerHTML = this.postData.post.content;
     elements.postContent_el.style.height = this.wrap_el.offsetHeight - 70 + 'px';
 

@@ -280,6 +280,7 @@ html, body {
 .post_content {
   position: relative;
   /* overflow: hidden; */
+  line-height: 140%;
   width: 100%; 
   cursor: default;
 }

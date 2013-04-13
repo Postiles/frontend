@@ -19,7 +19,6 @@ postile.view.profile.ProfileView = function(id) { // constructor
         this.initItems();
 
         this.addCloseButton(this.profile_el);
-        this.open(710);
     }.bind(this));
 }
 

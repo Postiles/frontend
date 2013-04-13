@@ -1,6 +1,7 @@
 goog.provide('postile.view.post_board.Header');
 
 goog.require('goog.events');
+goog.require('postile.view.profile');
 goog.require('goog.dom');
 goog.require('postile.dom');
 goog.require('postile.view.notification');
@@ -39,6 +40,12 @@ postile.view.post_board.Header = function(board) {
     this.usernameText_el = postile.dom.getDescendantById(instance.container, 'username_text');
     this.usernameText_el.innerHTML = this.board.userData.username;
 
+    var profileView = new postile.view.profile.ProfileView(postile.conf.currentUserId);
+
+    goog.events.listen(this.usernameText_el, goog.events.EventType.CLICK, function(){
+        profileView.open(710);
+    }.bind(this));
+
     /* Fei Pure for testing
     this.imageUploadPop = new postile.view.image_upload.ImageUploadBlock(this);
     goog.events.listen(this.usernameText_el, goog.events.EventType.CLICK, function(e) {
@@ -60,6 +67,9 @@ postile.view.post_board.Header = function(board) {
     this.profileImageContainer_el = postile.dom.getDescendantById(instance.container, 'profile_image_container');
     this.profileImageContainerImg_el = goog.dom.getElementByClass('image', this.profileImageContainer_el);
     this.profileImageContainerImg_el.src = postile.conf.uploadsResource([ this.board.userData.image_small_url ]);
+    goog.events.listen(this.profileImageContainer_el, goog.events.EventType.CLICK, function(){
+        profileView.open(710);
+    }.bind(this));
 
 
     // preload images for switching

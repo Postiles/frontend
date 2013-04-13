@@ -250,6 +250,7 @@ postile.view.post.Post.prototype.eventHandlers = {
     },
     profilePreviewHandler: function() {
         var profileView = new postile.view.profile.ProfileView(this.postData.creator.id);
+        profileView.open(710);
     },
     displayMode: function() {
         this.changeCurrentMode(postile.view.post.Post.PostMode.DISPLAY);
