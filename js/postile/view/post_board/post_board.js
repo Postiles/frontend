@@ -25,7 +25,7 @@ goog.require('goog.ui.Textarea');
 goog.require('postile.view.post_board.Header');
 goog.require('goog.events.KeyHandler');
 goog.require('postile.events');
-goog.require('postile.view.post_in_board');
+goog.require('postile.view.post');
 goog.require('postile.view.board_more_pop');
 goog.require('postile.view.confirm_delete');
 goog.require('postile.view.profile');
@@ -236,7 +236,7 @@ postile.view.post_board.PostBoard = function(board_id) {
     /**
      * "An object containing all posts,
      *  as key = post_id and value = Post object"
-     * @type {Object.<number, postile.view.post_in_board.Post>}
+     * @type {Object.<number, postile.view.post.Post>}
      * @see createPost, removePost, moveToPost, renderArray, fayeHandler.
      */
     this.currentPosts = {};
@@ -338,10 +338,10 @@ postile.view.post_board.PostBoard = function(board_id) {
                 instance.fayeHandler(status, data);
             });
             postile.faye.subscribe('status/'+instance.boardData.id, function(status, data){
-                console.log(data.users);
+                // console.log(data.users);
                 instance.onlinepeople.count = data.count;
                 instance.onlinepeople.id = data.users;
-                console.log(instance.onlinepeople.count);
+                // console.log(instance.onlinepeople.count);
                 instance.updateOnlinePeople();
             });
             postile.faye.subscribe('status/board/'+instance.boardData.id+''
@@ -364,7 +364,7 @@ goog.inherits(postile.view.post_board.PostBoard, postile.view.FullScreenView);
  * "Postile.view.View required component."
  * @override
  */
-postile.view.post_board.PostBoard.prototype.unloaded_stylesheets = ['fonts.css', 'post_board.css'];
+postile.view.post_board.PostBoard.prototype.unloaded_stylesheets = ['fonts.css', 'post_board.css', '_post_in_board.css'];
 
 /**
  * @type {string}
@@ -829,20 +829,31 @@ postile.view.post_board.NamedPostData;
  * @param {Array.<postile.view.post_board.NamedPostData} array
  */
 postile.view.post_board.PostBoard.prototype.renderArray = function(array) {
-    var i;
-    var animation = null;
-    for (i in array) {
-        if (!array[i].post.id) {
-            return;
-        }
-
-        if (array[i].post.id in this.currentPosts) { //if so // so what?
-            this.currentPosts[array[i].post.id].render(array[i]);
-        } else {
-            this.currentPosts[array[i].post.id] = postile.view.post_in_board.createPostFromJSON(array[i], this);
-        }
+    for (var i in array) {
+        this.renderPost(array[i]);
     }
 };
+
+/**
+ * @param {postData} post to render
+ * @param {mode} the mode that the post starts with
+ */
+postile.view.post_board.PostBoard.prototype.renderPost = function(postData, mode) {
+    mode = mode || postile.view.post.Post.PostMode.DISPLAY; // default to display mode
+
+    if (!postData.post.id) { // invalid post
+        return;
+    }
+
+    var postId = postData.post.id;
+
+    if (postId in this.currentPosts) { // old post to update
+        this.currentPosts[postId].postData = postData;
+        this.currentPosts[postId].changeCurrentMode(mode);
+    } else { // new post to add to list
+        this.currentPosts[postId] = postile.view.post.createPostFromJSON(postData, this, mode);
+    }
+}
 
 /**
  * @param {number} pid Post id to render.
@@ -870,62 +881,59 @@ postile.view.post_board.PostBoard.prototype.renderById = function(pid, callback)
  */
 postile.view.post_board.PostBoard.prototype.fayeHandler = function(status, data) {
     switch (status) {
-        case postile.view.post_board.faye_status.FINISH:
-            // Someone (could be this user) finished editing a post.
-            this.currentPosts[data.post.id].enable();
-            this.renderArray([data]);
-            break;
+    case postile.view.post_board.faye_status.FINISH:
+        var currPost = this.currentPosts[data.post.id];
 
-        case postile.view.post_board.faye_status.START:
-            // Someone (could be this user) started editing a post.
-            if (data.post.id in this.currentPosts) {
-                // If that post is loaded
-                if(!this.currentPosts[data.post.id].in_edit) {
-                    // ... and that post is not currently being edited by
-                    // this user: start JuHua animation.
-                    this.currentPosts[data.post.id].disable();
-                }
-            } else {
-                this.renderArray([data]);
-            }
-            break;
+        if (!currPost.isSelfPost()) { // not my own post
+            this.renderPost(data, postile.view.post.Post.PostMode.DISPLAY);
+        }
+        break;
 
-        case postile.view.post_board.faye_status.DELETE:
-            // Someone (could be this user) deleted a post.
-            if (data.post.id in this.currentPosts) {
-                // If that post is loaded: remove it from the view.
-                this.currentPosts[data.post.id].removeFromBoard();
+    case postile.view.post_board.faye_status.START:
+        var currPost = this.currentPosts[data.post.id];
+        if (data.post.id in this.currentPosts) { // already exists
+            if (!currPost.isSelfPost()) { // not my own post
+                currPost.changeCurrentMode(postile.view.post.Post.PostMode.LOCKED);
             }
-            break;
-        case postile.view.post_board.faye_status.INLINE_COMMENT:
-            if (data.inline_comment.post_id in this.currentPosts) {
-                var currPost = this.currentPosts[data.inline_comment.post_id];
-                currPost.resetCommentPreview(data);
-                currPost.hideNoCommentEl();
+        } else { // newly created
+            this.renderPost(data, postile.view.post.Post.PostMode.NEW);
+        }
+        break;
 
-                if (!currPost.inlineCommentRendered(data)) {
-                    currPost.inline_comments.push(data);
-                    currPost.appendInlineComment(data);
-                }
+    case postile.view.post_board.faye_status.DELETE:
+        // Someone (could be this user) deleted a post.
+        if (data.post.id in this.currentPosts) {
+            // If that post is loaded: remove it from the view.
+            this.currentPosts[data.post.id].removeFromBoard();
+        }
+        break;
+    case postile.view.post_board.faye_status.INLINE_COMMENT:
+        if (data.inline_comment.post_id in this.currentPosts) {
+            var currPost = this.currentPosts[data.inline_comment.post_id];
+            currPost.resetCommentPreview(data);
+            currPost.hideNoCommentEl();
+
+            if (!currPost.inlineCommentRendered(data)) {
+                currPost.inline_comments.push(data);
+                currPost.appendInlineComment(data);
             }
-            break;
+        }
+        break;
     }
 }
 
 postile.view.post_board.PostBoard.prototype.updateOnlinePeople = function() {
     var thecount = this.onlinepeople.count;
-    console.log("Count:"+thecount);
-    console.log(this.onlinepeople.view.container);
+    // console.log("Count:"+thecount);
+    // console.log(this.onlinepeople.view.container);
     var count_container = postile.dom.getDescendantById(this.onlinepeople.view.container
         ,'count');
-    console.log(count_container);
+    // console.log(count_container);
     count_container.innerHTML = thecount;
     var online_list = this.onlinepeople.view.online_list;
     online_list.innerHTML="";
-    console.log('haha');
-    console.log(this.onlinepeople.id.users);
+    // console.log(this.onlinepeople.id.users);
     for(var i = 0; i < this.onlinepeople.id.users.length; i++) {
-        console.log("rendering item");
         var item = new postile.view.onlinepeople.Item();
         item.renderItem(this.onlinepeople.view,"Testing ", "haha", this.onlinepeople.id.users[i]);
     }
@@ -941,8 +949,7 @@ postile.view.post_board.PostBoard.prototype.createPost = function(info) {
     ret.text_content = '';
 
     postile.ajax(['post', 'new'], req, function(data) {
-        instance.renderArray([ { post: data.message.post, creator: data.message.creator } ]);
-        instance.currentPosts[data.message.post.id].edit();
+        instance.renderPost(data.message, postile.view.post.Post.PostMode.EDIT);
     });
 }
 
@@ -956,7 +963,6 @@ postile.view.post_board.PostBoard.prototype.createImagePost = function(info, ima
 
     postile.ajax(['post', 'new'], req, function(data) {
         instance.renderArray([ { post: data.message.post, creator: data.message.creator} ]);
-        console.log(data);
         instance.currentPosts[data.message.post.id].edit("title");
         //postile.ajax(['post','submit_change'], {post_id: data.message.post.post_id},function(data){console.log(data);});
     });

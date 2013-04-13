@@ -1,36 +1,82 @@
-<div class="post_container">
-    <div class="post_inner_container">
-        <div class="post_top">
-            <span class="post_title"></span>
-            <span class="post_author"></span>
+<div class="display_mode_post mode">
+    <div class="post_container">
+        <div class="post_inner_container">
+            <div class="post_top">
+                <span class="post_title"></span>
+                <span class="post_author"></span>
+            </div>
+            <div class="post_middle_container">
+                <span class="post_like_container">
+                    <span class="post_like_heart">♡  </span>
+                    <span class="post_like_count"></span>
+                    <span class="post_like_middle"> &#8901; </span>
+                    <span class="post_like_button"></span>
+                </span>
+                <span class="post_edit_button">Edit</span>
+            </div>
+            <div class="post_content"></div>
         </div>
-        <div class="post_middle_container">
-            <span class="post_like_container">
-                <span class="post_like_count"></span>
-                <span class="post_like_middle"> &#8901; </span>
-                <span class="post_like_button"></span>
-            </span>
-            <span class="post_edit_button">Edit</span>
-        </div>
-        <div class="post_content"></div>
-    </div>
-    <div class="post_bottom">
-        <div class="comment_preview">
-            <span class="comment_preview_author"></span>
-            <span class="comment_preview_middle"></span>
-            <span class="comment_preview_content"></span>
-        </div>
-        <div class="comment_container">
-            <div class="comment_list">
-                <div class="comment_container_no_comment">
-                    No comment yet, be the first one to comment!
+        <div class="post_bottom">
+            <div class="comment_preview">
+                <div class="comment_preview_no_comment">Click here to comment</div>
+                <div class="comment_preview_display">
+                    <span class="comment_preview_author"></span>
+                    <span class="comment_preview_middle">: </span>
+                    <span class="comment_preview_content"></span>
                 </div>
-                <div class="comment_container_items"></div>
-            </div>
-            <div class="comment_container_bottom">
-                <input type="text" class="comment_container_input" placeholder="Enter your comment here...">
-                <div class="comment_list_close_button">Close</div>
             </div>
         </div>
+    </div>
+</div>
+
+<div class="comment_mode_post mode">
+    <div class="post_container">
+        <div class="post_inner_container">
+            <div class="post_top">
+                <span class="post_title"></span>
+                <span class="post_author"></span>
+            </div>
+        </div>
+        <div class="post_bottom">
+            <div class="comment_container">
+                <div class="comment_list">
+                    <div class="comment_container_no_comment">
+                        No comment yet, be the first one to comment!
+                    </div>
+                    <div class="comment_container_items"></div>
+                </div>
+                <div class="comment_container_bottom">
+                    <input type="text" class="comment_container_input" placeholder="Enter your comment here...">
+                    <div class="comment_list_close_button">Close</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="edit_mode_post mode">
+    <div class="post_container">
+        <div class="post_inner_container">
+            <div class="post_top">
+                <span class="post_title selectable" contenteditable="true"></span>
+            </div>
+            <div class="post_wysiwyf_icon_container"></div>
+            <div class="post_content selectable" contenteditable="true"></div>
+        </div>
+        <div class="post_remove_icon"></div>
+    </div>
+</div>
+
+<div class="locked_mode_post mode">
+    <div class="lock_display">
+        <span class="lock_username"></span>
+        <span class="lock_text"> is editing</span>
+    </div>
+</div>
+
+<div class="new_mode_post mode">
+    <div class="new_display">
+        <span class="new_username"></span>
+        <span class="new_text">'s new post</span>
     </div>
 </div>

@@ -113,10 +113,10 @@ postile.view.post_board.PostCreator.prototype.mousemove = function(e) {
     var intersect = false;
     for (i in this.board.currentPosts) {
         //from http://stackoverflow.com/questions/2752349/fast-rectangle-to-rectangle-intersection
-        if(!(current[0] >= this.board.currentPosts[i].post.coord_x_end 
-                    || end[0] <= this.board.currentPosts[i].post.pos_x 
-                    || current[1] >=this.board.currentPosts[i].post.coord_y_end 
-                    || end[1] <= this.board.currentPosts[i].post.pos_y)) { 
+        if(!(current[0] >= this.board.currentPosts[i].postData.post.coord_x_end 
+                    || end[0] <= this.board.currentPosts[i].postData.post.pos_x 
+                    || current[1] >=this.board.currentPosts[i].postData.post.coord_y_end 
+                    || end[1] <= this.board.currentPosts[i].postData.post.pos_y)) { 
             intersect = true;
             break;
         }

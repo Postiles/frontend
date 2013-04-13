@@ -1,4 +1,5 @@
 #onlinepeople_container {
+    display: none;
   z-index: -1;
   width: 300px;
   line-height: 100%;
