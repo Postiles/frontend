@@ -1,6 +1,7 @@
 goog.provide('postile.view.BoardList');
 
 goog.require('goog.dom');
+goog.require('postile.view.new_board');
 goog.require('postile.view');
 goog.require('goog.events');
 goog.require('postile.dom');
@@ -15,8 +16,9 @@ postile.view.BoardList = function(topic) {
     this.wrap_el = postile.dom.getDescendantByClass(this.container, "board_list");
     this.subject = postile.dom.getDescendantByClass(this.container, "subject");
     this.add = postile.dom.getDescendantByClass(this.subject, "add");
+    var new_board = new postile.view.new_board.NewBoard();
     goog.events.listen(this.add, goog.events.EventType.CLICK, function() {
-        alert("This function is under YuFei's 集中整治");
+        new_board.open(500);
     });
     postile.ajax([ 'board', 'get_boards_in_topic' ], { topic_id: topic }, function(data) {
         /* handle the data return after getting the boards information back */
