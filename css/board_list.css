@@ -1,0 +1,68 @@
+.board_list_catchall {
+    background: url(/images/paper_bg.png);
+}
+
+.board_list {
+    width: 980px;
+    margin: 0 auto;
+    background: #cfdade;
+    box-shadow: 0 0 6px rgba(2, 77, 97, 0.4);
+    height: 100%;
+}
+
+.board_list .subject {
+    margin: 0 20px;
+    font-size: 22pt;
+    padding: 28px 4px 20px 4px; 
+    border-bottom: 1px solid #999;
+    color: #333;
+    margin-bottom: 28px;
+}
+
+.board_list .board_single {
+    float: left;
+    width: 300px;
+    margin-left: 20px;
+    height: 92px;
+    background: #F5F5F5;
+    margin-bottom: 20px;
+}
+
+.board_list .board_single img {
+    width: 50px;
+    height: 50px;
+    margin-top: 21px;
+    margin-left: 15px;
+    float: left;
+    display: block;
+}
+
+.board_list .board_single .board_meta {
+    float: left;
+    margin-top: 16px;
+    margin-left: 16px;
+}
+
+.board_list .board_single .board_meta .title {
+    font-weight: bold;
+    color: #024d61;
+    font-size: 13pt;
+    height: 20px;
+    line-height: 20px;
+}
+
+.board_list .board_single .board_meta .description {
+    color: #333;
+    font-size: 11pt;
+    height: 20px;
+    line-height: 20px;
+    margin-top: 2px;
+}
+
+.board_list .board_single .board_meta .meta {
+    color: #666;
+    font-size: 10pt;
+    line-height: 16px;
+    height: 16px;
+    margin-top: 2px;
+}

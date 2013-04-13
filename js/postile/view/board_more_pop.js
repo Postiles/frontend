@@ -116,6 +116,8 @@ postile.view.board_more_pop.OtherBoard.prototype.close = function(){
 
 
 postile.view.board_more_pop.OtherBoard.prototype.renderBoardListItem = function(data) {
+    console.log(data);
+
     var boardInfor = data.board;
     var nextBoardId = boardInfor.id;
     var boardName = boardInfor.name;
