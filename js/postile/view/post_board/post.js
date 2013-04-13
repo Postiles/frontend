@@ -23,6 +23,7 @@ goog.require('postile.view.post_expand');
 goog.require('postile.view.post.text_post');
 goog.require('postile.view.post.picture_post');
 goog.require('postile.view.post.video_post');
+goog.require('postile.view.post.PostExpand');
 
 /**
  * A factory function that creates a post from JSON data retrieved from the server

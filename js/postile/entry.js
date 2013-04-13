@@ -13,6 +13,7 @@ goog.require('postile.view.create_user');
 goog.require('postile.view.profile');
 goog.require('postile.ui');
 goog.require('postile.feedback');
+goog.require('postile.log');
 
 /**
  * Exported entry point.
@@ -29,6 +30,7 @@ postile.entry.main = function() {
  * Originally known as postile.init.
  */
 postile.entry.router_dispatch = function() {
+    postile.log.i('router_dispatch');
     postile.conf.initDbgConfiguration();
     postile.router.init();
     postile.entry.init_router_map();
