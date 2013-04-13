@@ -42,8 +42,7 @@
     top: 0px; } }
 
 #upload_video_pop {
-  width: 400px;
-  font-family: OxygenLight; }
+  width: 400px; }
   #upload_video_pop .video_button {
     font-size: 14px;
     background: #024d61;
