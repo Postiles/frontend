@@ -107,6 +107,9 @@ postile.WYSIWYF = {
             editor.buttons[i].style.width = '13px';
             editor.buttons[i].style.height = '13px';
             editor.buttons[i].style.padding = '0';
+            editor.buttons[i].style.cursor = 'pointer';
+            editor.buttons[i].style.cssFloat = 'left';
+            editor.buttons[i].style.marginLeft = '8px';
             editor.buttons[i].style.backgroundPosition = postile.WYSIWYF.editButtons[i].bgPos;
             editor.buttons[i].addEventListener('mousedown', function(evt) { evt.preventDefault(); });
             editor.buttons[i].onclick = function() { if (!editor.selectionInEditor()) { return; } editor.buttonOperate(this.style.backgroundPosition.toLowerCase()); } 
