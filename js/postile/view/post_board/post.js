@@ -135,6 +135,8 @@ postile.view.post.Post.prototype.loadDisplayModeUIComponents = function() {
     this.displayModeElements = {
         container_el: $('post_container'),
         postInnerContainer_el: $('post_inner_container'),
+        postTitleContainer_el: $('post_title_container'),
+        postNoTitle_el: $('post_no_title'),
         postTitle_el: $('post_title'),
         postAuthor_el: $('post_author'),
         postContent_el: $('post_content'),
@@ -162,6 +164,8 @@ postile.view.post.Post.prototype.loadCommentModeUIComponents = function() {
     this.commentModeElements = {
         container_el: $('post_container'),
         postInnerContainer_el: $('post_inner_container'),
+        postTitleContainer_el: $('post_title_container'),
+        postNoTitle_el: $('post_no_title'),
         postTitle_el: $('post_title'),
         postAuthor_el: $('post_author'),
         commentContainer_el: $('comment_container'),
@@ -304,7 +308,7 @@ postile.view.post.Post.prototype.initDisplayModeListener = function() {
     this.displayModeListeners = {
         // expand post
         titleClick: new postile.events.EventHandler(
-                elements.postTitle_el, goog.events.EventType.CLICK, 
+                elements.postTitleContainer_el, goog.events.EventType.CLICK, 
                 this.eventHandlers.postExpandHandler.bind(this)),
         // display user profile
         authorClick: new postile.events.EventHandler(
@@ -333,6 +337,10 @@ postile.view.post.Post.prototype.initDisplayModeListener = function() {
 postile.view.post.Post.prototype.initCommentModeListener = function() {
     var elements = this.commentModeElements;
     this.commentModeListeners = {
+        // expand post
+        titleClick: new postile.events.EventHandler(
+                elements.postTitleContainer_el, goog.events.EventType.CLICK, 
+                this.eventHandlers.postExpandHandler.bind(this)),
         // enter pressed for comment input
         inputEnterKey: new postile.events.EventHandler(
                 elements.commentInput_el, goog.events.EventType.KEYDOWN,
@@ -431,8 +439,8 @@ postile.view.post.Post.prototype.enterDisplayMode = function() {
         elements.postAuthor_el.innerHTML = data.username;
     }.bind(this));
 
-    if (this.postData.post.title) { // title not empty
-        elements.postAuthor_el.style.marginLeft = '20px';
+    if (this.postData.post.title) { // title exists
+        elements.postNoTitle_el.style.display = 'none';
     }
 
     var liked_users = this.postData.likes.map(function(l) {
@@ -482,7 +490,6 @@ postile.view.post.Post.prototype.enterCommentMode = function() {
     this.newModePost_el.style.display = 'none';
     this.confirmDeleteModePost_el.style.display = 'none';
 
-
     var elements = this.commentModeElements;
     elements.postTitle_el.innerHTML = this.postData.post.title;
     elements.postAuthor_el.innerHTML = this.postData.creator.username;
@@ -490,6 +497,10 @@ postile.view.post.Post.prototype.enterCommentMode = function() {
             this.wrap_el.offsetHeight - elements.postInnerContainer_el.offsetHeight + 'px';
     elements.commentInput_el.style.width = 
             this.wrap_el.offsetWidth - 60 + 'px';
+
+    if (this.postData.post.title) { // title exists
+        elements.postNoTitle_el.style.display = 'none';
+    }
 
     var comments = this.postData.inline_comments;
     if (comments.length > 0) {

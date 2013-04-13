@@ -105,7 +105,7 @@
     }
 
     .edit_mode_post {
-        .post_title {
+        .post_title_container {
             &:hover {
                 text-decoration: none !important;
                 cursor: auto !important;
@@ -203,9 +203,9 @@
     }
 
     .post_top {
+        height: 18px;
         color: #024d61;
         font-size: 10pt;
-        display: table-cell;
     }
 
     .picture_post .post_top {
@@ -216,7 +216,7 @@
         color: whitesmoke;
     }
 
-    .post_title {
+    .post_title_container {
         float: left;
         white-space: nowrap;
         overflow: hidden;
@@ -224,6 +224,13 @@
 
         &:hover {
             text-decoration: underline;
+        }
+
+        .post_no_title {
+            color: #aaa;
+            &:hover {
+                text-decoration: underline;
+            }
         }
     }
 
@@ -327,7 +334,7 @@
     .post_inner_container {
         background: rgba(0, 0, 0, 0.5);
 
-        .post_title {
+        .post_title_container {
             color: whitesmoke;
         }
 

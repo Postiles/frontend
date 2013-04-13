@@ -860,10 +860,22 @@ postile.view.post_board.PostBoard.prototype.renderPost = function(postData, mode
     var postId = postData.post.id;
 
     if (postId in this.currentPosts) { // old post to update
-        this.currentPosts[postId].postData = postData;
+        // update postData attributes
+        for (var i in this.currentPosts[postId].postData.post) {
+            if (postData.post[i] && this.currentPosts[postId].postData.post[i] != postData.post[i]) {
+                this.currentPosts[postId].postData.post[i] = postData.post[i];
+            }
+        }
+
         this.currentPosts[postId].changeCurrentMode(mode);
     } else { // new post to add to list
         this.currentPosts[postId] = postile.view.post.createPostFromJSON(postData, this, mode);
+    }
+
+    if (postData.post.in_edit) {
+        if (!this.currentPosts[postId].isSelfPost()) {
+            this.currentPosts[postId].changeCurrentMode(postile.view.post.Post.PostMode.LOCKED);
+        }
     }
 }
 
