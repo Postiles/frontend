@@ -943,13 +943,17 @@ postile.view.post_board.PostBoard.prototype.fayeHandler = function(status, data)
     case postile.view.post_board.faye_status.INLINE_COMMENT:
         if (data.inline_comment.post_id in this.currentPosts) {
             var currPost = this.currentPosts[data.inline_comment.post_id];
-            currPost.resetCommentPreview(data);
-            currPost.hideNoCommentEl();
 
             if (!currPost.inlineCommentRendered(data)) {
                 currPost.postData.inline_comments.push(data);
                 currPost.appendInlineComment(data);
             }
+
+            currPost.hideNoCommentEl();
+
+            // note that this line should be put after appendInlineComment to 
+            // get the correct count
+            currPost.resetCommentPreview(data);
         }
         break;
     }

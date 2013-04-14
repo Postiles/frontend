@@ -521,18 +521,7 @@ postile.view.post.Post.prototype.enterDisplayMode = function() {
     }
 
     // display number of comments
-    var commentCount = this.postData.inline_comments.length;
-    var commentCountText;
-
-    if (commentCount == 0) {
-        commentCountText = 'no comment';
-    } else if (commentCount == 1) {
-        commentCountText = '1 comment';
-    } else {
-        commentCountText = commentCount + ' comments';
-    }
-    
-    elements.postCommentCount_el.innerHTML = commentCountText;
+    this.resetCommentCount();
 
     if (this.isSelfPost()) { // my own post
         // elements.postContent_el.style.cursor = 'auto';
@@ -712,9 +701,12 @@ postile.view.post.Post.prototype.resetCommentPreview = function(data) {
 
         postile.data_manager.getUserData(data.inline_comment.creator_id, function(userData) {
             elements.commentPreviewNoComment_el.style.display = 'none';
-            elements.commentPreviewDisplay_el.style.display = 'block';
+            elements.commentPreviewDisplay_el.style.display = 'table-cell';
             elements.commentPreviewAuthor_el.innerHTML = userData.username;
             elements.commentPreviewContent_el.innerHTML = data.inline_comment.content;
+            // reset width since length of different usernames are different
+            elements.commentPreviewContent_el.style.width = this.wrap_el.offsetWidth - 
+                    elements.commentPreviewAuthor_el.offsetWidth - 36 + 'px';
 
             fadein = setInterval(function() {
                 opacity += 0.1;
@@ -727,6 +719,22 @@ postile.view.post.Post.prototype.resetCommentPreview = function(data) {
         clearInterval(fadein);
     }, 600);
 
+    this.resetCommentCount();
+}
+
+postile.view.post.Post.prototype.resetCommentCount = function() {
+    var commentCount = this.postData.inline_comments.length;
+    var commentCountText;
+
+    if (commentCount == 0) {
+        commentCountText = 'no comment';
+    } else if (commentCount == 1) {
+        commentCountText = '1 comment';
+    } else {
+        commentCountText = commentCount + ' comments';
+    }
+    
+    this.displayModeElements.postCommentCount_el.innerHTML = commentCountText;
 }
 
 postile.view.post.Post.prototype.hideNoCommentEl = function() {
