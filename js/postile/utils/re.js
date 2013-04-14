@@ -12,7 +12,9 @@ postile.re.getEmbed = function(http_link){
 		// link is from youtube
 		video_id = http_link.match(/v=(\w*)/)[1];
 		return 'http://www.youtube.com/embed/' + video_id;
-
+	}else if(http_link.match(/56.com/) && !http_link.match(/embed/)){
+		video_id = http_link.match(/v_(\w*)/)[1];
+		return 'http://www.56.com/iframe/' + video_id;
 	}else if(http_link.match(/youku/) && !http_link.match(/embed/)){
 		video_id = http_link.match(/id_(\w*)/)[1];
 		return 'http://player.youku.com/embed/' + video_id;
