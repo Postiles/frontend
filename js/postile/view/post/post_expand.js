@@ -65,16 +65,19 @@ postile.view.post.PostExpand.prototype.open = function() {
                 instance.img_el.style.height = '90%';
                 // change margin top for putting the image in the middle
                 // TODO
-                console.log(instance.content_el.offsetWidth);
-                var margin_left = (instance.content_el.offsetWidth - img_el_width) / 2;
+                var margin_left = (instance.content_el.offsetWidth - instance.img_el.clientWidth) / 2;
+                var margin_top = (instance.content_el.offsetHeight - instance.img_el.clientHeight) / 2;
+                instance.img_el.style.marginTop = margin_top + 'px';
                 instance.img_el.style.marginLeft = margin_left + 'px';
 
             }else{
-                instance.img_el.style.width = '90%';
+                instance.img_el.style.width = '100%';
                 // change margin top for putting the image in the middle
                 // TODO
-                var margin_top = (instance.content_el.offsetHeight - img_el_height) / 2;
+                var margin_top = (instance.content_el.offsetHeight - instance.img_el.clientHeight) / 2;
+                var margin_left = (instance.content_el.offsetWidth - instance.img_el.clientWidth) / 2;
                 instance.img_el.style.marginTop = margin_top + 'px';
+                instance.img_el.style.marginLeft = margin_left + 'px';
             }
             instance.title_el.style.fontSize = '14px';
             instance.title_el.style.width = '300px';
@@ -87,6 +90,34 @@ postile.view.post.PostExpand.prototype.open = function() {
             instance.author_el.style.fontSize = '14px';
         }
 
+    
+    } else if(this.postData.video_link) { //  video post
+
+
+        this.iframe = goog.dom.createDom('iframe', {
+            'class': 'post_expand_video',
+            'src'  : this.postData.video_link,
+            'frameborder': '0'
+        });
+        this.iframe.setAttribute('allowFullScreen', '')
+        goog.dom.appendChild(this.content_el, this.iframe);
+
+        this.iframe.style.width = '100%';
+        this.iframe.style.height = '90%';
+
+
+
+
+        // title and author
+        instance.title_el.style.fontSize = '14px';
+        instance.title_el.style.width = '300px';
+        instance.title_el.style.float = 'left';
+        instance.title_el.style.marginTop = '10px';
+        instance.title_el.style.marginBottom = '5px';
+
+        instance.author_el.style.display = 'inline-block';
+        instance.author_el.style.float = 'right';
+        instance.author_el.style.fontSize = '14px';
 
     } else {
 
