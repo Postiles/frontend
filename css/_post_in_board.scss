@@ -47,6 +47,7 @@
             .comment_container {
                 width: 100%;
                 background: #cfdade;
+                padding-top: 3px;
 
                 .comment_list {
                     margin-top: 4px;
@@ -104,6 +105,7 @@
                 }
 
                 .comment_container_input {
+                    float: left;
                     margin-top: 2px;
                     margin-left: 8px;
                     padding: 2px 5px;
@@ -316,6 +318,16 @@
         }
     }
 
+    .post_delete_icon {
+        background-image: url("../images/new_delete.png");
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+        right: -10px;
+        top: -10px;
+    }
+
     .post_bottom {
         position: absolute;
         width: 100%;
@@ -379,6 +391,7 @@
 
         .post_title {
             color: whitesmoke !important;
+            background: rgba(0, 0, 0, 0);
         }
 
         .post_author {

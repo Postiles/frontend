@@ -29,7 +29,8 @@
       top: -20px; }
   .post_wrap .comment_mode_post .post_bottom .comment_container {
     width: 100%;
-    background: #cfdade; }
+    background: #cfdade;
+    padding-top: 3px; }
     .post_wrap .comment_mode_post .post_bottom .comment_container .comment_list {
       margin-top: 4px;
       overflow-y: auto; }
@@ -63,6 +64,7 @@
       width: 100%;
       height: 24px; }
     .post_wrap .comment_mode_post .post_bottom .comment_container .comment_container_input {
+      float: left;
       margin-top: 2px;
       margin-left: 8px;
       padding: 2px 5px;
@@ -191,6 +193,14 @@
     cursor: pointer; }
     .post_container .post_edit_button:hover {
       text-decoration: underline; }
+  .post_container .post_delete_icon {
+    background-image: url("../images/new_delete.png");
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    right: -10px;
+    top: -10px; }
   .post_container .post_bottom {
     position: absolute;
     width: 100%;
@@ -232,7 +242,8 @@
   .picture_post .post_inner_container {
     background: rgba(0, 0, 0, 0.5); }
     .picture_post .post_inner_container .post_title {
-      color: whitesmoke !important; }
+      color: whitesmoke !important;
+      background: rgba(0, 0, 0, 0); }
     .picture_post .post_inner_container .post_author {
       color: whitesmoke !important; }
     .picture_post .post_inner_container .post_like_container {

@@ -293,7 +293,7 @@ postile.view.post.Post.prototype.eventHandlers = {
     },
     commentKeyDown: function(e) {
         if (e.keyCode == 13) { // enter pressed
-           var content = goog.string.trim(this.commentModeElements.commentInput_el.value);
+           var content = goog.string.trim(this.commentModeElements.commentInput_el.innerHTML);
 
            if (content.length) { // not empty comment
                 postile.ajax([ 'inline_comment', 'new' ], {
@@ -318,7 +318,7 @@ postile.view.post.Post.prototype.eventHandlers = {
                     this.hideNoCommentEl();
                 }.bind(this));
 
-                this.commentModeElements.commentInput_el.value = ''; // clear the input field
+                this.commentModeElements.commentInput_el.innerHTML = ''; // clear the input field
            }
         }
     },
@@ -581,10 +581,10 @@ postile.view.post.Post.prototype.enterCommentMode = function() {
     }.bind(this));
 
     elements.commentContainer_el.style.height = 
-            this.wrap_el.offsetHeight - elements.postInnerContainer_el.offsetHeight + 'px';
+            this.wrap_el.offsetHeight - elements.postInnerContainer_el.offsetHeight - 3 + 'px'; // 3 is padding
     elements.commentList_el.style.height = parseInt(elements.commentContainer_el.style.height) - 34 + 'px'
 
-    elements.commentInput_el.style.width = this.wrap_el.offsetWidth - 60 + 'px';
+    elements.commentInput_el.style.width = this.wrap_el.offsetWidth - 65 + 'px';
     elements.commentInput_el.focus();
 
     if (this.postData.post.title) { // title exists
