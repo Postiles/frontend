@@ -147,7 +147,6 @@
     font-size: 14pt;
     margin-top: 60px;
     margin-bottom: 12px;
-    word-wrap: break-word;
 }
 
 .gateway .right .count {
@@ -163,7 +162,7 @@
     font-size: 10pt;
     line-height: 16px;
     margin-top: 15px;
-    word-wrap: break-word;
+   word-break: break-word;
 }
 
 .gateway .right .button {
@@ -222,4 +221,8 @@
     top: -4px;
     background-color: #0c85a9;
     border-radius: 4px;
+}
+
+.gateway .right .one_recent_post .content {
+    word-break: break-word;
 }
