@@ -212,16 +212,26 @@
     font-size: 9pt;
     padding: 2px 12px;
     background: #cfdade;
-    white-space: nowrap;
-    overflow: hidden;
     display: none; }
+  .post_container .comment_preview_no_comment {
+    color: #999; }
+  .post_container .comment_preview_display {
+    display: table-cell; }
   .post_container .comment_preview_author {
+    float: left;
     cursor: pointer;
     color: #537cbe; }
-  .post_container .comment_preview_author:hover {
-    text-decoration: underline; }
+    .post_container .comment_preview_author:hover {
+      text-decoration: underline; }
+  .post_container .comment_preview_middle {
+    float: left;
+    margin-right: 3px; }
   .post_container .comment_preview_content {
-    color: black; }
+    float: left;
+    color: #024d61;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; }
 
 .text_post .post_gradient_mask {
   position: absolute;

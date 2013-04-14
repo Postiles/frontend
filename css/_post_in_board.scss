@@ -337,22 +337,38 @@
         font-size: 9pt;
         padding: 2px 12px;
         background: #cfdade;
-        white-space: nowrap;
-        overflow: hidden;
         display: none;
     }
 
-    .comment_preview_author {
-        cursor: pointer;
-        color: #537cbe;
+    .comment_preview_no_comment {
+        color: #999;
     }
 
-    .comment_preview_author:hover {
-        text-decoration: underline;
+    .comment_preview_display {
+        display: table-cell;
+    }
+
+    .comment_preview_author {
+        float: left;
+        cursor: pointer;
+        color: #537cbe;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
+    .comment_preview_middle {
+        float: left;
+        margin-right: 3px;
     }
 
     .comment_preview_content {
-        color: black;
+        float: left;
+        color: #024d61;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 }
 

@@ -516,7 +516,10 @@ postile.view.post.Post.prototype.enterDisplayMode = function() {
             elements.commentPreviewContent_el.innerHTML = latestComment.inline_comment.content;
             elements.commentPreviewNoComment_el.style.display = 'none';
             elements.commentPreview_el.style.display = 'block';
-        });
+
+            elements.commentPreviewContent_el.style.width = this.wrap_el.offsetWidth - 
+                    elements.commentPreviewAuthor_el.offsetWidth - 36 + 'px';
+        }.bind(this));
     } else { // no comment
         elements.commentPreviewDisplay_el.style.display = 'none';
         elements.commentPreview_el.style.display = 'block';
@@ -548,8 +551,9 @@ postile.view.post.Post.prototype.enterCommentMode = function() {
     elements.commentContainer_el.style.height = 
             this.wrap_el.offsetHeight - elements.postInnerContainer_el.offsetHeight + 'px';
     elements.commentList_el.style.height = parseInt(elements.commentContainer_el.style.height) - 34 + 'px'
-    elements.commentInput_el.style.width = 
-            this.wrap_el.offsetWidth - 60 + 'px';
+
+    elements.commentInput_el.style.width = this.wrap_el.offsetWidth - 60 + 'px';
+    elements.commentInput_el.focus();
 
     if (this.postData.post.title) { // title exists
         elements.postNoTitle_el.style.display = 'none';
@@ -565,6 +569,8 @@ postile.view.post.Post.prototype.enterCommentMode = function() {
         }
     } else { // no comment
     }
+
+    elements.commentList_el.scrollTop = elements.commentList_el.scrollHeight;
 }
 
 postile.view.post.Post.prototype.enterEditMode = function(req) {
