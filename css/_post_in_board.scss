@@ -15,6 +15,29 @@
         .post_content {
             overflow: hidden;
         }
+
+        .post_quote_mark {
+            position: absolute;
+            top: 50%;
+            left: 0px;
+            width: 100%;
+            font-family: Helvetica;
+            font-size: 80pt;
+            opacity: 0.3;
+            display: none;
+
+            .quote_1 {
+                position: absolute;
+                left: 20px;
+                top: -50px;
+            }
+
+            .quote_2 {
+                position: absolute;
+                right: 20px;
+                top: -20px;
+            }
+        }
     }
 
     .comment_mode_post {

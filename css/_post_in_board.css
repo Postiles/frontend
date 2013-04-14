@@ -10,6 +10,23 @@
     height: 100%; }
   .post_wrap .display_mode_post .post_content {
     overflow: hidden; }
+  .post_wrap .display_mode_post .post_quote_mark {
+    position: absolute;
+    top: 50%;
+    left: 0px;
+    width: 100%;
+    font-family: Helvetica;
+    font-size: 80pt;
+    opacity: 0.3;
+    display: none; }
+    .post_wrap .display_mode_post .post_quote_mark .quote_1 {
+      position: absolute;
+      left: 20px;
+      top: -50px; }
+    .post_wrap .display_mode_post .post_quote_mark .quote_2 {
+      position: absolute;
+      right: 20px;
+      top: -20px; }
   .post_wrap .comment_mode_post .post_bottom .comment_container {
     width: 100%;
     background: #cfdade; }

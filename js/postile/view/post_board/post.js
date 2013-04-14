@@ -145,6 +145,9 @@ postile.view.post.Post.prototype.loadDisplayModeUIComponents = function() {
         postTitle_el: $('post_title'),
         postAuthor_el: $('post_author'),
         postContent_el: $('post_content'),
+        postQuoteMark_el: $('post_quote_mark'),
+        postQuote1_el: $('quote_1'),
+        postQuote2_el: $('quote_2'),
         postGradientMask_el: $('post_gradient_mask'),
         postEditButton_el: $('post_edit_button'),
         postLikeContainer_el: $('post_like_container'),
@@ -273,20 +276,30 @@ postile.view.post.Post.prototype.eventHandlers = {
     commentKeyDown: function(e) {
         if (e.keyCode == 13) { // enter pressed
            var content = goog.string.trim(this.commentModeElements.commentInput_el.value);
-           if (content.length) {
+
+           if (content.length) { // not empty comment
                 postile.ajax([ 'inline_comment', 'new' ], {
                     post_id: this.postData.post.id,
                     content: content,
                 }, function(data) {
                     var comment = data.message;
-                    // add the new comment to list
-                    this.postData.inline_comments.push(comment);
-                    new postile.view.post.InlineComment(this.commentModeElements.commentItems_el, comment);
+                    if (!this.inlineCommentRendered(comment)) { // not yet rendered
+                        // add the new comment to list
+                        this.postData.inline_comments.push(comment);
+
+                        new postile.view.post.InlineComment(
+                                this.commentModeElements.commentItems_el, comment);
+                    }
 
                     // scroll the comment list to the bottom
-                    this.commentModeElements.commentList_el.scrollTop = this.commentModeElements.commentList_el.scrollHeight;
-                    this.commentModeElements.commentContainerNoComment_el.style.display = 'none';
+                    // even if the comment is already rendered, we still scroll it to the bottom
+                    // since it's my own comment
+                    this.commentModeElements.commentList_el.scrollTop = 
+                            this.commentModeElements.commentList_el.scrollHeight;
+
+                    this.hideNoCommentEl();
                 }.bind(this));
+
                 this.commentModeElements.commentInput_el.value = ''; // clear the input field
            }
         }
@@ -337,9 +350,11 @@ postile.view.post.Post.prototype.initDisplayModeListener = function() {
                 elements.postAuthor_el, goog.events.EventType.CLICK,
                 this.eventHandlers.profilePreviewHandler.bind(this)),
         // enter edit mode by clicking on content
+        /*
         contentClick: new postile.events.EventHandler(
                 elements.postContent_el, goog.events.EventType.CLICK,
                 this.eventHandlers.editMode.bind(this)),
+        */
         // enter edit mode by clicking on edit button
         editClick: new postile.events.EventHandler(
                 elements.postEditButton_el, goog.events.EventType.CLICK,
@@ -484,10 +499,10 @@ postile.view.post.Post.prototype.enterDisplayMode = function() {
     }
 
     if (this.isSelfPost()) { // my own post
-        elements.postContent_el.style.cursor = 'auto';
+        // elements.postContent_el.style.cursor = 'auto';
     } else {
         elements.postEditButton_el.style.display = 'none';
-        elements.postContent_el.style.cursor = 'default';
+        // elements.postContent_el.style.cursor = 'default';
     }
 
     // latest inline comment
@@ -542,15 +557,13 @@ postile.view.post.Post.prototype.enterCommentMode = function() {
 
     var comments = this.postData.inline_comments;
     goog.dom.removeChildren(elements.commentItems_el);
+
     if (comments.length > 0) {
         elements.commentContainerNoComment_el.style.display = 'none';
         for (var i in comments) {
             new postile.view.post.InlineComment(elements.commentItems_el, comments[i]);
         }
     } else { // no comment
-        for (var i in comments) {
-            // TODO
-        }
     }
 }
 
@@ -639,7 +652,58 @@ postile.view.post.Post.prototype.isSelfPost = function() {
     return localStorage.postile_user_id == this.postData.post.creator_id;
 }
 
-postile.view.post.InlineComment = function(icb, single_comment_data) {
+postile.view.post.Post.prototype.resetCommentPreview = function(data) {
+    var elements = this.displayModeElements;
+
+    var preview_el = elements.commentPreview_el;
+
+    var opacity = 1.0;
+
+    var fadeout = setInterval(function() {
+        opacity -= 0.1;
+        preview_el.style.opacity = opacity;
+    }, 30);
+
+    var fadein;
+    setTimeout(function() {
+        clearInterval(fadeout);
+
+        postile.data_manager.getUserData(data.inline_comment.creator_id, function(userData) {
+            elements.commentPreviewNoComment_el.style.display = 'none';
+            elements.commentPreviewDisplay_el.style.display = 'block';
+            elements.commentPreviewAuthor_el.innerHTML = userData.username;
+            elements.commentPreviewContent_el.innerHTML = data.inline_comment.content;
+
+            fadein = setInterval(function() {
+                opacity += 0.1;
+                preview_el.style.opacity = opacity;
+            }, 30);
+        }.bind(this));
+    }, 300);
+
+    setTimeout(function() {
+        clearInterval(fadein);
+    }, 600);
+
+}
+
+postile.view.post.Post.prototype.hideNoCommentEl = function() {
+    this.commentModeElements.commentContainerNoComment_el.style.display = 'none';
+}
+
+postile.view.post.Post.prototype.inlineCommentRendered = function(comment) {
+    var comment_ids = this.postData.inline_comments.map(function(c) {
+        return c.inline_comment.id;
+    });
+
+    return (comment_ids.indexOf(comment.inline_comment.id) != -1);
+}
+
+postile.view.post.Post.prototype.appendInlineComment = function(comment) {
+    new postile.view.post.InlineComment(this.commentModeElements.commentItems_el, comment);
+}
+
+postile.view.post.InlineComment = function(commentContainer, single_comment_data) {
     this.comment_container = goog.dom.createDom("div", "post_comment");
 
     postile.data_manager.getUserData(single_comment_data.inline_comment.creator_id, function(data) {
@@ -670,7 +734,7 @@ postile.view.post.InlineComment = function(icb, single_comment_data) {
             fetchUsername(all_atp[i]);
         }
 
-        goog.dom.appendChild(icb, this.comment_container);
+        goog.dom.appendChild(commentContainer, this.comment_container);
 
     }.bind(this));
 }

@@ -947,7 +947,7 @@ postile.view.post_board.PostBoard.prototype.fayeHandler = function(status, data)
             currPost.hideNoCommentEl();
 
             if (!currPost.inlineCommentRendered(data)) {
-                currPost.inline_comments.push(data);
+                currPost.postData.inline_comments.push(data);
                 currPost.appendInlineComment(data);
             }
         }

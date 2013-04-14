@@ -669,16 +669,14 @@ postile.view.post_in_board.Post.prototype.renderInlineComments = function(conten
         for (var i in this.inline_comments) {
             var cmt = new postile.view.post_in_board.InlineComment(
                     this.comment_container_items_el, this.inline_comments[i]);
-            this.hideNoCommentEl();
         }
-
+        this.hideNoCommentEl();
     }
 }
 
 postile.view.post_in_board.Post.prototype.appendInlineComment = function(comment) {
     var cmt = new postile.view.post_in_board.InlineComment(
             this.comment_container_items_el, comment);
-
 }
 
 postile.view.post_in_board.Post.prototype.set_max_displayable_comment_preview = function(content) {

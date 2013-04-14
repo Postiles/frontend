@@ -3,11 +3,11 @@ html, body {
 	margin: 0;
 	border: 0 none;
     height: 100%;
+    font-family: RobotoRegular;
 }
 
 * {
     outline: none !important;
-    font-family: RobotoRegular !important;
 }
 
 ::-webkit-scrollbar {

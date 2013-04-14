@@ -23,33 +23,37 @@ postile.view.post.text_post.TextPost.prototype.enterDisplayMode = function() {
     var dummy_span = goog.dom.createDom('span', "dummy_span");
     goog.dom.appendChild(this.wrap_el, dummy_span);
     dummy_span.innerHTML = this.postData.post.content;
-    console.log(dummy_span);
+
     var width = dummy_span.offsetWidth;
     var height = dummy_span.offsetHeight;
-    console.log(width);
 
     var wrapper_width = this.wrap_el.offsetWidth;
     var wrapper_height = this.wrap_el.offsetHeight;
-    console.log(wrapper_width);
+
     goog.dom.removeNode(dummy_span);
+
+    var marginTop = 0;
 
     if(height < 20) { // one line only
         if(wrapper_width > 1.7 * width){
             elements.postContent_el.style.textAlign = 'center';
-            var marginTop = wrapper_height / 2 - 55; // by seeing the board....
+            marginTop = wrapper_height / 2 - 55; // by seeing the board....
             elements.postContent_el.style.marginTop = marginTop + 'px';
-            elements.postContent_el.style.fontSize = '20px'
+            elements.postContent_el.style.fontSize = '20px';
+
+            // show the quotation marks
+            elements.postQuoteMark_el.style.display = 'block';
         }
         else {
             elements.postContent_el.style.textAlign = '';
-            var marginTop = 0; // by seeing the board....
+            marginTop = 0; // by seeing the board....
             elements.postContent_el.style.marginTop = marginTop + 'px';
-            elements.postContent_el.style.fontSize = '10pt'
+            elements.postContent_el.style.fontSize = '10pt';
         }
     } 
 
     elements.postContent_el.innerHTML = this.postData.post.content;
-    elements.postContent_el.style.height = this.wrap_el.offsetHeight - 70 + 'px';
+    elements.postContent_el.style.height = this.wrap_el.offsetHeight - 70 - marginTop + 'px';
 
     // set gradient position
     elements.postGradientMask_el.style.width = elements.postContent_el.offsetWidth + 'px';
