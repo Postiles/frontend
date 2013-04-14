@@ -181,6 +181,10 @@
     cursor: pointer; }
     .post_container .post_like_button:hover {
       text-decoration: underline; }
+  .post_container .post_comment_count {
+    cursor: pointer; }
+    .post_container .post_comment_count:hover {
+      text-decoration: underline; }
   .post_container .post_edit_button {
     float: right;
     color: #aaa;

@@ -62,3 +62,78 @@ postile.view.board_more_pop.BoardMorePop.prototype.close = function(){
         imgTag[0].setAttribute('src', postile.conf.imageResource(['popup_icon.png']));
     }
 }
+
+postile.view.board_more_pop.OtherBoard = function(in_board_instance) {
+    var board_instance = in_board_instance;
+    this.curId = board_instance.boardData.topic_id;
+
+    postile.view.TipView.call(this);
+    postile.ui.load(this.container, postile.conf.staticResource(['_board_more_pop_up.html']));
+
+    this.create_button = postile.dom.getDescendantByCondition(this.container, function(tag) { return tag.tagName && tag.tagName.toUpperCase() == 'P'; });
+    
+    var new_board = new postile.view.new_board.NewBoard();
+    goog.events.listen(this.create_button, goog.events.EventType.CLICK, function() {
+        new_board.open(500);
+    });
+    
+    this.boardList = postile.dom.getDescendantById(this.container, 'board_list');
+
+    postile.ajax([ 'board', 'get_boards_in_topic' ], { topic_id: board_instance.boardData.topic_id }, function(data) {
+        /* handle the data return after getting the boards information back */
+        var boardArray = data.message.boards;
+        for(i in boardArray) {
+            this.renderBoardListItem(boardArray[i]);
+        }
+    }.bind(this));
+    this.container.id = 'other_boards';
+    this.container.style.top = '0px';
+    this.container.style.left = '0px';
+}
+
+goog.inherits(postile.view.board_more_pop.OtherBoard, postile.view.TipView);
+
+postile.view.board_more_pop.OtherBoard.prototype.unloaded_stylesheets = ['board_more_pop.css'];
+
+postile.view.board_more_pop.OtherBoard.prototype.open = function(a,b){
+    postile.view.TipView.prototype.open.call(this,a,b);
+
+    // save the icon button that trigger open html
+    this.triggerButton = a;
+    this.triggerButton.style.background = '#024d61';
+    var imgTag = goog.dom.getElementsByTagNameAndClass('img', '', this.triggerButton);
+    imgTag[0].setAttribute('src', postile.conf.imageResource(['switch_board_icon_active.png']));
+}
+
+postile.view.board_more_pop.OtherBoard.prototype.close = function(){
+    postile.view.TipView.prototype.close.call(this);
+
+    // change triggerButton's background
+    if(this.triggerButton){
+        var imgTag = goog.dom.getElementsByTagNameAndClass('img', '', this.triggerButton);
+        this.triggerButton.style.background = '#f5f5f5';
+        imgTag[0].setAttribute('src', postile.conf.imageResource(['switch_board_icon.png']));
+    }
+}
+
+postile.view.board_more_pop.OtherBoard.prototype.renderBoardListItem = function(data) {
+    var boardInfor = data.board;
+    var nextBoardId = boardInfor.id;
+    var boardName = boardInfor.name;
+    var boardDiscription = boardInfor.description;
+
+    this.listedBoard = goog.dom.createDom('div', 'listed_board');
+    goog.dom.appendChild(this.boardList, this.listedBoard);
+
+    goog.events.listen(this.listedBoard, goog.events.EventType.CLICK, function(){
+        postile.router.dispatch('board/' + nextBoardId);
+    });
+
+    this.listedTitle = goog.dom.createDom('h3', 'board_title', boardName);
+    goog.dom.appendChild(this.listedBoard, this.listedTitle);
+
+    this.listedDiscription = goog.dom.createDom('p', 'board_discription', boardDiscription);
+    goog.dom.appendChild(this.listedBoard, this.listedDiscription);
+
+    goog.dom.appendChild(this.listedBoard, goog.dom.createDom('div', 'selected_icon'));
+}
