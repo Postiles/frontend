@@ -91,8 +91,9 @@
       color: #024d61;
       background: #f5f5f5;
       font-size: 10pt; }
-    .post_wrap .edit_mode_post .post_content {
-      margin-top: 17px; }
+    .post_wrap .edit_mode_post .post_wysiwyf_icon_container {
+      padding-top: 3px;
+      height: 14px; }
   .post_wrap .locked_mode_post {
     position: absolute;
     top: 0;
@@ -154,16 +155,15 @@
   .post_container .post_title_container {
     float: left;
     cursor: pointer; }
-    .post_container .post_title_container:hover {
-      text-decoration: underline; }
     .post_container .post_title_container .post_no_title {
+      font-size: 8pt;
       color: #ccc; }
-      .post_container .post_title_container .post_no_title:hover {
-        text-decoration: underline; }
     .post_container .post_title_container .post_title {
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis; }
+      .post_container .post_title_container .post_title:hover {
+        text-decoration: underline; }
   .post_container .post_author {
     float: right;
     cursor: pointer;
@@ -191,23 +191,6 @@
     cursor: pointer; }
     .post_container .post_edit_button:hover {
       text-decoration: underline; }
-  .post_container .post_icon {
-    float: left;
-    cursor: pointer;
-    margin-right: 8px;
-    width: 13px;
-    bottom: 13px;
-    background-repeat: no-repeat;
-    position: relative;
-    background-position: center; }
-  .post_container .post_delete_icon {
-    background-image: url("../images/new_delete.png");
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    cursor: pointer;
-    right: -10px;
-    top: -10px; }
   .post_container .post_bottom {
     position: absolute;
     width: 100%;
