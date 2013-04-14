@@ -59,7 +59,7 @@ postile.view.BoardList.prototype.renderBoardListItem = function(data) {
     var meta_creator_el = goog.dom.createDom('span', 'created');
     var meta_count_el = goog.dom.createDom('span', 'count');
     postile.ajax([ 'board', 'get_post_count' ], { board_id: data.board.id }, function(new_data) {
-        meta_count_el.innerHTML = new_data.message.post_count + ' posts';
+        meta_count_el.innerHTML = new_data.message.post_count > 1 ? new_data.message.post_count + ' posts' : '1 post';
     });
     postile.data_manager.getUserData(data.board.creator_id, function(data) {
         meta_creator_el.innerHTML = data.username;
