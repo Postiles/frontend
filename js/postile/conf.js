@@ -91,5 +91,5 @@ postile.conf.getGlobalKeyHandler.handler = null;
  * Could be overridden in the compiler.
  * @define {boolean}
  */
-postile.conf.ENABLE_DEBUG = true;
+postile.conf.ENABLE_DEBUG = false;
 
