@@ -15,9 +15,6 @@ postile.view.post.text_post.TextPost.prototype.enterDisplayMode = function() {
 
     var elements = this.displayModeElements;
 
-
-
-
     // This is really ugly
     // If the text is too short, we need to put that in the center
     var dummy_span = goog.dom.createDom('span', "dummy_span");
@@ -40,9 +37,6 @@ postile.view.post.text_post.TextPost.prototype.enterDisplayMode = function() {
             marginTop = wrapper_height / 2 - 55; // by seeing the board....
             elements.postContent_el.style.marginTop = marginTop + 'px';
             elements.postContent_el.style.fontSize = '20px';
-
-            // show the quotation marks
-            elements.postQuoteMark_el.style.display = 'block';
         }
         else {
             elements.postContent_el.style.textAlign = '';
@@ -71,6 +65,9 @@ postile.view.post.text_post.TextPost.prototype.enterEditMode = function(req) {
     if (req) {
         elements.postContent_el.innerHTML = this.postData.post.content;
     }
+
+    this.y_editor = new postile.WYSIWYF.Editor(elements.postContent_el, 
+            elements.postWysiwyfIconContainer, this);
 }
 
 postile.view.post.text_post.TextPost.prototype.submitChange = function() {

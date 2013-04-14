@@ -145,9 +145,6 @@ postile.view.post.Post.prototype.loadDisplayModeUIComponents = function() {
         postTitle_el: $('post_title'),
         postAuthor_el: $('post_author'),
         postContent_el: $('post_content'),
-        postQuoteMark_el: $('post_quote_mark'),
-        postQuote1_el: $('quote_1'),
-        postQuote2_el: $('quote_2'),
         postGradientMask_el: $('post_gradient_mask'),
         postEditButton_el: $('post_edit_button'),
         postLikeContainer_el: $('post_like_container'),
@@ -198,6 +195,7 @@ postile.view.post.Post.prototype.loadEditModeUIComponents = function() {
         container_el: $('post_container'),
         postTitle_el: $('post_title'),
         postAuthor_el: $('post_author'),
+        postWysiwyfIconContainer: $('post_wysiwyf_icon_container'),
         postContent_el: $('post_content'),
         deleteIcon_el: $('post_delete_icon'),
     }
@@ -252,7 +250,7 @@ postile.view.post.Post.prototype.eventHandlers = {
         var postExpand = new postile.view.post.PostExpand(this.postData.post);
         postExpand.open();
     },
-    profilePreviewHandler: function() {
+    postAuthorProfilePreviewHandler: function() {
         var profileView = new postile.view.profile.ProfileView(this.postData.creator.id);
         profileView.open(710);
     },
@@ -269,6 +267,11 @@ postile.view.post.Post.prototype.eventHandlers = {
                 elements.postLikeButton_el.innerHTML = 'Like';
             }
         }.bind(this));
+    },
+    commentAuthorProfilePreviewHandler: function(e) {
+        e.stopPropagation();
+        var profileView = new postile.view.profile.ProfileView(this.latestComment.creator.id);
+        profileView.open(710);
     },
     displayMode: function() {
         this.changeCurrentMode(postile.view.post.Post.PostMode.DISPLAY);
@@ -363,7 +366,7 @@ postile.view.post.Post.prototype.initDisplayModeListener = function() {
         // display user profile
         authorClick: new postile.events.EventHandler(
                 elements.postAuthor_el, goog.events.EventType.CLICK,
-                this.eventHandlers.profilePreviewHandler.bind(this)),
+                this.eventHandlers.postAuthorProfilePreviewHandler.bind(this)),
         // enter edit mode by clicking on content
         /*
         contentClick: new postile.events.EventHandler(
@@ -385,6 +388,10 @@ postile.view.post.Post.prototype.initDisplayModeListener = function() {
         commentPreviewClick: new postile.events.EventHandler(
                 elements.commentPreview_el, goog.events.EventType.CLICK,
                 this.eventHandlers.commentMode.bind(this)),
+        // comment preview author name clicked
+        commentPreviewAuthorClick: new postile.events.EventHandler(
+                elements.commentPreviewAuthor_el, goog.events.EventType.CLICK,
+                this.eventHandlers.commentAuthorProfilePreviewHandler.bind(this)),
     }
 
     // enable all the listeners
@@ -531,14 +538,14 @@ postile.view.post.Post.prototype.enterDisplayMode = function() {
     }
 
     // latest inline comment
-    var latestComment = this.postData.inline_comments[ this.postData.inline_comments.length - 1 ];
+    this.latestComment = this.postData.inline_comments[ this.postData.inline_comments.length - 1 ];
 
-    if (latestComment) { // at least one comment
-        postile.data_manager.getUserData(latestComment.inline_comment.creator_id, function(data) {
-            latestComment.creator = data;
+    if (this.latestComment) { // at least one comment
+        postile.data_manager.getUserData(this.latestComment.inline_comment.creator_id, function(data) {
+            this.latestComment.creator = data;
 
-            elements.commentPreviewAuthor_el.innerHTML = latestComment.creator.username;
-            elements.commentPreviewContent_el.innerHTML = latestComment.inline_comment.content;
+            elements.commentPreviewAuthor_el.innerHTML = this.latestComment.creator.username;
+            elements.commentPreviewContent_el.innerHTML = this.latestComment.inline_comment.content;
             elements.commentPreviewNoComment_el.style.display = 'none';
             elements.commentPreview_el.style.display = 'block';
 
@@ -623,6 +630,8 @@ postile.view.post.Post.prototype.enterEditMode = function(req) {
     } else {
         elements.deleteIcon_el.style.display = '';
     }
+
+    console.log(elements.postWysiwyfIconContainer);
 }
 
 postile.view.post.Post.prototype.enterLockedMode = function() {
@@ -702,8 +711,10 @@ postile.view.post.Post.prototype.resetCommentPreview = function(data) {
         postile.data_manager.getUserData(data.inline_comment.creator_id, function(userData) {
             elements.commentPreviewNoComment_el.style.display = 'none';
             elements.commentPreviewDisplay_el.style.display = 'table-cell';
+            console.log(elements.commentPreviewDisplay_el);
             elements.commentPreviewAuthor_el.innerHTML = userData.username;
             elements.commentPreviewContent_el.innerHTML = data.inline_comment.content;
+
             // reset width since length of different usernames are different
             elements.commentPreviewContent_el.style.width = this.wrap_el.offsetWidth - 
                     elements.commentPreviewAuthor_el.offsetWidth - 36 + 'px';
@@ -712,8 +723,9 @@ postile.view.post.Post.prototype.resetCommentPreview = function(data) {
                 opacity += 0.1;
                 preview_el.style.opacity = opacity;
             }, 30);
+
         }.bind(this));
-    }, 300);
+    }.bind(this), 300);
 
     setTimeout(function() {
         clearInterval(fadein);
@@ -763,6 +775,10 @@ postile.view.post.InlineComment = function(commentContainer, single_comment_data
         this.name_el = goog.dom.createDom("span", "comment_name");
         this.name_el.innerHTML = data.username;
         goog.dom.appendChild(this.name_content_container_el, this.name_el);
+        goog.events.listen(this.name_el, goog.events.EventType.CLICK, function(e) {
+            var profileView = new postile.view.profile.ProfileView(single_comment_data.creator.id);
+            profileView.open(710);
+        }.bind(this));
 
         this.middle_el = goog.dom.createDom('span', 'comment_middle');
         this.middle_el.innerHTML = ':&nbsp;';
