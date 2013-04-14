@@ -29,7 +29,7 @@ postile.view.BoardList = function(topic) {
     });
     goog.events.listen(this.right_button, goog.events.EventType.CLICK, function() {
         postile.router.dispatch('board/'+this.currentBoardId);
-    });
+    }.bind(this));
     postile.ajax([ 'board', 'get_boards_in_topic' ], { topic_id: topic }, function(data) {
         /* handle the data return after getting the boards information back */
         var boardArray = data.message.boards;
@@ -46,6 +46,7 @@ postile.view.BoardList.prototype.unloaded_stylesheets = ['board_list.css'];
 postile.view.BoardList.prototype.html_segment = postile.conf.staticResource(['board_list.html']);;
 
 postile.view.BoardList.prototype.renderBoardListItem = function(data) {
+    var instance = this;
     var item_el = goog.dom.createDom('div', 'single');
     var img_el = goog.dom.createDom('img');
     img_el.src = postile.conf.uploadsResource([data.board.image_small_url]);
@@ -67,13 +68,18 @@ postile.view.BoardList.prototype.renderBoardListItem = function(data) {
         postile.router.dispatch('board/'+data.board.id);
     });
     goog.events.listen(item_el, goog.events.EventType.MOUSEOVER, function() {
-        this.right_title.innerHTML = title_el.innerHTML;
-        this.right_count.innerHTML = meta_count_el.innerHTML;
-        this.right_desc.innerHTML = description_el.innerHTML;
-        this.currentBoardId = data.board.id;
-        this.right_button.style.display = 'block';
-        
-    }.bind(this));
+        instance.right_title.innerHTML = title_el.innerHTML;
+        instance.right_count.innerHTML = meta_count_el.innerHTML;
+        instance.right_desc.innerHTML = description_el.innerHTML;
+        instance.currentBoardId = data.board.id;
+        instance.right_button.style.display = 'block';
+        postile.ajax(['board', 'get_recent_posts'], { board_id: data.board.id }, function(new_data) {
+            goog.dom.removeChildren(instance.right_posts);
+            for (i in new_data.message) {
+                instance.renderRecentPostItem(new_data.message[i]);
+            }
+        });
+    });
     goog.dom.appendChild(item_el, img_el);
     goog.dom.appendChild(meta_el, title_el);
     goog.dom.appendChild(meta_el, description_el);
@@ -86,19 +92,23 @@ postile.view.BoardList.prototype.renderBoardListItem = function(data) {
 }
 
 postile.view.BoardList.prototype.renderRecentPostItem = function(post_info) {
-    var post_el = goog.createDom('div', 'one_recent_post');
-    goog.appendChild(post_el, goog.createDom('div', 'ball'));
-    var subject_el = goog.createDom('div', 'subject');
-    subject_el.innerHTML = 'Subject';
-    var author_el = goog.createDom('div', 'author');
-    author_el.innerHTML = 'Aiuthor';
-    var time_el = goog.createDom('small');
-    time_el.innerHTML = 'Time';
-    var content_el = goog.createDom('div', 'content');
-    content_el.innerHTML = 'Content';
-    goog.appendChild(post_el, subject_el);
-    goog.appendChild(author_el, time_el);
-    goog.appendChild(post_el, author_el);
-    goog.appendChild(post_el, content_el);
-    goog.appendChild(this.right_posts, post_el);
+    var post_el = goog.dom.createDom('div', 'one_recent_post');
+    goog.dom.appendChild(post_el, goog.dom.createDom('div', 'ball'));
+    var subject_el = goog.dom.createDom('div', 'subject');
+    subject_el.innerHTML = post_info.post.title;
+    var meta_el = goog.dom.createDom('div', 'author');
+    var author_el = goog.dom.createDom('span');
+    postile.data_manager.getUserData(post_info.post.creator_id, function(data) {
+        author_el.innerHTML = data.username;
+    });
+    var time_el = goog.dom.createDom('small');
+    time_el.innerHTML = post_info.post.created_at;
+    var content_el = goog.dom.createDom('div', 'content');
+    content_el.innerHTML = post_info.post.content;
+    goog.dom.appendChild(post_el, subject_el);
+    goog.dom.appendChild(meta_el, author_el);
+    goog.dom.appendChild(meta_el, time_el);
+    goog.dom.appendChild(post_el, meta_el);
+    goog.dom.appendChild(post_el, content_el);
+    goog.dom.appendChild(this.right_posts, post_el);
 }
