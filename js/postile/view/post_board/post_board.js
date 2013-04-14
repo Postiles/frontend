@@ -605,8 +605,10 @@ postile.view.post_board.PostBoard.prototype.preMoveCanvas = function(direction) 
 postile.view.post_board.PostBoard.prototype.moveToPost = function(pid) {
     var instance = this;
     var doFunc = function() {
-        var p = instance.currentPosts[pid].post;
+        var p = instance.currentPosts[pid].postData.post;
         instance.locateCanvas(-(instance.xPosTo(p.pos_x) + instance.widthTo(p.span_x) / 2 - instance.viewport.offsetWidth / 2), -(instance.yPosTo(p.pos_y) + instance.heightTo(p.span_y) / 2 - instance.viewport.offsetHeight / 2));
+
+        // TODO add pink border of the selected post
     };
     if (pid in this.currentPosts) {
         doFunc();

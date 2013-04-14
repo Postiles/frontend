@@ -38,13 +38,13 @@ postile.view.search_box.SearchBox.prototype.unloaded_stylesheets = ['_search_box
 
 postile.view.search_box.SearchBox.prototype.open = function(a, b){
     postile.view.TipView.prototype.open.call(this,a,b);
-
     // Change trigger button background 
-
     this.triggerButton = a;
     this.triggerButton.style.background = '#024d61';
+    this.search_input_field.focus();
     var imgTag = goog.dom.getElementsByTagNameAndClass('img', '', this.triggerButton);
     imgTag[0].setAttribute('src', postile.conf.imageResource(['search_icon_active.png']));   
+
 
 }
 
@@ -102,6 +102,7 @@ postile.view.search_box.SearchBox.prototype.search = function(instance) {
                 // title (username)
                 var result_item_title = goog.dom.createDom("div", "search_result_item_title");
                 result_item_title.innerHTML = user.username;
+                result_item_title.style.paddingLeft = '0px'
                 goog.dom.appendChild(result_right_container, result_item_title);
 
                 // info (email)
@@ -121,14 +122,24 @@ postile.view.search_box.SearchBox.prototype.search = function(instance) {
             } else {
                 goog.style.showElement(this.search_result_post, true);
             }
-            for (i in post_arr) {
-                post = post_arr[i].post;
+
+            var addResultContent = function(post){
+                console.log(post);
 
                 var post_result = goog.dom.createDom("div", "search_result_item search_result_post");
                 goog.dom.appendChild(this.post_list, post_result);
 
+                goog.events.listen(post_result, goog.events.EventType.CLICK, function(){
+                    postile.router.current_view.moveToPost(post.id);
+                });
+
                 var result_item_title = goog.dom.createDom("div", "search_result_item_title");
-                result_item_title.innerHTML = post.title;
+                if(post.title == ''){ // No Title
+                    result_item_title.innerHTML = 'no title';
+                    result_item_title
+                }else{
+                    result_item_title.innerHTML = post.title;
+                }
                 goog.dom.appendChild(post_result, result_item_title);
 
                 // right container
@@ -138,6 +149,10 @@ postile.view.search_box.SearchBox.prototype.search = function(instance) {
                 var result_item_info = goog.dom.createDom("div", "search_result_item_info");
                 result_item_info.innerHTML = post.content;
                 goog.dom.appendChild(result_right_container, result_item_info);
+            }.bind(this);
+
+            for (i in post_arr) {
+               addResultContent(post_arr[i].post);
             }
         }.bind(this));
     }

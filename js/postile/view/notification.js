@@ -122,9 +122,11 @@ postile.view.notification.Notification.prototype.open = function(a, b) {
 postile.view.notification.Notification.prototype.seeMore = function() {
 
     goog.dom.removeNode(this.notificationMore);
-    this.notificationMore = goog.dom.createDom('div', 'notification_more');
-    goog.dom.appendChild(this.notificationListView, this.notificationMore);
-    goog.dom.appendChild(this.notificationMore, goog.dom.createDom('p','','See More'));
+    if(this.numberOfUnread != this.currentIndex){
+        this.notificationMore = goog.dom.createDom('div', 'notification_more');
+        goog.dom.appendChild(this.notificationListView, this.notificationMore);
+        goog.dom.appendChild(this.notificationMore, goog.dom.createDom('p','','See More'));
+    }
 
     goog.events.listen(this.notificationMore, goog.events.EventType.CLICK, function(){
         for (var i = this.currentMax; i < Math.min(this.currentMax + 3, this.numberOfUnread); i++) {
@@ -134,7 +136,6 @@ postile.view.notification.Notification.prototype.seeMore = function() {
         }
         this.currentMax = this.currentMax + 3;
         this.seeMore();
-
     }.bind(this));
 }
 
@@ -142,7 +143,7 @@ postile.view.notification.Notification.prototype.appendOneMore = function() {
     if(this.numberOfUnread > this.currentMax) { // still can append
         console.log(this.currentIndex);
         this.listedNotification[this.currentIndex] = new postile.view.notification.InfoItem();
-        this.listedNotification[this.currentIndex].render(this, this.notificationListView,
+        this.listedNotification[this.currentIndex].render(this,
                                                           this.notificationList[this.currentIndex].notification,
                                                           this.notificationList[this.currentIndex].from_user_profile);
         this.currentIndex++;

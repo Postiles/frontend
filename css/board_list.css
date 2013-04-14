@@ -1,101 +1,219 @@
-.board_list_catchall {
-    background: url(/images/paper_bg.png);
+.gateway {
+    background: -moz-linear-gradient(left, rgb(3,76,97) 0%, rgb(3,76,97) 50%, rgb(202,219,184) 50%, rgb(202,219,184) 100%); /* FF3.6+ */
+    background: -webkit-linear-gradient(left, rgb(3,76,97) 0%,rgb(3,76,97) 50%,rgb(202,219,184) 50%,rgb(202,219,184) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(left, rgb(3,76,97) 0%,rgb(3,76,97) 50%,rgb(202,219,184) 50%,rgb(202,219,184) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(left, rgb(3,76,97) 0%,rgb(3,76,97) 50%,rgb(202,219,184) 50%,rgb(202,219,184) 100%); /* IE10+ */
+    background: linear-gradient(to right, rgb(3,76,97) 0%,rgb(3,76,97) 50%,rgb(202,219,184) 50%,rgb(202,219,184) 100%); /* W3C */
+    min-height: 100%;
 }
 
-.board_list {
-    width: 980px;
+.gateway .container {
+    width: 990px;
     margin: 0 auto;
-    background: #cfdade;
-    box-shadow: 0 0 6px rgba(2, 77, 97, 0.4);
+    background: -moz-linear-gradient(left, rgb(3,76,97) 0%, rgb(3,76,97) 65%, rgb(202,219,184) 65%, rgb(202,219,184) 100%); /* FF3.6+ */
+    background: -webkit-linear-gradient(left, rgb(3,76,97) 0%,rgb(3,76,97) 65%,rgb(202,219,184) 65%,rgb(202,219,184) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(left, rgb(3,76,97) 0%,rgb(3,76,97) 65%,rgb(202,219,184) 65%,rgb(202,219,184) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(left, rgb(3,76,97) 0%,rgb(3,76,97) 65%,rgb(202,219,184) 65%,rgb(202,219,184) 100%); /* IE10+ */
+    background: linear-gradient(to right, rgb(3,76,97) 0%,rgb(3,76,97) 65%,rgb(202,219,184) 65%,rgb(202,219,184) 100%); /* W3C */
+    min-height: 100%;
+}
+
+.gateway .left {
+    width: 640px;
+    /* background: rgb(3,76,97); */
+    float: left;
     height: 100%;
+}
+
+.gateway .left .title {
+    color: #FFF;
+    font-size: 17pt;
+    height: 28px;
+    line-height: 28px;
+    margin-top: 32px;
+    position: relative;
+    width: 600px;
+    margin-bottom: 30px;
+}
+
+.gateway .left .title .add {
+    font-size: 13pt;
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 20px;
+    line-height: 20px;
+    padding: 4px 8px;
     cursor: pointer;
 }
 
-.board_list .subject {
-    margin: 0 20px;
-    font-size: 22pt;
-    padding: 28px 4px 20px 4px; 
-    border-bottom: 1px solid #999;
-    color: #333;
-    margin-bottom: 28px;
-    position: relative;
+.gateway .left .title .add:hover {
+    background: rgb(202,219,184);
+    color: rgb(3,76,97);
 }
 
-.board_list .subject .add {
-    position: absolute;
-    right: 4px;
-    top: 32px;
-    background: #024d61;
-    height: 32px;
-    padding: 0 10px;
-    opacity: 0.9;
-}
-
-.board_list .subject .add:hover {
-    box-shadow: 0 0 4px rgba(0, 0, 0, 0.3) inset;
-    opacity: 1;
-}
-
-.board_list .subject .add  img {
-    margin-top: 7px;
+.gateway .right {
+    width: 310px;
+    padding-left: 40px;
+    /* background: rgb(202,219,184); */
     float: left;
-    margin-right: 6px;
+    height: 100%;
 }
 
-.board_list .subject .add  .text {
-    color: #FFF;
+.gateway .single {
+    float: left;
+    width: 280px;
+    margin-right: 40px;
+    height: 80px;
+    margin-bottom: 15px;
+    cursor: pointer;
+}
+
+.gateway .single:hover {
+    background: rgb(202,219,184);
+}
+
+.gateway .single .meta {
+    float: left;
+}
+
+.gateway .single img {
+    width: 50px;
+    height: 50px;
+    float: left;
+    margin: 15px;
+}
+
+.gateway .single .subject {
+    color: rgb(202,219,184);
     font-size: 12pt;
-    display: block;
-    float: left;
-    height: 20px;
     line-height: 20px;
-    margin-top: 6px;
+    height: 20px;
+    margin-top: 9px;
 }
 
-.board_list .board_single {
-    float: left;
-    width: 300px;
-    margin-left: 20px;
-    height: 92px;
-    background: #F5F5F5;
+.gateway .single:hover .subject {
+    color: #8f1d17;
+}
+
+.gateway .single .desc {
+    color: #FFF;
+    font-size: 10pt;
+    height: 16px;
+    line-height: 16px;
+    margin-top: 3px;
+    text-overflow: ellipsis
+}
+
+.gateway .single .info {
+    color: #FFF;
+    font-size: 9pt;
+    height: 15px;
+    line-height: 15px;
+    margin-top: 5px;
+}
+
+.gateway .single:hover .desc, .gateway .single:hover .info {
+    color: rgb(3,76,97);
+}
+
+.gateway .single .created {
+    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAMAAAAMCGV4AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAWJQTFRFA0xhAk1fA0xfBExfAk1hAktgBE1iBEthBEpgAUxeAUxgpr/GvtHXAU5fA0teAkteAkxjp8DHBE1gA05gA05edJ+opr/EA05icZupAk1dA0xjpsHIZ5WiR3yKpcLIA0tkq8LIp8DFAU1hxdfZAk9gWo6cB01hbpiotczSvs/Wu8zTbZelAkti6O3wSH2LbpqlwNTVtMvRt8zP2uXpp8LJ4+3vw9XZFlxuaZWiqMDKrcTMB1Fkn7rBdJymv9DXqsPHa5eivtHVv9HVpMHHrMXKrcbLqcXIfaOsxNPatc3P0+LlwNLWVoqXAk5lMGt7RnmKNG9/BkxipL/GBkxke5+rO3SFwtPbaZiicpyoqMPMqsDLqcDIbpikq8PHwtTWpcDH2OPpc52pf6WwBU1e1N/jA0tc6u7vAk5bo8DGo77Fq8TJBExdY5GetcjOcp2mq8LKapajz97j6u/zrMPJA01dAUxcHnoBIQAAANJJREFUeNo8x8NiRUEQBcDTPbx+Vmzbtm3b9v9nldSuEFmiPCMMGJWRcCGY1q7rSCtprFQBrmzJaM3gSISYCjUU3FZ/Bwstz3faVgMCqa7loZdFr/edIdwNgnPx2Hk+7B3541Jp6cBszfUUvU3dV0wUp5QogKzYm589i28etjcZekKY127b0klpJt49eRwAWcUmmWuYHvMeyk/7y9AMJIXO7X4N1KfXGxkr5gZIOPv+zHafPPjGjyCnwEakq1ZrLz8ZfxKvHZnbj/+CZUzKLP0KMACD1x1lQ+EfdQAAAABJRU5ErkJggg==) left center no-repeat;
+    padding-left: 18px;
+}
+
+.gateway .single:hover .created {
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAMAAAAMCGV4AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAWhQTFRFytu4y9u4ydq3y9q6yty3ytq3ytu6R3+AzNq4y9u3ydq5y9y5y9u1y924zNq3yNy6x9u5y9m2ytm5y9m3ydu2ytq2Rnx8R319RX1+R31/b5uOOHN3ydu0ytu8dqCUcZmQSoCAyNu8RHx9Flxoyd27k7WeaZKMbpmQo72lcZ2QOnR4cZySPXd5QHp8L3B2Q36CI2ZvZZSKImVthKiaNm92faGVMGtxy9y7QXt8Rn5/SH2Bzdu4lrOgRn59FVloRXt7cZuPHmJtMnF6c52Pdp6VRXx/yNm4dp+RNXB4yNq1S36BbJqQM250gqeXyti4dJ+VEFpnx926zN65eZ+Sd6CSp8Gnyty1MW5zydm2RXp+QHx8S397H2RrRH5/O3V3FllpMXB1NXB2krOfNnB0apeQTIOARHt+O3V5L251x9a2cJuRPHZ6Rnx+NHF0m7ulc5+SM3B1xtq4uc6wM252yN23yNy4HWFsSn58RIdzLQAAANtJREFUeNpcztVCQkEUheG9Z+Z0UOfQqdiFDSodBnZ3YXchr6/DJevuu1o/QMcIiAupskMgOhKKTWCu64+1rj4DZNEgRAGxZ+rNPXgx7VFhWaYmwO/k4/Dp2WolqdOtcASs4N198VbyNhYVRdhH0Ehvt+9oRRq7imrUQ0EGtnvwEvCdeL/f5f8/naFz4NIfkKTs64Zq8wSEwtJxvhVPP+yQdpPjcGi0mjmv94cMTgtNMVYauflC/zr37I+GEJzZq41vqtxCQmDzn0/Pc7kJ5GZg2uq2U3G5Cf4JMABh4B35Zdbp7QAAAABJRU5ErkJggg==);
+}
+
+.gateway .single .count {
+    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAMAAAAMCGV4AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAPlQTFRF///////8A0xfA0xh//3//f///f392ePlAk1fAk1hBExfA0te/f/8AUxgBE1iAktgBExdBEpgAkte2OPn///63ufs1+LmAUxe2OPl/P/9uMrU2eTmtcrP4+jr4erp//374OjrA05gzdzfA05i+P35+f382uTmGlxst8vU3urqH2NzBE5jv9DXv9HV5e7tvc7V4Ors4uztBEth//z/4uzuU4SS3+fq2OLk/f3/+//8/P/7Bk1gAkxk3+nrAkxjwtPa4erx2uLlBUtj4enrmrjA3Obomre/+vv95O7vydrh1uTlzNvg4evsAUxi5OnvxtjcA0xj2OTkwdDXyIUawwAAAMBJREFUeNo8jddSQkEQBc/Ohpu55KAECaJiQglKFiUokuT/P8allmLeuvtUDTJRhwflwLUpEr66GwwvppdpK52oZ/+y1vMA8aZSIgkJCKG+bXgJMJl7Z0fj3xFoBaZNCb5AK2WDW9CnFaBkl86c6zEfKULEsEJSSnWl+5vpEAziKTR7pXn5mD/MquBz0/tfletJ4xN8dNo/1G5vYvpf27D4XdxThsPbFT8K6+3LT8cJonEH5DpjohgR5+Tx/b8AAwDLkQ+J2ftTnAAAAABJRU5ErkJggg==) left center no-repeat;
+    padding-left: 18px;
+    margin-left: 12px;
+}
+
+.gateway .single:hover .count, .gateway .right .count {
+    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAMAAAAMCGV4AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAPNQTFRFA0xhytu4A0xfAk1hy9u4H2FtAktey9y5ydq3Ak1fBExfytq3y9u3AU1jAUxgBE1iIGJuO3V5A0teAkxjGVtnHmBsKmlwydu2ytu6ytq2GVtryNy4IWFriK6aA0tkBE1gA0xjGlxsHGFtBUtdzNu7GFxpBU1eH19pG19qBk5hHV9tGV1sF1pqFVloBEpeF1toLGtyT4aDNHB4yN29H2FvytmzyNy6A01dzNu1Flxuy9q0tMmrzNq3HmJtBEpgBEthA05gFVxqx9u3OXZ7UYWDNHN4ImJsMnF2G11tF1xrGF5qGl5tKGZxMm1zus2uMnF6yty3BcxbHAAAAKlJREFUeNpUzUUSwzAAQ1EZaofalJmZmZmZ7n+aZpEs+rdPMwL5D6NDPemyW32WSARNAbt2h4OEAoza4SYRO2tlx0VesTzrcVxcORRvgDlOGwSystaYHb1bey+o42hJRIYbN9QCkDn5+j3rr0pV5mF+M/esvRYG9AeEHyytXSa+Nx9guoO6Zapwh48KlzEo3WZpFozHw6mEvo9GwcdcN748IovE4GT+E2AAveUPK6UDZewAAAAASUVORK5CYII=) left center no-repeat;
+}
+
+.gateway .right .title {
+    color: #8f1d17;
+    font-size: 14pt;
+    margin-top: 60px;
+    margin-bottom: 12px;
+    word-wrap: break-word;
+}
+
+.gateway .right .count {
+    color: rgb(3,76,97);
+    font-size: 10pt;
+    height: 16px;
+    line-height: 16px;
+    padding-left: 18px;
+}
+
+.gateway .right .desc {
+    color: rgb(3,76,97);
+    font-size: 10pt;
+    line-height: 16px;
+    margin-top: 15px;
+    word-wrap: break-word;
+}
+
+.gateway .right .button {
+    background: #b4dc88;
+    font-size: 11pt;
+    padding: 8px 10px;
+    color: rgb(3,76,97);
+    float: right;
+    margin-top: 12px;
+    cursor: pointer;
+}
+
+.gateway .right .button:hover {
+    color: rgb(202,219,184);
+    background: rgb(3,76,97);
+}
+
+.gateway .right .posts_title {
+    color: rgb(3,76,97);
+    font-size: 14pt;
+    margin-top: 18px;
     margin-bottom: 20px;
 }
 
-.board_list .board_single img {
-    width: 50px;
-    height: 50px;
-    margin-top: 21px;
-    margin-left: 15px;
-    float: left;
-    display: block;
-}
-
-.board_list .board_single .board_meta {
-    float: left;
-    margin-top: 16px;
-    margin-left: 16px;
-}
-
-.board_list .board_single .board_meta .title {
-    font-weight: bold;
-    color: #024d61;
-    font-size: 13pt;
-    height: 20px;
-    line-height: 20px;
-}
-
-.board_list .board_single .board_meta .description {
-    color: #333;
-    font-size: 11pt;
-    height: 20px;
-    line-height: 20px;
-    margin-top: 2px;
-}
-
-.board_list .board_single .board_meta .meta {
-    color: #666;
+.gateway .right .one_recent_post {
+    border-left: 3px solid #0c85a9;
+    position: relative;
+    margin-left: 18px;
+    margin-bottom: 28px;
+    padding-left: 12px;
     font-size: 10pt;
     line-height: 16px;
-    height: 16px;
-    margin-top: 2px;
+}
+
+.gateway .right .one_recent_post .subject {
+    color: rgb(3,76,97);
+    margin-bottom: 4px;
+}
+
+.gateway .right .one_recent_post .author {
+    color: #0c85a9;
+    margin-bottom: 4px;
+}
+
+.gateway .right .one_recent_post .author small {
+    font-size: 9pt;
+    color: #999;
+    padding-left: 8px;
+}
+
+.gateway .right .one_recent_post .ball {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    left: -5px;
+    top: -4px;
+    background-color: #0c85a9;
+    border-radius: 4px;
 }
