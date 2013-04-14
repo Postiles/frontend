@@ -53,9 +53,41 @@ postile.view.post.PostExpand.prototype.open = function() {
     
         this.img_el = goog.dom.createDom('img');
         this.img_el.src = postile.conf.uploadsResource([this.postData.image_url]);
-        
+
         goog.dom.appendChild(this.content_el, this.img_el);
-    
+        var img_el_width = 0;
+        var img_el_height = 0;
+        this.img_el.onload = function(){
+            img_el_width = this.width;
+            img_el_height = this.height;
+
+            if(img_el_height > img_el_width){
+                instance.img_el.style.height = '90%';
+                // change margin top for putting the image in the middle
+                // TODO
+                console.log(instance.content_el.offsetWidth);
+                var margin_left = (instance.content_el.offsetWidth - img_el_width) / 2;
+                instance.img_el.style.marginLeft = margin_left + 'px';
+
+            }else{
+                instance.img_el.style.width = '90%';
+                // change margin top for putting the image in the middle
+                // TODO
+                var margin_top = (instance.content_el.offsetHeight - img_el_height) / 2;
+                instance.img_el.style.marginTop = margin_top + 'px';
+            }
+            instance.title_el.style.fontSize = '14px';
+            instance.title_el.style.width = '300px';
+            instance.title_el.style.float = 'left';
+            instance.title_el.style.marginTop = '10px';
+            instance.title_el.style.marginBottom = '5px';
+
+            instance.author_el.style.display = 'inline-block';
+            instance.author_el.style.float = 'right';
+            instance.author_el.style.fontSize = '14px';
+        }
+
+
     } else {
 
         this.content_el.innerHTML = postile.parseBBcode(this.postData.content);
