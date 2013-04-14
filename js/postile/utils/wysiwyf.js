@@ -98,6 +98,7 @@ postile.WYSIWYF = {
         //Placing buttons
         l = postile.WYSIWYF.editButtons.length;
         editor.buttons = new Array(l);
+        goog.dom.removeChildren(icon_container_el);
         for (var i = 0; i < l; i++) {
             editor.buttons[i] = document.createElement('div');
             editor.buttons[i].className = 'post_icon';
@@ -174,7 +175,7 @@ postile.WYSIWYF = {
             }, editor.post);
         },
         display: [true, true]
-    }, {
+    }, /* {
         bgPos: '-' + (13 * 2) + 'px 0px',
         callback: function (editor) {
             //Img
@@ -184,7 +185,7 @@ postile.WYSIWYF = {
             }
         },
         display: [true, true]
-    }, {
+    }, */ {
         bgPos: '-' + (13 * 7) + 'px 0px',
         callback: function (editor) {
             editor.toDisplayMode(1);
