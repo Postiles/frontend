@@ -87,8 +87,8 @@
 .gateway .single .subject {
     color: rgb(202,219,184);
     font-size: 12pt;
-    height: 20px;
     line-height: 20px;
+    height: 20px;
     margin-top: 9px;
 }
 
@@ -102,6 +102,7 @@
     height: 16px;
     line-height: 16px;
     margin-top: 3px;
+    text-overflow: ellipsis
 }
 
 .gateway .single .info {
@@ -140,6 +141,7 @@
     font-size: 14pt;
     margin-top: 60px;
     margin-bottom: 12px;
+    word-wrap: break-word;
 }
 
 .gateway .right .count {
@@ -155,6 +157,7 @@
     font-size: 10pt;
     line-height: 16px;
     margin-top: 15px;
+    word-wrap: break-word;
 }
 
 .gateway .right .button {
