@@ -16,7 +16,7 @@ goog.require('postile.fx.effects');
 2. [optional, only when you need to load css] have a "unloaded_stylesheets" in its prototype,
   which is an array containing css files that need to be loaded.
 
-Just put your things into this.container, and use "open" and "close" if needed
+Just put your things into this.container
 
 === How to create a pop-up view ===
 
