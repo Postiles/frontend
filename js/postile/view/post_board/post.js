@@ -153,6 +153,7 @@ postile.view.post.Post.prototype.loadDisplayModeUIComponents = function() {
         postLikeContainer_el: $('post_like_container'),
         postLikeCount_el: $('post_like_count'),
         postLikeButton_el: $('post_like_button'),
+        postCommentCount_el: $('post_comment_count'),
         commentPreview_el: $('comment_preview'),
         commentPreviewNoComment_el: $('comment_preview_no_comment'),
         commentPreviewDisplay_el: $('comment_preview_display'),
@@ -255,6 +256,20 @@ postile.view.post.Post.prototype.eventHandlers = {
         var profileView = new postile.view.profile.ProfileView(this.postData.creator.id);
         profileView.open(710);
     },
+    likeClickHandler: function() {
+        var elements = this.displayModeElements;
+        var action = elements.postLikeButton_el.innerHTML.toLowerCase();
+
+        postile.ajax([ 'post', action ], { post_id: this.postData.post.id }, function(data) {
+            if (action == 'like') { // like
+                elements.postLikeCount_el.innerHTML = (++this.postData.likes.length);
+                elements.postLikeButton_el.innerHTML = 'Unlike';
+            } else { // unlike
+                elements.postLikeCount_el.innerHTML = (--this.postData.likes.length);
+                elements.postLikeButton_el.innerHTML = 'Like';
+            }
+        }.bind(this));
+    },
     displayMode: function() {
         this.changeCurrentMode(postile.view.post.Post.PostMode.DISPLAY);
     },
@@ -355,6 +370,13 @@ postile.view.post.Post.prototype.initDisplayModeListener = function() {
                 elements.postContent_el, goog.events.EventType.CLICK,
                 this.eventHandlers.editMode.bind(this)),
         */
+        likeClick: new postile.events.EventHandler(
+                elements.postLikeButton_el, goog.events.EventType.CLICK,
+                this.eventHandlers.likeClickHandler.bind(this)),
+        // comment count clicked, enter comment mode
+        commentCountClick: new postile.events.EventHandler(
+                elements.postCommentCount_el, goog.events.EventType.CLICK,
+                this.eventHandlers.commentMode.bind(this)),
         // enter edit mode by clicking on edit button
         editClick: new postile.events.EventHandler(
                 elements.postEditButton_el, goog.events.EventType.CLICK,
@@ -493,10 +515,24 @@ postile.view.post.Post.prototype.enterDisplayMode = function() {
 
     // display 'like' or 'unlike'
     if (liked_users.indexOf(postile.conf.currentUserId) != -1) { // liked
-        elements.postLikeButton_el.innerHTML = 'unlike';
+        elements.postLikeButton_el.innerHTML = 'Unlike';
     } else {
-        elements.postLikeButton_el.innerHTML = 'like';
+        elements.postLikeButton_el.innerHTML = 'Like';
     }
+
+    // display number of comments
+    var commentCount = this.postData.inline_comments.length;
+    var commentCountText;
+
+    if (commentCount == 0) {
+        commentCountText = 'no comment';
+    } else if (commentCount == 1) {
+        commentCountText = '1 comment';
+    } else {
+        commentCountText = commentCount + ' comments';
+    }
+    
+    elements.postCommentCount_el.innerHTML = commentCountText;
 
     if (this.isSelfPost()) { // my own post
         // elements.postContent_el.style.cursor = 'auto';

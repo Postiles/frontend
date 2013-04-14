@@ -297,6 +297,14 @@
         }
     }
 
+    .post_comment_count {
+        cursor: pointer;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
     .post_edit_button {
         float: right;
         color: #aaa;
