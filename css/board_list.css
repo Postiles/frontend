@@ -75,6 +75,7 @@
 
 .gateway .single .meta {
     float: left;
+    width: 200px;
 }
 
 .gateway .single img {
@@ -90,6 +91,9 @@
     line-height: 20px;
     height: 20px;
     margin-top: 9px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 .gateway .single:hover .subject {
@@ -102,7 +106,9 @@
     height: 16px;
     line-height: 16px;
     margin-top: 3px;
-    text-overflow: ellipsis
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 .gateway .single .info {
