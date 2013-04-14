@@ -8,7 +8,6 @@ goog.require('postile.view');
 goog.require('postile.events');
 
 postile.view.At = function(el) {
-
     postile.view.TipView.call(this);
 
     var instance = this;
