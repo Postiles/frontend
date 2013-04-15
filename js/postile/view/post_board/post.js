@@ -753,7 +753,6 @@ postile.view.post.Post.prototype.resetCommentPreview = function(data) {
         postile.data_manager.getUserData(data.inline_comment.creator_id, function(userData) {
             elements.commentPreviewNoComment_el.style.display = 'none';
             elements.commentPreviewDisplay_el.style.display = 'table-cell';
-            console.log(elements.commentPreviewDisplay_el);
             elements.commentPreviewAuthor_el.innerHTML = userData.username;
             elements.commentPreviewContent_el.innerHTML = data.inline_comment.content;
 

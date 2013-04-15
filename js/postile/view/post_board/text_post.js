@@ -71,7 +71,6 @@ postile.view.post.text_post.TextPost.prototype.enterEditMode = function(req) {
         elements.postContent_el.innerHTML = content;
     }
 
-    console.log(content);
     if (goog.string.isEmpty(content) || content == '<br>') {
         elements.postContentPlaceHolder_el.style.display = 'block';
     } else {
