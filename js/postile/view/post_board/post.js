@@ -197,6 +197,7 @@ postile.view.post.Post.prototype.loadEditModeUIComponents = function() {
         postAuthor_el: $('post_author'),
         postWysiwyfIconContainer: $('post_wysiwyf_icon_container'),
         postContent_el: $('post_content'),
+        postContentPlaceHolder_el: $('post_content_placeholder'),
         deleteIcon_el: $('post_delete_icon'),
     }
 }
@@ -332,6 +333,17 @@ postile.view.post.Post.prototype.eventHandlers = {
             this.submitChange();
         }
     },
+    postContentKeyUp: function(e) {
+        var elements = this.editModeElements;
+        if (this.wrap_el.className.indexOf('text_post') != -1) { // is text post
+            var content = elements.postContent_el.innerHTML;
+            if (goog.string.isEmpty(content) || content == '<br>') {
+                elements.postContentPlaceHolder_el.style.display = 'block';
+            } else {
+                elements.postContentPlaceHolder_el.style.display = 'none';
+            }
+        }
+    },
     okDelete: function() {
         var id = this.postData.post.id;
         postile.ajax(['post','delete'], { post_id: id }, function(data) {
@@ -433,6 +445,10 @@ postile.view.post.Post.prototype.initEditModeListener = function() {
         postContentCtrlEnter: new postile.events.EventHandler(
                 elements.postContent_el, goog.events.EventType.KEYDOWN,
                 this.eventHandlers.postContentKeyDown.bind(this)),
+        // content key up, deals with placeholder
+        postContentKey: new postile.events.EventHandler(
+                elements.postContent_el, goog.events.EventType.KEYUP,
+                this.eventHandlers.postContentKeyUp.bind(this)),
         // delete icon clicked
         deleteIconClick: new postile.events.EventHandler(
                 elements.deleteIcon_el, goog.events.EventType.CLICK,
@@ -630,8 +646,6 @@ postile.view.post.Post.prototype.enterEditMode = function(req) {
     } else {
         elements.deleteIcon_el.style.display = '';
     }
-
-    console.log(elements.postWysiwyfIconContainer);
 }
 
 postile.view.post.Post.prototype.enterLockedMode = function() {

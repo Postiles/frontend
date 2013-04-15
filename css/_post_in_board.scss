@@ -154,6 +154,14 @@
         .post_content {
         }
 
+        .post_content_placeholder {
+            position: absolute;
+            text-align: center;
+            top: 70px;
+            color: #ccc;
+            display: none;
+        }
+
         box-shadow: 0px 0px 8px #537cbe;
     }
 

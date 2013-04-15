@@ -62,13 +62,38 @@ postile.view.post.text_post.TextPost.prototype.enterEditMode = function(req) {
     elements.postContent_el.style.cursor = 'auto';
     elements.postContent_el.style.height = this.wrap_el.offsetHeight - 30 + 'px';
 
+    elements.postContentPlaceHolder_el.style.display = 'block';
+    elements.postContentPlaceHolder_el.style.width = elements.postContent_el.offsetWidth + 'px';
+
+    var content = this.postData.post.content;
+
     if (req) {
-        elements.postContent_el.innerHTML = this.postData.post.content;
+        elements.postContent_el.innerHTML = content;
+    }
+
+    console.log(content);
+    if (goog.string.isEmpty(content) || content == '<br>') {
+        elements.postContentPlaceHolder_el.style.display = 'block';
+    } else {
+        elements.postContentPlaceHolder_el.style.display = 'none';
     }
 
     this.y_editor = new postile.WYSIWYF.Editor(elements.postContent_el, 
             elements.postWysiwyfIconContainer, this);
 }
+
+/**
+ * Add more listeners specifically for text post
+ */
+/*
+postile.view.text_post.TextPost.prototype.initEditModeListener = function() {
+    goog.base(this, 'initEditModeListener');
+
+    goog.events.listen(this.editModeElements.postContent_el, goog.events.EventType.KEYDOWN, function(e) {
+        console.log(e);
+    }.bind(this));
+}
+*/
 
 postile.view.post.text_post.TextPost.prototype.submitChange = function() {
     var elements = this.editModeElements;

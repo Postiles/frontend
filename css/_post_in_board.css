@@ -98,6 +98,12 @@
     .post_wrap .edit_mode_post .post_wysiwyf_icon_container {
       padding-top: 3px;
       height: 14px; }
+    .post_wrap .edit_mode_post .post_content_placeholder {
+      position: absolute;
+      text-align: center;
+      top: 70px;
+      color: #ccc;
+      display: none; }
   .post_wrap .locked_mode_post {
     position: absolute;
     top: 0;

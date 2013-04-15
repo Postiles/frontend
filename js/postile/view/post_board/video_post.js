@@ -26,6 +26,8 @@ postile.view.post.video_post.VideoPost.prototype.enterEditMode = function(req) {
     this.initVideo(elements);
 
     elements.postTitle_el.focus();
+
+    elements.postContent_el.contentEditable = 'false'; // disable content editing
 }
 
 postile.view.post.video_post.VideoPost.prototype.initVideo = function(elements) {
