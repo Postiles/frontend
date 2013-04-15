@@ -1,0 +1,62 @@
+$main-color: #034d61;
+$text-color: #eeeeee;
+$input-background: #bad1d7;
+
+html, body {
+    margin:0px;
+    background:$main-color;
+    height:100%;
+    #wrapper {
+        color: $text-color;
+        #banner {
+            margin-left: 70px;
+            margin-top:60px;
+            padding:0px;
+            font-family:"Helvetica Neue";
+            #ln1{
+                margin:0px;
+                font-size:30px;
+                .emph{
+                    font-weight: bold;
+                }
+            }
+            #ln2{
+                margin:0px;
+                margin-top:5px;
+                font-size:24px;
+            }
+        }
+        #input_field {
+            float:left;
+            margin-left:245px;
+            margin-top:90px;
+            p{
+                margin-top:40px;
+                margin-bottom:15px;
+                font-size:24px;
+            }
+            input{
+                font-size:25px;
+                background:$input-background;
+                border:0px;
+                width:725px;
+                height:40px;
+            }
+        }
+        #btn{
+            color:$main-color;
+            background:#cbdcb8;
+            height:190px;
+            width:190px;
+            margin-top:260px;
+            margin-left:1095px;
+            p{
+                padding-top:75px;
+                margin-left:40px;
+                font-size:40px;
+                font-weight:bold;
+            }
+        }
+    }
+}
+

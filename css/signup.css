@@ -1,0 +1,46 @@
+html, body {
+  margin: 0px;
+  background: #034d61;
+  height: 100%; }
+  html #wrapper, body #wrapper {
+    color: #eeeeee; }
+    html #wrapper #banner, body #wrapper #banner {
+      margin-left: 70px;
+      margin-top: 60px;
+      padding: 0px;
+      font-family: "Helvetica Neue"; }
+      html #wrapper #banner #ln1, body #wrapper #banner #ln1 {
+        margin: 0px;
+        font-size: 30px; }
+        html #wrapper #banner #ln1 .emph, body #wrapper #banner #ln1 .emph {
+          font-weight: bold; }
+      html #wrapper #banner #ln2, body #wrapper #banner #ln2 {
+        margin: 0px;
+        margin-top: 5px;
+        font-size: 24px; }
+    html #wrapper #input_field, body #wrapper #input_field {
+      float: left;
+      margin-left: 245px;
+      margin-top: 90px; }
+      html #wrapper #input_field p, body #wrapper #input_field p {
+        margin-top: 40px;
+        margin-bottom: 15px;
+        font-size: 24px; }
+      html #wrapper #input_field input, body #wrapper #input_field input {
+        font-size: 25px;
+        background: #bad1d7;
+        border: 0px;
+        width: 725px;
+        height: 40px; }
+    html #wrapper #btn, body #wrapper #btn {
+      color: #034d61;
+      background: #cbdcb8;
+      height: 190px;
+      width: 190px;
+      margin-top: 260px;
+      margin-left: 1095px; }
+      html #wrapper #btn p, body #wrapper #btn p {
+        padding-top: 75px;
+        margin-left: 40px;
+        font-size: 40px;
+        font-weight: bold; }
