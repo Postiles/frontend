@@ -292,6 +292,16 @@ postile.view.post.Post.prototype.eventHandlers = {
     confirmDeleteMode: function() {
         this.changeCurrentMode(postile.view.post.Post.PostMode.CONFIRM_DELETE);
     },
+    bodyClick: function() {
+        if (this.currMode == postile.view.post.Post.PostMode.EDIT) {
+            this.submitChange();
+        }
+    },
+    wrapClick: function(e) {
+        if (this.currMode == postile.view.post.Post.PostMode.EDIT) {
+            e.stopPropagation();
+        }
+    },
     commentKeyDown: function(e) {
         if (e.keyCode == 13) { // enter pressed
            var content = goog.string.trim(this.commentModeElements.commentInput_el.innerHTML);
@@ -453,6 +463,14 @@ postile.view.post.Post.prototype.initEditModeListener = function() {
         deleteIconClick: new postile.events.EventHandler(
                 elements.deleteIcon_el, goog.events.EventType.CLICK,
                 this.eventHandlers.confirmDeleteMode.bind(this)),
+        // body clicked, submit change
+        bodyClick: new postile.events.EventHandler(
+                document.body, goog.events.EventType.CLICK,
+                this.eventHandlers.bodyClick.bind(this)),
+        // stop body click propagation
+        wrapClick: new postile.events.EventHandler(
+                this.wrap_el, goog.events.EventType.CLICK,
+                this.eventHandlers.wrapClick.bind(this)),
     }
 
     // enable all the listeners
@@ -646,6 +664,16 @@ postile.view.post.Post.prototype.enterEditMode = function(req) {
     } else {
         elements.deleteIcon_el.style.display = '';
     }
+
+    /*
+    goog.events.listen(document.body, goog.events.EventType.CLICK, function(e) {
+        console.log('hehe');
+    });
+
+    goog.events.listen(this.wrap_el, goog.events.EventType.CLICK, function(e) {
+        e.stopPropagation();
+    });
+    */
 }
 
 postile.view.post.Post.prototype.enterLockedMode = function() {
