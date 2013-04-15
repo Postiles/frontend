@@ -2,8 +2,7 @@
 body {
   margin: 0px;
   padding: 0px;
-  z-index: 200;
-}
+  z-index: 200; }
 
 #board_more {
   position: fixed !important;
@@ -88,7 +87,7 @@ body {
       top: -12px; }
   #other_boards #board_list {
     max-height: 400px;
-    overflow: auto; }
+    overflow: scroll; }
     #other_boards #board_list .up_roll {
       height: 10px;
       background-color: #f2f7f7;
@@ -127,16 +126,23 @@ body {
       height: 50px;
       cursor: pointer; }
       #other_boards #board_list .listed_board h3.board_title {
+        width: 180px;
         font-size: 14px;
         margin-top: 0px;
         margin-bottom: 0px;
         margin-left: 14px;
-        color: #024d61; }
+        color: #024d61;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis; }
       #other_boards #board_list .listed_board p.board_discription {
         margin-left: 14px;
         margin-top: 3px;
         font-size: 10px;
-        width: 200px; }
+        width: 180px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis; }
       #other_boards #board_list .listed_board .selected_icon {
         opacity: 0;
         position: absolute;

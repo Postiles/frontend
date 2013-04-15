@@ -422,7 +422,7 @@ postile.view.post.Post.prototype.initCommentModeListener = function() {
         goog.events.EventType.CLICK, 
         function(e) {
             this.changeCurrentMode(postile.view.post.Post.PostMode.DISPLAY);
-        });
+        }.bind(this));
 }
 
 postile.view.post.Post.prototype.initEditModeListener = function() {

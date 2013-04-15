@@ -174,18 +174,25 @@ body {
 			cursor: pointer;
 
 			h3.board_title {
+				width: 180px;
 				font-size: 14px;
 				margin-top: 0px;
 				margin-bottom: 0px;
 				margin-left: 14px;
 				color: $main-color;
+				overflow: hidden;
+				white-space: nowrap;
+				text-overflow: ellipsis;
 			}
 
 			p.board_discription {
 				margin-left: 14px;
 				margin-top:3px;
 				font-size: 10px;
-				width:200px;
+				width:180px;
+				overflow: hidden;
+				white-space: nowrap;
+				text-overflow: ellipsis;
 			}
 
 			.selected_icon {
