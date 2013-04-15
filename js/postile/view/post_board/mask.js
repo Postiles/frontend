@@ -18,6 +18,7 @@ postile.view.post_board.PostCreator = function(post_board_obj) {
     instance.hint_el.style.display = 'none';
     this.preview = goog.dom.createDom('div', 'post_preview');
     goog.dom.appendChild(this.ghost_board_el, this.preview);
+
     this.post_preview_origin_spot = goog.dom.createDom('div', 'post_preview_origin_spot');
     goog.dom.appendChild(this.ghost_board_el, this.post_preview_origin_spot);
     goog.dom.appendChild(this.ghost_board_el, this.hint_el);
@@ -140,14 +141,27 @@ postile.view.post_board.PostCreator.prototype.mousemove = function(e) {
     this.preview.style.width = this.board.widthTo(this.position.span_x) + 'px';
     this.preview.style.height = this.board.heightTo(this.position.span_y) + 'px';
 
-    this.legal = (!intersect) && this.position.span_x >= postile.view.post_board.MIN_SIZE && this.position.span_y >= postile.view.post_board.MIN_SIZE && this.position.span_x <= postile.view.post_board.MAX_SIZE && this.position.span_y <= postile.view.post_board.MAX_SIZE;
+    this.legal_intersect = (!intersect);
+    this.legal_min = this.position.span_x >= postile.view.post_board.MIN_SIZE && this.position.span_y >= postile.view.post_board.MIN_SIZE 
+    this.legal_max = this.position.span_x <= postile.view.post_board.MAX_SIZE && this.position.span_y <= postile.view.post_board.MAX_SIZE;
+
+    this.legal = this.legal_intersect && this.legal_min && this.legal_max;
 
     if (!this.imageMode) {
         this.preview.style.backgroundColor = this.legal ? '#e4eee4': '#f4dcdc';
     } else {
         this.preview.style.opacity = this.legal ? '0.9' : '0.5';
     }
-    this.preview.style.display = 'block';
+    if(!this.legal_intersect){
+        this.preview.innerHTML = "Intersect with others";
+    }else if(!this.legal_max){
+        this.preview.innerHTML = "Larger than maximum size";
+    }else if(!this.legal_min){
+        this.preview.innerHTML = "Smaller than minimun size";
+    }else{
+        this.preview.innerHTML = "";
+    }
+    this.preview.style.display = 'table-cell';
 };
 
 postile.view.post_board.PostCreator.prototype.mouseup = function(e){
@@ -158,7 +172,8 @@ postile.view.post_board.PostCreator.prototype.mouseup = function(e){
     if (!this.legal) {
         if (this.new_post_start_coord_in_px 
                 && Math.abs(this.new_post_start_coord_in_px[0] - e.clientX) > 3 
-                && Math.abs(this.new_post_start_coord_in_px[1] - e.clientY) > 3) { //do not show when dbl clicking
+                && Math.abs(this.new_post_start_coord_in_px[1] - e.clientY) > 3) 
+        { //do not show when dbl clicking
             new postile.toast.Toast(5, postile._('post_zone_illegal'), [], 'red');
         }
         this.new_post_start_coord_in_px = null;
