@@ -953,7 +953,7 @@ postile.view.post_board.PostBoard.prototype.fayeHandler = function(status, data)
 
             currPost.hideNoCommentEl();
 
-            // note that this line should be put after appendInlineComment to 
+            // note that this line should be put after appendInlineComment to
             // get the correct count
             currPost.resetCommentPreview(data);
         }

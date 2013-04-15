@@ -11,7 +11,8 @@ postile.view.login.LoginView = function() { //constructor
     this.emailInput_el = goog.dom.getElement('email-input');
     this.passwordInput_el = goog.dom.getElement('password-input');
 
-    goog.events.listen(this.emailInput_el, goog.events.EventType.KEYUP, this.enterPressed.bind(this));
+    goog.events.listen(this.emailInput_el, goog.events.EventType.KEYUP,
+                       this.enterPressed.bind(this));
     goog.events.listen(this.passwordInput_el, goog.events.EventType.KEYUP, this.enterPressed.bind(this));
 
     this.loginButtonContainer_el = goog.dom.getElement('login-button-container');
@@ -24,7 +25,8 @@ goog.inherits(postile.view.login.LoginView, postile.view.FullScreenView);
 
 postile.view.login.LoginView.prototype.unloaded_stylesheets = ['login.css'];
 
-postile.view.login.LoginView.prototype.html_segment = postile.conf.staticResource(['login.html']);
+postile.view.login.LoginView.prototype.html_segment =
+    postile.conf.staticResource(['login.html']);
 
 postile.view.login.LoginView.prototype.enterPressed = function(e) {
     if (e.keyCode == 13) { // enter key pressed

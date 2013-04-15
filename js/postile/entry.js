@@ -12,6 +12,7 @@ goog.require('postile.view.post_board');
 goog.require('postile.view.BoardList');
 goog.require('postile.view.create_user');
 goog.require('postile.view.profile');
+goog.require('postile.view.signup');
 goog.require('postile.ui');
 goog.require('postile.feedback');
 goog.require('postile.log');
@@ -49,6 +50,7 @@ postile.entry.init_router_map = function() {
     postile.router.map['login'] = postile.view.login.LoginView;
     postile.router.map['topic'] = postile.view.BoardList;
     postile.router.map['console'] = postile.view.WelcomePage;
+    postile.router.map['signup'] = postile.view.signup.SignupView;
 };
 
 goog.exportSymbol('postile.entry.main', postile.entry.main);
