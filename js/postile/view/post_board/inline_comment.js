@@ -6,7 +6,7 @@ goog.require('goog.events');
 goog.require('postile.ui');
 goog.require('postile.dom');
 
-postile.view.post.InlineComment = function(commentContainer, commentData) {
+postile.view.post.InlineComment = function(commentContainer, commentData, postCreatorId) {
     // create wrapper for post
     this.wrap_el = goog.dom.createDom('div', 'post_comment');
 
@@ -24,6 +24,9 @@ postile.view.post.InlineComment = function(commentContainer, commentData) {
         content_el: $('comment_content'),
         time_el: $('comment_time'),
         deleteButton_el: $('comment_delete_button'),
+        confirmDeleteContainer_el: $('confirm_delete_container'),
+        confirmOk_el: $('confirm_delete_ok'),
+        confirmCancel_el: $('confirm_delete_cancel'),
     }
 
     postile.data_manager.getUserData(
@@ -36,8 +39,7 @@ postile.view.post.InlineComment = function(commentContainer, commentData) {
                 goog.events.EventType.CLICK, 
                 function(e) {
                     var profileView = 
-                        new postile.view.profile.ProfileView(
-                            commentData.creator.id);
+                        new postile.view.profile.ProfileView(data.id);
                     profileView.open(710);
                 }.bind(this));
 
@@ -54,20 +56,35 @@ postile.view.post.InlineComment = function(commentContainer, commentData) {
         commentData.inline_comment.created_at, 'inline');
 
     goog.events.listen(
-        this.elements.deleteButton_el, 
+        this.elements.deleteButton_el,
         goog.events.EventType.CLICK,
         function(e) {
-            console.log(commentData.inline_comment.id);
+            this.elements.confirmDeleteContainer_el.style.display = 'block';
+        }.bind(this));
+
+    goog.events.listen(
+        this.elements.confirmOk_el, 
+        goog.events.EventType.CLICK,
+        function(e) {
             postile.ajax(
                 [ 'inline_comment', 'delete' ],
                 { comment_id: commentData.inline_comment.id },
                 function(data) {
                 });
         }.bind(this));
+    
+    goog.events.listen(
+        this.elements.confirmCancel_el,
+        goog.events.EventType.CLICK,
+        function(e) {
+            this.elements.confirmDeleteContainer_el.style.display = 'none';
+        }.bind(this));
 
-    if (commentData.inline_comment.creator_id == parseInt(localStorage.postile_user_id)) {
-        this.elements.deleteButton_el.style.display = 'inline';
-    }
+    var currUserId = parseInt(localStorage.postile_user_id);
+    if (commentData.inline_comment.creator_id == currUserId ||
+        postCreatorId == currUserId) {
+            this.elements.deleteButton_el.style.display = 'inline';
+        }
 
     goog.dom.appendChild(commentContainer, this.wrap_el);
 }

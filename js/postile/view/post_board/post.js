@@ -627,6 +627,7 @@ postile.view.post.Post.prototype.enterDisplayMode = function() {
     } else { // no comment
         elements.commentPreviewDisplay_el.style.display = 'none';
         elements.commentPreview_el.style.display = 'block';
+        elements.commentPreviewNoComment_el.style.display = 'block';
     }
 }
 
@@ -677,9 +678,10 @@ postile.view.post.Post.prototype.enterCommentMode = function() {
         elements.commentContainerNoComment_el.style.display = 'none';
         for (var i in comments) {
             new postile.view.post.InlineComment(
-                elements.commentItems_el, comments[i]);
+                elements.commentItems_el, comments[i], this.postData.post.creator_id);
         }
     } else { // no comment
+        elements.commentContainerNoComment_el.style.display = 'block';
     }
 
     elements.commentList_el.scrollTop = elements.commentList_el.scrollHeight;
@@ -848,7 +850,7 @@ postile.view.post.Post.prototype.inlineCommentRendered = function(comment) {
 
 postile.view.post.Post.prototype.appendInlineComment = function(comment) {
     new postile.view.post.InlineComment(
-        this.commentModeElements.commentItems_el, comment);
+        this.commentModeElements.commentItems_el, comment, this.postData.post.creator_id);
 }
 
 postile.view.post.Post.prototype.removeInlineComment = function(comment) {
@@ -856,12 +858,15 @@ postile.view.post.Post.prototype.removeInlineComment = function(comment) {
 
     for (var i in this.postData.inline_comments) {
         var cmt = this.postData.inline_comments[i];
-        console.log(cmt);
 
         if (cmt.inline_comment.id == comment.id) {
             this.commentModeElements.commentItems_el.removeChild(cmt.dom); // remove dom
             this.postData.inline_comments.splice(i, 1); // remove data from array
             break;
         }
+    }
+
+    if (comments.length == 0) { // removed last comment
+        this.commentModeElements.commentContainerNoComment_el.style.display = 'block';
     }
 }
