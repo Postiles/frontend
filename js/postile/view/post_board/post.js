@@ -26,15 +26,18 @@ goog.require('postile.view.post.video_post');
 goog.require('postile.view.post.PostExpand');
 
 /**
- * A factory function that creates a post from JSON data retrieved from the server
+ * Factory function that creates a post from JSON data retrieved from the server
  */
 postile.view.post.createPostFromJSON = function(postData, board, mode) {
     if (postData.post.image_url) { // PicturePost
-        return new postile.view.post.picture_post.PicturePost(postData, board, mode);
+        return new postile.view.post.picture_post.PicturePost(
+            postData, board, mode);
     } else if (postData.post.video_link) { // VideoPost
-        return new postile.view.post.video_post.VideoPost(postData, board, mode);
+        return new postile.view.post.video_post.VideoPost(
+            postData, board, mode);
     } else { // TextPost
-        return new postile.view.post.text_post.TextPost(postData, board, mode);
+        return new postile.view.post.text_post.TextPost(
+            postData, board, mode);
     }
 }
 
@@ -50,22 +53,31 @@ postile.view.post.Post = function(postData, board, mode) {
     this.initEventListeners();
 
     // precalculate this two so that future intersect test will be faster
-    this.postData.post.coord_x_end = this.postData.post.pos_x + this.postData.post.span_x;
-    this.postData.post.coord_y_end = this.postData.post.pos_y + this.postData.post.span_y;
+    this.postData.post.coord_x_end = 
+        this.postData.post.pos_x + this.postData.post.span_x;
+    this.postData.post.coord_y_end = 
+        this.postData.post.pos_y + this.postData.post.span_y;
 
-    this.wrap_el.style.left = this.board.xPosTo(this.postData.post.pos_x) + 'px';
-    this.wrap_el.style.top = this.board.yPosTo(this.postData.post.pos_y) + 'px';
-    this.wrap_el.style.width = this.board.widthTo(this.postData.post.span_x) + 'px';
-    this.wrap_el.style.height = this.board.heightTo(this.postData.post.span_y) + 'px';
+    this.wrap_el.style.left = 
+        this.board.xPosTo(this.postData.post.pos_x) + 'px';
+    this.wrap_el.style.top = 
+        this.board.yPosTo(this.postData.post.pos_y) + 'px';
+    this.wrap_el.style.width = 
+        this.board.widthTo(this.postData.post.span_x) + 'px';
+    this.wrap_el.style.height = 
+        this.board.heightTo(this.postData.post.span_y) + 'px';
 
     goog.dom.appendChild(this.board.canvas, this.wrap_el);
 
     this.changeCurrentMode(mode);
 
     // disable double click entering mask mode
-    goog.events.listen(this.wrap_el, goog.events.EventType.DBLCLICK, function(e) {
-        e.stopPropagation();
-    });
+    goog.events.listen(
+        this.wrap_el, 
+        goog.events.EventType.DBLCLICK, 
+        function(e) {
+            e.stopPropagation();
+        });
 
     // NOTE: do not add any other event listener here unless it is for wrap_el
 }
@@ -80,9 +92,12 @@ postile.view.post.Post.prototype.changeCurrentMode = function(mode) {
         break;
     case postile.view.post.Post.PostMode.EDIT:
         if (this.isSelfPost()) {
-            postile.ajax([ 'post', 'start_edit' ], { post_id: this.postData.post.id }, function(data) {
-                this.enterEditMode(true);
-            }.bind(this));
+            postile.ajax(
+                [ 'post', 'start_edit' ], 
+                { post_id: this.postData.post.id }, 
+                function(data) {
+                    this.enterEditMode(true);
+                }.bind(this));
         }
         break;
     case postile.view.post.Post.PostMode.LOCKED:
@@ -117,7 +132,8 @@ postile.view.post.Post.prototype.loadUIComponents = function() {
     this.wrap_el = goog.dom.createDom('div', 'post_wrap');
 
     // load static html template
-    postile.ui.load(this.wrap_el, postile.conf.staticResource([ '_post_in_board.html' ]));
+    postile.ui.load(this.wrap_el, 
+        postile.conf.staticResource([ '_post_in_board.html' ]));
 
     // load different post modes
     this.loadDisplayModeUIComponents();
@@ -129,11 +145,13 @@ postile.view.post.Post.prototype.loadUIComponents = function() {
 }
 
 postile.view.post.Post.prototype.loadDisplayModeUIComponents = function() {
-    this.displayModePost_el = postile.dom.getDescendantByClass(this.wrap_el, 'display_mode_post');
+    this.displayModePost_el = 
+        postile.dom.getDescendantByClass(this.wrap_el, 'display_mode_post');
 
     // This function is just a shortcut for the getDescendantByClass function
     var $ = function(nodeCls) {
-        return postile.dom.getDescendantByClass(this.displayModePost_el, nodeCls);
+        return postile.dom.getDescendantByClass(
+            this.displayModePost_el, nodeCls);
     }.bind(this);
 
     // all the UI components for display mode
@@ -160,11 +178,13 @@ postile.view.post.Post.prototype.loadDisplayModeUIComponents = function() {
 }
 
 postile.view.post.Post.prototype.loadCommentModeUIComponents = function() {
-    this.commentModePost_el = postile.dom.getDescendantByClass(this.wrap_el, 'comment_mode_post');
+    this.commentModePost_el = 
+        postile.dom.getDescendantByClass(this.wrap_el, 'comment_mode_post');
 
     // This function is just a shortcut for the getDescendantByClass function
     var $ = function(nodeCls) {
-        return postile.dom.getDescendantByClass(this.commentModePost_el, nodeCls);
+        return postile.dom.getDescendantByClass(
+            this.commentModePost_el, nodeCls);
     }.bind(this);
 
     // all the UI components for display mode
@@ -185,7 +205,8 @@ postile.view.post.Post.prototype.loadCommentModeUIComponents = function() {
 }
 
 postile.view.post.Post.prototype.loadEditModeUIComponents = function() {
-    this.editModePost_el = postile.dom.getDescendantByClass(this.wrap_el, 'edit_mode_post');
+    this.editModePost_el = 
+        postile.dom.getDescendantByClass(this.wrap_el, 'edit_mode_post');
 
     var $ = function(nodeCls) {
         return postile.dom.getDescendantByClass(this.editModePost_el, nodeCls);
@@ -203,7 +224,8 @@ postile.view.post.Post.prototype.loadEditModeUIComponents = function() {
 }
 
 postile.view.post.Post.prototype.loadLockedModeUIComponents = function() {
-    this.lockedModePost_el = postile.dom.getDescendantByClass(this.wrap_el, 'locked_mode_post');
+    this.lockedModePost_el = 
+        postile.dom.getDescendantByClass(this.wrap_el, 'locked_mode_post');
 
     var $ = function(nodeCls) {
         return postile.dom.getDescendantByClass(this.lockedModePost_el, nodeCls);
@@ -216,7 +238,8 @@ postile.view.post.Post.prototype.loadLockedModeUIComponents = function() {
 }
 
 postile.view.post.Post.prototype.loadNewModeUIComponents = function() {
-    this.newModePost_el = postile.dom.getDescendantByClass(this.wrap_el, 'new_mode_post');
+    this.newModePost_el = 
+        postile.dom.getDescendantByClass(this.wrap_el, 'new_mode_post');
 
     var $ = function(nodeCls) {
         return postile.dom.getDescendantByClass(this.newModePost_el, nodeCls);
@@ -229,11 +252,13 @@ postile.view.post.Post.prototype.loadNewModeUIComponents = function() {
 }
 
 postile.view.post.Post.prototype.loadConfirmDeleteModeUIComponents = function() {
-    this.confirmDeleteModePost_el = postile.dom.getDescendantByClass(
+    this.confirmDeleteModePost_el = 
+        postile.dom.getDescendantByClass(
             this.wrap_el, 'confirm_delete_mode_post');
 
     var $ = function(nodeCls) {
-        return postile.dom.getDescendantByClass(this.confirmDeleteModePost_el, nodeCls);
+        return postile.dom.getDescendantByClass(
+            this.confirmDeleteModePost_el, nodeCls);
     }.bind(this);
 
     this.confirmDeleteModeElements = {
@@ -241,129 +266,6 @@ postile.view.post.Post.prototype.loadConfirmDeleteModeUIComponents = function() 
         confirmOk_el: $('confirm_ok'),
         confirmCancel_el: $('confirm_cancel'),
     }
-}
-
-/**
- * Define the global event handles for the post
- */
-postile.view.post.Post.prototype.eventHandlers = {
-    postExpandHandler: function() {
-        var postExpand = new postile.view.post.PostExpand(this.postData.post);
-        postExpand.open();
-    },
-    postAuthorProfilePreviewHandler: function() {
-        var profileView = new postile.view.profile.ProfileView(this.postData.creator.id);
-        profileView.open(710);
-    },
-    likeClickHandler: function() {
-        var elements = this.displayModeElements;
-        var action = elements.postLikeButton_el.innerHTML.toLowerCase();
-
-        postile.ajax([ 'post', action ], { post_id: this.postData.post.id }, function(data) {
-            if (action == 'like') { // like
-                elements.postLikeCount_el.innerHTML = (++this.postData.likes.length);
-                elements.postLikeButton_el.innerHTML = 'Unlike';
-            } else { // unlike
-                elements.postLikeCount_el.innerHTML = (--this.postData.likes.length);
-                elements.postLikeButton_el.innerHTML = 'Like';
-            }
-        }.bind(this));
-    },
-    commentAuthorProfilePreviewHandler: function(e) {
-        e.stopPropagation();
-        var profileView = new postile.view.profile.ProfileView(this.latestComment.creator.id);
-        profileView.open(710);
-    },
-    displayMode: function() {
-        this.changeCurrentMode(postile.view.post.Post.PostMode.DISPLAY);
-    },
-    commentMode: function() {
-        this.changeCurrentMode(postile.view.post.Post.PostMode.COMMENT);
-    },
-    editMode: function() {
-        this.changeCurrentMode(postile.view.post.Post.PostMode.EDIT);
-    },
-    lockedMode: function() {
-        this.changeCurrentMode(postile.view.post.Post.PostMode.LOCKED);
-    },
-    newMode: function() {
-        this.changeCurrentMode(postile.view.post.Post.PostMode.NEW);
-    },
-    confirmDeleteMode: function() {
-        this.changeCurrentMode(postile.view.post.Post.PostMode.CONFIRM_DELETE);
-    },
-    bodyClick: function() {
-        if (this.currMode == postile.view.post.Post.PostMode.EDIT) {
-            this.submitChange();
-        }
-    },
-    wrapClick: function(e) {
-        if (this.currMode == postile.view.post.Post.PostMode.EDIT) {
-            e.stopPropagation();
-        }
-    },
-    commentKeyDown: function(e) {
-        if (e.keyCode == 13) { // enter pressed
-           var content = goog.string.trim(this.commentModeElements.commentInput_el.innerHTML);
-
-           if (content.length) { // not empty comment
-                postile.ajax([ 'inline_comment', 'new' ], {
-                    post_id: this.postData.post.id,
-                    content: content,
-                }, function(data) {
-                    var comment = data.message;
-                    if (!this.inlineCommentRendered(comment)) { // not yet rendered
-                        // add the new comment to list
-                        this.postData.inline_comments.push(comment);
-
-                        new postile.view.post.InlineComment(
-                                this.commentModeElements.commentItems_el, comment);
-                    }
-
-                    // scroll the comment list to the bottom
-                    // even if the comment is already rendered, we still scroll it to the bottom
-                    // since it's my own comment
-                    this.commentModeElements.commentList_el.scrollTop = 
-                            this.commentModeElements.commentList_el.scrollHeight;
-
-                    this.hideNoCommentEl();
-                }.bind(this));
-
-                this.commentModeElements.commentInput_el.innerHTML = ''; // clear the input field
-           }
-        }
-    },
-    postTitleKeyDown: function(e) {
-        if (e.keyCode == 13) {
-            this.submitChange();
-        }
-    },
-    postContentKeyDown: function(e) {
-        if (e.keyCode == 13 && e.ctrlKey) {
-            this.submitChange();
-        }
-    },
-    postContentKeyUp: function(e) {
-        var elements = this.editModeElements;
-        if (this.wrap_el.className.indexOf('text_post') != -1) { // is text post
-            var content = elements.postContent_el.innerHTML;
-            if (goog.string.isEmpty(content) || content == '<br>') {
-                elements.postContentPlaceHolder_el.style.display = 'block';
-            } else {
-                elements.postContentPlaceHolder_el.style.display = 'none';
-            }
-        }
-    },
-    okDelete: function() {
-        var id = this.postData.post.id;
-        postile.ajax(['post','delete'], { post_id: id }, function(data) {
-            this.board.removePost(id);
-            this.board.disableMovingCanvas = false;
-        }.bind(this));
-    },
-    cancelDelete: function() {
-        this.enterEditMode(false);
-    },
 }
 
 /**
@@ -380,146 +282,268 @@ postile.view.post.Post.prototype.initEventListeners = function() {
 
 postile.view.post.Post.prototype.initDisplayModeListener = function() {
     var elements = this.displayModeElements;
-    this.displayModeListeners = {
-        // expand post
-        titleClick: new postile.events.EventHandler(
-                elements.postTitleContainer_el, goog.events.EventType.CLICK, 
-                this.eventHandlers.postExpandHandler.bind(this)),
-        // display user profile
-        authorClick: new postile.events.EventHandler(
-                elements.postAuthor_el, goog.events.EventType.CLICK,
-                this.eventHandlers.postAuthorProfilePreviewHandler.bind(this)),
-        // enter edit mode by clicking on content
-        /*
-        contentClick: new postile.events.EventHandler(
-                elements.postContent_el, goog.events.EventType.CLICK,
-                this.eventHandlers.editMode.bind(this)),
-        */
-        likeClick: new postile.events.EventHandler(
-                elements.postLikeButton_el, goog.events.EventType.CLICK,
-                this.eventHandlers.likeClickHandler.bind(this)),
-        // comment count clicked, enter comment mode
-        commentCountClick: new postile.events.EventHandler(
-                elements.postCommentCount_el, goog.events.EventType.CLICK,
-                this.eventHandlers.commentMode.bind(this)),
-        // enter edit mode by clicking on edit button
-        editClick: new postile.events.EventHandler(
-                elements.postEditButton_el, goog.events.EventType.CLICK,
-                this.eventHandlers.editMode.bind(this)),
-        // comment preview clicked, enter comment mode
-        commentPreviewClick: new postile.events.EventHandler(
-                elements.commentPreview_el, goog.events.EventType.CLICK,
-                this.eventHandlers.commentMode.bind(this)),
-        // comment preview author name clicked
-        commentPreviewAuthorClick: new postile.events.EventHandler(
-                elements.commentPreviewAuthor_el, goog.events.EventType.CLICK,
-                this.eventHandlers.commentAuthorProfilePreviewHandler.bind(this)),
-    }
 
-    // enable all the listeners
-    for (var i in this.displayModeListeners) {
-        this.displayModeListeners[i].listen();
-    }
+    // expand post
+    goog.events.listen(
+        elements.postTitleContainer_el, 
+        goog.events.EventType.CLICK, 
+        function(e) {
+            var postExpand = 
+                new postile.view.post.PostExpand(this.postData.post);
+            postExpand.open();
+        }.bind(this));
+
+    // display user profile
+    goog.events.listen(
+        elements.postAuthor_el, 
+        goog.events.EventType.CLICK, 
+        function(e) {
+            var profileView = 
+                new postile.view.profile.ProfileView(
+                    this.postData.creator.id);
+            profileView.open(710);
+        }.bind(this));
+
+    // like clicked
+    goog.events.listen(
+        elements.postLikeButton_el, 
+        goog.events.EventType.CLICK, 
+        function(e) {
+            var elements = this.displayModeElements;
+            var action = elements.postLikeButton_el.innerHTML.toLowerCase();
+
+            postile.ajax(
+                [ 'post', action ], 
+                { post_id: this.postData.post.id }, 
+                function(data) {
+                    if (action == 'like') { // like
+                        elements.postLikeCount_el.innerHTML = 
+                            (++this.postData.likes.length);
+                        elements.postLikeButton_el.innerHTML = 'Unlike';
+                    } else { // unlike
+                        elements.postLikeCount_el.innerHTML = 
+                            (--this.postData.likes.length);
+                        elements.postLikeButton_el.innerHTML = 'Like';
+                    }
+                }.bind(this));
+        }.bind(this));
+
+    // comment count clicked, enter comment mode
+    goog.events.listen(
+        elements.postCommentCount_el, 
+        goog.events.EventType.CLICK, 
+        function(e) {
+            this.changeCurrentMode(postile.view.post.Post.PostMode.COMMENT);
+        }.bind(this));
+
+    // enter edit mode by clicking on edit button
+    goog.events.listen(
+        elements.postEditButton_el, 
+        goog.events.EventType.CLICK, 
+        function(e) {
+            this.changeCurrentMode(postile.view.post.Post.PostMode.EDIT);
+        }.bind(this));
+
+    // comment preview clicked, enter comment mode
+    goog.events.listen(
+        elements.commentPreview_el, 
+        goog.events.EventType.CLICK, function(e) {
+            this.changeCurrentMode(postile.view.post.Post.PostMode.COMMENT);
+        }.bind(this));
+
+    // comment preview author name clicked
+    goog.events.listen(
+        elements.commentPreviewAuthor_el, 
+        goog.events.EventType.CLICK, 
+        function(e) {
+            e.stopPropagation();
+            var profileView = 
+                new postile.view.profile.ProfileView(
+                    this.latestComment.creator.id);
+            profileView.open(710);
+        }.bind(this));
 }
 
 postile.view.post.Post.prototype.initCommentModeListener = function() {
     var elements = this.commentModeElements;
-    this.commentModeListeners = {
-        // expand post
-        titleClick: new postile.events.EventHandler(
-                elements.postTitleContainer_el, goog.events.EventType.CLICK, 
-                this.eventHandlers.postExpandHandler.bind(this)),
-        // enter pressed for comment input
-        inputEnterKey: new postile.events.EventHandler(
-                elements.commentInput_el, goog.events.EventType.KEYDOWN,
-                this.eventHandlers.commentKeyDown.bind(this)),
-        // close clicked in comment mode
-        closeClick: new postile.events.EventHandler(
-                elements.commentCloseButton_el, goog.events.EventType.CLICK,
-                this.eventHandlers.displayMode.bind(this)),
-    }
 
-    // enable all the listeners
-    for (var i in this.commentModeListeners) {
-        this.commentModeListeners[i].listen();
-    }
+    // expand post
+    goog.events.listen(
+        elements.postTitleContainer_el, 
+        goog.events.EventType.CLICK, 
+        function(e) {
+            var postExpand = 
+                new postile.view.post.PostExpand(this.postData.post);
+            postExpand.open();
+        }.bind(this));
+
+    // enter pressed for comment input
+    goog.events.listen(
+        elements.commentInput_el, 
+        goog.events.EventType.KEYDOWN, 
+        function(e) {
+            if (e.keyCode == 13) { // enter pressed
+                var content = 
+                    goog.string.trim(
+                        this.commentModeElements.commentInput_el.innerHTML);
+
+                if (content.length) { // not empty comment
+                    postile.ajax([ 'inline_comment', 'new' ], {
+                        post_id: this.postData.post.id,
+                        content: content,
+                    }, function(data) {
+                        var comment = data.message;
+                        if (!this.inlineCommentRendered(comment)) {
+                            // add the new comment to list
+                            this.postData.inline_comments.push(comment);
+
+                            new postile.view.post.InlineComment(
+                                this.commentModeElements.commentItems_el, 
+                                comment);
+                        }
+
+                        // scroll the comment list to the bottom
+                        // even if the comment is already rendered, we still 
+                        // scroll it to the bottom since it's my own comment
+                        this.commentModeElements.commentList_el.scrollTop = 
+                            this.commentModeElements.commentList_el.scrollHeight;
+
+                        this.hideNoCommentEl();
+                    }.bind(this));
+
+                    this.commentModeElements.commentInput_el.innerHTML = '';
+               }
+            }
+        }.bind(this));
+
+    // close clicked in comment mode
+    goog.events.listen(
+        elements.commentCloseButton_el, 
+        goog.events.EventType.CLICK, 
+        function(e) {
+            this.changeCurrentMode(postile.view.post.Post.PostMode.DISPLAY);
+        });
 }
 
 postile.view.post.Post.prototype.initEditModeListener = function() {
     var elements = this.editModeElements;
-    this.editModeListeners = {
-        postTitleEnter: new postile.events.EventHandler(
-                elements.postTitle_el, goog.events.EventType.KEYDOWN,
-                this.eventHandlers.postTitleKeyDown.bind(this)),
-        // ctrl + enter pressed for post content
-        postContentCtrlEnter: new postile.events.EventHandler(
-                elements.postContent_el, goog.events.EventType.KEYDOWN,
-                this.eventHandlers.postContentKeyDown.bind(this)),
-        // content key up, deals with placeholder
-        postContentKey: new postile.events.EventHandler(
-                elements.postContent_el, goog.events.EventType.KEYUP,
-                this.eventHandlers.postContentKeyUp.bind(this)),
-        // delete icon clicked
-        deleteIconClick: new postile.events.EventHandler(
-                elements.deleteIcon_el, goog.events.EventType.CLICK,
-                this.eventHandlers.confirmDeleteMode.bind(this)),
-        // body clicked, submit change
-        bodyClick: new postile.events.EventHandler(
-                document.body, goog.events.EventType.CLICK,
-                this.eventHandlers.bodyClick.bind(this)),
-        // stop body click propagation
-        wrapClick: new postile.events.EventHandler(
-                this.wrap_el, goog.events.EventType.CLICK,
-                this.eventHandlers.wrapClick.bind(this)),
-    }
 
-    // enable all the listeners
-    for (var i in this.editModeListeners) {
-        this.editModeListeners[i].listen();
-    }
+    // enter pressed when editing title
+    goog.events.listen(
+        elements.postTitle_el, 
+        goog.events.EventType.KEYDOWN, 
+        function(e) {
+            if (e.keyCode == 13) {
+                this.submitChange();
+            }
+        }.bind(this));
+
+    // ctrl + enter pressed for post content
+    goog.events.listen(
+        elements.postContent_el, 
+        goog.events.EventType.KEYDOWN, 
+        function(e) {
+            if (e.keyCode == 13 && e.ctrlKey) {
+                this.submitChange();
+            }
+        }.bind(this));
+
+    // content key up, deals with placeholder
+    goog.events.listen(
+        elements.postContent_el, 
+        goog.events.EventType.KEYUP, 
+        function(e) {
+            var elements = this.editModeElements;
+            if (this.wrap_el.className.indexOf('text_post') != -1) { // text post
+                var content = elements.postContent_el.innerHTML;
+                if (goog.string.isEmpty(content) || content == '<br>') {
+                    elements.postContentPlaceHolder_el.style.display = 'block';
+                } else {
+                    elements.postContentPlaceHolder_el.style.display = 'none';
+                }
+            }
+        }.bind(this));
+
+    // delete icon clicked
+    goog.events.listen(
+        elements.deleteIcon_el, 
+        goog.events.EventType.CLICK, 
+        function(e) {
+            this.changeCurrentMode(
+                postile.view.post.Post.PostMode.CONFIRM_DELETE);
+        }.bind(this));
+
+    // body clicked, submit change
+    goog.events.listen(
+        document.body, 
+        goog.events.EventType.CLICK, 
+        function(e) {
+            if (this.currMode == postile.view.post.Post.PostMode.EDIT) {
+                this.submitChange();
+            }
+        }.bind(this));
+
+    // stop body click propagation
+    goog.events.listen(
+        this.wrap_el, 
+        goog.events.EventType.CLICK, 
+        function(e) {
+            if (this.currMode == postile.view.post.Post.PostMode.EDIT) {
+                e.stopPropagation();
+            }
+        }.bind(this));
 }
 
 postile.view.post.Post.prototype.initLockedModeListener = function() {
     var elements = this.lockedModeElements;
-    this.lockedModelListener = {
-        // TODO
-    }
 
-    // enable all the listeners
-    for (var i in this.lockedModelListener) {
-        this.lockedModelListener[i].listen();
-    }
+    // author's name clicked
+    goog.events.listen(
+        elements.lockUsername_el, 
+        goog.events.EventType.CLICK, 
+        function (e) {
+            var profileView = 
+                new postile.view.profile.ProfileView(this.postData.creator.id);
+            profileView.open(710);
+        }.bind(this));
 }
 
 postile.view.post.Post.prototype.initNewModeListener = function() {
     var elements = this.newModeElements;
-    this.newModeListener = {
-        // TODO
-    }
 
-    // enable all the listeners
-    for (var i in this.newModeListener) {
-        this.newModeListener[i].listen();
-    }
+    // author's name clicked
+    goog.events.listen(
+        elements.newUsername_el, 
+        goog.events.EventType.CLICK, 
+        function (e) {
+            var profileView = new postile.view.profile.ProfileView(
+                this.postData.creator.id);
+            profileView.open(710);
+        }.bind(this));
 }
 
 postile.view.post.Post.prototype.initConfirmDeleteModeListener = function() {
     var elements = this.confirmDeleteModeElements;
-    this.confirmDeleteModeListener = {
-        // ok clicked
-        confirmOk: new postile.events.EventHandler(
-                elements.confirmOk_el, goog.events.EventType.CLICK,
-                this.eventHandlers.okDelete.bind(this)),
-        // cancel clicked
-        confirmCancel: new postile.events.EventHandler(
-                elements.confirmCancel_el, goog.events.EventType.CLICK,
-                this.eventHandlers.cancelDelete.bind(this)),
-    }
 
-    // enable all the listeners
-    for (var i in this.confirmDeleteModeListener) {
-        this.confirmDeleteModeListener[i].listen();
-    }
+    // ok clicked
+    goog.events.listen(
+        elements.confirmOk_el, 
+        goog.events.EventType.CLICK, 
+        function(e) {
+            var id = this.postData.post.id;
+            postile.ajax(['post','delete'], { post_id: id }, function(data) {
+                this.board.removePost(id);
+                this.board.disableMovingCanvas = false;
+            }.bind(this));
+        }.bind(this));
+
+    // cancel clicked
+    goog.events.listen(
+        elements.confirmCancel_el, 
+        goog.events.EventType.CLICK, 
+        function(e) {
+            this.enterEditMode(false);
+        }.bind(this));
 }
 
 postile.view.post.Post.prototype.enterDisplayMode = function() {
@@ -538,13 +562,15 @@ postile.view.post.Post.prototype.enterDisplayMode = function() {
 
     elements.postLikeCount_el.innerHTML = this.postData.likes.length;
 
-    postile.data_manager.getUserData(this.postData.post.creator_id, function(data) {
-        this.postData.creator = data;
-        elements.postAuthor_el.innerHTML = data.username;
+    postile.data_manager.getUserData(
+        this.postData.post.creator_id, 
+        function(data) {
+            this.postData.creator = data;
+            elements.postAuthor_el.innerHTML = data.username;
 
-        elements.postTitle_el.style.width = this.wrap_el.offsetWidth - 
-                elements.postAuthor_el.offsetWidth - 40 + 'px';
-    }.bind(this));
+            elements.postTitle_el.style.width = this.wrap_el.offsetWidth - 
+                    elements.postAuthor_el.offsetWidth - 40 + 'px';
+        }.bind(this));
 
     if (this.postData.post.title) { // title exists
         elements.postNoTitle_el.style.display = 'none';
@@ -572,20 +598,28 @@ postile.view.post.Post.prototype.enterDisplayMode = function() {
     }
 
     // latest inline comment
-    this.latestComment = this.postData.inline_comments[ this.postData.inline_comments.length - 1 ];
+    this.latestComment = 
+        this.postData.inline_comments[ 
+            this.postData.inline_comments.length - 1 ];
 
     if (this.latestComment) { // at least one comment
-        postile.data_manager.getUserData(this.latestComment.inline_comment.creator_id, function(data) {
-            this.latestComment.creator = data;
+        postile.data_manager.getUserData(
+            this.latestComment.inline_comment.creator_id, 
+            function(data) {
+                this.latestComment.creator = data;
 
-            elements.commentPreviewAuthor_el.innerHTML = this.latestComment.creator.username;
-            elements.commentPreviewContent_el.innerHTML = this.latestComment.inline_comment.content;
-            elements.commentPreviewNoComment_el.style.display = 'none';
-            elements.commentPreview_el.style.display = 'block';
+                elements.commentPreviewAuthor_el.innerHTML = 
+                    this.latestComment.creator.username;
+                elements.commentPreviewContent_el.innerHTML = 
+                    this.latestComment.inline_comment.content;
 
-            elements.commentPreviewContent_el.style.width = this.wrap_el.offsetWidth - 
-                    elements.commentPreviewAuthor_el.offsetWidth - 36 + 'px';
-        }.bind(this));
+                elements.commentPreviewNoComment_el.style.display = 'none';
+                elements.commentPreview_el.style.display = 'block';
+
+                elements.commentPreviewContent_el.style.width = 
+                    this.wrap_el.offsetWidth - 
+                        elements.commentPreviewAuthor_el.offsetWidth - 36 + 'px';
+            }.bind(this));
     } else { // no comment
         elements.commentPreviewDisplay_el.style.display = 'none';
         elements.commentPreview_el.style.display = 'block';
@@ -606,19 +640,26 @@ postile.view.post.Post.prototype.enterCommentMode = function() {
     var elements = this.commentModeElements;
     elements.postTitle_el.innerHTML = this.postData.post.title;
 
-    postile.data_manager.getUserData(this.postData.post.creator_id, function(data) {
-        this.postData.creator = data;
+    postile.data_manager.getUserData(
+        this.postData.post.creator_id, 
+        function(data) {
+            this.postData.creator = data;
 
-        elements.postAuthor_el.innerHTML = this.postData.creator.username;
-        elements.postTitle_el.style.width = this.wrap_el.offsetWidth - 
-                elements.postAuthor_el.offsetWidth - 40 + 'px';
-    }.bind(this));
+            elements.postAuthor_el.innerHTML = this.postData.creator.username;
+            elements.postTitle_el.style.width = this.wrap_el.offsetWidth - 
+                    elements.postAuthor_el.offsetWidth - 40 + 'px';
+        }.bind(this));
 
     elements.commentContainer_el.style.height = 
-            this.wrap_el.offsetHeight - elements.postInnerContainer_el.offsetHeight - 3 + 'px'; // 3 is padding
-    elements.commentList_el.style.height = parseInt(elements.commentContainer_el.style.height) - 34 + 'px'
+        this.wrap_el.offsetHeight - 
+        elements.postInnerContainer_el.offsetHeight - 3 + 'px'; // 3 is padding
 
-    elements.commentInput_el.style.width = this.wrap_el.offsetWidth - 65 + 'px';
+    elements.commentList_el.style.height = 
+        parseInt(elements.commentContainer_el.style.height) - 34 + 'px'
+
+    elements.commentInput_el.style.width = 
+        this.wrap_el.offsetWidth - 65 + 'px';
+
     elements.commentInput_el.focus();
 
     if (this.postData.post.title) { // title exists
@@ -631,7 +672,8 @@ postile.view.post.Post.prototype.enterCommentMode = function() {
     if (comments.length > 0) {
         elements.commentContainerNoComment_el.style.display = 'none';
         for (var i in comments) {
-            new postile.view.post.InlineComment(elements.commentItems_el, comments[i]);
+            new postile.view.post.InlineComment(
+                elements.commentItems_el, comments[i]);
         }
     } else { // no comment
     }
@@ -664,16 +706,6 @@ postile.view.post.Post.prototype.enterEditMode = function(req) {
     } else {
         elements.deleteIcon_el.style.display = '';
     }
-
-    /*
-    goog.events.listen(document.body, goog.events.EventType.CLICK, function(e) {
-        console.log('hehe');
-    });
-
-    goog.events.listen(this.wrap_el, goog.events.EventType.CLICK, function(e) {
-        e.stopPropagation();
-    });
-    */
 }
 
 postile.view.post.Post.prototype.enterLockedMode = function() {
@@ -689,10 +721,12 @@ postile.view.post.Post.prototype.enterLockedMode = function() {
 
     var elements = this.lockedModeElements;
 
-    postile.data_manager.getUserData(this.postData.post.creator_id, function(data) {
-        this.postData.creator = data;
-        elements.lockUsername_el.innerHTML = data.username;
-    }.bind(this));
+    postile.data_manager.getUserData(
+        this.postData.post.creator_id, 
+        function(data) {
+            this.postData.creator = data;
+            elements.lockUsername_el.innerHTML = data.username;
+        }.bind(this));
 }
 
 postile.view.post.Post.prototype.enterNewMode = function() {
@@ -708,10 +742,12 @@ postile.view.post.Post.prototype.enterNewMode = function() {
 
     var elements = this.newModeElements;
 
-    postile.data_manager.getUserData(this.postData.post.creator_id, function(data) {
-        this.postData.creator = data;
-        elements.newUsername_el.innerHTML = data.username;
-    }.bind(this));
+    postile.data_manager.getUserData(
+        this.postData.post.creator_id, 
+        function(data) {
+            this.postData.creator = data;
+            elements.newUsername_el.innerHTML = data.username;
+        }.bind(this));
 }
 
 postile.view.post.Post.prototype.enterConfirmDeleteMode = function() {
@@ -750,22 +786,26 @@ postile.view.post.Post.prototype.resetCommentPreview = function(data) {
     setTimeout(function() {
         clearInterval(fadeout);
 
-        postile.data_manager.getUserData(data.inline_comment.creator_id, function(userData) {
-            elements.commentPreviewNoComment_el.style.display = 'none';
-            elements.commentPreviewDisplay_el.style.display = 'table-cell';
-            elements.commentPreviewAuthor_el.innerHTML = userData.username;
-            elements.commentPreviewContent_el.innerHTML = data.inline_comment.content;
+        postile.data_manager.getUserData(
+            data.inline_comment.creator_id, 
+            function(userData) {
+                elements.commentPreviewNoComment_el.style.display = 'none';
+                elements.commentPreviewDisplay_el.style.display = 'table-cell';
+                elements.commentPreviewAuthor_el.innerHTML = 
+                    userData.username;
+                elements.commentPreviewContent_el.innerHTML = 
+                    data.inline_comment.content;
 
-            // reset width since length of different usernames are different
-            elements.commentPreviewContent_el.style.width = this.wrap_el.offsetWidth - 
-                    elements.commentPreviewAuthor_el.offsetWidth - 36 + 'px';
+                // reset width since length of different usernames are different
+                elements.commentPreviewContent_el.style.width = 
+                    this.wrap_el.offsetWidth - 
+                        elements.commentPreviewAuthor_el.offsetWidth - 36 + 'px';
 
-            fadein = setInterval(function() {
-                opacity += 0.1;
-                preview_el.style.opacity = opacity;
-            }, 30);
-
-        }.bind(this));
+                fadein = setInterval(function() {
+                    opacity += 0.1;
+                    preview_el.style.opacity = opacity;
+                }, 30);
+            }.bind(this));
     }.bind(this), 300);
 
     setTimeout(function() {
@@ -803,45 +843,68 @@ postile.view.post.Post.prototype.inlineCommentRendered = function(comment) {
 }
 
 postile.view.post.Post.prototype.appendInlineComment = function(comment) {
-    new postile.view.post.InlineComment(this.commentModeElements.commentItems_el, comment);
+    new postile.view.post.InlineComment(
+        this.commentModeElements.commentItems_el, comment);
 }
 
-postile.view.post.InlineComment = function(commentContainer, single_comment_data) {
+postile.view.post.InlineComment = function(commentContainer, commentData) {
     this.comment_container = goog.dom.createDom("div", "post_comment");
 
-    postile.data_manager.getUserData(single_comment_data.inline_comment.creator_id, function(data) {
-        this.name_content_container_el = goog.dom.createDom('div', 'name_content_container');
-        goog.dom.appendChild(this.comment_container, this.name_content_container_el);
+    postile.data_manager.getUserData(
+        commentData.inline_comment.creator_id, 
+        function(data) {
+            this.name_content_container_el = 
+                goog.dom.createDom('div', 'name_content_container');
 
-        this.name_el = goog.dom.createDom("span", "comment_name");
-        this.name_el.innerHTML = data.username;
-        goog.dom.appendChild(this.name_content_container_el, this.name_el);
-        goog.events.listen(this.name_el, goog.events.EventType.CLICK, function(e) {
-            var profileView = new postile.view.profile.ProfileView(single_comment_data.creator.id);
-            profileView.open(710);
+            goog.dom.appendChild(
+                this.comment_container, this.name_content_container_el);
+
+            this.name_el = goog.dom.createDom("span", "comment_name");
+            this.name_el.innerHTML = data.username;
+
+            goog.dom.appendChild(this.name_content_container_el, this.name_el);
+
+            goog.events.listen(
+                this.name_el, 
+                goog.events.EventType.CLICK, 
+                function(e) {
+                    var profileView = 
+                        new postile.view.profile.ProfileView(
+                            commentData.creator.id);
+                    profileView.open(710);
+                }.bind(this));
+
+            this.middle_el = goog.dom.createDom('span', 'comment_middle');
+            this.middle_el.innerHTML = ':&nbsp;';
+            goog.dom.appendChild(this.name_content_container_el, this.middle_el);
+
+            this.content_el = goog.dom.createDom("span", "comment_content");
+            this.content_el.innerHTML = 
+                commentData.inline_comment.content.replace(
+                    / @(\d+)/g, 
+                    '<span class="at_person" at-person="$1">' + 
+                        '@[Username pending]</span>');
+            goog.dom.appendChild(this.name_content_container_el, 
+                this.content_el);
+
+            this.time_el = goog.dom.createDom("span", "comment_time");
+            this.time_el.innerHTML = postile.date(
+                commentData.inline_comment.created_at, 'inline');
+            goog.dom.appendChild(this.comment_container, this.time_el);
+
+            var all_atp = postile.dom.getDescendantsByCondition(
+                this.content_el, 
+                function(el) {
+                    return el.tagName && 
+                        el.tagName.toUpperCase() == 'SPAN' && 
+                        el.className == 'at_person';
+                });
+
+            for (var i in all_atp) {
+                fetchUsername(all_atp[i]);
+            }
+
+            goog.dom.appendChild(commentContainer, this.comment_container);
+
         }.bind(this));
-
-        this.middle_el = goog.dom.createDom('span', 'comment_middle');
-        this.middle_el.innerHTML = ':&nbsp;';
-        goog.dom.appendChild(this.name_content_container_el, this.middle_el);
-
-        this.content_el = goog.dom.createDom("span", "comment_content");
-        this.content_el.innerHTML = single_comment_data.inline_comment.content.replace(/ @(\d+)/g, '<span class="at_person" at-person="$1">@[Username pending]</span>');
-        goog.dom.appendChild(this.name_content_container_el, this.content_el);
-
-        this.time_el = goog.dom.createDom("span", "comment_time");
-        this.time_el.innerHTML = postile.date(single_comment_data.inline_comment.created_at, 'inline');
-        goog.dom.appendChild(this.comment_container, this.time_el);
-
-        var all_atp = postile.dom.getDescendantsByCondition(this.content_el, function(el) {
-            return el.tagName && el.tagName.toUpperCase() == 'SPAN' && el.className == 'at_person';
-        });
-
-        for (var i in all_atp) {
-            fetchUsername(all_atp[i]);
-        }
-
-        goog.dom.appendChild(commentContainer, this.comment_container);
-
-    }.bind(this));
 }
