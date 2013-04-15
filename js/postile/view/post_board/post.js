@@ -24,6 +24,7 @@ goog.require('postile.view.post.text_post');
 goog.require('postile.view.post.picture_post');
 goog.require('postile.view.post.video_post');
 goog.require('postile.view.post.PostExpand');
+goog.require('postile.view.post.InlineComment');
 
 /**
  * Factory function that creates a post from JSON data retrieved from the server
@@ -392,6 +393,7 @@ postile.view.post.Post.prototype.initCommentModeListener = function() {
                         post_id: this.postData.post.id,
                         content: content,
                     }, function(data) {
+                        /*
                         var comment = data.message;
                         if (!this.inlineCommentRendered(comment)) {
                             // add the new comment to list
@@ -409,6 +411,7 @@ postile.view.post.Post.prototype.initCommentModeListener = function() {
                             this.commentModeElements.commentList_el.scrollHeight;
 
                         this.hideNoCommentEl();
+                        */
                     }.bind(this));
 
                     this.commentModeElements.commentInput_el.innerHTML = '';
@@ -848,64 +851,17 @@ postile.view.post.Post.prototype.appendInlineComment = function(comment) {
         this.commentModeElements.commentItems_el, comment);
 }
 
-postile.view.post.InlineComment = function(commentContainer, commentData) {
-    this.comment_container = goog.dom.createDom("div", "post_comment");
+postile.view.post.Post.prototype.removeInlineComment = function(comment) {
+    var comments = this.postData.inline_comments;
 
-    postile.data_manager.getUserData(
-        commentData.inline_comment.creator_id, 
-        function(data) {
-            this.name_content_container_el = 
-                goog.dom.createDom('div', 'name_content_container');
+    for (var i in this.postData.inline_comments) {
+        var cmt = this.postData.inline_comments[i];
+        console.log(cmt);
 
-            goog.dom.appendChild(
-                this.comment_container, this.name_content_container_el);
-
-            this.name_el = goog.dom.createDom("span", "comment_name");
-            this.name_el.innerHTML = data.username;
-
-            goog.dom.appendChild(this.name_content_container_el, this.name_el);
-
-            goog.events.listen(
-                this.name_el, 
-                goog.events.EventType.CLICK, 
-                function(e) {
-                    var profileView = 
-                        new postile.view.profile.ProfileView(
-                            commentData.creator.id);
-                    profileView.open(710);
-                }.bind(this));
-
-            this.middle_el = goog.dom.createDom('span', 'comment_middle');
-            this.middle_el.innerHTML = ':&nbsp;';
-            goog.dom.appendChild(this.name_content_container_el, this.middle_el);
-
-            this.content_el = goog.dom.createDom("span", "comment_content");
-            this.content_el.innerHTML = 
-                commentData.inline_comment.content.replace(
-                    / @(\d+)/g, 
-                    '<span class="at_person" at-person="$1">' + 
-                        '@[Username pending]</span>');
-            goog.dom.appendChild(this.name_content_container_el, 
-                this.content_el);
-
-            this.time_el = goog.dom.createDom("span", "comment_time");
-            this.time_el.innerHTML = postile.date(
-                commentData.inline_comment.created_at, 'inline');
-            goog.dom.appendChild(this.comment_container, this.time_el);
-
-            var all_atp = postile.dom.getDescendantsByCondition(
-                this.content_el, 
-                function(el) {
-                    return el.tagName && 
-                        el.tagName.toUpperCase() == 'SPAN' && 
-                        el.className == 'at_person';
-                });
-
-            for (var i in all_atp) {
-                fetchUsername(all_atp[i]);
-            }
-
-            goog.dom.appendChild(commentContainer, this.comment_container);
-
-        }.bind(this));
+        if (cmt.inline_comment.id == comment.id) {
+            this.commentModeElements.commentItems_el.removeChild(cmt.dom); // remove dom
+            this.postData.inline_comments.splice(i, 1); // remove data from array
+            break;
+        }
+    }
 }

@@ -946,9 +946,19 @@ postile.view.post_board.PostBoard.prototype.fayeHandler = function(status, data)
         if (data.inline_comment.post_id in this.currentPosts) {
             var currPost = this.currentPosts[data.inline_comment.post_id];
 
+            currPost.postData.inline_comments.push(data);
+            currPost.appendInlineComment(data);
+
+            /*
             if (!currPost.inlineCommentRendered(data)) {
                 currPost.postData.inline_comments.push(data);
                 currPost.appendInlineComment(data);
+            }
+            */
+
+            if (data.inline_comment.creator_id == localStorage.postile_user_id) { // my own comment
+                currPost.commentModeElements.commentList_el.scrollTop = 
+                    currPost.commentModeElements.commentList_el.scrollHeight;
             }
 
             currPost.hideNoCommentEl();
@@ -956,6 +966,12 @@ postile.view.post_board.PostBoard.prototype.fayeHandler = function(status, data)
             // note that this line should be put after appendInlineComment to
             // get the correct count
             currPost.resetCommentPreview(data);
+        }
+        break;
+    case postile.view.post_board.faye_status.DELETE_COMMENT:
+        if (data.inline_comment.post_id in this.currentPosts) {
+            var currPost = this.currentPosts[data.inline_comment.post_id];
+            currPost.removeInlineComment(data.inline_comment);
         }
         break;
     }
@@ -1056,6 +1072,7 @@ postile.view.post_board.faye_status = {
     TERMINATE: 'terminate',
     FINISH: 'finish',
     INLINE_COMMENT: 'inline comment',
-    NOTIFICATION: 'notification'
+    NOTIFICATION: 'notification',
+    DELETE_COMMENT: 'delete comment',
 }
 
