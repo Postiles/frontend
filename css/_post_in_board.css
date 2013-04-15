@@ -42,23 +42,32 @@
         margin: 2px 8px; }
         .post_wrap .comment_mode_post .post_bottom .comment_container .comment_list .comment_container_items .post_comment:first-child {
           margin-top: 0px; }
-        .post_wrap .comment_mode_post .post_bottom .comment_container .comment_list .comment_container_items .post_comment .name_content_container {
+        .post_wrap .comment_mode_post .post_bottom .comment_container .comment_list .comment_container_items .post_comment .upper_container {
           clear: both;
           display: table-cell; }
-        .post_wrap .comment_mode_post .post_bottom .comment_container .comment_list .comment_container_items .post_comment .comment_name {
-          float: left;
-          color: #537cbe;
-          padding: 0px;
-          cursor: pointer; }
-          .post_wrap .comment_mode_post .post_bottom .comment_container .comment_list .comment_container_items .post_comment .comment_name:hover {
-            text-decoration: underline; }
-        .post_wrap .comment_mode_post .post_bottom .comment_container .comment_list .comment_container_items .post_comment .comment_content {
-          margin: 0px; }
-        .post_wrap .comment_mode_post .post_bottom .comment_container .comment_list .comment_container_items .post_comment .comment_time {
+          .post_wrap .comment_mode_post .post_bottom .comment_container .comment_list .comment_container_items .post_comment .upper_container .comment_name {
+            float: left;
+            color: #537cbe;
+            padding: 0px;
+            cursor: pointer; }
+            .post_wrap .comment_mode_post .post_bottom .comment_container .comment_list .comment_container_items .post_comment .upper_container .comment_name:hover {
+              text-decoration: underline; }
+          .post_wrap .comment_mode_post .post_bottom .comment_container .comment_list .comment_container_items .post_comment .upper_container .comment_content {
+            margin: 0px; }
+        .post_wrap .comment_mode_post .post_bottom .comment_container .comment_list .comment_container_items .post_comment .lower_container {
           margin-top: -2px;
           color: #999;
           font-size: 8pt;
           display: block; }
+          .post_wrap .comment_mode_post .post_bottom .comment_container .comment_list .comment_container_items .post_comment .lower_container .comment_delete_button {
+            float: right;
+            visibility: hidden;
+            display: none; }
+            .post_wrap .comment_mode_post .post_bottom .comment_container .comment_list .comment_container_items .post_comment .lower_container .comment_delete_button:hover {
+              text-decoration: underline; }
+        .post_wrap .comment_mode_post .post_bottom .comment_container .comment_list .comment_container_items .post_comment:hover .comment_delete_button {
+          visibility: visible;
+          cursor: pointer; }
     .post_wrap .comment_mode_post .post_bottom .comment_container .comment_container_bottom {
       position: absolute;
       bottom: 0px;

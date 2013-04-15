@@ -68,31 +68,49 @@
                                 margin-top: 0px;
                             }
 
-                            .name_content_container {
+                            .upper_container {
                                 clear: both;
                                 display: table-cell;
-                            }
 
-                            .comment_name {
-                                float: left;
-                                color: #537cbe;
-                                padding: 0px;
-                                cursor: pointer;
+                                .comment_name {
+                                    float: left;
+                                    color: #537cbe;
+                                    padding: 0px;
+                                    cursor: pointer;
 
-                                &:hover {
-                                    text-decoration: underline;
+                                    &:hover {
+                                        text-decoration: underline;
+                                    }
                                 }
+
+                                .comment_content {
+                                    margin: 0px;
+                                }
+
                             }
 
-                            .comment_content {
-                                margin: 0px;
-                            }
-
-                            .comment_time {
+                            .lower_container {
                                 margin-top: -2px;
                                 color: #999;
                                 font-size: 8pt;
                                 display: block;
+
+                                .comment_delete_button {
+                                    float: right;
+                                    visibility: hidden;
+                                    display: none;
+
+                                    &:hover {
+                                        text-decoration: underline;
+                                    }
+                                }
+                            }
+
+                            &:hover {
+                                .comment_delete_button {
+                                    visibility: visible;
+                                    cursor: pointer;
+                                }
                             }
                         }
                     }
