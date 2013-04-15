@@ -29,8 +29,9 @@
         color: #9e9e9e; }
   #onlinepeople_container #online_people_bar {
     background: #436b77;
-    height: 15px;
-    color: #FFF; }
+    height: 20px;
+    color: #FFF;
+    cursor: pointer; }
     #onlinepeople_container #online_people_bar p {
       font-size: 12px;
       float: left;

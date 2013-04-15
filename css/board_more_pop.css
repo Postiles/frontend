@@ -127,7 +127,7 @@ body {
       cursor: pointer; }
       #other_boards #board_list .listed_board h3.board_title {
         width: 180px;
-        font-size: 14px;
+        font-size: 11pt;
         margin-top: 0px;
         margin-bottom: 0px;
         margin-left: 14px;
@@ -138,7 +138,7 @@ body {
       #other_boards #board_list .listed_board p.board_discription {
         margin-left: 14px;
         margin-top: 3px;
-        font-size: 10px;
+        font-size: 9pt;
         width: 180px;
         overflow: hidden;
         white-space: nowrap;
@@ -155,7 +155,7 @@ body {
         background: #cedadd;
         position: relative; }
         #other_boards #board_list .listed_board:hover h3.board_title {
-          font-size: 14px;
+          font-size: 11pt;
           margin-bottom: 0px;
           margin-left: 14px; }
         #other_boards #board_list .listed_board:hover .selected_icon {
