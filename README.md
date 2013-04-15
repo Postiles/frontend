@@ -1,30 +1,26 @@
-LATEST NOTICE
-======
+How to run postile-dev
+===========
+
+### Getting Google Closure Library
 
 run `bootstrap.sh` to get google closure and to get some instruction on
 configuring nginx.
 
+It will create a `tmp/` directory for `mkdep.sh` and `mkcompiled.sh` to use.
+
+### To update the dependency log of the code
+
 run `mkdep.sh` to build deps for closure library.
 
-**Notice: Now the code can ONLY run in the ROOT directory of a web server.**
+### Run HTTP Server
 
-**To run, you'll need to go to http://{static_hostname}:{static_port}/test/{board_id}/{dynamic_hostname}/{dynamic_post} directly. For instance, postiles.com/test/1/postiles.com/300**
+First configure the server's root directory to here.
+Then start the server and go to [localhost:8000](http://localhost:8000).
 
-The web server is required to support Apache-like mod_rewrite.
+The web server is required to support Apache-like mod\_rewrite.
 
-Getting Google Closure Library
-======
+Docs
+----
 
-Copy the `closure/goog` in [Google Closure Library](https://code.google.com/p/closure-library/downloads/list) to `js/goog`.
+See [docs/](docs/).
 
-Copy the `third_party` to `third_party`.
-
-To update the dependency log of the code
-======
-First, copy the `closure/bin/build` directory in Google Closure Library to the project directory as `build`.
-
-Then, simply run
-
-`build/depswriter.py --root_with_prefix="js/postile ../postile" --output_file="js/postile/deps.js"`
-
-at the project directory.

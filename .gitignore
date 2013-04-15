@@ -14,4 +14,5 @@ third_party
 js/goog
 
 compiled.js
+*.soy.js
 tmp
