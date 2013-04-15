@@ -72,6 +72,11 @@ postile.view.board_more_pop.OtherBoard = function(in_board_instance) {
 
     this.create_button = postile.dom.getDescendantByCondition(this.container, function(tag) { return tag.tagName && tag.tagName.toUpperCase() == 'P'; });
     
+    this.board_list_el = postile.dom.getDescendantByClass(this.container, 'board_list');
+    goog.events.listen(this.board_list_el, goog.events.EventType.CLICK, function(){
+        postile.router.dispatch('topic/1');
+    }.bind(this));
+
     var new_board = new postile.view.new_board.NewBoard();
     goog.events.listen(this.create_button, goog.events.EventType.CLICK, function() {
         new_board.open(500);
