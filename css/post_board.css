@@ -315,6 +315,11 @@ html, body {
   line-height: 20px;
   height: 20px;
 }
+
+div.post_preview_text {
+  margin-top: 45%;
+  text-align: center;
+}
   
 .post_preview {
   position: absolute;
@@ -330,6 +335,8 @@ html, body {
   -moz-transition-property: left, top, width, height;
   -webkit-transition-duration: 0.3s;
   -webkit-transition-property: left, top, width, height;
+  font-size: 11px;
+  text-align: center;
   display: none; }
 
 .post_preview_origin_spot {
