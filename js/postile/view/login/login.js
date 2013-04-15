@@ -18,6 +18,12 @@ postile.view.login.LoginView = function() { //constructor
     this.loginButtonContainer_el = goog.dom.getElement('login-button-container');
     goog.events.listen(this.loginButtonContainer_el, goog.events.EventType.CLICK, this.login.bind(this));
 
+    this.signup_btn_el = goog.dom.getElement('sign-up-button');
+    console.log(this.signup_btn_el);
+    goog.events.listen(this.signup_btn_el, goog.events.EventType.CLICK, function() {
+        postile.router.dispatch('signup');
+    });
+
     this.incorrect_el = goog.dom.getElement('incorrect-alert');
 }
 
