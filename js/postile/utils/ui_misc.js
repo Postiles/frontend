@@ -50,18 +50,18 @@ postile.ui.stopLoading = function(target_el){
  * @param {string} placeholder The placeholder to display in the input
  * @param {string} inactive_classname Classname to be added to the
  * element when the element is not focused.
+ * @param {Function=} opt_enter_handler Handler function to be called with
  * ENTER key is pressed in the target_el. Optional.
  */
-postile.ui.makeLabeledInput = function(target_el, placeholder, inactive_classname) {
+postile.ui.makeLabeledInput = function(target_el, placeholder, inactive_classname, opt_enter_handler) {
     var blurHandler = function() {
         if (goog.string.isEmpty(target_el.innerHTML)) {
             target_el.innerHTML = placeholder;
             goog.dom.classes.add(target_el, inactive_classname);
         }
     }
-
+    target_el.contentEditable = true;
     blurHandler();
-
     //Always delete self when on focus
     new postile.events.EventHandler(target_el, goog.events.EventType.FOCUS, function() {
         if(target_el.innerHTML == placeholder) {
@@ -70,10 +70,7 @@ postile.ui.makeLabeledInput = function(target_el, placeholder, inactive_classnam
             target_el.focus();
         }
     }).listen();
-
     new postile.events.EventHandler(target_el, goog.events.EventType.BLUR, blurHandler).listen();
-
-    /*
     new postile.events.EventHandler(new goog.events.KeyHandler(target_el), goog.events.KeyHandler.EventType.KEY, function(e) {
         if (target_el.innerHTML == placeholder) {
             target_el.innerHTML = '';
@@ -86,5 +83,4 @@ postile.ui.makeLabeledInput = function(target_el, placeholder, inactive_classnam
             }
         }
     }).listen();
-    */
 }
