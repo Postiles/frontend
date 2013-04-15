@@ -81,19 +81,6 @@ postile.view.post.text_post.TextPost.prototype.enterEditMode = function(req) {
             elements.postWysiwyfIconContainer, this);
 }
 
-/**
- * Add more listeners specifically for text post
- */
-/*
-postile.view.text_post.TextPost.prototype.initEditModeListener = function() {
-    goog.base(this, 'initEditModeListener');
-
-    goog.events.listen(this.editModeElements.postContent_el, goog.events.EventType.KEYDOWN, function(e) {
-        console.log(e);
-    }.bind(this));
-}
-*/
-
 postile.view.post.text_post.TextPost.prototype.submitChange = function() {
     var elements = this.editModeElements;
 

@@ -1,6 +1,6 @@
 .new_board {
     width: 500px;
-    background: rgba(243, 243, 243, 0.75);
+    background: #ccc;
     box-shadow: 0 2px 7px #000;
 }
 
@@ -47,15 +47,12 @@
     display: block;
     margin: 0 auto;
     padding: 8px 12px;
-    background: linear-gradient(left, rgba(2,77,97,0) 0%,rgba(2,77,97,1) 50%,rgba(2,77,97,0) 100%);
-    background: -moz-linear-gradient(left, rgba(2,77,97,0) 0%,rgba(2,77,97,1) 50%,rgba(2,77,97,0) 100%);
-    background: -o-linear-gradient(left, rgba(2,77,97,0) 0%,rgba(2,77,97,1) 50%,rgba(2,77,97,0) 100%);
-    background: -ms-linear-gradient(left, rgba(2,77,97,0) 0%,rgba(2,77,97,1) 50%,rgba(2,77,97,0) 100%);
-    background: -webkit-linear-gradient(left, rgba(2,77,97,0) 0%,rgba(2,77,97,1) 50%,rgba(2,77,97,0) 100%);
+    background: #024d61;
     color: #F3F3F3;
     height: 18px;
     line-height: 18px;
     font-size: 13pt;
     margin-top: 15px;
     text-align: center;
+    cursor: pointer;
 }

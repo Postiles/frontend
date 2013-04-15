@@ -9,6 +9,7 @@
     margin: 0px;
     padding: 0px; }
   #onlinepeople_container #online_people_list {
+    cursor: pointer;
     position: relative; }
     #onlinepeople_container #online_people_list .item_container {
       height: 50px; }

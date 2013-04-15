@@ -24,6 +24,8 @@ postile.view.new_board.NewBoard = function() {
             postile.router.dispatch('board/' + r.message.board.id);
         });
     });
+
+    this.addCloseButton(this.container);
 }
 
 goog.inherits(postile.view.new_board.NewBoard, postile.view.PopView);

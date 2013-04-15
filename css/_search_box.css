@@ -51,6 +51,7 @@
 #search_input_field {
   float: left;
   margin-top: 11px;
+  margin-left: 25px;
   border: none;
   outline: none;
   background: transparent;

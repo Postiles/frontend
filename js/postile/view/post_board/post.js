@@ -444,6 +444,7 @@ postile.view.post.Post.prototype.initEditModeListener = function() {
         goog.events.EventType.KEYDOWN, 
         function(e) {
             if (e.keyCode == 13 && e.ctrlKey) {
+                e.preventDefault();
                 this.submitChange();
             }
         }.bind(this));
