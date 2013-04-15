@@ -19,11 +19,11 @@ if [ ! -f soycc.zip ]; then
     -O soycc.zip
 fi
 
-if [ ! `which unzip`]; then
+if [ ! `which unzip` ]; then
     sudo apt-get install unzip
 fi
 
-unzip goog.zip
+yes | unzip goog.zip
 yes | unzip cc.zip
 yes | unzip soycc.zip
 cp -r third_party ../
