@@ -1,11 +1,25 @@
 {namespace postile.templates.sheety}
 
 /**
+ * @param board_id
  */
 {template .body}
-  <h1 id="sheety-title">
-    Some Title.
+  <h1 class="sheety-title">
+    Board #{$board_id}
   </h1>
-  <div id="sheety-scroll"></div>
+  <div class="sheety-scroll"></div>
+{/template}
+
+/**
+ * @param title
+ * @param content
+ */
+{template .postItem}
+  <div class="sheety-post-listitem-title">
+    {$title}
+  </div>
+  <div class="sheety-post-listitem-content">
+    {$content|noAutoescape}
+  </div>
 {/template}
 

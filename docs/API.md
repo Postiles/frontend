@@ -12,11 +12,13 @@ Use `postile.ajax(api_dir, data, callback)` to interact with backend api.
 - `api_dir` = `['board', 'get_recent_post']` to get some posts in a board.
   * `data` = `{board_id: XXX, number: XXX}`
     + set `number` = 0 to get all posts for a board.
-  * `callback` is called with `message` = `{ posts: [PostWE] }`.
+  * `callback` is called with `message` = `[PostWE]`.
 
 ### Data types
 
 - [`PostWE`](PostWithExtra.json):
   (WE stands for with extra.) Generally speaking, it's something
   like `{ post: XXX, likes: XXX, inline_comments: XXX }`.
+  Note that this file is generated from `move_post`, so it contains
+  an extra level of indirection (`posts`).
 

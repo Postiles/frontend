@@ -1,0 +1,33 @@
+.sheety-post-listitem {
+    cursor: default;
+    padding: 10px 20px;
+}
+
+.sheety-post-listitem:nth-child(2n) {
+    background-color: #cee;
+}
+
+.sheety-post-listitem-hover {
+    background-color: #eee;
+}
+
+.sheety-post-listitem-hover:nth-child(2n) {
+    background-color: #ddd;
+}
+
+.sheety-post-listitem-active {
+    background-color: #ddd;
+}
+
+.sheety-post-listitem-active:nth-child(2n) {
+    background-color: #ccc;
+}
+
+.sheety-post-title {
+    font-style: bold;
+}
+
+.sheety-post-listitem-content {
+    padding: 2px 8px;
+}
+
