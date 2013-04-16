@@ -35,6 +35,7 @@ goog.require('postile.view.video_upload');
 goog.require('postile.view.search_box');
 goog.require('postile.view.post_board.post_picker');
 goog.require('postile.view.onlinepeople');
+goog.require('postile.user');
 
 /**
  * Smallest unit size for a post, in pixel.
@@ -187,6 +188,9 @@ postile.view.post_board.handlers.keypress = function(instance, e) {
  * @param {string} board_id Unique identifier for a board.
  */
 postile.view.post_board.PostBoard = function(board_id) {
+    if(localStorage.postile_user_id == undefined || localStorage.postile_user_id == "") {
+        postile.user.anonymous();
+    }
     var instance = this;
 
     postile.view.FullScreenView.call(this);
@@ -329,9 +333,15 @@ postile.view.post_board.PostBoard = function(board_id) {
 
             instance.channel_str = instance.boardData.id;
 
-            postile.faye.subscribe(instance.channel_str, function(status, data) {
-                instance.fayeHandler(status, data);
-            });
+            //No login info on anonymous
+            if(localStorage.postile_user_id != 0) {
+                postile.faye.subscribe(instance.channel_str, function(status, data) {
+                    instance.fayeHandler(status, data);
+                });
+                postile.faye.subscribe('status/board/'+instance.boardData.id+'/user/'+instance.userData.id, function(status, data) {
+                });
+            }
+
             postile.faye.subscribe('status/'+instance.boardData.id, function(status, data){
                 instance.onlinepeople.count = data.count;
                 instance.onlinepeople.id = data.users;
@@ -341,9 +351,6 @@ postile.view.post_board.PostBoard = function(board_id) {
                     instance.updateOnlineCount();
                 }
             });
-            postile.faye.subscribe('status/board/'+instance.boardData.id+'/user/'+instance.userData.id, function(status, data) {
-            });
-
 
             instance.initView();
             instance.initEvents();
@@ -949,15 +956,9 @@ postile.view.post_board.PostBoard.prototype.fayeHandler = function(status, data)
             currPost.postData.inline_comments.push(data);
             currPost.appendInlineComment(data);
 
-            /*
-            if (!currPost.inlineCommentRendered(data)) {
-                currPost.postData.inline_comments.push(data);
-                currPost.appendInlineComment(data);
-            }
-            */
 
             if (data.inline_comment.creator_id == localStorage.postile_user_id) { // my own comment
-                currPost.commentModeElements.commentList_el.scrollTop = 
+                currPost.commentModeElements.commentList_el.scrollTop =
                     currPost.commentModeElements.commentList_el.scrollHeight;
             }
 

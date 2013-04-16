@@ -7,6 +7,7 @@ goog.provide('postile.faye');
 
 goog.require('postile.conf');
 goog.require('goog.net.jsloader');
+goog.require('postile.user');
 
 postile.ajax = function(url, data, onsuccess, onfail, notifier_text) {
     var xhr, formData, i;
@@ -119,8 +120,8 @@ postile.ajax.fetchedHandler = function(onsuccess, onfail, receivedText) {
         return;
     }
     if (received.status == postile.ajax.status.ERROR) {
-        if (received.message in postile.ajax.expection_handlers) {
-            postile.ajax.expection_handlers[received.message](received);
+        if (received.message in postile.ajax.exception_handlers) {
+            postile.ajax.exception_handlers[received.message](received);
         } else if (typeof onfail == 'function') {
             onfail(received);
         }
@@ -140,13 +141,14 @@ postile.ajax.notifier.networkError = function(error_string) { //network error
     new postile.toast.Toast(5, "Network error: "+error_string+'.', [], 'red');
 }
 
-postile.ajax.expection_handlers = { //exception_string and corresponding handler functions.
-    USER_NOT_FOUND: function() {
+postile.ajax.exception_handlers = { //exception_string and corresponding handler functions.
+    USER_NOT_FOUND: function(args) {
         console.log('user not found');
-        postile.user.openLoginBox();
+       // postile.user.openLoginBox();
         return false;
     },
     USER_NOT_LOGGED_IN: function() {
+        console.log('user_not_logged_in');
         postile.user.openLoginBox();
         return false;
     },

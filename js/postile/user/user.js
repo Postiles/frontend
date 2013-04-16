@@ -15,6 +15,12 @@ postile.user.login = function(username, password, onsuccess, onfail) {
     }, 'Please wait for logging in...');
 }
 
+postile.user.anonymous = function() {
+    localStorage.postile_user_id = 0;
+    //Dummy session key to fail some requests
+    localStorage.postile_user_session_key = "Anonymous"
+}
+
 postile.user.logout = function() {
     postile.ajax([ 'user', 'logout' ], { }, function(e) {
         localStorage.postile_user_id = '';
