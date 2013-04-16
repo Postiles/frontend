@@ -625,6 +625,7 @@ postile.view.post.Post.prototype.enterDisplayMode = function() {
                 elements.commentPreviewContent_el.innerHTML = 
                     this.latestComment.inline_comment.content;
 
+
                 elements.commentPreviewNoComment_el.style.display = 'none';
                 elements.commentPreview_el.style.display = 'block';
 

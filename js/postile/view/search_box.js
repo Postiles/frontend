@@ -88,6 +88,18 @@ postile.view.search_box.SearchBox.prototype.search = function(instance) {
                 var people_result = goog.dom.createDom("div", "search_result_item search_result_people");
                 goog.dom.appendChild(this.people_list, people_result);
 
+                function bindUserClickEvent(user_id) {
+                    goog.events.listen(
+                        people_result,
+                        goog.events.EventType.CLICK,
+                        function(e) {
+                            var profileView = 
+                                new postile.view.profile.ProfileView(user_id);
+                            profileView.open(710);
+                        });
+                }
+                bindUserClickEvent(user.id);
+
                 // profile image
                 var result_image_container = goog.dom.createDom("div", "search_result_image");
                 var result_image = goog.dom.createDom('img', null);
