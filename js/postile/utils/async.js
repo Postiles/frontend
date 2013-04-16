@@ -4,37 +4,40 @@ goog.require('goog.asserts');
 goog.require('goog.array');
 
 /**
- * postile.async.Deferred provides an abstraction to do asynchronous
- * jobs. You can turn a value into a Deferred (by Deferred.unit),
- * or turn a callback function into a Deferred (by Deferred.fromCallback),
- * or turn an array of Deferreds into a Deferred (by Deferred.waitForAll).
+ * postile.async.Promise provides an abstraction to do asynchronous
+ * jobs. You can turn a value into a Promise (by Promise.unit),
+ * or turn a callback function into a Promise (by Promise.fromCallback),
+ * or turn an array of Promises into a Promise (by Promise.waitForAll).
  *
- * Deferreds are chained using d.bind(func), where `func` accepts
- * the result of d as the argument, and returns a Deferred (or undefined),
- * if we are done with this deferred chain.
+ * Promises are chained using d.bind(func), where `func` accepts
+ * the result of d as the argument, and returns a Promise (or undefined),
+ * if we are done with this promise chain.
+ *
+ * Caveats: no error handling is being done at the moment. It would
+ * be better if at least timeout could be handled.
  *
  * Usecase:
  *
  * 1. When previous results are not used:
  *
  *    var fetchData = goog.partial(postile.ajax([...], ...));
- *    postile.async.Deferred.fromCallback(fetchData)
+ *    postile.async.Promise.fromCallback(fetchData)
  *    .bind(function(x) {
  *        // Do sth with x
- *        return postile.async.Deferred.unit(x + 1);
+ *        return postile.async.Promise.unit(x + 1);
  *    })
  *    .bind(function(x) {
  *        // Do another async fetch
  *        var fetchMore = goog.partial(postile.ajax([...], ...));
- *        return postile.async.Deferred.fromCallback(fetchMore);
+ *        return postile.async.Promise.fromCallback(fetchMore);
  *    })
  *    .bind(function(xs) {
  *        // Do parallel async fetchs
- *        var dfds = goog.array.map(function(x) {
- *            return postile.async.Deferred.fromCallback(
+ *        var proms = goog.array.map(function(x) {
+ *            return postile.async.Promise.fromCallback(
  *                goog.partial(postile.ajax(...), x));
  *        }, xs);
- *        return postile.async.Deferred.waitForAll(dfds);
+ *        return postile.async.Promise.waitForAll(proms);
  *    })
  *    .bind(function(xs) {
  *        // Do something with xs.
@@ -42,15 +45,15 @@ goog.require('goog.array');
  *
  * 2. When previous results are needed
  *
- *    postile.async.Deferred.fromCallback(fetchData)
+ *    postile.async.Promise.fromCallback(fetchData)
  *    .bind(function(x) {
- *        return postile.async.Deferred.fromCallback(getY)
+ *        return postile.async.Promise.fromCallback(getY)
  *               .lift(function(y) {
  *                   return {x: x, y: y};
  *               });
  *    })
  *    .bind(function(xy) {
- *        return postile.async.Deferred.fromCallback(getZ)
+ *        return postile.async.Promise.fromCallback(getZ)
  *               .lift(function(z) {
  *                   xy.z = z;
  *                   return xy;
@@ -62,11 +65,9 @@ goog.require('goog.array');
  */
 
 /**
- * [value] -> [onValue, value] -> [fired]
- * [] -> [onValue] -> .callback -> [fired]
  * @constructor
  */
-postile.async.Deferred = function(opt_value) {
+postile.async.Promise = function(opt_value) {
     if (goog.isDef(opt_value)) {
         this.value_ = value;
         this.hasValue_ = true;
@@ -76,54 +77,59 @@ postile.async.Deferred = function(opt_value) {
         this.hasValue_ = false;
     }
     this.onValue_ = null;
+    this.fired_ = false;
 };
 
 /**
  * @param {*} Called when we have the result.
  * @private
  */
-postile.async.Deferred.prototype.callback_ = function(value) {
+postile.async.Promise.prototype.callback_ = function(value) {
     goog.asserts.assert(!this.hasValue_);
 
+    this.value_ = value;
     this.hasValue_ = true;
     if (this.onValue_) {
-        this.onValue_(value);
-
-        // Clean up
-        this.value_ = null;
-        this.onValue_ = null;
-    }
-    else {
-        this.value_ = value;
+        this.fire_();
     }
 };
 
+postile.async.Promise.prototype.fire_ = function() {
+    goog.asserts.assert(!this.fired_);
+    this.fired_ = true;
+    this.onValue_(this.value_);
+
+    // Clean up
+    this.value_ = null;
+    this.onValue_ = null;
+};
+
 /**
- * @param {function(*): **} f The callback function for this deferred
+ * @param {function(*): **} f The callback function for this promise
  * @private
  */
-postile.async.Deferred.prototype.setCallback_ = function(f) {
+postile.async.Promise.prototype.setCallback_ = function(f) {
     goog.asserts.assert(!this.onValue_);
 
     this.onValue_ = f;
     if (this.hasValue_) {
-        this.callback_(this.value_);
+        this.fire_();
     }
 };
 
 /**
- * @param {function(*): postile.async.Deferred=} f A function that
- * accepts the result of this deferred, and returns a new deferred.
+ * @param {function(*): postile.async.Promise=} f A function that
+ * accepts the result of this promise, and returns a new promise.
  * @param {Object=} opt_this (Optional) this object to use
- * @return {postile.async.Deferred}
+ * @return {postile.async.Promise}
  */
-postile.async.Deferred.prototype.bind = function(f, opt_this) {
+postile.async.Promise.prototype.bind = function(f, opt_this) {
     goog.asserts.assert(f);
 
-    var newDfd = new postile.async.Deferred();
+    var newDfd = new postile.async.Promise();
     this.setCallback_(function(a) {
         var mb = goog.isDef(opt_this) ? f.call(opt_this, a) : f(a);
-        if (goog.isDef(mb) && mb instanceof postile.async.Deferred) {
+        if (goog.isDef(mb) && mb instanceof postile.async.Promise) {
             mb.setCallback_(goog.bind(newDfd.callback_, newDfd));
         }
     });
@@ -131,15 +137,15 @@ postile.async.Deferred.prototype.bind = function(f, opt_this) {
 };
 
 /**
- * @param {function(*): **} f Transforms the result of this deferred
- * and create a new deferred.
+ * @param {function(*): **} f Transforms the result of this promise
+ * and create a new promise.
  * @param {Object=} opt_this (Optional) this object to use
- * @return {postile.async.Deferred}
+ * @return {postile.async.Promise}
  */
-postile.async.Deferred.prototype.lift = function(f, opt_this) {
+postile.async.Promise.prototype.lift = function(f, opt_this) {
     goog.asserts.assert(f);
 
-    var newDfd = new postile.async.Deferred();
+    var newDfd = new postile.async.Promise();
     this.setCallback_(function(a) {
         var b = goog.isDef(opt_this) ? f.call(opt_this, a) : f(a);
         newDfd.callback_(b);
@@ -148,36 +154,45 @@ postile.async.Deferred.prototype.lift = function(f, opt_this) {
 };
 
 /**
- * Short hand (or actually longer?) for new Deferred.
+ * Short hand (or actually longer?) for new Promise.
  */
-postile.async.Deferred.unit = function(x) {
-    return new postile.async.Deferred(x);
+postile.async.Promise.unit = function(x) {
+    return new postile.async.Promise(x);
 };
 
 /**
  * @param {function(function(*))} A function that accepts a callback
  * function as its first argument.
- * @return {postile.async.Deferred}
+ * @return {postile.async.Promise}
  */
-postile.async.Deferred.fromCallback = function(handler) {
-    var dfd = new postile.async.Deferred();
-    handler(goog.bind(dfd.callback_, dfd));
-    return dfd;
+postile.async.Promise.fromCallback = function(handler) {
+    var prom = new postile.async.Promise();
+    handler(goog.bind(prom.callback_, prom));
+    return prom;
 };
 
 /**
- * Returns a new deferred that wait for all the given deferreds.
- * @param {Array.<postile.async.Deferred>} dfds
- * @return {postile.async.Deferred}
+ * Returns a new promise that wait for all the given promises.
+ * @param {Array.<postile.async.Promise>} proms
+ * @return {postile.async.Promise}
  */
-postile.async.Deferred.waitForAll = function(dfds) {
-    var newDfd = new postile.async.Deferred();
-    var totalNum = dfds.length;
+postile.async.Promise.waitForAll = function(proms) {
+    goog.asserts.assert(goog.isArray(proms));
+
+    var newDfd = new postile.async.Promise();
+    var totalNum = proms.length;
+
+    if (totalNum == 0) {
+        // Empty array case.
+        newDfd.callback_([]);
+        return newDfd;
+    }
+
     var finished = 0;
     var results = new Array(totalNum);
 
-    goog.array.forEach(dfds, function(dfd, i) {
-        dfd.setCallback_(function(result) {
+    goog.array.forEach(proms, function(prom, i) {
+        prom.setCallback_(function(result) {
             finished += 1;
             results[i] = result;
             if (finished == totalNum) {

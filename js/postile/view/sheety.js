@@ -1,9 +1,7 @@
 goog.provide('postile.view.Sheety');
 
-goog.require('goog.debug.Logger');
-goog.require('goog.asserts');
-
 goog.require('goog.array');
+goog.require('goog.object');
 goog.require('goog.functions');
 goog.require('goog.ui.Component');
 goog.require('goog.ui.Container');
@@ -64,8 +62,9 @@ postile.view.Sheety = function(opt_board_id) {
         postile.ajax,
         ['board', 'get_recent_posts'],
         { 'board_id': this.board_id_, 'number': 40 });
-    postile.async.Deferred.fromCallback(fetchPosts)
+    postile.async.Promise.fromCallback(fetchPosts)
     .bind(this.fetchUserOfPosts_, this)
+    .bind(this.fetchUserOfComments_, this)
     .bind(this.renderPosts_, this);
 
     postile.view.loadCss(['sheety.css']);
@@ -102,25 +101,49 @@ postile.view.Sheety.prototype.decorateInternal = function(element) {
  */
 postile.view.Sheety.prototype.fetchUserOfPosts_ = function(response) {
     var postExs = response['message'];
-    var dfds = goog.array.map(postExs, function(postEx) {
+    var proms = goog.array.map(postExs, function(postEx) {
         var cid = postEx['post']['creator_id'];
         var fetcher = goog.partial(postile.data_manager.getUserData, cid);
-        return postile.async.Deferred.fromCallback(fetcher);
-    });
-    return postile.async.Deferred.waitForAll(dfds)
-           .lift(function(users) {
-               // Link user with post
-               var postExCopy = new Array(postExs.length);
-               var cpy = goog.array.clone(postExs);
-               goog.array.forEach(postExs, function(postEx, i) {
-                   postExCopy[i] = {
+        return postile.async.Promise.fromCallback(fetcher)
+               .lift(function(user) {
+                   return {
                        'post': postEx['post'],
-                       'user': users[i],
+                       'user': user,
                        'inline_comments': postEx['inline_comments']
                    };
                });
-               return postExCopy;
-           });
+    });
+    return postile.async.Promise.waitForAll(proms);
+};
+
+/**
+ * Called when board data is received.
+ * @private
+ */
+postile.view.Sheety.prototype.fetchUserOfComments_ = function(postExs) {
+    var proms = goog.array.map(postExs, function(postEx) {
+        var proms = goog.array.map(postEx['inline_comments'],
+        function(wComment) {
+            var comment = wComment['inline_comment'];
+            var cid = comment['creator_id'];
+            var fetcher = goog.partial(
+                postile.data_manager.getUserData, cid);
+            return postile.async.Promise.fromCallback(fetcher)
+                   .lift(function(user) {
+                       return {
+                           'inline_comment': comment,
+                           'user': user
+                       }
+                   });
+        });
+        var all = postile.async.Promise.waitForAll(proms);
+        return all.lift(function(comments) {
+                   var postExCopy = goog.object.clone(postEx);
+                   postExCopy['inline_comments'] = comments;
+                   return postExCopy;
+               });
+    });
+    return postile.async.Promise.waitForAll(proms);
 };
 
 /**
@@ -289,10 +312,11 @@ function(item) {
     var el = goog.base(this, 'createDom', item);
     item.setElementInternal(el);
 
-    var commentData = item.getModel()['inline_comment'];
+    var model = item.getModel();
     var renderData = {
-        cdatetime: commentData['created_at'],
-        content: commentData['content']
+        cdatetime: model['inline_comment']['created_at'],
+        author: model['user']['username'],
+        content: model['inline_comment']['content']
     };
     var fragment = soy.renderAsFragment(
         postile.templates.sheety.commentItem, renderData);

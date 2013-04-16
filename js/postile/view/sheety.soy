@@ -30,9 +30,13 @@
 
 /**
  * @param cdatetime Creation time of this comment
+ * @param author
  * @param content
  */
 {template .commentItem}
+  <div class="sheety-commentitem-author">
+    {$author}
+  </div>
   <div class="sheety-commentitem-cdatetime">
     {$cdatetime}
   </div>
