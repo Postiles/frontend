@@ -392,9 +392,9 @@ postile.view.post_board.PostBoard.prototype.initView = function() {
 
     //console.log(this.create_helper);
 
-    goog.dom.appendChild(goog.dom.getElement("wrapper"), this.create_helper.container);
     goog.dom.appendChild(goog.dom.getElement("wrapper"), this.header.container);
     goog.dom.appendChild(goog.dom.getElement("wrapper"), this.catchall);
+    goog.dom.appendChild(goog.dom.getElement("wrapper"), this.create_helper.container);
     // We have to append the header before add the online people bar,
     // otherwise there is no way to get the size of the header bar.
     this.onlinepeople = new Object();
