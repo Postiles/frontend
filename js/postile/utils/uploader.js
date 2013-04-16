@@ -86,7 +86,7 @@ postile.uploader.submit = function(){ //  TODO check if browser is good
     postile.uploader.formData.append('upload_path', postile.uploader.upload_path);
 
     if(postile.uploader.formData !== null){
-        postile.ajax.upload( ['application', 'upload_image' ], postile.uploader.formData, function(data) {
+        postile.ajax.upload( ['upload', 'upload_image' ], postile.uploader.formData, function(data) {
             var filename = data.message.filename;
              // change the image path after backend is done
             if(postile.uploader.upload_path == 'profile_image'){

@@ -51,6 +51,7 @@ postile.view.post.Post = function(postData, board, mode) {
     this.currMode = mode;
 
     this.loadUIComponents();
+
     this.initEventListeners();
 
     // precalculate this two so that future intersect test will be faster
@@ -70,6 +71,7 @@ postile.view.post.Post = function(postData, board, mode) {
 
     goog.dom.appendChild(this.board.canvas, this.wrap_el);
 
+    this.wrap_el.style.display = '';
     this.changeCurrentMode(mode);
 
     // disable double click entering mask mode
