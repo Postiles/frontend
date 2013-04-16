@@ -4,11 +4,12 @@ java -jar tmp\SoyToJsSrcCompiler.jar `
     --shouldProvideRequireSoyNamespaces `
     --srcs "$(gci js\postile\ -recurse -include '*.soy')"
 
-echo "Building deps.js..."
+
+echo "Building deps.js as $(pwd)\js\postile\deps.js"
 tmp\closure\bin\build\depswriter.py `
     --root_with_prefix="$(pwd)\js\postile ..\postile" `
     --output_file="$(pwd)\js\postile\deps.js"
 
+# LOL encoding
 echo "Adding soyutil to deps.js..."
-cat hacks\soyutil-deps.js >> js\postile\deps.js
-
+cat -Encoding Unicode hacks\soyutil-deps.js >> js\postile\deps.js
