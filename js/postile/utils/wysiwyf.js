@@ -131,7 +131,6 @@ postile.WYSIWYF = {
                 for (i in links) {
                     var id = links[i].getAttribute('link-to-post-id'); 
                     if (id) {
-                        console.log(id, lels);
                         lels[id].style.display = 'block';
                     }
                 }
