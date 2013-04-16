@@ -24,11 +24,6 @@ html, body {
   width: 60px;
   height: 60px;
   background: #024d61;
-  border-radius: 5px;
-  -webkit-border-radius: 5px;
-  -moz-radius: 5px;
-  -o-radius: 5px;
-  -ms-radius: 5px;
 }
 
 #topic_image_container img {
@@ -87,11 +82,6 @@ html, body {
   height: 36px;
   background: #024d61;
   cursor: pointer;
-  border-radius: 5px;
-  -webkit-border-radius: 5px;
-  -moz-radius: 5px;
-  -o-radius: 5px;
-  -ms-radius: 5px;
 }
 
 #profile_image_container img {

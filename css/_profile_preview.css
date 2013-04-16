@@ -73,8 +73,18 @@
       background: #024d61;
       color: #ececec;
       box-shadow: 0px 0px 8px #024d61; }
-      .profile-preview .info-container .top .name {
+      .profile-preview .info-container .top .username {
         font-size: 13pt; }
+        .profile-preview .info-container .top .username .edit {
+          font-size: 10pt;
+          margin-left: 10px;
+          color: #999999;
+          cursor: pointer;
+          visibility: hidden; }
+        .profile-preview .info-container .top .username .edit:hover {
+          text-decoration: underline; }
+      .profile-preview .info-container .top .username:hover .edit {
+        visibility: visible; }
       .profile-preview .info-container .top .signiture {
         margin-top: 15px; }
         .profile-preview .info-container .top .signiture textarea {

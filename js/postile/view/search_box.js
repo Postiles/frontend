@@ -99,9 +99,9 @@ postile.view.search_box.SearchBox.prototype.search = function(instance) {
                 var result_right_container = goog.dom.createDom("div", "search_result_right_container");
                 goog.dom.appendChild(people_result, result_right_container);
 
-                // title (username)
+                // title (user's full name)
                 var result_item_title = goog.dom.createDom("div", "search_result_item_title");
-                result_item_title.innerHTML = user.username;
+                result_item_title.innerHTML = profile.username;
                 result_item_title.style.paddingLeft = '0px'
                 goog.dom.appendChild(result_right_container, result_item_title);
 

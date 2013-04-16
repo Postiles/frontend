@@ -43,23 +43,31 @@ postile.view.At.prototype.realPress = function() {
 
 postile.view.At.prototype.renderUser = function(profile) {
     var instance = this;
+
     var tmpDiv = goog.dom.createDom('div', 'at_single');
     var avaDiv = goog.dom.createDom('img', 'at_image');
     var usnDiv = goog.dom.createDom('div', 'at_name');
+
     avaDiv.src = postile.conf.uploadsResource([ profile.image_url ]);
-    usnDiv.innerHTML = profile.first_name + ' ' + profile.last_name;
+    usnDiv.innerHTML = profile.username;
+
     goog.dom.appendChild(tmpDiv, avaDiv);
     goog.dom.appendChild(tmpDiv, usnDiv);
     goog.dom.appendChild(tmpDiv, goog.dom.createDom('div', 'clear'));
+
     goog.events.listen(tmpDiv, goog.events.EventType.CLICK, function() {
         var atNode = goog.dom.createDom('span');
         atNode.contentEditable = false;
-        atNode.innerHTML = ' @' +  profile.first_name + ' ' + profile.last_name + ' ';
+        atNode.innerHTML = ' @' +  profile.username + ' ';
+
         atNode.style.fontStyle = 'italic';
+
         atNode.setAttribute('at-user', profile.user_id);
+
         instance.range.deleteContents();
         instance.range.insertNode(atNode);
         instance.range.collapse();
+
         var sel = window.getSelection();
         sel.removeAllRanges();
         sel.addRange(instance.range);

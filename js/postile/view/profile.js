@@ -51,9 +51,14 @@ postile.view.profile.ProfileView.prototype.initItems = function() {
     this.pictureImg_el = goog.dom.getElementsByTagNameAndClass('img', null, this.picture_el)[0];
     this.pictureImg_el.src = postile.conf.uploadsResource([ this.userData.image_url ]);
 
+    this.name_el = goog.dom.getElementByClass('username', this.container);
+    goog.dom.classes.add(this.name_el, 'item');
+    this.nameData_el = goog.dom.getElementByClass('data', this.name_el);
+    this.nameData_el.innerHTML = this.userData.username;
 
-    this.name_el = goog.dom.getElementByClass('name', this.container);
-    this.name_el.innerHTML = this.userData.first_name + ' ' + this.userData.last_name;
+    this.name_el.setAttribute('data-item', 'username');
+
+    this.profileItems.push(this.name_el); // editable
 
     this.signiture_el = goog.dom.getElementByClass('signiture', this.container);
     this.signitureData_el = goog.dom.getElementByClass('data', this.signiture_el);
@@ -82,6 +87,10 @@ postile.view.profile.ProfileView.prototype.initItems = function() {
             postile.uploader.upload_path = 'profile_image';
             this.imageUploadPop.open(this);
         }.bind(this));
+
+        this.nameEdit_el = goog.dom.createDom('span', 'edit');
+        this.nameEdit_el.innerHTML = 'Edit';
+        goog.dom.appendChild(this.name_el, this.nameEdit_el);
 
         this.signitureEdit_el = goog.dom.createDom('span', 'edit');
         this.signitureEdit_el.innerHTML = 'Edit';
@@ -195,11 +204,11 @@ postile.view.profile.ProfileItem.prototype.editClicked = function() {
     }
     */
 
-
-    if (this.className == 'item') {
-        this.input_el = goog.dom.createDom('input', null);
-    } else {
+    if (this.className == 'signiture' ||
+            this.className == 'self-intro') {
         this.input_el = goog.dom.createDom('textarea', null);
+    } else {
+        this.input_el = goog.dom.createDom('input', null);
     }
 
     this.input_el.value = this.data_val;
@@ -230,13 +239,17 @@ postile.view.profile.ProfileItem.prototype.saveTriggered = function() {
         this.data_el.innerHTML = this.input_el.value;
         this.edit_el.innerHTML = 'Edit';
 
-        if (this.data_el.innerHTML) {
-            var description = postile.view.profile.ProfileView.prototype.findDescriptionByName(this.item);
-            this.title_el.innerHTML = description;
-            this.title_el.style.opacity = 1.0;
-        } else {
-            this.title_el.innerHTML = this.item;
-            this.title_el.style.opacity = 0.3;
+        if (this.className != 'signiture' &&
+                this.className == 'self-intro' &&
+                this.className == 'username') {
+            if (this.data_el.innerHTML) {
+                var description = postile.view.profile.ProfileView.prototype.findDescriptionByName(this.item);
+                this.title_el.innerHTML = description;
+                this.title_el.style.opacity = 1.0;
+            } else {
+                this.title_el.innerHTML = this.item;
+                this.title_el.style.opacity = 0.3;
+            }
         }
 
         this.clearEvent();
