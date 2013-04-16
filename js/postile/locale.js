@@ -6,7 +6,7 @@ postile.locale.en.text = {
     inline_comment_prompt: 'Enter your comment here...',
     post_title_prompt: 'Title (optional)',
     post_zone_illegal: 'The zone you chose was illegal. Please reselect one.',
-    mask_for_creating_post: 'Click & Drag to add a post. Double click again to quit',
+    mask_for_creating_post: 'Click & Drag to add a post. Press <i>Esc</i> or <i>double click again</i> to quit',
     mask_for_picking_post: 'Click to select a post to link to',
     linked: 'LINKED',
     submit_edit: 'Submit',
