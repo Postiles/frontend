@@ -17,6 +17,7 @@ postile.view.create_helper.CreateHelper = function(input_instance){
 	// normal post
 	goog.events.listen((this.text_button)[0], goog.events.EventType.CLICK, function(){
 		if (postile.router.current_view instanceof postile.view.post_board.PostBoard) {
+			if (postile.router.current_view.disableMovingCanvas) { return; }
             postile.router.current_view.postCreator.open();
       	}
 	}.bind(this));
