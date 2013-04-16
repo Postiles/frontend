@@ -391,7 +391,7 @@ postile.view.post_board.PostBoard.prototype.initView = function() {
 
     this.picker = new postile.view.post_board.PostPicker(this);
     this.header = new postile.view.post_board.Header(this);
-    this.postCreator = new postile.view.post_board.PostCreator(this);   
+    this.postCreator = new postile.view.post_board.PostCreator(this);
     this.create_helper = new postile.view.create_helper.CreateHelper(this);
 
     goog.dom.appendChild(this.catchall, this.viewport);
