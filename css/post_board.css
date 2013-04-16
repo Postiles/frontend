@@ -71,6 +71,11 @@ html, body {
 }
 
 #settings_button {
+<<<<<<< HEAD
+=======
+  color: #aaa;
+  cursor: pointer;
+>>>>>>> Change Password implemented
 }
 
 #profile_image_container {

@@ -25,7 +25,12 @@ postile.view.post_board.Account = function(opt_board) {
     */
     
     /* settings button */
-    this.settingButton_el = postile.dom.getDescendantById(instance.container, 'setting_button');
+    this.settingButton_el = postile.dom.getDescendantById(instance.container, 'settings_button');
+
+    this.change_password = new postile.view.change_password.ChangePassword(this);
+    goog.events.listen(this.settingButton_el, goog.events.EventType.CLICK, function(e){
+        this.change_password.open(500);
+    }.bind(this));
 
     /* logout button */
     this.logoutButton_el = postile.dom.getDescendantById(instance.container, 'logout_button');
