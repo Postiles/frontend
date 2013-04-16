@@ -121,12 +121,11 @@ postile.view.post_board.PostCreator.prototype.mousemove = function(e) {
                     || end[0] <= this.board.currentPosts[i].postData.post.pos_x 
                     || current[1] >=this.board.currentPosts[i].postData.post.coord_y_end 
                     || end[1] <= this.board.currentPosts[i].postData.post.pos_y)) { 
-                    console.log(this.board.currentPosts[i]);
+                    //console.log(this.board.currentPosts[i]);
             intersect = true;
             break;
         }
     }
-
     //draw on the canvas
     this.position = { 
         pos_x: current[0], 
@@ -159,7 +158,7 @@ postile.view.post_board.PostCreator.prototype.mousemove = function(e) {
     }else if(!this.legal_min){
         this.preview.innerHTML = "Smaller than minimun size";
     }else{
-        this.preview.innerHTML = "";
+        this.preview.innerHTML = "Release to create";
     }
     this.preview.style.display = 'table-cell';
 };

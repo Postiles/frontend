@@ -5,7 +5,9 @@ goog.require('postile.view.profile');
 goog.require('postile.view.post_board.Account');
 goog.require('goog.dom');
 goog.require('postile.dom');
+goog.require('postile.view.create_helper');
 goog.require('postile.view.notification');
+goog.require('postile.view.change_password');
 
 postile.view.post_board.Header = function(board) {
     // this variable is for identifying current active icon
@@ -33,6 +35,8 @@ postile.view.post_board.Header = function(board) {
     });
     goog.dom.appendChild(instance.container, feedback);
 */
+
+    // create a create post helper
 
     this.topicImgContainer_el = postile.dom.getDescendantById(instance.container, 'topic_image_container');
     this.topicImg_el = postile.dom.getDescendantByClass(this.topicImgContainer_el, 'topic_image');
