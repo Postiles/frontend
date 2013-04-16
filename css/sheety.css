@@ -11,6 +11,7 @@
 
 .sheety-postitem {
     padding: 10px 20px;
+    transition: background-color 0.5s, color 0.5s;
 }
 
 .sheety-postitem:nth-child(2n+1) {
@@ -21,6 +22,11 @@
     font-style: bold;
     font-size: 1.15em;
     color: rgb(182, 199, 164);
+    transition: color 0.5s;
+}
+
+.sheety-postitem-author {
+    font-size: 0.85em;
 }
 
 .sheety-postitem-hover,

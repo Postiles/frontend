@@ -8,8 +8,11 @@ goog.require('goog.functions');
 goog.require('goog.ui.Component');
 goog.require('goog.ui.Container');
 goog.require('goog.ui.Control');
+
 goog.require('postile.view');
 goog.require('postile.templates.sheety');
+goog.require('postile.data_manager');
+goog.require('postile.async');
 
 /**
  * FullScreenView-compatible goog.ui.Component.
@@ -56,11 +59,14 @@ postile.view.Sheety = function(opt_board_id) {
     // To avoid unexpected scrolling.
     this.postList_.setFocusable(false);
 
-    // Loads data and when data is received, renders the post list.
-    postile.ajax(['board', 'get_recent_posts'], {
-        'board_id': this.board_id_,
-        'number': 40
-    }, goog.bind(this.renderPosts, this));
+    // Fetchs board data, then fetchs user data, finally renders the view.
+    var fetchPosts = goog.partial(
+        postile.ajax,
+        ['board', 'get_recent_posts'],
+        { 'board_id': this.board_id_, 'number': 40 });
+    postile.async.Deferred.fromCallback(fetchPosts)
+    .bind(this.fetchUserOfPosts_, this)
+    .bind(this.renderPosts_, this);
 
     postile.view.loadCss(['sheety.css']);
 };
@@ -91,11 +97,38 @@ postile.view.Sheety.prototype.decorateInternal = function(element) {
 };
 
 /**
- * Called when board data is received
+ * Called when board data is received.
+ * @private
  */
-postile.view.Sheety.prototype.renderPosts = function(data) {
-    // To attach to the document
-    this.postList_.setModel(data['message']);
+postile.view.Sheety.prototype.fetchUserOfPosts_ = function(response) {
+    var postExs = response['message'];
+    var dfds = goog.array.map(postExs, function(postEx) {
+        var cid = postEx['post']['creator_id'];
+        var fetcher = goog.partial(postile.data_manager.getUserData, cid);
+        return postile.async.Deferred.fromCallback(fetcher);
+    });
+    return postile.async.Deferred.waitForAll(dfds)
+           .lift(function(users) {
+               // Link user with post
+               var postExCopy = new Array(postExs.length);
+               var cpy = goog.array.clone(postExs);
+               goog.array.forEach(postExs, function(postEx, i) {
+                   postExCopy[i] = {
+                       'post': postEx['post'],
+                       'user': users[i],
+                       'inline_comments': postEx['inline_comments']
+                   };
+               });
+               return postExCopy;
+           });
+};
+
+/**
+ * Called when board data is received.
+ * @private
+ */
+postile.view.Sheety.prototype.renderPosts_ = function(postExs) {
+    this.postList_.setModel(postExs);
     this.render(goog.dom.getElement('wrapper'));
 };
 
@@ -121,13 +154,15 @@ function(postList) {
     // So as to be able to call addChild()
     postList.setElementInternal(el);
 
-    goog.array.forEach(postList.getModel(), function(postData) {
-        /** Contains a post. Its model is a {PostWE} */
+    goog.array.forEach(postList.getModel(),
+    function(postEx) {
+        // postData is a {PostWE} while userData is a {User}
         var item = new goog.ui.Control(
             null /* content */,
             postile.view.SheetyPostItemRenderer.getInstance());
-        item.setModel(postData);
+        item.setModel(postEx);
         postList.addChild(item, true /* opt_render */);
+
     });
     return el;
 };
@@ -160,10 +195,11 @@ function(item) {
     var el = goog.base(this, 'createDom', item);
     item.setElementInternal(el);
 
-    var postData = item.getModel()['post'];
+    var postEx = item.getModel();
     var renderData = {
-        title: postData['title'] || '(no title)',
-        content: postData['content']
+        title: postEx['post']['title'] || '(no title)',
+        author: postEx['user']['username'],
+        content: postEx['post']['content']
     };
     var fragment = soy.renderAsFragment(postile.templates.sheety.postItem,
                                         renderData);
@@ -172,7 +208,7 @@ function(item) {
     var commentList = new goog.ui.Container(
         goog.ui.Container.Orientation.HORIZONTAL,
         postile.view.SheetyCommentListRenderer.getInstance());
-    commentList.setModel(item.getModel()['inline_comments']);
+    commentList.setModel(postEx['inline_comments']);
 
     /**
      * A list of comments.
@@ -271,3 +307,4 @@ function(item) {
  */
 postile.view.SheetyCommentItemRenderer.prototype.canDecorate =
     goog.functions.FALSE;
+

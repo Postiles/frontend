@@ -11,13 +11,17 @@
 {/template}
 
 /**
- * @param title Title of this post
+ * @param title
+ * @param author
  * @param content Content of this post, is already escaped in the server
  * side, and may contain html so there is no need to escape it.
  */
 {template .postItem}
   <div class="sheety-postitem-title">
     {$title}
+  </div>
+  <div class="sheety-postitem-author">
+    {$author}
   </div>
   <div class="sheety-postitem-content">
     {$content|noAutoescape}
@@ -26,7 +30,7 @@
 
 /**
  * @param cdatetime Creation time of this comment
- * @param content Content of this comment
+ * @param content
  */
 {template .commentItem}
   <div class="sheety-commentitem-cdatetime">
