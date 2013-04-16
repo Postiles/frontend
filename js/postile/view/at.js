@@ -57,21 +57,41 @@ postile.view.At.prototype.renderUser = function(profile) {
 
     goog.events.listen(tmpDiv, goog.events.EventType.CLICK, function() {
         var atNode = goog.dom.createDom('span');
-        atNode.contentEditable = false;
-        atNode.innerHTML = ' @' +  profile.username + ' ';
+        atNode.contentEditable = true;
+        atNode.innerHTML = ' @' + profile.username
 
         atNode.style.fontStyle = 'italic';
-
+        atNode.style.display = 'inline';
+        atNode.style.width = '25px';
+        
+        atNode.setAttribute('at-user-name', profile.username);
         atNode.setAttribute('at-user', profile.user_id);
-
+        
         instance.range.deleteContents();
+
         instance.range.insertNode(atNode);
+        instance.range.collapse();
+        
+        instance.range.insertNode(document.createTextNode('\u00a0'));
         instance.range.collapse();
 
         var sel = window.getSelection();
         sel.removeAllRanges();
         sel.addRange(instance.range);
+        
         instance.close();
+        
+        if (!instance.ipel._at_consist_listener) {
+            instance.ipel._at_consist_listener = new postile.events.ContentChangeListener(instance.ipel, function() {
+                var ats = postile.dom.getDescendantsByCondition(instance.ipel, function(cel) {
+                    return cel.tagName && cel.getAttribute('at-user');
+                });
+                for (var i in ats) {
+                    ats[i].innerHTML = ' @' + ats[i].getAttribute('at-user-name');
+                }
+            });
+            instance.ipel._at_consist_listener.listen();
+        }
     });
     return tmpDiv;
 }
