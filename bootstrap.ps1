@@ -1,5 +1,8 @@
 echo "Downloading google closure..."
-mkdir tmp
+
+If (!(Test-Path "$(pwd)\tmp")) {
+    mkdir tmp
+}
 cd tmp
 
 If (!(Test-Path "$(pwd)\goog.zip")) {
@@ -12,7 +15,7 @@ if (!(Test-Path "$(pwd)\cc.zip")) {
 }
 
 echo "Downloading soy template compiler..."
-if (!(Test-Path "$(pwd)\cc.zip")) {
+if (!(Test-Path "$(pwd)\soycc.zip")) {
     (new-object System.Net.WebClient).DownloadFile("http://closure-templates.googlecode.com/files/closure-templates-for-javascript-latest.zip", "$(pwd)\soycc.zip")
 }
 
@@ -37,3 +40,4 @@ cp -R -Force soy*.js ..\js\goog\soyutil
 echo "Finally please ensure nginx is installed"
 echo "Then set /etc/nginx/site-enabled/default's server.root to $(pwd)"
 
+cd ..

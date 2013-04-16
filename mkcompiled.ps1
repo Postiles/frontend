@@ -1,6 +1,6 @@
-$cflags="--compilation_level=ADVANCED_OPTIMIZATIONS"
+$cflags="--compilation_level=SIMPLE_OPTIMIZATIONS"
 
-python tmp\closure\bin\build\closurebuilder.py `
+tmp\closure\bin\build\closurebuilder.py `
 	--root=js `
 	--root=third_party `
 	--namespace=postile.entry `
