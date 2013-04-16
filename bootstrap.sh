@@ -32,6 +32,5 @@ cp -r closure/goog ../js
 mkdir ../js/goog/soyutil
 cp -r soy*.js ../js/goog/soyutil/
 
-echo "Downloading soy template compiler..."
 echo "Finally please ensure nginx is installed"
 echo "Then set /etc/nginx/site-enabled/default's server.root to $(pwd)"
