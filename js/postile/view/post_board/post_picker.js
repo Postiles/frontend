@@ -40,7 +40,7 @@ postile.view.post_board.PostPicker.prototype.close = function() {
     this.clkListener.unlisten();
     this.hint_el.style.display = 'none';
     if (instance.lkd_el) {
-        instance.all_lkd_el[instance.active_post.post.id] = instance.lkd_el;
+        instance.all_lkd_el[instance.active_post.postData.post.id] = instance.lkd_el;
         var width = instance.lkd_el.offsetWidth;
     }
     new postile.fx.Animate(function(i) {
@@ -75,7 +75,7 @@ postile.view.post_board.PostPicker.prototype.mmHandler = function(e) {
     this.demote();
     var mouse_coord = [this.board.xPosFrom(e.clientX - this.board.viewport_position.x - this.board.canvasCoord[0]), this.board.yPosFrom(e.clientY - this.board.viewport_position.y - this.board.canvasCoord[1])];
     for (i in this.board.currentPosts) {
-        if(mouse_coord[0] <= this.board.currentPosts[i].post.coord_x_end && mouse_coord[0] >= this.board.currentPosts[i].post.pos_x && mouse_coord[1] <= this.board.currentPosts[i].post.coord_y_end && mouse_coord[1] >= this.board.currentPosts[i].post.pos_y) { 
+        if(mouse_coord[0] <= this.board.currentPosts[i].postData.post.coord_x_end && mouse_coord[0] >= this.board.currentPosts[i].postData.post.pos_x && mouse_coord[1] <= this.board.currentPosts[i].postData.post.coord_y_end && mouse_coord[1] >= this.board.currentPosts[i].postData.post.pos_y) { 
             this.promote(this.board.currentPosts[i]);
             return;
         }

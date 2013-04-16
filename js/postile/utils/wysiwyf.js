@@ -158,7 +158,7 @@ postile.WYSIWYF = {
             if (!img_el) { return; }
             picker.open(function(post){ 
                 if (post) { 
-                    img_el.setAttribute('link-to-post-id', post.post.id);
+                    img_el.setAttribute('link-to-post-id', post.postData.post.id);
                     img_el.onmouseover = function() {
                         var lels = editor.post.board.picker.all_lkd_el;
                         for (i in lels) {
