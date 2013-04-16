@@ -1,0 +1,112 @@
+<html>
+<head>
+	<title>creater_helper</title>
+
+	<style>
+
+		@-webkit-keyframes slideOut /* Safari and Chrome */
+		{
+			0% {margin-left: -60px;}
+			100% {margin-left: 0px;}
+		}
+		@keyframes slideOut /* Safari and Chrome */
+		{
+			0% {margin-left: -60px;}
+			100% {margin-left: 0px;}
+		}
+		@-moz-keyframes slideOut /* Safari and Chrome */
+		{
+			0% {margin-left: -60px;}
+			100% {margin-left: 0px;}
+		}
+
+		@-webkit-keyframes slideIn /* Safari and Chrome */
+		{
+			0% {margin-left: 0px;}
+			100% {margin-left: -60px;}
+		}
+		@keyframes slideIn /* Safari and Chrome */
+		{
+			0% {margin-left: 0px;}
+			100% {margin-left: -60px;}
+		}
+		@-moz-keyframes slideIn /* Safari and Chrome */
+		{
+			0% {margin-left: 0px;}
+			100% {margin-left: -60px;}
+		}
+
+
+		#create_helper_wrapper {
+			background: #024d61;
+			width: 90px;
+			height: 115px;
+			margin-left: -60px;
+		}
+
+		#create_helper_wrapper .create_helper_pop{
+			float: left;
+		}
+
+		#create_helper_wrapper  .create_post_button {
+			margin: 15px;
+			cursor: pointer;
+		}
+
+		#create_helper_wrapper .text_post {
+			margin-left: 17px;
+		}
+
+		#create_helper_wrapper  .video_post {
+			margin-left: 17px;
+			margin-top: 17px;
+		}
+
+		#create_helper_wrapper .create_helper_button {
+			position: relative;
+			top: -65px;
+			right: -10px;
+			color: #fff;
+			float: right;
+			cursor: pointer;
+			-webkit-transform: rotate(90deg);
+			-moz-transform: rotate(90deg);
+		}
+			
+		.creater_helper_animate_out {
+			animation: slideOut 1s;
+    		-webkit-animation: slideOut 1s;
+    		/* Safari and Chrome */
+    		-moz-animation: slideOut 1s;
+		}
+		.creater_helper_animate_in {
+			animation: slideIn 1s;
+    		-webkit-animation: slideIn 1s;
+    		/* Safari and Chrome */
+    		-moz-animation: slideIn 1s;
+		}
+
+
+	</style>
+
+
+</head>
+<body>
+	<div id = "create_helper_wrapper">
+		<div class = "create_helper_pop">
+			<div class = "create_post_button text_post">
+				<img src="../images/normal_post.png" alt="text_post" />
+			</div>
+			<div class = "create_post_button picture_post">
+				<img src="../images/photo_upload_icon.png" alt="text_post" />
+			</div>
+			<div class = "create_post_button video_post">
+				<img src="../images/video_upload_icon.png" alt="text_post" />
+			</div>
+		</div>
+		<div class = "create_helper_button">
+			Create Post
+		</div>
+	</div>
+</body>
+</html>

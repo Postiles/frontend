@@ -53,7 +53,6 @@ postile.view.image_upload.ImageUploadBlock.prototype.open = function(a) {
 	goog.dom.appendChild(this.fakefile, this.fileInput);
 
 	goog.events.listen(this.fileInput, goog.events.EventType.CHANGE, function(e) {
-		console.log('call upload');
 		postile.uploader.clickUpload(this.fileInput);
 		this.close();
 	}.bind(this));

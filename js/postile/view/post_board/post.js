@@ -53,6 +53,14 @@ postile.view.post.Post = function(postData, board, mode) {
     this.loadUIComponents();
     this.initEventListeners();
 
+    // temporarilly disable all the modes to prevent glitch
+    this.displayModePost_el.style.display = 'none';
+    this.commentModePost_el.style.display = 'none';
+    this.editModePost_el.style.display = 'none';
+    this.lockedModePost_el.style.display = 'none';
+    this.newModePost_el.style.display = 'none';
+    this.confirmDeleteModePost_el.style.display = 'none';
+
     // precalculate this two so that future intersect test will be faster
     this.postData.post.coord_x_end = 
         this.postData.post.pos_x + this.postData.post.span_x;
