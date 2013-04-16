@@ -1,5 +1,3 @@
-/*view.js*/
-
 goog.provide('postile.view');
 
 goog.require('goog.array');
@@ -9,44 +7,51 @@ goog.require('postile.conf');
 goog.require('postile.events');
 goog.require('postile.fx.effects');
 
-/*
-=== How to create a normal view ===
-
-1. Have a class inherits "positle.view.NormalView".
-2. [optional, only when you need to load css] have a "unloaded_stylesheets" in its prototype,
-  which is an array containing css files that need to be loaded.
-
-Just put your things into this.container
-
-=== How to create a pop-up view ===
-
-1. Have a class inherits "postile.view.PopView".
-2. The same as normal view.
-
-Just put your things into this.container, and use "open" and "close" if needed
-
-can set onclose method
-
-=== How to create a fullscreen view ===
-
-1. have a class inherits "postile.view.FullScreenView", and use "html_segment" property to represent the HTML that need to be loaded into document.body
-2. have a "close" method as destrcutor if needed
-3. the same as normal view
-
-=== How to create a tip view ===
-
-1.  have a class inherits "postile.view.TipView".
-2. the same as normal view
-
-just put your things into this.container, and use "open" and "close" if needed.
-
-the "open: functon will receive a parameter indicating the reference element and container element of the tip view. If the reference element is not set, the parent element of the reference element will be used
-
-directly set "container.style.left" and "container.style.top" to further offset the container
-
-can set onclose method
-
-*/
+/**
+ * === How to create a normal view ===
+ *
+ * 1. Have a class inherits "positle.view.NormalView".
+ * 2. [optional, only when you need to load css] have a
+ *    "unloaded_stylesheets" in its prototype,
+ *    which is an array containing css files that need to be loaded.
+ * 
+ * Just put your things into this.container
+ * 
+ * === How to create a pop-up view ===
+ * 
+ * 1. Have a class inherits "postile.view.PopView".
+ * 2. The same as normal view.
+ * 
+ * Just put your things into this.container,
+ * and use "open" and "close" if needed
+ * 
+ * can set onclose method
+ * 
+ * === How to create a fullscreen view ===
+ * 
+ * 1. have a class inherits "postile.view.FullScreenView",
+ *    and use "html_segment" property to represent the HTML that
+ *    need to be loaded into document.body
+ * 2. have a "close" method as destrcutor if needed
+ * 3. the same as normal view
+ * 
+ * === How to create a tip view ===
+ * 
+ * 1. have a class inherits "postile.view.TipView".
+ * 2. the same as normal view
+ * 
+ * just put your things into this.container,
+ * and use "open" and "close" if needed.
+ * 
+ * the "open: functon will receive a parameter indicating the reference
+ * element and container element of the tip view. If the reference element
+ * is not set, the parent element of the reference element will be used
+ * 
+ * directly set "container.style.left" and "container.style.top"
+ * to further offset the container
+ * 
+ * can set onclose method
+ */
 
 /**
  * Loaded stylesheet name cache.
@@ -56,15 +61,11 @@ can set onclose method
 postile.loaded_stylesheets = {};
 
 /**
- * "Do not use this class directly."
- * @abstract
- * @constructor
+ * Loads some css files if not being previously loaded.
+ * @param {Array.<string>} css_files Css files to be loaded
  */
-postile.view.View = function() {
-    var i;
-    var instance = this;
-
-    goog.array.forEach(this.unloaded_stylesheets, function(path) {
+postile.view.loadCss = function(css_files) {
+    goog.array.forEach(css_files, function(path) {
         if (!(path in postile.loaded_stylesheets)) {
             postile.loaded_stylesheets[path] = true;
             var css_elem = goog.dom.createDom('link', {
@@ -76,6 +77,18 @@ postile.view.View = function() {
                 document.getElementsByTagName('head')[0], css_elem);
         }
     });
+};
+
+/**
+ * "Do not use this class directly."
+ * @abstract
+ * @constructor
+ */
+postile.view.View = function() {
+    var i;
+    var instance = this;
+
+    postile.view.loadCss(this.unloaded_stylesheets);
     /**** Function below is not activated yet
     if (this.urlHash) {
         window.location.hash = '#' + this.urlHash;
@@ -176,7 +189,15 @@ postile.view.PopView.prototype.escPressed = function(e) {
     if (e.keyCode == 27) { // esc pressed
         this.close();
     }
-}
+};
+
+postile.view.closeCurrentFullScreenView = function() {
+    var cv = postile.router.current_view;
+    if (cv && cv.close) {
+        // Destruct the original fullscreenview
+        cv.close();
+    }
+};
 
 /**
  * Do NOT call a constructor of a FullScreenView directly. use postile.router.dispatch instead
@@ -184,10 +205,7 @@ postile.view.PopView.prototype.escPressed = function(e) {
  * @constructor
  */
 postile.view.FullScreenView = function() {
-    if (postile.current_view && postile.current_view.close) {
-        // Destruct the original fullscreenview
-        postile.current_view.close();
-    }
+    postile.view.closeCurrentFullScreenView();
     goog.base(this);
     this.container = document.body;
     this.container.className = '';

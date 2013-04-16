@@ -1,0 +1,60 @@
+.sheety-body {
+    color: white;
+    cursor: default;
+    background-color: rgb(3,76,97);
+}
+
+.sheety-title {
+    padding: 0.67em;
+    font-size: 2em;
+}
+
+.sheety-postitem {
+    padding: 10px 20px;
+    transition: background-color 0.5s, color 0.5s;
+}
+
+.sheety-postitem:nth-child(2n+1) {
+    background-color: rgb(0, 70, 90);
+}
+
+.sheety-postitem-title {
+    font-style: bold;
+    font-size: 1.15em;
+    color: rgb(182, 199, 164);
+    transition: color 0.5s;
+}
+
+.sheety-postitem-author {
+    font-size: 0.85em;
+}
+
+.sheety-postitem-hover,
+.sheety-postitem-hover:nth-child(2n+1) {
+    background-color: rgb(202, 219, 184);
+    color: rgb(0, 70, 90);
+}
+
+.sheety-postitem-hover .sheety-postitem-title {
+    color: rgb(80, 0, 0);
+}
+
+
+.sheety-commentitem {
+    padding: 8px;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.sheety-commentitem-hover {
+    background-color: rgb(182, 199, 164);
+}
+
+.sheety-commentitem-active {
+    background-color: rgb(172, 189, 154);
+}
+
+.sheety-commentitem-cdatetime {
+    font-size: 0.75em;
+}
+

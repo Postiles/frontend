@@ -1,10 +1,10 @@
 goog.provide('postile.view.post.PostExpand');
 
-goog.require('postile.view');
 goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('postile.conf');
 goog.require('postile.view');
+goog.require('postile.data_manager');
 
 /**
  * @constructor

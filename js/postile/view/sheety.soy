@@ -1,11 +1,47 @@
 {namespace postile.templates.sheety}
 
 /**
+ * @param board_id
  */
 {template .body}
-  <h1 id="sheety-title">
-    Some Title.
-  </h1>
-  <div id="sheety-scroll"></div>
+  <div class="sheety-title">
+    Board #{$board_id}
+  </div>
+  <div class="sheety-scroll"></div>
+{/template}
+
+/**
+ * @param title
+ * @param author
+ * @param content Content of this post, is already escaped in the server
+ * side, and may contain html so there is no need to escape it.
+ */
+{template .postItem}
+  <div class="sheety-postitem-title">
+    {$title}
+  </div>
+  <div class="sheety-postitem-author">
+    {$author}
+  </div>
+  <div class="sheety-postitem-content">
+    {$content|noAutoescape}
+  </div>
+{/template}
+
+/**
+ * @param cdatetime Creation time of this comment
+ * @param author
+ * @param content
+ */
+{template .commentItem}
+  <div class="sheety-commentitem-author">
+    {$author}
+  </div>
+  <div class="sheety-commentitem-cdatetime">
+    {$cdatetime}
+  </div>
+  <div class="sheety-commentitem-content">
+    {$content|noAutoescape}
+  </div>
 {/template}
 
