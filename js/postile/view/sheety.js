@@ -23,7 +23,15 @@ postile.view.GoogFSV = function() {
 };
 goog.inherits(postile.view.GoogFSV, goog.ui.Component);
 
-postile.view.GoogFSV.prototype.close = goog.nullFunction;
+/**
+ * Close this view by removing its element out of the dom, clearing
+ * all event handlers, etc etc.
+ * The default action is to dispose it. And it should be sufficient.
+ * Override {exitDocument} to provide additional behavior.
+ */
+postile.view.GoogFSV.prototype.close = function() {
+    this.dispose();
+};
 
 /**
  * Spread-sheety view.
@@ -39,15 +47,19 @@ postile.view.Sheety = function(opt_board_id) {
     this.board_id_ = goog.isDef(opt_board_id) ? opt_board_id : 1;
 
     /**
-     * Contains a list of posts
+     * Contains a list of posts. Its model is a {Array.<PostWE>}
      * @private
      */
-    this.postList_ = new goog.ui.Container(goog.ui.Container.VERTICAL,
+    this.postList_ = new goog.ui.Container(
+        goog.ui.Container.Orientation.VERTICAL,
         postile.view.SheetyPostListRenderer.getInstance());
+    // To avoid unexpected scrolling.
+    this.postList_.setFocusable(false);
 
+    // Loads data and when data is received, renders the post list.
     postile.ajax(['board', 'get_recent_posts'], {
-        "board_id": this.board_id_,
-        "number": 10
+        'board_id': this.board_id_,
+        'number': 40
     }, goog.bind(this.renderPosts, this));
 
     postile.view.loadCss(['sheety.css']);
@@ -55,20 +67,15 @@ postile.view.Sheety = function(opt_board_id) {
 goog.inherits(postile.view.Sheety, postile.view.GoogFSV);
 
 /**
- * @inheritDoc
- */
-postile.view.Sheety.prototype.close = function() {
-    this.element_.remove();
-    this.exitDocument();
-}
-
-/**
  * Create a skeleton dom.
  * @inheritDoc
  */
 postile.view.Sheety.prototype.createDom = function() {
     var html = postile.templates.sheety.body({board_id: this.board_id_});
-    var dom = goog.dom.createDom('div', {'innerHTML': html});
+    var dom = goog.dom.createDom('div', {
+        'innerHTML': html,
+        'className': 'sheety-body'
+    });
     this.decorateInternal(dom);
 };
 
@@ -104,7 +111,7 @@ goog.addSingletonGetter(postile.view.SheetyPostListRenderer);
 
 /** @inheritDoc */
 postile.view.SheetyPostListRenderer.prototype.getCssClass = function() {
-    return 'sheety-post-list';
+    return 'sheety-postlist';
 };
 
 /** @inheritDoc */
@@ -115,9 +122,10 @@ function(postList) {
     postList.setElementInternal(el);
 
     goog.array.forEach(postList.getModel(), function(postData) {
+        /** Contains a post. Its model is a {PostWE} */
         var item = new goog.ui.Control(
             null /* content */,
-            postile.view.SheetyPostListItemRenderer.getInstance());
+            postile.view.SheetyPostItemRenderer.getInstance());
         item.setModel(postData);
         postList.addChild(item, true /* opt_render */);
     });
@@ -134,31 +142,45 @@ postile.view.SheetyPostListRenderer.prototype.canDecorate =
 /**
  * @constructor
  */
-postile.view.SheetyPostListItemRenderer = function() {
+postile.view.SheetyPostItemRenderer = function() {
+    goog.base(this);
 };
-goog.inherits(postile.view.SheetyPostListItemRenderer,
+goog.inherits(postile.view.SheetyPostItemRenderer,
               goog.ui.ControlRenderer);
-goog.addSingletonGetter(postile.view.SheetyPostListItemRenderer);
+goog.addSingletonGetter(postile.view.SheetyPostItemRenderer);
 
-postile.view.SheetyPostListItemRenderer.prototype.getCssClass =
+postile.view.SheetyPostItemRenderer.prototype.getCssClass =
 function() {
-    return 'sheety-post-listitem';
+    return 'sheety-postitem';
 };
 
 /** @inheritDoc */
-postile.view.SheetyPostListItemRenderer.prototype.createDom =
+postile.view.SheetyPostItemRenderer.prototype.createDom =
 function(item) {
     var el = goog.base(this, 'createDom', item);
     item.setElementInternal(el);
 
     var postData = item.getModel()['post'];
     var renderData = {
-        title: postData['title'],
+        title: postData['title'] || '(no title)',
         content: postData['content']
     };
     var fragment = soy.renderAsFragment(postile.templates.sheety.postItem,
                                         renderData);
     goog.dom.append(el, fragment);
+
+    var commentList = new goog.ui.Container(
+        goog.ui.Container.Orientation.HORIZONTAL,
+        postile.view.SheetyCommentListRenderer.getInstance());
+    commentList.setModel(item.getModel()['inline_comments']);
+
+    /**
+     * A list of comments.
+     * @protected
+     */
+    item.commentList_ = commentList;
+    item.addChild(commentList, true /* opt_render */);
+
     return el;
 };
 
@@ -166,6 +188,86 @@ function(item) {
  * Since we are rendering using templates, there is no need to decorate.
  * @inheritDoc
  */
-postile.view.SheetyPostListItemRenderer.prototype.canDecorate =
+postile.view.SheetyPostItemRenderer.prototype.canDecorate =
     goog.functions.FALSE;
 
+/**
+ * Renders a list of comments
+ * @constructor
+ */
+postile.view.SheetyCommentListRenderer = function() {
+    goog.base(this);
+};
+goog.inherits(postile.view.SheetyCommentListRenderer,
+              goog.ui.ContainerRenderer);
+goog.addSingletonGetter(postile.view.SheetyCommentListRenderer);
+
+postile.view.SheetyCommentListRenderer.prototype.getCssClass =
+function() {
+    return 'sheety-commentlist';
+};
+
+/** @inheritDoc */
+postile.view.SheetyCommentListRenderer.prototype.createDom =
+function(commentList) {
+    var el = goog.base(this, 'createDom', commentList);
+    // So as to be able to call addChild()
+    commentList.setElementInternal(el);
+
+    goog.array.forEach(commentList.getModel(), function(commentData) {
+        /** Contains a comment. Its model is a {Comment} */
+        var item = new goog.ui.Control(
+            null /* content */,
+            postile.view.SheetyCommentItemRenderer.getInstance());
+        item.setModel(commentData);
+        commentList.addChild(item, true /* opt_render */);
+    });
+    return el;
+};
+
+/**
+ * Since we are rendering using templates, there is no need to decorate.
+ * @inheritDoc
+ */
+postile.view.SheetyCommentListRenderer.prototype.canDecorate =
+    goog.functions.FALSE;
+
+/**
+ * @constructor
+ */
+postile.view.SheetyCommentItemRenderer = function() {
+    goog.base(this);
+};
+goog.inherits(postile.view.SheetyCommentItemRenderer,
+              goog.ui.ControlRenderer);
+goog.addSingletonGetter(postile.view.SheetyCommentItemRenderer);
+
+postile.view.SheetyCommentItemRenderer.prototype.getCssClass =
+function() {
+    return 'sheety-commentitem';
+};
+
+/** @inheritDoc */
+postile.view.SheetyCommentItemRenderer.prototype.createDom =
+function(item) {
+    var el = goog.base(this, 'createDom', item);
+    item.setElementInternal(el);
+
+    var commentData = item.getModel()['inline_comment'];
+    var renderData = {
+        cdatetime: commentData['created_at'],
+        content: commentData['content']
+    };
+    var fragment = soy.renderAsFragment(
+        postile.templates.sheety.commentItem, renderData);
+    goog.dom.append(el, fragment);
+
+    return el;
+};
+
+/**
+ * Since we are rendering using templates, there is no need to decorate.
+ * @inheritDoc
+ */
+postile.view.SheetyCommentItemRenderer.prototype.canDecorate =
+    goog.functions.FALSE;

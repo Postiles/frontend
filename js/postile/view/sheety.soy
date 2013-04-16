@@ -4,21 +4,35 @@
  * @param board_id
  */
 {template .body}
-  <h1 class="sheety-title">
+  <div class="sheety-title">
     Board #{$board_id}
-  </h1>
+  </div>
   <div class="sheety-scroll"></div>
 {/template}
 
 /**
- * @param title
- * @param content
+ * @param title Title of this post
+ * @param content Content of this post, is already escaped in the server
+ * side, and may contain html so there is no need to escape it.
  */
 {template .postItem}
-  <div class="sheety-post-listitem-title">
+  <div class="sheety-postitem-title">
     {$title}
   </div>
-  <div class="sheety-post-listitem-content">
+  <div class="sheety-postitem-content">
+    {$content|noAutoescape}
+  </div>
+{/template}
+
+/**
+ * @param cdatetime Creation time of this comment
+ * @param content Content of this comment
+ */
+{template .commentItem}
+  <div class="sheety-commentitem-cdatetime">
+    {$cdatetime}
+  </div>
+  <div class="sheety-commentitem-content">
     {$content|noAutoescape}
   </div>
 {/template}
