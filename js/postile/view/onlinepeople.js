@@ -72,17 +72,11 @@ postile.view.onlinepeople.Item.prototype.renderItem = function(parent, user_id) 
     this.act_container = postile.dom.getDescendantByClass(
         this.item_container,'activity');
 
-    if (!postile.data_manager.userIsCached(user_id)) {
-        // Not found in local cache
-         postile.data_manager.getUserData(user_id, function() {});
-    }
-    else {
-        // Found in local cache
-        var user = postile.data_manager.getCachedUser(user_id);
-        this.name_container.innerHTML = user.username;
+    postile.data_manager.getUserData(user_id, function(data) {
+        this.name_container.innerHTML = data.username;
         this.profile_img.src = postile.conf.uploadsResource(
-            [user.image_small_url]);
-    }
+            [data.image_small_url]);
+    }.bind(this));
 
     goog.dom.appendChild(container,this.item_container);
 }
