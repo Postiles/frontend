@@ -1,0 +1,49 @@
+
+
+#create_helper_wrapper {
+	background: #024d61;
+	width: 90px;
+	height: 110px;
+	margin-left: -50px;
+	-webkit-transition: margin-left 0.7s;
+	-moz-transition: margin-left 0.7s;
+	transition: margin-left 0.7s;
+	position: absolute;
+	top: 80px;
+	left: 0px;
+	z-index: 101;
+}
+
+#create_helper_wrapper:hover {
+	margin-left: 0px;
+}
+
+#create_helper_wrapper .create_helper_pop{
+	float: left;
+}
+
+#create_helper_wrapper  .create_post_button {
+	margin: 15px;
+	cursor: pointer;
+}
+
+#create_helper_wrapper .text_post {
+	margin-left: 17px;
+	margin-top: 10px;
+}
+
+#create_helper_wrapper  .video_post {
+	margin-left: 17px;
+	margin-top: 17px;
+}
+
+#create_helper_wrapper .create_helper_button {
+	position: relative;
+	top: -80px;
+	right: -25px;
+	color: #fff;
+	float: right;
+	cursor: pointer;
+	-webkit-transform: rotate(90deg);
+	-moz-transform: rotate(90deg);
+}
