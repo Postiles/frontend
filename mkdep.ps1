@@ -4,6 +4,7 @@ java -jar tmp\SoyToJsSrcCompiler.jar `
     --shouldProvideRequireSoyNamespaces `
     --srcs "$(gci js\postile\ -recurse -include '*.soy')"
 
+# XXX: compile gss stylesheets here.
 
 echo "Building deps.js as $(pwd)\js\postile\deps.js"
 tmp\closure\bin\build\depswriter.py `

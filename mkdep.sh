@@ -6,6 +6,13 @@ java -jar tmp/SoyToJsSrcCompiler.jar \
     --shouldProvideRequireSoyNamespaces \
     --srcs $(find js/postile/ -name "*.soy")
 
+echo "Compiling gss stylesheets..."
+for gssFile in $(find css/ -name "*.gss"); do
+    java -jar tmp/closure-stylesheets.jar \
+        --pretty-print $gssFile \
+	> $(echo $gssFile | sed s/\.gss/.css/) ;
+done
+
 echo "Building deps.js..."
 python tmp/closure/bin/build/depswriter.py \
     --root_with_prefix="$(pwd)/js/postile ../postile" \

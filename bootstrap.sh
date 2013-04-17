@@ -19,6 +19,13 @@ if [ ! -f soycc.zip ]; then
     -O soycc.zip
 fi
 
+echo "Downloading closure stylesheets compiler..."
+if [ ! -f closure-stylesheets.jar ]; then
+    wget \
+    https://closure-stylesheets.googlecode.com/files/closure-stylesheets-20111230.jar \
+    -O closure-stylesheets.jar
+fi
+
 if [ ! `which unzip` ]; then
     sudo apt-get install unzip
 fi

@@ -9,6 +9,16 @@
     font-size: 2em;
 }
 
+.sheety-posts {
+    float: left;
+    width: 200px;
+}
+
+.sheety-comments {
+    float: left;
+    background-color: rgb(182, 199, 164);
+}
+
 .sheety-postitem {
     padding: 10px 20px;
     transition: background-color 0.5s, color 0.5s;
