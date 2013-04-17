@@ -1,64 +1,66 @@
-/*
 body {
-    background: #024d61;
-}
+  background: #024d61; }
 
 .tutorial_container {
-    width: 100%;
-    height: 80%;
-    padding-top: 5%;
-    color: whitesmoke;
-    font-family: Play;
-
-    .slideshow {
-
-        .view_list {
-
-            .view_item {
-                float: left;
-                width: 100%;
-                text-align: center;
-                .title {
-                    font-family: PlayBold;
-                    font-size: 30pt;
-                }
-
-                .picture {
-                    margin: 20px auto;
-                    width: 600px;
-                    height: 400px;
-
-                    img {
-                        width: inherit;
-                        height: inherit;
-                    }
-                }
-                
-                .description {
-                }
-            }
-        }
-    }
-
-    .bottom_container {
-
-        .dot_container {
-            position: relative;
-            top: 50px;
-            width: 100px;
-            margin-left: auto;
-            margin-right: auto;
-
-            .dot {
-                float: left;
-                margin-left: 8px;
-                width: 12px;
-                height: 12px;
-                background: whitesmoke;
-                opacity: 0.4;
-                -webkit-border-radius: 6px;
-            }
-        }
-    }
-}
-*/
+  width: 100%;
+  height: 80%;
+  padding-top: 5%;
+  color: whitesmoke;
+  font-family: Play; }
+  .tutorial_container .arrow {
+    position: absolute;
+    top: 50%;
+    margin-top: -80px;
+    cursor: pointer;
+    width: 0;
+    height: 0;
+    opacity: 0.2; }
+    .tutorial_container .arrow:hover {
+      opacity: 0.5; }
+  .tutorial_container .left_arrow {
+    left: 150px;
+    border-top: 60px solid transparent;
+    border-right: 45px solid whitesmoke;
+    border-bottom: 60px solid transparent; }
+  .tutorial_container .right_arrow {
+    right: 150px;
+    border-top: 60px solid transparent;
+    border-left: 45px solid whitesmoke;
+    border-bottom: 60px solid transparent; }
+  .tutorial_container .slideshow {
+    margin: 0 auto;
+    width: 800px;
+    overflow: hidden; }
+    .tutorial_container .slideshow .view_list {
+      width: 3200px; }
+      .tutorial_container .slideshow .view_list .view_item {
+        float: left;
+        width: 800px;
+        text-align: center; }
+        .tutorial_container .slideshow .view_list .view_item .title {
+          font-family: PlayBold;
+          font-size: 30pt; }
+        .tutorial_container .slideshow .view_list .view_item .picture {
+          margin: 20px auto;
+          width: 600px;
+          height: 400px; }
+          .tutorial_container .slideshow .view_list .view_item .picture img {
+            width: inherit;
+            height: inherit; }
+  .tutorial_container .bottom_container .dot_container {
+    position: relative;
+    top: 50px;
+    width: 100px;
+    margin-left: auto;
+    margin-right: auto; }
+    .tutorial_container .bottom_container .dot_container .dot {
+      float: left;
+      margin-left: 8px;
+      width: 12px;
+      height: 12px;
+      background: whitesmoke;
+      opacity: 0.4;
+      -webkit-border-radius: 6px;
+      cursor: pointer; }
+      .tutorial_container .bottom_container .dot_container .dot:first-child {
+        opacity: 1; }
