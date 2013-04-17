@@ -71,12 +71,18 @@ html, body {
 }
 
 #settings_button {
-<<<<<<< HEAD
-=======
-  color: #aaa;
   cursor: pointer;
->>>>>>> Change Password implemented
 }
+#login_button_account {
+  padding: 4px 8px;
+  background: #024d61;
+  color: #fff;
+  margin-top: 8px;
+  cursor: pointer;
+  display: none;
+  font-size: 14px;
+}
+
 
 #profile_image_container {
   float: left;
