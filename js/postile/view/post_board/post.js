@@ -401,29 +401,11 @@ postile.view.post.Post.prototype.initCommentModeListener = function() {
                         post_id: this.postData.post.id,
                         content: content,
                     }, function(data) {
-                        /*
-                        var comment = data.message;
-                        if (!this.inlineCommentRendered(comment)) {
-                            // add the new comment to list
-                            this.postData.inline_comments.push(comment);
-
-                            new postile.view.post.InlineComment(
-                                this.commentModeElements.commentItems_el, 
-                                comment);
-                        }
-
-                        // scroll the comment list to the bottom
-                        // even if the comment is already rendered, we still 
-                        // scroll it to the bottom since it's my own comment
-                        this.commentModeElements.commentList_el.scrollTop = 
-                            this.commentModeElements.commentList_el.scrollHeight;
-
-                        this.hideNoCommentEl();
-                        */
+                        // do nothing here, handled in fayeHandler
                     }.bind(this));
 
                     this.commentModeElements.commentInput_el.innerHTML = '';
-               }
+                }
             }
         }.bind(this));
 
@@ -433,6 +415,22 @@ postile.view.post.Post.prototype.initCommentModeListener = function() {
         goog.events.EventType.CLICK, 
         function(e) {
             this.changeCurrentMode(postile.view.post.Post.PostMode.DISPLAY);
+        }.bind(this));
+
+    // disable moving canvas when focused
+    goog.events.listen(
+        elements.commentInput_el,
+        goog.events.EventType.FOCUS,
+        function(e) {
+            this.board.disableMovingCanvas = true;
+        }.bind(this));
+
+    // re-enable moving canvas when blurred
+    goog.events.listen(
+        elements.commentInput_el,
+        goog.events.EventType.BLUR,
+        function(e) {
+            this.board.disableMovingCanvas = false;
         }.bind(this));
 }
 

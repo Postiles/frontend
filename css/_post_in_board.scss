@@ -161,6 +161,8 @@
                     outline: none;
                     resize: none;
                     background: whitesmoke;
+                    white-space: nowrap;
+                    overflow: hidden;
                 }
 
                 .comment_list_close_button {
@@ -394,6 +396,7 @@
         padding: 2px 12px;
         background: #cfdade;
         display: none;
+        cursor: pointer;
     }
 
     .comment_preview_no_comment {

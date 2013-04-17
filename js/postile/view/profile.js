@@ -143,7 +143,7 @@ postile.view.profile.ProfileView.prototype.initItems = function() {
 
             if (this.isSelfProfile()) {
                 var newItemEditButton = goog.dom.createDom('div', 'edit');
-                newItemEditButton.innerHTML = 'edit';
+                newItemEditButton.innerHTML = 'Edit';
                 goog.dom.appendChild(newItem, newItemEditButton);
             }
 

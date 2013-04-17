@@ -110,6 +110,7 @@ postile.view.View.prototype.unloaded_stylesheets = [];
  */
 postile.view.PopView = function() {
     goog.base(this);
+
     this.container = goog.dom.createDom('div', 'pop_container');
 
     this.container_wrap = goog.dom.createDom('div');
