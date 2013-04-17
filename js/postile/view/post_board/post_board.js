@@ -686,7 +686,7 @@ postile.view.post_board.PostBoard.prototype.locateCanvas = function(
         new postile.fx.Animate(function(iter) {
            instance.viewport.scrollLeft = - (instance.canvasCoord[0] * (1 - iter) + leftTarget * iter);
            instance.viewport.scrollTop = - (instance.canvasCoord[1] * (1 - iter) + topTarget * iter);
-        }, 600, {
+        }, 300, {
             ease: postile.fx.ease.sin_ease,
             callback: function() {
                 instance.canvasCoord[0] = leftTarget;
@@ -881,14 +881,19 @@ postile.view.post_board.PostBoard.prototype.renderPost = function(postData, mode
     var postId = postData.post.id;
 
     if (postId in this.currentPosts) { // old post to update
+        var changed = false;
+
         // update postData attributes
         for (var i in this.currentPosts[postId].postData.post) {
             if (postData.post[i] && this.currentPosts[postId].postData.post[i] != postData.post[i]) {
                 this.currentPosts[postId].postData.post[i] = postData.post[i];
+                changed = true;
             }
         }
 
-        this.currentPosts[postId].changeCurrentMode(mode);
+        if (changed) {
+            this.currentPosts[postId].changeCurrentMode(mode);
+        }
     } else { // new post to add to list
         this.currentPosts[postId] = postile.view.post.createPostFromJSON(postData, this, mode);
     }
