@@ -4,6 +4,7 @@ html, body {
 	border: 0 none;
     height: 100%;
     font-family: RobotoRegular;
+    min-width: 720px;
 }
 
 * {

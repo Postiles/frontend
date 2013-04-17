@@ -1,25 +1,64 @@
+/*
+body {
+    background: #024d61;
+}
+
 .tutorial_container {
     width: 100%;
-    height: 100%;
-    background: #024d61;
+    height: 80%;
+    padding-top: 5%;
+    color: whitesmoke;
+    font-family: Play;
 
     .slideshow {
-        height: 80%;
+
         .view_list {
+
+            .view_item {
+                float: left;
+                width: 100%;
+                text-align: center;
+                .title {
+                    font-family: PlayBold;
+                    font-size: 30pt;
+                }
+
+                .picture {
+                    margin: 20px auto;
+                    width: 600px;
+                    height: 400px;
+
+                    img {
+                        width: inherit;
+                        height: inherit;
+                    }
+                }
+                
+                .description {
+                }
+            }
         }
     }
 
     .bottom_container {
 
         .dot_container {
-            margin: 0 auto;
+            position: relative;
+            top: 50px;
+            width: 100px;
+            margin-left: auto;
+            margin-right: auto;
 
             .dot {
-                width: 10px;
-                height: 10px;
+                float: left;
+                margin-left: 8px;
+                width: 12px;
+                height: 12px;
                 background: whitesmoke;
-                -webkit-border-radius: 5px;
+                opacity: 0.4;
+                -webkit-border-radius: 6px;
             }
         }
     }
 }
+*/
