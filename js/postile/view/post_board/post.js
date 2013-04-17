@@ -392,6 +392,8 @@ postile.view.post.Post.prototype.initCommentModeListener = function() {
         goog.events.EventType.KEYDOWN, 
         function(e) {
             if (e.keyCode == 13) { // enter pressed
+                this.commentModeElements.commentInput_el._at_.toBBcode();
+            
                 var content = 
                     goog.string.trim(
                         this.commentModeElements.commentInput_el.innerHTML);
@@ -621,7 +623,7 @@ postile.view.post.Post.prototype.enterDisplayMode = function() {
                 elements.commentPreviewAuthor_el.innerHTML = 
                     this.latestComment.creator.username;
                 elements.commentPreviewContent_el.innerHTML = 
-                    this.latestComment.inline_comment.content;
+                    postile.parseBBcode(this.latestComment.inline_comment.content);
 
 
                 elements.commentPreviewNoComment_el.style.display = 'none';
@@ -674,6 +676,10 @@ postile.view.post.Post.prototype.enterCommentMode = function() {
 
     elements.commentInput_el.focus();
 
+    if (!elements.commentInput_el._at_) {
+        elements.commentInput_el._at_ = new postile.view.At(elements.commentInput_el);
+    }
+    
     if (this.postData.post.title) { // title exists
         elements.postNoTitle_el.style.display = 'none';
     }
@@ -807,7 +813,7 @@ postile.view.post.Post.prototype.resetCommentPreview = function(data) {
                 elements.commentPreviewAuthor_el.innerHTML = 
                     userData.username;
                 elements.commentPreviewContent_el.innerHTML = 
-                    data.inline_comment.content;
+                    postile.parseBBcode(data.inline_comment.content);
 
                 // reset width since length of different usernames are different
                 elements.commentPreviewContent_el.style.width = 
