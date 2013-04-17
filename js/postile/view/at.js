@@ -124,3 +124,15 @@ postile.view.At.prototype.close = function() {
     this.editlsnr.unlisten();
     postile.view.TipView.prototype.close.call(this);
 }
+
+/*
+this function is used for inline commenting. for posting, a similar function in postile.WYSIWYF is used
+*/
+postile.view.At.prototype.toBBcode = function() {
+    var ats = postile.dom.getDescendantsByCondition(this.ipel, function(cel) {
+        return cel.tagName && cel.getAttribute('at-user');
+    });
+    for (var i in ats) {
+        goog.dom.replaceNode(goog.dom.createTextNode('[at]' + ats[i].getAttribute('at-user') + '[/at]'), ats[i]);
+    }
+}

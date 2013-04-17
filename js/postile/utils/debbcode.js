@@ -5,7 +5,7 @@ goog.require('postile.dom');
 goog.require("postile.view.post_board.InternalLink");
 
 postile.parseBBcode = function(input) {
-    input = goog.string.htmlEscape(input + '');
+    //input = goog.string.htmlEscape(input + '');
     input = input.replace(/\[(\/?(b|i|u))\]/g, "<$1>");
     input = input.replace(/\[url\]/g, "<span class=\"external_link\">");
     input = input.replace(/\[link\](\d+)\[\/link\]/g, "<img class=\"internal_link\" link-to-post-id=\"$1\" />");
