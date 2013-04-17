@@ -58,11 +58,11 @@ postile.view.At.prototype.renderUser = function(profile) {
     goog.events.listen(tmpDiv, goog.events.EventType.CLICK, function() {
         var atNode = goog.dom.createDom('span');
         atNode.contentEditable = true;
-        atNode.innerHTML = ' @' + profile.username
+        atNode.innerHTML = '@' + profile.username
 
         atNode.style.fontStyle = 'italic';
-        atNode.style.display = 'inline';
-        atNode.style.width = '25px';
+        atNode.style.boxShadow = '0 0 3px #CCC inset';
+        atNode.style.padding = '2px 6px';
         
         atNode.setAttribute('at-user-name', profile.username);
         atNode.setAttribute('at-user', profile.user_id);
@@ -86,8 +86,15 @@ postile.view.At.prototype.renderUser = function(profile) {
                 var ats = postile.dom.getDescendantsByCondition(instance.ipel, function(cel) {
                     return cel.tagName && cel.getAttribute('at-user');
                 });
+                var corr;
                 for (var i in ats) {
-                    ats[i].innerHTML = ' @' + ats[i].getAttribute('at-user-name');
+                    corr = '@' + ats[i].getAttribute('at-user-name');
+                    if (ats[i].innerHTML.length < corr.length) {
+                        ats[i].fontStyle = 'normal';
+                        goog.dom.removeNode(ats[i]);
+                    } else {
+                        ats[i].innerHTML = corr;
+                    }
                 }
             });
             instance.ipel._at_consist_listener.listen();
