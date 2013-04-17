@@ -182,7 +182,7 @@ postile.view.notification.InfoItem.prototype.render = function(parent, data, fro
     var notificationType = data.notification_type;
     var fromUserId = data.from_user_id;
     var targetId = data.target_id;
-    var fromUserName = fromUser.last_name + ' ' + fromUser.first_name;
+    var fromUserName = fromUser.username;
 
     var profile_img_url = fromUser.image_small_url;
 

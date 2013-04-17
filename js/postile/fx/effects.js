@@ -30,7 +30,7 @@ postile.fx.effects.flowDown = function(dom) {
     var th = dom.clientHeight;
     return new postile.fx.Animate(function(i) {
         postile.conf.useragent.setCss(dom, 'transform', 'translateY(-' + (1-i)*th + 'px)');
-    }, 500, {
+    }, 250, {
         ease: postile.fx.ease.cubic_ease_out
     });
 }

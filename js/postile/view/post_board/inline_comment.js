@@ -46,11 +46,8 @@ postile.view.post.InlineComment = function(commentContainer, commentData, postCr
         }.bind(this));
 
     this.elements.content_el.innerHTML = commentData.inline_comment.content;
-    this.elements.content_el.innerHTML = 
-        commentData.inline_comment.content.replace(
-            / @(\d+)/g, 
-            '<span class="at_person" at-person="$1">' + 
-                '@[Username pending]</span>');
+    this.elements.content_el.innerHTML = postile.parseBBcode(commentData.inline_comment.content);
+    postile.bbcodePostProcess(this.elements.content_el);
 
     this.elements.time_el.innerHTML = postile.date(
         commentData.inline_comment.created_at, 'inline');

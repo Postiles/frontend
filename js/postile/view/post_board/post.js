@@ -392,6 +392,8 @@ postile.view.post.Post.prototype.initCommentModeListener = function() {
         goog.events.EventType.KEYDOWN, 
         function(e) {
             if (e.keyCode == 13) { // enter pressed
+                this.commentModeElements.commentInput_el._at_.toBBcode();
+            
                 var content = 
                     goog.string.trim(
                         this.commentModeElements.commentInput_el.innerHTML);
@@ -401,29 +403,11 @@ postile.view.post.Post.prototype.initCommentModeListener = function() {
                         post_id: this.postData.post.id,
                         content: content,
                     }, function(data) {
-                        /*
-                        var comment = data.message;
-                        if (!this.inlineCommentRendered(comment)) {
-                            // add the new comment to list
-                            this.postData.inline_comments.push(comment);
-
-                            new postile.view.post.InlineComment(
-                                this.commentModeElements.commentItems_el, 
-                                comment);
-                        }
-
-                        // scroll the comment list to the bottom
-                        // even if the comment is already rendered, we still 
-                        // scroll it to the bottom since it's my own comment
-                        this.commentModeElements.commentList_el.scrollTop = 
-                            this.commentModeElements.commentList_el.scrollHeight;
-
-                        this.hideNoCommentEl();
-                        */
+                        // do nothing here, handled in fayeHandler
                     }.bind(this));
 
                     this.commentModeElements.commentInput_el.innerHTML = '';
-               }
+                }
             }
         }.bind(this));
 
@@ -433,6 +417,22 @@ postile.view.post.Post.prototype.initCommentModeListener = function() {
         goog.events.EventType.CLICK, 
         function(e) {
             this.changeCurrentMode(postile.view.post.Post.PostMode.DISPLAY);
+        }.bind(this));
+
+    // disable moving canvas when focused
+    goog.events.listen(
+        elements.commentInput_el,
+        goog.events.EventType.FOCUS,
+        function(e) {
+            this.board.disableMovingCanvas = true;
+        }.bind(this));
+
+    // re-enable moving canvas when blurred
+    goog.events.listen(
+        elements.commentInput_el,
+        goog.events.EventType.BLUR,
+        function(e) {
+            this.board.disableMovingCanvas = false;
         }.bind(this));
 }
 
@@ -623,7 +623,8 @@ postile.view.post.Post.prototype.enterDisplayMode = function() {
                 elements.commentPreviewAuthor_el.innerHTML = 
                     this.latestComment.creator.username;
                 elements.commentPreviewContent_el.innerHTML = 
-                    this.latestComment.inline_comment.content;
+                    postile.parseBBcode(this.latestComment.inline_comment.content);
+
 
                 elements.commentPreviewNoComment_el.style.display = 'none';
                 elements.commentPreview_el.style.display = 'block';
@@ -675,6 +676,10 @@ postile.view.post.Post.prototype.enterCommentMode = function() {
 
     elements.commentInput_el.focus();
 
+    if (!elements.commentInput_el._at_) {
+        elements.commentInput_el._at_ = new postile.view.At(elements.commentInput_el);
+    }
+    
     if (this.postData.post.title) { // title exists
         elements.postNoTitle_el.style.display = 'none';
     }
@@ -808,7 +813,7 @@ postile.view.post.Post.prototype.resetCommentPreview = function(data) {
                 elements.commentPreviewAuthor_el.innerHTML = 
                     userData.username;
                 elements.commentPreviewContent_el.innerHTML = 
-                    data.inline_comment.content;
+                    postile.parseBBcode(data.inline_comment.content);
 
                 // reset width since length of different usernames are different
                 elements.commentPreviewContent_el.style.width = 

@@ -47,6 +47,7 @@ postile.fx.Animate = function(iter_func, duration_or_period, opt_option) {
 
     var iter_status = 0;
     var iter_step = postile.fx.period / duration_or_period;
+
     var real_iter_func = goog.bind(function() {
         iter_status += iter_step;
         if (iter_status > 1) { iter_status = 1; }

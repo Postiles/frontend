@@ -45,6 +45,7 @@
           color: #FFF;
           margin-left: 10px;
           display: inline-block;
+          cursor: pointer;
          }
          .post-expand .container .left  .toolbar .tools {
           display: inline-block;

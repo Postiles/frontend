@@ -1,0 +1,13 @@
+.tutorial_container {
+  width: 100%;
+  height: 100%;
+  background: #024d61; }
+  .tutorial_container .slideshow {
+    height: 80%; }
+  .tutorial_container .bottom_container .dot_container {
+    margin: 0 auto; }
+    .tutorial_container .bottom_container .dot_container .dot {
+      width: 10px;
+      height: 10px;
+      background: whitesmoke;
+      -webkit-border-radius: 5px; }

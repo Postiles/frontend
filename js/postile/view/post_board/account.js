@@ -2,30 +2,30 @@ goog.provide('postile.view.post_board.Account');
 
 postile.view.post_board.Account = function(opt_board) {
     goog.base(this);
-    
+
     postile.ui.load(this.container, postile.conf.staticResource(['account_container.html']));
     
-    var instance = this;
-    
     this.container.id = 'accout_container';
+    var instance = this;
+    console.log(instance.container);
     this.usernameText_el = postile.dom.getDescendantById(instance.container, 'username_text');
     //this.usernameText_el.innerHTML = this.board.userData.username;
 
+    // change account view for anonymous
     var profileView = new postile.view.profile.ProfileView(localStorage.postile_user_id);
-
-    goog.events.listen(this.usernameText_el, goog.events.EventType.CLICK, function(){
-        profileView.open(710);
-    }.bind(this));
-
     /* Fei Pure for testing
     this.imageUploadPop = new postile.view.image_upload.ImageUploadBlock(this);
     goog.events.listen(this.usernameText_el, goog.events.EventType.CLICK, function(e) {
         new postile.view.profile.ProfileView(localStorage.postile_user_id);
     });
     */
-    
-    /* settings button */
-    this.settingButton_el = postile.dom.getDescendantById(instance.container, 'setting_button');
+    // create view for displaying user information
+    this.settingButton_el = postile.dom.getDescendantById(instance.container, 'settings_button');
+
+    this.change_password = new postile.view.change_password.ChangePassword(this);
+    goog.events.listen(this.settingButton_el, goog.events.EventType.CLICK, function(e){
+        this.change_password.open(500);
+    }.bind(this));
 
     /* logout button */
     this.logoutButton_el = postile.dom.getDescendantById(instance.container, 'logout_button');
@@ -41,10 +41,21 @@ postile.view.post_board.Account = function(opt_board) {
         instance.usernameText_el.innerHTML = data.username;
         instance.profileImageContainerImg_el.src = postile.conf.uploadsResource([ data.image_small_url ]);
     }.bind(this));
-    goog.events.listen(this.profileImageContainer_el, goog.events.EventType.CLICK, function(){
-        profileView.open(710);
+
+    console.log(instance.container);
+    this.login_button = postile.dom.getDescendantById(this.container, 'login_button_account');
+    this.account_container = postile.dom.getDescendantById(this.container, 'user_info_container');
+    this.profile_image_container = postile.dom.getDescendantById(this.container, 'profile_image_container');
+
+    goog.events.listen(this.login_button, goog.events.EventType.CLICK, function(){
+        // redirect to login
+        // TODO 
+        // how to make sure that we can go back the same place when login?
+        postile.router.dispatch('login');
+
     }.bind(this));
 
+    console.log(instance.container);
 
     // preload images for switching
     var switch_board_active = new Image();
@@ -68,8 +79,10 @@ postile.view.post_board.Account = function(opt_board) {
         new postile.view.post_board.FunctionButton(this.function_buttons[i]);
     }
 
+    console.log(instance.container);
     // bool for if this opened
     this.search_button = postile.dom.getDescendantById(instance.container, "search_button");
+    console.log(instance.container);
     this.sBTip = new postile.view.search_box.SearchBox(this.search_button);
     goog.events.listen(this.search_button, goog.events.EventType.CLICK, function(e) {
         e.stopPropagation();
@@ -132,6 +145,22 @@ postile.view.post_board.Account = function(opt_board) {
             this.moreButtonPop_isOpened = true;
         }
     }.bind(this));
+
+    this.changeAccoutView();
+
+    // change account view for anonymous
+    goog.events.listen(this.usernameText_el, goog.events.EventType.CLICK, function(){
+        if(this.anonymous == true){
+            return;
+        }
+        profileView.open(710);
+    }.bind(this));
+    goog.events.listen(this.profileImageContainer_el, goog.events.EventType.CLICK, function(){
+        if(this.anonymous == true){
+            return;
+        }
+        profileView.open(710);
+    }.bind(this));
 }
 
 goog.inherits(postile.view.post_board.Account, postile.view.NormalView);
@@ -145,3 +174,48 @@ postile.view.post_board.Account.prototype.notificationHandlerClear = function() 
     goog.dom.classes.remove( this.alert_wrapper, 'notification_number_pop_up_wraper_animiation');
     goog.dom.classes.remove( this.redCircle, 'notification_number_pop_up_animiation');
 }
+
+postile.view.post_board.Account.prototype.loadUserInfo = function(){
+    /* settings button */
+}
+
+
+// Remember to call change account view after switching the board
+postile.view.post_board.Account.prototype.changeAccoutView = function(){
+
+    postile.data_manager.getUserData(localStorage.postile_user_id, function(data) {
+        this.cur_id = data.user_id;
+    }.bind(this)); 
+    this.anonymous = 'normal';
+    // Here we define Three different interface for different users
+    // First one is normal 
+
+    if(!this.cur_id){ // did not login
+        this.account_container.style.display = 'none';
+        this.profile_image_container.style.display = 'none';
+        this.login_button.style.display = 'block';
+    }else {
+        this.account_container.style.display = 'block';
+        this.profile_image_container.style.display = 'block';
+        this.login_button.style.display = 'none';
+
+        // get current board type to check if is anonymous
+        if(postile.router.current_view instanceof postile.view.post_board.PostBoard){
+            this.anonymous = postile.router.current_view.boardData.anonymous;
+            if(this.anonymous == true){
+                this.profileImageContainerImg_el.src = postile.conf.uploadsResource([ 'default_image/profile.png' ]);
+                this.usernameText_el.innerHTML = 'anonymous';
+            } else {
+                 postile.data_manager.getUserData(localStorage.postile_user_id, function(data) {
+                     this.usernameText_el.innerHTML = data.username;
+                     this.profileImageContainerImg_el.src = postile.conf.uploadsResource([ data.image_small_url ]);
+                }.bind(this));
+            }
+        } else {
+            console.log('error, current_view is not a board');
+        }
+    }
+}
+
+
+
