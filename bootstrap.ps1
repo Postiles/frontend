@@ -18,6 +18,11 @@ if (!(Test-Path "$(pwd)\soycc.zip")) {
     (new-object System.Net.WebClient).DownloadFile("http://closure-templates.googlecode.com/files/closure-templates-for-javascript-latest.zip", "$(pwd)\soycc.zip")
 }
 
+echo "Downloading closure stylesheets compiler..."
+if (!(Test-PAth "$(pwd)\closure-stylesheets.jar")) {
+    (new-object System.Net.WebClient).DownloadFile("https://closure-stylesheets.googlecode.com/files/closure-stylesheets-20111230.jar", "$(pwd)\closure-stylesheets.jar")
+}
+
 echo "Unzipping google closure library..."
 # Do unzip
 $shell_app = new-object -com shell.application
