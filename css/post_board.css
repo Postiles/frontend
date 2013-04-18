@@ -138,6 +138,38 @@ html, body {
   cursor: pointer;
 }
 
+.function_button .pop_tip {
+    position: relative;
+    left: -15px;
+    top: -10px;
+    z-index: 102;
+    display: none;
+}
+
+.function_button .pop_tip .tip_arrow {
+    position: absolute;
+    left: 30px;
+    top: -6px;
+    width: 0;
+    height: 0;
+    border-right: 6px solid transparent;
+    border-left: 6px solid transparent;
+    border-bottom: 6px solid black;
+}
+
+.function_button .pop_tip .tip_text {
+    position: absolute;
+    white-space: nowrap;
+    padding: 2px 5px;
+    background: black;
+    color: whitesmoke;
+    font-size: 10pt;
+}
+
+.function_button:hover .pop_tip {
+  display: table-cell;
+}
+
 @keyframes notification_wrapper
 {
   0% {transform: scale(0.8);}

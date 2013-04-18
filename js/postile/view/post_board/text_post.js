@@ -17,7 +17,8 @@ postile.view.post.text_post.TextPost.prototype.enterDisplayMode = function() {
 
     // This is really ugly
     // If the text is too short, we need to put that in the center
-    var dummy_span = goog.dom.createDom('span', "dummy_span");
+    var dummy_span = goog.dom.createDom('div', "dummy_span");
+    dummy_span.style.display = 'table-cell';
     goog.dom.appendChild(this.wrap_el, dummy_span);
     dummy_span.innerHTML = this.postData.post.content;
 
@@ -31,20 +32,26 @@ postile.view.post.text_post.TextPost.prototype.enterDisplayMode = function() {
 
     var marginTop = 0;
 
-    if(height < 20) { // one line only
-        if(wrapper_width > 1.7 * width){
-            elements.postContent_el.style.textAlign = 'center';
-            marginTop = wrapper_height / 2 - 55; // by seeing the board....
-            elements.postContent_el.style.marginTop = marginTop + 'px';
-            elements.postContent_el.style.fontSize = '20px';
+    if(wrapper_width > 1.7 * width){
+        // check the height:
+
+        if(height > wrapper_height){
+            marginTop = 0;
         }
-        else {
-            elements.postContent_el.style.textAlign = '';
-            marginTop = 0; // by seeing the board....
-            elements.postContent_el.style.marginTop = marginTop + 'px';
-            elements.postContent_el.style.fontSize = '10pt';
+        else{
+            marginTop = wrapper_height / 2 - height / 2 - 45; // number get by seeing the board....
+            console.log(marginTop);
         }
-    } 
+        elements.postContent_el.style.textAlign = 'center';
+        elements.postContent_el.style.marginTop = marginTop + 'px';
+        elements.postContent_el.style.fontSize = '20px';
+    }
+    else {
+        elements.postContent_el.style.textAlign = '';
+        marginTop = 0;
+        elements.postContent_el.style.marginTop = marginTop + 'px';
+        elements.postContent_el.style.fontSize = '10pt';
+    }
 
     if (this.postData.post.content) {
         elements.postContent_el.innerHTML = postile.parseBBcode(this.postData.post.content);
