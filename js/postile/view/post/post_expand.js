@@ -108,12 +108,12 @@ postile.view.post.PostExpand.prototype.open = function() {
         // title and author
         instance.title_el.style.fontSize = '14px';
         instance.title_el.style.width = '300px';
-        instance.title_el.style.float = 'left';
+        instance.title_el.style.cssFloat = 'left';
         instance.title_el.style.marginTop = '10px';
         instance.title_el.style.marginBottom = '5px';
 
         instance.author_el.style.display = 'inline-block';
-        instance.author_el.style.float = 'right';
+        instance.author_el.style.cssFloat = 'right';
         instance.author_el.style.fontSize = '14px';
 
     } else {
@@ -190,7 +190,8 @@ postile.view.post.PostExpand.prototype.renderComment = function(cmt) {
 
         var content_el = goog.dom.createDom('div', 'content');
         goog.dom.appendChild(commentRight_el, content_el);
-        content_el.innerHTML = cmt.content;
+        content_el.innerHTML = postile.parseBBcode(cmt.content);
+        postile.bbcodePostProcess(content_el);
 
     }.bind(this));
 }

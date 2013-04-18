@@ -6,3 +6,45 @@
     padding-top: 0px;
     color: #537cbe;
 }
+
+/*
+@ (at)
+*/
+.at_box {
+    border: 3px solid #024d61;
+}
+
+.at_single {
+    width: 150px;
+    height: 45px;
+    padding: 6px;
+    background: #FFF;
+}
+
+.at_image {
+    float: left;
+    height: 45px;
+    width: 45px;
+}
+
+.at_name {
+    float: left;
+    color: #024d61;
+    height: 45px;
+    width: 100px;
+    padding-left: 5px;
+}
+
+.at_single.hover {
+    background: #024d61;
+}
+
+.at_single.hover .at_name {
+    color: #FFF;
+}
+
+.at-hint {
+    background: #FFF;
+    width: 150px;
+    padding: 6px;
+}

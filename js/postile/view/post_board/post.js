@@ -391,6 +391,7 @@ postile.view.post.Post.prototype.initCommentModeListener = function() {
         elements.commentInput_el, 
         goog.events.EventType.KEYDOWN, 
         function(e) {
+            this.bringToFront();
             if (e.keyCode == 13) { // enter pressed
                 this.commentModeElements.commentInput_el._at_.toBBcode();
             
@@ -700,12 +701,16 @@ postile.view.post.Post.prototype.enterCommentMode = function() {
     elements.commentList_el.scrollTop = elements.commentList_el.scrollHeight;
 }
 
+postile.view.post.Post.prototype.bringToFront = function() {
+    this.wrap_el.parentNode.appendChild(this.wrap_el); //Make sure it is infront of other posts
+}
+
 postile.view.post.Post.prototype.enterEditMode = function(req) {
     if (!this.isSelfPost()) { // not my own post, cannot edit
         return;
     }
     
-    this.wrap_el.parentNode.appendChild(this.wrap_el); //Make sure it is infront of other posts
+    this.bringToFront();
 
     this.board.disableMovingCanvas = true;
 

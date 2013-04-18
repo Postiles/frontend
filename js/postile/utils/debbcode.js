@@ -17,8 +17,13 @@ postile.parseBBcode = function(input) {
 
 postile.bbcodePostProcess = function(el) {
     var handleOneAtPerson = function(sel) { 
+        var profile = new postile.view.profile.ProfileView(sel.getAttribute("at-user"));
         postile.data_manager.getUserData(sel.getAttribute("at-user"), function(uData) {
             sel.innerHTML = '@' + uData.username;
+        });
+        sel.style.cursor = "pointer";
+        goog.events.listen(sel, goog.events.EventType.CLICK, function() {
+            profile.open(710);
         });
     }
     var handleOneInternalLink = function(el) {
