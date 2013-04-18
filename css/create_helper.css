@@ -56,8 +56,9 @@
 
 #create_helper_wrapper .create_helper_button {
 	position: relative;
-	top: -72px;
-	right: -17px;
+    width: 90px;
+	top: -68px;
+	right: -21px;
 	color: whitesmoke;
 	float: right;
 	cursor: default;
