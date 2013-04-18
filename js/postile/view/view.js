@@ -89,6 +89,7 @@ postile.view.View = function() {
     var instance = this;
 
     postile.view.loadCss(this.unloaded_stylesheets);
+    
     /**** Function below is not activated yet
     if (this.urlHash) {
         window.location.hash = '#' + this.urlHash;
@@ -235,13 +236,16 @@ postile.view.AbstractTipView = function() {
     this.container_wrap.style.position = 'absolute';
 
     this.listeners = [];
-    
+
+    this.opened = false;
+
     goog.dom.appendChild(this.container_wrap, this.container);
 }
 
 goog.inherits(postile.view.AbstractTipView, postile.view.View);
 
 postile.view.AbstractTipView.prototype.open = function(reference, parent) {
+    this.opened = true;
     if (!parent) {
         parent = reference.parentNode;
     }
@@ -254,6 +258,7 @@ postile.view.AbstractTipView.prototype.open = function(reference, parent) {
 }
 
 postile.view.AbstractTipView.prototype.close = function() {
+    this.opened = false;
     for (var i in this.listeners) {
         this.listeners[i].unlisten();
     }
