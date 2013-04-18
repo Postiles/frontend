@@ -624,7 +624,7 @@ postile.view.post.Post.prototype.enterDisplayMode = function() {
                     this.latestComment.creator.username;
                 elements.commentPreviewContent_el.innerHTML = 
                     postile.parseBBcode(this.latestComment.inline_comment.content);
-
+                postile.bbcodePostProcess(elements.commentPreviewContent_el);
 
                 elements.commentPreviewNoComment_el.style.display = 'none';
                 elements.commentPreview_el.style.display = 'block';

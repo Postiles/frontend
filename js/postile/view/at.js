@@ -20,6 +20,8 @@ postile.view.At = function(el) {
 
 goog.inherits(postile.view.At, postile.view.TipView);
 
+postile.view.At.prototype.unloaded_stylesheets = ['_at.css'];
+
 postile.view.At.prototype.keyHandler = function(e) {
     if (e.keyCode == goog.events.KeyCodes.TWO && e.shiftKey) {
         this.open();
@@ -56,14 +58,10 @@ postile.view.At.prototype.renderUser = function(profile) {
     goog.dom.appendChild(tmpDiv, goog.dom.createDom('div', 'clear'));
 
     goog.events.listen(tmpDiv, goog.events.EventType.CLICK, function() {
-        var atNode = goog.dom.createDom('span');
+        var atNode = goog.dom.createDom('span', 'at_tag');
         atNode.contentEditable = true;
         atNode.innerHTML = '@' + profile.username
 
-        atNode.style.fontStyle = 'italic';
-        atNode.style.boxShadow = '0 0 3px #CCC inset';
-        atNode.style.padding = '2px 6px';
-        
         atNode.setAttribute('at-user-name', profile.username);
         atNode.setAttribute('at-user', profile.user_id);
         

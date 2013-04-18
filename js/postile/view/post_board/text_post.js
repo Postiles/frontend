@@ -46,7 +46,9 @@ postile.view.post.text_post.TextPost.prototype.enterDisplayMode = function() {
         }
     } 
 
-    elements.postContent_el.innerHTML = postile.parseBBcode(this.postData.post.content);
+    if (this.postData.post.content) {
+        elements.postContent_el.innerHTML = postile.parseBBcode(this.postData.post.content);
+    }
 
     elements.postContent_el.style.height = this.wrap_el.offsetHeight - 70 - marginTop + 'px';
     postile.bbcodePostProcess(elements.postContent_el);

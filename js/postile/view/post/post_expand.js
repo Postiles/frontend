@@ -105,9 +105,6 @@ postile.view.post.PostExpand.prototype.open = function() {
         this.iframe.style.width = '100%';
         this.iframe.style.height = '90%';
 
-
-
-
         // title and author
         instance.title_el.style.fontSize = '14px';
         instance.title_el.style.width = '300px';

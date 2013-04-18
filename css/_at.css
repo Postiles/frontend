@@ -1,0 +1,8 @@
+.at_tag {
+    border: 1px solid #ccc;
+    background: #ddd;
+    border-radius: 2px;
+    padding: 2px;
+    padding-top: 0px;
+    color: #537cbe;
+}
