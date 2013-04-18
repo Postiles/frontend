@@ -704,6 +704,8 @@ postile.view.post.Post.prototype.enterEditMode = function(req) {
     if (!this.isSelfPost()) { // not my own post, cannot edit
         return;
     }
+    
+    this.wrap_el.parentNode.appendChild(this.wrap_el); //Make sure it is infront of other posts
 
     this.board.disableMovingCanvas = true;
 

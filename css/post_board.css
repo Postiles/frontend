@@ -125,6 +125,7 @@ html, body {
 
 #function_button_container {
   margin-left: 10px;
+  position: relative;
 }
 
 .function_button {
