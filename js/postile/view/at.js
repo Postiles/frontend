@@ -103,6 +103,17 @@ postile.view.At.prototype.renderUser = function(profile) {
                     if (ats[i].innerHTML.length < corr.length) {
                         ats[i].fontStyle = 'normal';
                         goog.dom.removeNode(ats[i]);
+                    } else if (ats[i].innerHTML.length > corr.length) {
+                        ats[i].innerHTML = corr;
+                        (function() {
+                            var newNode = goog.dom.createTextNode(" ");
+                            goog.dom.insertSiblingAfter(newNode, ats[i]);
+                            var range = document.createRange();
+                            range.selectNodeContents(newNode);
+                            var sel = window.getSelection();
+                            sel.removeAllRanges();
+                            sel.addRange(range);
+                        })();
                     } else {
                         ats[i].innerHTML = corr;
                     }

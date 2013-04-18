@@ -9,7 +9,7 @@ postile.parseBBcode = function(input) {
     input = input.replace(/\[(\/?(b|i|u))\]/g, "<$1>");
     input = input.replace(/\[url\]/g, "<span class=\"external_link\">");
     input = input.replace(/\[link\](\d+)\[\/link\]/g, "<img class=\"internal_link\" link-to-post-id=\"$1\" />");
-    input = input.replace(/\[at\](\d+)\[\/at\]/g, "<span class=\"at_person\" at-user=\"$1\"></span>");
+    input = input.replace(/\[at\](\d+)\[\/at\]/g, "<span class=\"at_person\" contentEditable=\"false\" at-user=\"$1\"></span>");
     input = input.replace(/\[color=#([0-9a-f]{3})\]/g, "<span style=\"color: #$1;\">");
     input = input.replace(/\[\/(url|color)\]/g, "</span>");
     return goog.string.whitespaceEscape(input);
@@ -20,7 +20,6 @@ postile.bbcodePostProcess = function(el) {
         postile.data_manager.getUserData(sel.getAttribute("at-user"), function(uData) {
             sel.innerHTML = '@' + uData.username;
         });
-        sel.contentEditable = false;
     }
     var handleOneInternalLink = function(el) {
         el.src = postile.conf.imageResource(['link_icon.png']);

@@ -72,7 +72,8 @@ postile.view.post.text_post.TextPost.prototype.enterEditMode = function(req) {
     var content = this.postData.post.content;
 
     if (req) {
-        elements.postContent_el.innerHTML = content;
+        elements.postContent_el.innerHTML = postile.parseBBcode(content);
+        postile.bbcodePostProcess(elements.postContent_el);
     }
 
     if (goog.string.isEmpty(content) || content == '<br>') {
@@ -89,7 +90,7 @@ postile.view.post.text_post.TextPost.prototype.submitChange = function() {
     var elements = this.editModeElements;
 
     var title = elements.postTitle_el.value;
-    var content = elements.postContent_el.innerHTML;
+    var content = this.y_editor.getBbCode();
 
     if (!content) { // content is empty
         return;
