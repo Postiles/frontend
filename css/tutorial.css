@@ -32,7 +32,7 @@ body {
     width: 800px;
     overflow: hidden; }
     .tutorial_container .slideshow .view_list {
-      width: 3200px; }
+      width: 5600px; }
       .tutorial_container .slideshow .view_list .view_item {
         float: left;
         width: 800px;
@@ -42,15 +42,21 @@ body {
           font-size: 30pt; }
         .tutorial_container .slideshow .view_list .view_item .picture {
           margin: 20px auto;
-          width: 600px;
+          width: 640px;
           height: 400px; }
           .tutorial_container .slideshow .view_list .view_item .picture img {
             width: inherit;
             height: inherit; }
+        .tutorial_container .slideshow .view_list .view_item .description {
+          font-size: 14pt;
+          color: rgba(244, 244, 244, 0.7); }
+          .tutorial_container .slideshow .view_list .view_item .description .highlight {
+            margin: 10px;
+            color: whitesmoke; }
   .tutorial_container .bottom_container .dot_container {
     position: relative;
     top: 50px;
-    width: 100px;
+    width: 150px;
     margin-left: auto;
     margin-right: auto; }
     .tutorial_container .bottom_container .dot_container .dot {

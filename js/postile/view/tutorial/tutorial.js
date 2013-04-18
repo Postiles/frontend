@@ -62,6 +62,19 @@ postile.view.tutorial.TutorialView = function() {
             }
         }.bind(this));
 
+    goog.events.listen(
+        this.elements.leftArrow_el,
+        goog.events.EventType.CLICK,
+        function(e) {
+            this.switchToView(this.currView - 1);
+        }.bind(this));
+
+    goog.events.listen(
+        this.elements.rightArrow_el,
+        goog.events.EventType.CLICK,
+        function(e) {
+            this.switchToView(this.currView + 1);
+        }.bind(this));
 }
 
 goog.inherits(postile.view.tutorial.TutorialView, postile.view.FullScreenView);
