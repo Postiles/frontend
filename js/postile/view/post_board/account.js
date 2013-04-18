@@ -52,10 +52,7 @@ postile.view.post_board.Account = function(opt_board) {
         // TODO 
         // how to make sure that we can go back the same place when login?
         postile.router.dispatch('login');
-
     }.bind(this));
-
-    console.log(instance.container);
 
     // preload images for switching
     var switch_board_active = new Image();
@@ -184,6 +181,7 @@ postile.view.post_board.Account.prototype.loadUserInfo = function(){
 postile.view.post_board.Account.prototype.changeAccoutView = function(){
 
     postile.data_manager.getUserData(localStorage.postile_user_id, function(data) {
+        console.log(data);
         this.cur_id = data.user_id;
     }.bind(this)); 
     this.anonymous = 'normal';
