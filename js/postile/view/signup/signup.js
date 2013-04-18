@@ -11,16 +11,40 @@ postile.view.signup.SignupView = function() {
     postile.view.FullScreenView.call(this);
     postile.ui.load(this.container,
                     postile.conf.staticResource(['signup_pg1.html']));
-    this.btn_next = goog.dom.getElement('btn');
-    this.first_name_el = goog.dom.getElement('first_name');
-    this.second_name_el = goog.dom.getElement('second_name');
-    this.preferred_name_el = goog.dom.getElement('preferred_name');
-    goog.events.listen(this.btn_next,goog.events.EventType.CLICK,
-                       this.verify_pg1.bind(this));
+
+    this.btn = goog.dom.getElement('btn');
+    this.username_el = goog.dom.getElement('username');
+    this.email_el = goog.dom.getElement('email');
+    this.reason_el = goog.dom.getElement('reason');
+    this.sentText_el = goog.dom.getElement('sent_text');
+    this.backButton_el = goog.dom.getElement('back');
+
+    goog.events.listen(this.btn, goog.events.EventType.CLICK,
+        function(e) {
+            var username = this.username_el.value;
+            var email = this.email_el.value;
+            var reason = this.reason_el.value;
+            if (username && email) {
+                postile.ajax(
+                    [ 'user', 'request_invitation' ],
+                    { username: username, email: email, reason: reason },
+                    function(data) {
+                        this.sentText_el.style.display = 'block';
+                    }.bind(this));
+            }
+        }.bind(this));
+
+    goog.events.listen(this.backButton_el, goog.events.EventType.CLICK,
+        function(e) {
+            history.back();
+        });
 }
 
 goog.inherits(postile.view.signup.SignupView, postile.view.FullScreenView);
 
+postile.view.signup.SignupView.prototype.unloaded_stylesheets = ['signup.css'];
+
+/*
 postile.view.signup.SignupView.prototype.verify_pg1 = function() {
     this.first_name = this.first_name_el.value;
     this.second_name = this.second_name_el.value;
@@ -34,6 +58,7 @@ postile.view.signup.SignupView.prototype.verify_pg1 = function() {
             new postile.toast.Toast(5, "Preferred Name is already taken");
         });
 }
+
 postile.view.signup.SignupView.prototype.next = function() {
     this.container.innerHTML = "";
     postile.ui.load(this.container,
@@ -83,8 +108,5 @@ postile.view.signup.SignupView.prototype.verify_pg2 = function() {
                  });
 
 }
-
-
-postile.view.signup.SignupView.prototype.unloaded_stylesheets = ['signup.css'];
-
+*/
 

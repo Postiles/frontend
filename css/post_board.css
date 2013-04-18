@@ -73,7 +73,8 @@ html, body {
 #settings_button {
   cursor: pointer;
 }
-#login_button_account {
+
+.account_login_button {
   padding: 4px 8px;
   background: #024d61;
   color: #fff;
@@ -83,6 +84,9 @@ html, body {
   font-size: 14px;
 }
 
+.account_login_button:hover {
+  background: #436b77;
+}
 
 #profile_image_container {
   float: left;

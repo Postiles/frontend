@@ -7,7 +7,6 @@ postile.view.post_board.Account = function(opt_board) {
     
     this.container.id = 'accout_container';
     var instance = this;
-    console.log(instance.container);
     this.usernameText_el = postile.dom.getDescendantById(instance.container, 'username_text');
     //this.usernameText_el.innerHTML = this.board.userData.username;
 
@@ -42,8 +41,9 @@ postile.view.post_board.Account = function(opt_board) {
         instance.profileImageContainerImg_el.src = postile.conf.uploadsResource([ data.image_small_url ]);
     }.bind(this));
 
-    console.log(instance.container);
     this.login_button = postile.dom.getDescendantById(this.container, 'login_button_account');
+    this.signup_button = postile.dom.getDescendantById(this.container, 'signup_button_account');
+
     this.account_container = postile.dom.getDescendantById(this.container, 'user_info_container');
     this.profile_image_container = postile.dom.getDescendantById(this.container, 'profile_image_container');
 
@@ -55,7 +55,9 @@ postile.view.post_board.Account = function(opt_board) {
 
     }.bind(this));
 
-    console.log(instance.container);
+    goog.events.listen(this.signup_button, goog.events.EventType.CLICK, function(){
+        postile.router.dispatch('signup');
+    }.bind(this));
 
     // preload images for switching
     var switch_board_active = new Image();
@@ -79,14 +81,11 @@ postile.view.post_board.Account = function(opt_board) {
         new postile.view.post_board.FunctionButton(this.function_buttons[i]);
     }
 
-    console.log(instance.container);
     // bool for if this opened
     this.search_button = postile.dom.getDescendantById(instance.container, "search_button");
-    console.log(instance.container);
     this.sBTip = new postile.view.search_box.SearchBox(this.search_button);
     goog.events.listen(this.search_button, goog.events.EventType.CLICK, function(e) {
         e.stopPropagation();
-        console.log("sBTip");
         this.notification.close();
         this.switchBoardTip.close();
         this.sBTip.open(search_button);
@@ -98,7 +97,6 @@ postile.view.post_board.Account = function(opt_board) {
         this.switch_board_button = postile.dom.getDescendantById(instance.container, "switch_board_button");
         goog.events.listen(this.switch_board_button, goog.events.EventType.CLICK, function(e) {
             e.stopPropagation();
-            console.log("switchBoard");
             this.notification.close();
             this.sBTip.close();
             this.switchBoardTip.open(switch_board_button);
@@ -125,7 +123,6 @@ postile.view.post_board.Account = function(opt_board) {
     this.notification = new postile.view.notification.Notification(this);
     goog.events.listen(this.message_button, goog.events.EventType.CLICK, function(e) {
         e.stopPropagation();
-        console.log("msgB");
         this.switchBoardTip.close();
         this.sBTip.close();  
         this.notification.open(message_button);
@@ -194,10 +191,12 @@ postile.view.post_board.Account.prototype.changeAccoutView = function(){
         this.account_container.style.display = 'none';
         this.profile_image_container.style.display = 'none';
         this.login_button.style.display = 'block';
+        this.signup_button.style.display = 'block';
     }else {
         this.account_container.style.display = 'block';
         this.profile_image_container.style.display = 'block';
         this.login_button.style.display = 'none';
+        this.signup_button.style.display = 'none';
 
         // get current board type to check if is anonymous
         if(postile.router.current_view instanceof postile.view.post_board.PostBoard){

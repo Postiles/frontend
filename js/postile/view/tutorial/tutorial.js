@@ -66,14 +66,18 @@ postile.view.tutorial.TutorialView = function() {
         this.elements.leftArrow_el,
         goog.events.EventType.CLICK,
         function(e) {
-            this.switchToView(this.currView - 1);
+            if (this.currView > 0) {
+                this.switchToView(this.currView - 1);
+            }
         }.bind(this));
 
     goog.events.listen(
         this.elements.rightArrow_el,
         goog.events.EventType.CLICK,
         function(e) {
-            this.switchToView(this.currView + 1);
+            if (this.currView < this.numItems - 1) {
+                this.switchToView(this.currView + 1);
+            }
         }.bind(this));
 }
 

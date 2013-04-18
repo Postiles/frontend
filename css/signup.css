@@ -1,46 +1,54 @@
 html, body {
   margin: 0px;
-  background: #034d61;
+  background: #024d61;
   height: 100%; }
-  html #wrapper, body #wrapper {
-    color: #eeeeee; }
-    html #wrapper #banner, body #wrapper #banner {
+  html #signup_wrapper, body #signup_wrapper {
+    color: #eeeeee;
+    font-family: HelveticaNeue; }
+    html #signup_wrapper #banner, body #signup_wrapper #banner {
       margin-left: 70px;
-      margin-top: 60px;
-      padding: 0px;
-      font-family: "Helvetica Neue"; }
-      html #wrapper #banner #ln1, body #wrapper #banner #ln1 {
+      padding-top: 60px; }
+      html #signup_wrapper #banner #ln1, body #signup_wrapper #banner #ln1 {
         margin: 0px;
-        font-size: 30px; }
-        html #wrapper #banner #ln1 .emph, body #wrapper #banner #ln1 .emph {
+        font-size: 32px; }
+        html #signup_wrapper #banner #ln1 .emph, body #signup_wrapper #banner #ln1 .emph {
           font-weight: bold; }
-      html #wrapper #banner #ln2, body #wrapper #banner #ln2 {
+      html #signup_wrapper #banner #ln2, body #signup_wrapper #banner #ln2 {
         margin: 0px;
         margin-top: 5px;
         font-size: 24px; }
-    html #wrapper #input_field, body #wrapper #input_field {
+    html #signup_wrapper #input_field, body #signup_wrapper #input_field {
       float: left;
       margin-left: 245px;
-      margin-top: 55px; }
-      html #wrapper #input_field p, body #wrapper #input_field p {
-        margin-top: 40px;
+      margin-top: 45px; }
+      html #signup_wrapper #input_field p, body #signup_wrapper #input_field p {
+        margin-top: 20px;
         margin-bottom: 15px;
         font-size: 24px; }
-      html #wrapper #input_field input, body #wrapper #input_field input {
+      html #signup_wrapper #input_field input, body #signup_wrapper #input_field input {
+        padding: 0px 8px;
+        padding-top: 3px;
         font-size: 25px;
         background: #bad1d7;
         border: 0px;
         width: 725px;
-        height: 40px; }
-    html #wrapper #btn, body #wrapper #btn {
-      color: #034d61;
-      background: #cbdcb8;
-      height: 190px;
-      width: 190px;
+        height: 36px;
+        font-family: HelveticaNeue; }
+      html #signup_wrapper #input_field #sent_text, body #signup_wrapper #input_field #sent_text {
+        margin-top: 40px;
+        margin-left: 160px;
+        display: none; }
+        html #signup_wrapper #input_field #sent_text #back, body #signup_wrapper #input_field #sent_text #back {
+          text-decoration: underline;
+          cursor: pointer; }
+    html #signup_wrapper #btn, body #signup_wrapper #btn {
+      position: absolute;
       margin-top: 210px;
-      margin-left: 1095px; }
-      html #wrapper #btn p, body #wrapper #btn p {
-        padding-top: 75px;
-        margin-left: 40px;
-        font-size: 40px;
-        font-weight: bold; }
+      right: 0px;
+      color: #024d61;
+      background: #cbdcb8;
+      height: 210px;
+      width: 210px;
+      cursor: pointer;
+      font-size: 36px;
+      font-weight: bold; }

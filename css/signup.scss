@@ -1,4 +1,4 @@
-$main-color: #034d61;
+$main-color: #024d61;
 $text-color: #eeeeee;
 $input-background: #bad1d7;
 
@@ -6,16 +6,17 @@ html, body {
     margin:0px;
     background:$main-color;
     height:100%;
-    #wrapper {
+
+    #signup_wrapper {
         color: $text-color;
+        font-family:HelveticaNeue;
+
         #banner {
             margin-left: 70px;
-            margin-top:60px;
-            padding:0px;
-            font-family:"Helvetica Neue";
+            padding-top: 60px;
             #ln1{
                 margin:0px;
-                font-size:30px;
+                font-size:32px;
                 .emph{
                     font-weight: bold;
                 }
@@ -29,33 +30,43 @@ html, body {
         #input_field {
             float:left;
             margin-left:245px;
-            margin-top:55px;
+            margin-top:45px;
             p{
-                margin-top:40px;
+                margin-top:20px;
                 margin-bottom:15px;
                 font-size:24px;
             }
             input{
+                padding: 0px 8px;
+                padding-top: 3px;
                 font-size:25px;
                 background:$input-background;
                 border:0px;
                 width:725px;
-                height:40px;
+                height:36px;
+                font-family: HelveticaNeue;
+            }
+            #sent_text {
+                margin-top: 40px;
+                margin-left: 160px;
+                display: none;
+                #back {
+                    text-decoration: underline;
+                    cursor: pointer;
+                }
             }
         }
         #btn{
+            position: absolute;
+            margin-top:210px;
+            right: 0px;
             color:$main-color;
             background:#cbdcb8;
-            height:190px;
-            width:190px;
-            margin-top:210px;
-            margin-left:1095px;
-            p{
-                padding-top:75px;
-                margin-left:40px;
-                font-size:40px;
-                font-weight:bold;
-            }
+            height:210px;
+            width:210px;
+            cursor: pointer;
+            font-size:36px;
+            font-weight:bold;
         }
     }
 }

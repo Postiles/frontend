@@ -1,6 +1,7 @@
 goog.provide('postile.router');
 
 goog.require('postile.view.WelcomePage');
+goog.require('postile.view.Sheety');
 goog.require('goog.events');
 
 /**
