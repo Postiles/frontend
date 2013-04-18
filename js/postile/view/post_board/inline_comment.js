@@ -67,6 +67,7 @@ postile.view.post.InlineComment = function(commentContainer, commentData, postCr
                 [ 'inline_comment', 'delete' ],
                 { comment_id: commentData.inline_comment.id },
                 function(data) {
+                    // handled by faye
                 });
         }.bind(this));
     

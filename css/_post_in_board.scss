@@ -89,7 +89,6 @@
                                     .comment_content {
                                         margin: 0px;
                                     }
-
                                 }
 
                                 .lower_container {
@@ -129,12 +128,19 @@
                                 text-align: center;
                                 display: none;
 
-                                .option {
-                                    color: #537cbe;
-                                    cursor: pointer;
+                                .confirm_delete_inner_container {
+                                    position: absolute;
+                                    bottom: 0px;
+                                    left: 50%;
+                                    margin-left: -37px;
 
-                                    &:hover {
-                                        text-decoration: underline;
+                                    .option {
+                                        color: #537cbe;
+                                        cursor: pointer;
+
+                                        &:hover {
+                                            text-decoration: underline;
+                                        }
                                     }
                                 }
                             }
