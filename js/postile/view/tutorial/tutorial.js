@@ -24,6 +24,7 @@ postile.view.tutorial.TutorialView = function() {
         viewList_el: $('view_list'),
         leftArrow_el: $('left_arrow'),
         rightArrow_el: $('right_arrow'),
+        skipButton_el: $('skip_button'),
     }
 
     // dot indicators at the bottom
@@ -79,6 +80,18 @@ postile.view.tutorial.TutorialView = function() {
                 this.switchToView(this.currView + 1);
             }
         }.bind(this));
+
+    goog.events.listen(
+        this.elements.skipButton_el,
+        goog.events.EventType.CLICK,
+        function(e) {
+            postile.ajax(
+                [ 'user', 'finish_tutorial' ], 
+                { target_user_id: localStorage.postile_user_id },
+                function(data) {
+                    history.back();
+                });
+        }.bind(this));
 }
 
 goog.inherits(postile.view.tutorial.TutorialView, postile.view.FullScreenView);
@@ -109,6 +122,16 @@ postile.view.tutorial.TutorialView.prototype.switchToView = function(viewIndex) 
                     this.dots[i].style.opacity = '0.4';
                 }
                 this.dots[viewIndex].style.opacity = '1';
+
+                if (viewIndex == 0) {
+                    this.elements.leftArrow_el.style.display = 'none';
+                } else if (viewIndex == this.numItems - 1) {
+                    this.elements.rightArrow_el.style.display = 'none';
+                } else {
+                    this.elements.leftArrow_el.style.display = 'block';
+                    this.elements.rightArrow_el.style.display = 'block';
+                }
+
             }
         }.bind(this), 5);
     }

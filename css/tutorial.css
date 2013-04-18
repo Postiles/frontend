@@ -1,13 +1,10 @@
-body {
-  background: #024d61; }
-
-.tutorial_container {
+#tutorial_container {
+  background: #024d61;
   width: 100%;
-  height: 80%;
-  padding-top: 5%;
+  height: 100%;
   color: whitesmoke;
   font-family: Play; }
-  .tutorial_container .arrow {
+  #tutorial_container .arrow {
     position: absolute;
     top: 50%;
     margin-top: -80px;
@@ -15,51 +12,54 @@ body {
     width: 0;
     height: 0;
     opacity: 0.2; }
-    .tutorial_container .arrow:hover {
+    #tutorial_container .arrow:hover {
       opacity: 0.5; }
-  .tutorial_container .left_arrow {
+  #tutorial_container .left_arrow {
+    display: none;
     left: 150px;
     border-top: 60px solid transparent;
     border-right: 45px solid whitesmoke;
     border-bottom: 60px solid transparent; }
-  .tutorial_container .right_arrow {
+  #tutorial_container .right_arrow {
     right: 150px;
     border-top: 60px solid transparent;
     border-left: 45px solid whitesmoke;
     border-bottom: 60px solid transparent; }
-  .tutorial_container .slideshow {
+  #tutorial_container .slideshow {
+    position: relative;
+    top: 5%;
     margin: 0 auto;
     width: 800px;
     overflow: hidden; }
-    .tutorial_container .slideshow .view_list {
+    #tutorial_container .slideshow .view_list {
       width: 5600px; }
-      .tutorial_container .slideshow .view_list .view_item {
+      #tutorial_container .slideshow .view_list .view_item {
         float: left;
         width: 800px;
         text-align: center; }
-        .tutorial_container .slideshow .view_list .view_item .title {
+        #tutorial_container .slideshow .view_list .view_item .title {
           font-family: PlayBold;
           font-size: 30pt; }
-        .tutorial_container .slideshow .view_list .view_item .picture {
+        #tutorial_container .slideshow .view_list .view_item .picture {
           margin: 20px auto;
           width: 640px;
           height: 400px; }
-          .tutorial_container .slideshow .view_list .view_item .picture img {
+          #tutorial_container .slideshow .view_list .view_item .picture img {
             width: inherit;
             height: inherit; }
-        .tutorial_container .slideshow .view_list .view_item .description {
+        #tutorial_container .slideshow .view_list .view_item .description {
           font-size: 14pt;
           color: rgba(244, 244, 244, 0.7); }
-          .tutorial_container .slideshow .view_list .view_item .description .highlight {
+          #tutorial_container .slideshow .view_list .view_item .description .highlight {
             margin: 10px;
             color: whitesmoke; }
-  .tutorial_container .bottom_container .dot_container {
+  #tutorial_container .bottom_container .dot_container {
     position: relative;
     top: 50px;
     width: 150px;
     margin-left: auto;
     margin-right: auto; }
-    .tutorial_container .bottom_container .dot_container .dot {
+    #tutorial_container .bottom_container .dot_container .dot {
       float: left;
       margin-left: 8px;
       width: 12px;
@@ -68,5 +68,14 @@ body {
       opacity: 0.4;
       -webkit-border-radius: 6px;
       cursor: pointer; }
-      .tutorial_container .bottom_container .dot_container .dot:first-child {
+      #tutorial_container .bottom_container .dot_container .dot:first-child {
         opacity: 1; }
+  #tutorial_container .skip_button {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    padding: 10pt;
+    color: whitesmoke;
+    cursor: pointer; }
+    #tutorial_container .skip_button:hover {
+      background: rgba(255, 255, 255, 0.4); }
