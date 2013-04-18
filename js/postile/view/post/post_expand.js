@@ -120,8 +120,7 @@ postile.view.post.PostExpand.prototype.open = function() {
         instance.author_el.style.fontSize = '14px';
 
     } else {
-        this.content_el.innerHTML = this.postData.content;
-        // this.content_el.innerHTML = postile.parseBBcode(this.postData.content);
+        this.content_el.innerHTML = postile.parseBBcode(this.postData.content);
         
         postile.bbcodePostProcess(this.content_el);
 
