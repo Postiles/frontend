@@ -75,7 +75,7 @@ postile.view.post_board.Account = function(opt_board) {
 
     this.function_buttons = postile.dom.getDescendantsByClass(this.container, 'function_button');
     for (var i = 0; i < this.function_buttons.length; i++) {
-        if (!opt_board && (i == 0 || i == 3)) {
+        if ((!opt_board && i == 0) || i == 3) {
             goog.dom.removeNode(this.function_buttons[i]); 
         } else {
             // no longer needed, depracated
@@ -141,6 +141,7 @@ postile.view.post_board.Account = function(opt_board) {
         this.notificationHandlerClear();
     }.bind(this), true);
 
+    /*
     if (opt_board) {
         this.moreButtonPop_isOpened = false;
         this.more_button = postile.dom.getDescendantById(instance.container, "popup_button");
@@ -156,6 +157,7 @@ postile.view.post_board.Account = function(opt_board) {
             }
         }.bind(this));
     }
+    */
 
     this.changeAccoutView();
 
