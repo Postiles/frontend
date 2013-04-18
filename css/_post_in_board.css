@@ -79,11 +79,16 @@
           font-size: 8pt;
           text-align: center;
           display: none; }
-          .post_wrap .comment_mode_post .post_bottom .comment_container .comment_list .comment_container_items .post_comment .confirm_delete_container .option {
-            color: #537cbe;
-            cursor: pointer; }
-            .post_wrap .comment_mode_post .post_bottom .comment_container .comment_list .comment_container_items .post_comment .confirm_delete_container .option:hover {
-              text-decoration: underline; }
+          .post_wrap .comment_mode_post .post_bottom .comment_container .comment_list .comment_container_items .post_comment .confirm_delete_container .confirm_delete_inner_container {
+            position: absolute;
+            bottom: 0px;
+            left: 50%;
+            margin-left: -37px; }
+            .post_wrap .comment_mode_post .post_bottom .comment_container .comment_list .comment_container_items .post_comment .confirm_delete_container .confirm_delete_inner_container .option {
+              color: #537cbe;
+              cursor: pointer; }
+              .post_wrap .comment_mode_post .post_bottom .comment_container .comment_list .comment_container_items .post_comment .confirm_delete_container .confirm_delete_inner_container .option:hover {
+                text-decoration: underline; }
     .post_wrap .comment_mode_post .post_bottom .comment_container .comment_container_bottom {
       position: absolute;
       bottom: 0px;
