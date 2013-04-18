@@ -15,23 +15,27 @@ postile.parseBBcode = function(input) {
     return goog.string.whitespaceEscape(input);
 }
 
-postile.bbcodePostProcess = function(el) {
+postile.bbcodePostProcess = function(el, opt_no_mouseevent) {
     var handleOneAtPerson = function(sel) { 
-        var profile = new postile.view.profile.ProfileView(sel.getAttribute("at-user"));
         postile.data_manager.getUserData(sel.getAttribute("at-user"), function(uData) {
             sel.innerHTML = '@' + uData.username;
         });
         sel.style.cursor = "pointer";
-        goog.events.listen(sel, goog.events.EventType.CLICK, function() {
-            profile.open(710);
-        });
+        if (!opt_no_mouseevent) {
+            var profile = new postile.view.profile.ProfileView(sel.getAttribute("at-user"));
+            goog.events.listen(sel, goog.events.EventType.CLICK, function() {
+                profile.open(710);
+            });
+        }
     }
     var handleOneInternalLink = function(el) {
         el.src = postile.conf.imageResource(['link_icon.png']);
-        var htv = new postile.view.post_board.InternalLink(el.getAttribute("link-to-post-id"));
-        goog.events.listen(el, goog.events.EventType.MOUSEOVER, function() {
-            htv.open(el);
-        });
+        if (!opt_no_mouseevent) {
+            var htv = new postile.view.post_board.InternalLink(el.getAttribute("link-to-post-id"));
+            goog.events.listen(el, goog.events.EventType.MOUSEOVER, function() {
+                htv.open(el);
+            });
+        }
     }
     var atps = postile.dom.getDescendantsByClass(el, "at_person");
     for (var i in atps) {
