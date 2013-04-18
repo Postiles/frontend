@@ -15,18 +15,31 @@ postile.view.At = function(el) {
     this.container.className = 'at_box';
     this.container.innerHTML = '<div class="at-hint">Enter a user name to @</div>';
     this.editlsnr = new postile.events.ContentChangeListener(el, function(e){ instance.realPress(e); });
-    goog.events.listen(el, goog.events.EventType.KEYUP, function(e){ instance.keyHandler(e); });
+
+    goog.events.listen(el, goog.events.EventType.KEYUP, instance.keyUpHandler.bind(this));
+    goog.events.listen(el, goog.events.EventType.KEYDOWN, instance.keyDownHandler.bind(this));
 }
 
 goog.inherits(postile.view.At, postile.view.TipView);
 
 postile.view.At.prototype.unloaded_stylesheets = ['_at.css'];
 
-postile.view.At.prototype.keyHandler = function(e) {
-    if (e.keyCode == goog.events.KeyCodes.TWO && e.shiftKey) {
-        this.open();
-        return;
+postile.view.At.prototype.keyUpHandler = function(e) {
+    if (!this.opened) {
+        if (e.keyCode == goog.events.KeyCodes.TWO && e.shiftKey) {
+            this.open();
+        } else if (e.keyCode == goog.events.KeyCodes.SHIFT) {
+            if (this.lastEvent && this.lastEvent.keyCode == goog.events.KeyCodes.TWO
+                    && this.lastEvent.shiftKey) {
+                this.open();
+            }
+        }
     }
+    this.lastEvent = e;
+}
+
+postile.view.At.prototype.keyDownHandler = function(e) {
+    this.lastEvent = e;
 }
 
 postile.view.At.prototype.realPress = function() {
