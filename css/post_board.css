@@ -131,6 +131,7 @@ html, body {
   float: left;
   width: 40px;
   height: 40px;
+  position: relative;
   background-repeat: no-repeat;
   background-position: center;
   cursor: pointer;
@@ -179,7 +180,7 @@ html, body {
   height: 12px;
   position: absolute;
   top: 7px !important;
-  right: 83px !important;
+  right: 26px !important;
   left: auto !important;
   -webkit-border-radius: 10px; 
   -moz-border-radius: 10px;

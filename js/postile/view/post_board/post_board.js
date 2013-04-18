@@ -1050,28 +1050,6 @@ postile.view.post_board.PostBoard.prototype.removePost = function(id) {
     delete this.currentPosts[id];
 }
 
-/* define the function buttons class */
-postile.view.post_board.FunctionButton = function(dom) { // constructor
-    this.body_el = dom;
-    this.image_el = goog.dom.getElementsByTagNameAndClass('img', null, this.body_el)[0];
-
-    this.id = this.body_el.id;
-
-    goog.events.listen(this.body_el, goog.events.EventType.CLICK, function(e) {
-        this.open();
-    }.bind(this));
-}
-
-postile.view.post_board.FunctionButton.prototype.open = function() {
-    this.body_el.style.backgroundColor = '#024d61'
-    this.image_el.style.webkitFilter = 'brightness(95%)';
-}
-
-postile.view.post_board.FunctionButton.prototype.close = function() {
-    this.body_el.style.backgroundColor = '#f1f1f1';
-    this.image_el.style.webkitFilter = '';
-}
-
 /**
  * Status code. Must be kept in sync with backend.
  * @enum {string}

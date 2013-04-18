@@ -41,7 +41,7 @@ postile.view.notification.Notification.prototype.close = function() {
     // change triggerButton's background
     if(this.triggerButton){
         var imgTag = goog.dom.getElementsByTagNameAndClass('img', '', this.triggerButton);
-        this.triggerButton.style.background = '#f5f5f5';
+        this.triggerButton.style.background = 'transparent';
         imgTag[0].setAttribute('src', postile.conf.imageResource(['message_icon.png']));
     }
 }

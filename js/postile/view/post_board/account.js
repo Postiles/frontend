@@ -60,25 +60,27 @@ postile.view.post_board.Account = function(opt_board) {
     }.bind(this));
 
     // preload images for switching
-    var switch_board_active = new Image();
-    switch_board_active.src = postile.conf.imageResource(['switch_board_icon_active.png']);
+    if (opt_board) {
+        var switch_board_active = new Image();
+        switch_board_active.src = postile.conf.imageResource(['switch_board_icon_active.png']);
+    }
     var popup_icon_active = new Image();
     popup_icon_active.src = postile.conf.imageResource(['popup_icon_active.png']);
     var search_icon_active = new Image();
     search_icon_active.src = postile.conf.imageResource(['search_icon_active.png']);
-    var message_icon_active = new Image();
-    message_icon_active.src = postile.conf.imageResource(['message_icon_active.png']);
+    if (opt_board) {
+        var message_icon_active = new Image();
+        message_icon_active.src = postile.conf.imageResource(['message_icon_active.png']);
+    }
 
-
-    this.alert_wrapper = goog.dom.createDom('div', 'notification_number_wrapper');
-    goog.dom.appendChild(this.container, this.alert_wrapper);
-
-    this.redCircle = goog.dom.createDom('div', 'notification_redCircle');
-    goog.dom.appendChild(this.alert_wrapper, this.redCircle);
-
-    this.function_buttons = goog.dom.getElementsByClass('function_button');
+    this.function_buttons = postile.dom.getDescendantsByClass(this.container, 'function_button');
     for (var i = 0; i < this.function_buttons.length; i++) {
-        new postile.view.post_board.FunctionButton(this.function_buttons[i]);
+        if (!opt_board && (i == 0 || i == 3)) {
+            goog.dom.removeNode(this.function_buttons[i]); 
+        } else {
+            // no longer needed, depracated
+            //new postile.view.post_board.FunctionButton(this.function_buttons[i]);
+        }
     }
 
     // bool for if this opened
@@ -87,7 +89,9 @@ postile.view.post_board.Account = function(opt_board) {
     goog.events.listen(this.search_button, goog.events.EventType.CLICK, function(e) {
         e.stopPropagation();
         this.notification.close();
-        this.switchBoardTip.close();
+        if (opt_board) {
+            this.switchBoardTip.close();
+        }
         this.sBTip.open(search_button);
     }.bind(this), true);
 
@@ -115,6 +119,12 @@ postile.view.post_board.Account = function(opt_board) {
         }
         /* TODO add a notification to the mail box to notify user */
     }.bind(this));
+    
+    this.alert_wrapper = goog.dom.createDom('div', 'notification_number_wrapper');
+    goog.dom.appendChild(this.message_button, this.alert_wrapper);
+
+    this.redCircle = goog.dom.createDom('div', 'notification_redCircle');
+    goog.dom.appendChild(this.alert_wrapper, this.redCircle);
 
     postile.faye.subscribe('notification/' + localStorage.postile_user_id, function(status, data) {
         instance.notificationHandler(data);
@@ -123,25 +133,29 @@ postile.view.post_board.Account = function(opt_board) {
     this.notification = new postile.view.notification.Notification(this);
     goog.events.listen(this.message_button, goog.events.EventType.CLICK, function(e) {
         e.stopPropagation();
-        this.switchBoardTip.close();
+        if (opt_board) {
+            this.switchBoardTip.close();
+        }
         this.sBTip.close();  
         this.notification.open(message_button);
         this.notificationHandlerClear();
     }.bind(this), true);
 
-    this.moreButtonPop_isOpened = false;
-    this.more_button = postile.dom.getDescendantById(instance.container, "popup_button");
-    this.moreButtonPop = new postile.view.board_more_pop.BoardMorePop(this.more_button);
-    goog.events.listen(this.more_button, goog.events.EventType.CLICK, function(e) {
-        e.stopPropagation();
-        if(this.moreButtonPop_isOpened){
-            this.moreButtonPop_isOpened = false;
-            this.moreButtonPop.close();
-        }else{
-            this.moreButtonPop.open(this.more_button);
-            this.moreButtonPop_isOpened = true;
-        }
-    }.bind(this));
+    if (opt_board) {
+        this.moreButtonPop_isOpened = false;
+        this.more_button = postile.dom.getDescendantById(instance.container, "popup_button");
+        this.moreButtonPop = new postile.view.board_more_pop.BoardMorePop(this.more_button);
+        goog.events.listen(this.more_button, goog.events.EventType.CLICK, function(e) {
+            e.stopPropagation();
+            if(this.moreButtonPop_isOpened){
+                this.moreButtonPop_isOpened = false;
+                this.moreButtonPop.close();
+            }else{
+                this.moreButtonPop.open(this.more_button);
+                this.moreButtonPop_isOpened = true;
+            }
+        }.bind(this));
+    }
 
     this.changeAccoutView();
 
@@ -161,6 +175,8 @@ postile.view.post_board.Account = function(opt_board) {
 }
 
 goog.inherits(postile.view.post_board.Account, postile.view.NormalView);
+
+postile.view.post_board.Account.prototype.unloaded_stylesheets = ['post_board.css'];
 
 postile.view.post_board.Account.prototype.notificationHandler = function(data) {
     this.notificationHandlerClear();
@@ -182,39 +198,59 @@ postile.view.post_board.Account.prototype.changeAccoutView = function(){
 
     postile.data_manager.getUserData(localStorage.postile_user_id, function(data) {
         this.cur_id = data.user_id;
-    }.bind(this)); 
-    this.anonymous = 'normal';
-    // Here we define Three different interface for different users
-    // First one is normal 
+            if(!this.cur_id){ // did not login
+                this.account_container.style.display = 'none';
+                this.profile_image_container.style.display = 'none';
+                this.login_button.style.display = 'block';
+                this.signup_button.style.display = 'block';
+            }else {
+                this.account_container.style.display = 'block';
+                this.profile_image_container.style.display = 'block';
+                this.login_button.style.display = 'none';
+                this.signup_button.style.display = 'none';
 
-    if(!this.cur_id){ // did not login
-        this.account_container.style.display = 'none';
-        this.profile_image_container.style.display = 'none';
-        this.login_button.style.display = 'block';
-        this.signup_button.style.display = 'block';
-    }else {
-        this.account_container.style.display = 'block';
-        this.profile_image_container.style.display = 'block';
-        this.login_button.style.display = 'none';
-        this.signup_button.style.display = 'none';
-
-        // get current board type to check if is anonymous
-        if(postile.router.current_view instanceof postile.view.post_board.PostBoard){
-            this.anonymous = postile.router.current_view.boardData.anonymous;
-            if(this.anonymous == true){
-                this.profileImageContainerImg_el.src = postile.conf.uploadsResource([ 'default_image/profile.png' ]);
-                this.usernameText_el.innerHTML = 'anonymous';
-            } else {
-                 postile.data_manager.getUserData(localStorage.postile_user_id, function(data) {
-                     this.usernameText_el.innerHTML = data.username;
-                     this.profileImageContainerImg_el.src = postile.conf.uploadsResource([ data.image_small_url ]);
-                }.bind(this));
+                // get current board type to check if is anonymous
+                if(postile.router.current_view instanceof postile.view.post_board.PostBoard){
+                    this.anonymous = postile.router.current_view.boardData.anonymous;
+                    if(this.anonymous == true){
+                        this.profileImageContainerImg_el.src = postile.conf.uploadsResource([ 'default_image/profile.png' ]);
+                        this.usernameText_el.innerHTML = 'anonymous';
+                    } else {
+                         postile.data_manager.getUserData(localStorage.postile_user_id, function(data) {
+                             this.usernameText_el.innerHTML = data.username;
+                             this.profileImageContainerImg_el.src = postile.conf.uploadsResource([ data.image_small_url ]);
+                        }.bind(this));
+                    }
+                } else {
+                    console.log('error, current_view is not a board');
+                }
             }
-        } else {
-            console.log('error, current_view is not a board');
-        }
-    }
+    }.bind(this)); 
+    
+    this.anonymous = 'normal';
+
 }
 
+/* 
+postile.view.post_board.FunctionButton = function(dom) { // constructor
+    this.body_el = dom;
+    this.image_el = goog.dom.getElementsByTagNameAndClass('img', null, this.body_el)[0];
 
+    this.id = this.body_el.id;
 
+    goog.events.listen(this.body_el, goog.events.EventType.CLICK, function(e) {
+        this.open();
+    }.bind(this));
+}
+
+postile.view.post_board.FunctionButton.prototype.open = function() {
+    this.body_el.style.backgroundColor = '#024d61'
+    this.image_el.style.webkitFilter = 'brightness(95%)';
+}
+
+postile.view.post_board.FunctionButton.prototype.close = function() {
+    this.body_el.style.backgroundColor = 'transparent';
+    this.image_el.style.webkitFilter = '';
+}
+
+*/
