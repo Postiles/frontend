@@ -1,9 +1,8 @@
 #search_box {
-  position: fixed;
+  position: absolute;
   line-height: 100%;
-  position: fixed !important;
   top: 46px !important;
-  right: 45px !important;
+  left: -265px !important;
   z-index: 200;
 }
 

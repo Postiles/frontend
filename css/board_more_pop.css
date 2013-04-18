@@ -47,10 +47,9 @@ body {
 #other_boards {
   margin-top: 36px;
   width: 240px;
-  position: fixed !important;
+  position: absolute !important;
   top: 10px !important;
-  right: 75px !important;
-  left: auto !important;
+  left: -155px !important;
   background-color: #f2f7f7;
   box-shadow: 3px 3px 20px 1px #888888;
   line-height: 100%; }
