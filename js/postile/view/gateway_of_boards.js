@@ -4,6 +4,7 @@ goog.require('goog.dom');
 goog.require('postile.view.new_board');
 goog.require('postile.view');
 goog.require('goog.events');
+goog.require('postile.view.post_board.Account');
 goog.require('postile.dom');
 
 /**
@@ -37,6 +38,11 @@ postile.view.BoardList = function(topic) {
             this.renderBoardListItem(boardArray[i]);
         }
     }.bind(this));
+    var account = new postile.view.post_board.Account();
+    account.container.style.position = "absolute";
+    account.container.style.top = '0';
+    account.container.style.right = '0';
+    goog.dom.appendChild(this.container, account.container);
 }
 
 goog.inherits(postile.view.BoardList, postile.view.FullScreenView);
