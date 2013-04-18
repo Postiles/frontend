@@ -330,6 +330,13 @@ postile.view.post_board.PostBoard = function(board_id) {
         instance.boardData = data.message.board;
 
         instance.userData = postile.data_manager.getUserData(localStorage.postile_user_id, function(data) {
+
+            postile.ajax([ 'user', 'get_additional_data' ], { target_user_id: data.id }, function(data) {
+                if (!data.message.additional.got_started) {
+                    postile.router.dispatch('tutorial');
+                }
+            });
+
             instance.userData = data;
 
             instance.channel_str = instance.boardData.id;

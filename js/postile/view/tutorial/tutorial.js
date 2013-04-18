@@ -85,7 +85,12 @@ postile.view.tutorial.TutorialView = function() {
         this.elements.skipButton_el,
         goog.events.EventType.CLICK,
         function(e) {
-            history.back();
+            postile.ajax(
+                [ 'user', 'finish_tutorial' ], 
+                { target_user_id: localStorage.postile_user_id },
+                function(data) {
+                    history.back();
+                });
         }.bind(this));
 }
 
