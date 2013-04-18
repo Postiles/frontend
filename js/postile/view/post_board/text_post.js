@@ -71,7 +71,7 @@ postile.view.post.text_post.TextPost.prototype.enterEditMode = function(req) {
 
     var content = this.postData.post.content;
 
-    if (req) {
+    if (content) {
         elements.postContent_el.innerHTML = postile.parseBBcode(content);
         postile.bbcodePostProcess(elements.postContent_el);
     }
