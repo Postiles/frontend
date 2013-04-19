@@ -12,6 +12,22 @@
     }
 
     .display_mode_post {
+
+        .post_edit_button {
+            float: right;
+            color: #aaa;
+            cursor: pointer;
+            visibility: hidden;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+
+        &:hover .post_edit_button {
+            visibility: visible;
+        }
+
         .post_content {
             overflow: hidden;
         }
@@ -228,6 +244,7 @@
             text-align: center;
             position: relative;
             top: 30px;
+            font-size: 13pt;
 
             .lock_username {
                 cursor: pointer;
@@ -248,6 +265,7 @@
             text-align: center;
             position: relative;
             top: 30px;
+            font-size: 13pt;
 
             .new_username {
                 cursor: pointer;
@@ -271,6 +289,7 @@
             text-align: center;
             position: relative;
             top: 30px;
+            font-size: 13pt;
 
             .confirm_item {
                 cursor: pointer;
@@ -363,16 +382,6 @@
     }
 
     .post_comment_count {
-        cursor: pointer;
-
-        &:hover {
-            text-decoration: underline;
-        }
-    }
-
-    .post_edit_button {
-        float: right;
-        color: #aaa;
         cursor: pointer;
 
         &:hover {

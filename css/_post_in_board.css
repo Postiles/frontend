@@ -8,6 +8,15 @@
   .post_wrap .mode {
     width: 100%;
     height: 100%; }
+  .post_wrap .display_mode_post .post_edit_button {
+    float: right;
+    color: #aaa;
+    cursor: pointer;
+    visibility: hidden; }
+    .post_wrap .display_mode_post .post_edit_button:hover {
+      text-decoration: underline; }
+  .post_wrap .display_mode_post:hover .post_edit_button {
+    visibility: visible; }
   .post_wrap .display_mode_post .post_content {
     overflow: hidden; }
   .post_wrap .display_mode_post .post_quote_mark {
@@ -145,7 +154,8 @@
       color: #024d61;
       text-align: center;
       position: relative;
-      top: 30px; }
+      top: 30px;
+      font-size: 13pt; }
       .post_wrap .locked_mode_post .lock_display .lock_username {
         cursor: pointer;
         color: #537cbe; }
@@ -157,7 +167,8 @@
       color: #024d61;
       text-align: center;
       position: relative;
-      top: 30px; }
+      top: 30px;
+      font-size: 13pt; }
       .post_wrap .new_mode_post .new_display .new_username {
         cursor: pointer;
         color: #537cbe; }
@@ -172,7 +183,8 @@
       color: #024d61;
       text-align: center;
       position: relative;
-      top: 30px; }
+      top: 30px;
+      font-size: 13pt; }
       .post_wrap .confirm_delete_mode_post .confirm_display .confirm_item {
         cursor: pointer;
         color: #537cbe;
@@ -226,12 +238,6 @@
   .post_container .post_comment_count {
     cursor: pointer; }
     .post_container .post_comment_count:hover {
-      text-decoration: underline; }
-  .post_container .post_edit_button {
-    float: right;
-    color: #aaa;
-    cursor: pointer; }
-    .post_container .post_edit_button:hover {
       text-decoration: underline; }
   .post_container .post_delete_icon {
     background-image: url("../images/new_delete.png");

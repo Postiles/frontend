@@ -146,21 +146,23 @@ postile.view.post_board.PostCreator.prototype.mousemove = function(e) {
 
     this.legal = this.legal_intersect && this.legal_min && this.legal_max;
 
-    if (!this.imageMode) {
+    if (!this.imageMode) { // text or video
         this.preview.style.backgroundColor = this.legal ? '#e4eee4': '#f4dcdc';
-    } else {
-        this.preview.style.opacity = this.legal ? '0.9' : '0.5';
     }
+    this.preview.style.color = this.legal ? '#999' : '#333';
+
     if(!this.legal_intersect){
-        this.preview.innerHTML = "Intersect with others";
+        this.preview.innerHTML = "Area Occupied";
     }else if(!this.legal_max){
-        this.preview.innerHTML = "Larger than maximum size";
+        this.preview.innerHTML = "Too big";
     }else if(!this.legal_min){
-        this.preview.innerHTML = "Smaller than minimun size";
+        this.preview.innerHTML = "Too small";
     }else{
         this.preview.innerHTML = "Release to create";
     }
+
     this.preview.style.display = 'table-cell';
+    this.preview.style.fontSize = '16pt';
 };
 
 postile.view.post_board.PostCreator.prototype.mouseup = function(e){
