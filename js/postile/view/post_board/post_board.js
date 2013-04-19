@@ -416,15 +416,18 @@ postile.view.post_board.PostBoard.prototype.initView = function() {
     this.onlinepeople.count = 0;
     this.onlinepeople.view.render();
     this.onlinepeople.is_expended = false;
-    goog.events.listen(this.onlinepeople.view.container, goog.events.EventType.CLICK, function() {
-        if(!instance.onlinepeople.is_expended){
-            instance.onlinepeople.is_expended = true;
-            instance.updateOnlinePeople();
-        }else {
-            instance.onlinepeople.is_expended = false;
-            instance.onlinepeople.view.online_list.innerHTML = " ";
-        }
-    });
+
+    if (!this.boardData.anonymous) { // display online people list only when not anonymous
+        goog.events.listen(this.onlinepeople.view.container, goog.events.EventType.CLICK, function() {
+            if(!instance.onlinepeople.is_expended){
+                instance.onlinepeople.is_expended = true;
+                instance.updateOnlinePeople();
+            }else {
+                instance.onlinepeople.is_expended = false;
+                instance.onlinepeople.view.online_list.innerHTML = " ";
+            }
+        });
+    }
 
     /**
      * Main viewport and canvas

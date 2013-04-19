@@ -1,3 +1,12 @@
+/************************************************************
+ *
+ *
+ *
+ * Note that this file is no longer used nor linked to others
+ *
+ *
+ *
+ ***********************************************************/
 goog.provide('postile.view.post.PostExpand');
 
 goog.require('goog.dom');

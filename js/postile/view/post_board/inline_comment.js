@@ -6,9 +6,11 @@ goog.require('goog.events');
 goog.require('postile.ui');
 goog.require('postile.dom');
 
-postile.view.post.InlineComment = function(commentContainer, commentData, postCreatorId) {
+postile.view.post.InlineComment = function(commentContainer, commentData, parentInstance) {
     // create wrapper for post
     this.wrap_el = goog.dom.createDom('div', 'post_comment');
+
+    this.parentInstance = parentInstance;
 
     commentData.dom = this.wrap_el;
 
@@ -21,6 +23,7 @@ postile.view.post.InlineComment = function(commentContainer, commentData, postCr
 
     this.elements = {
         name_el: $('comment_name'),
+        commentMiddle_el: $('comment_middle'),
         content_el: $('comment_content'),
         time_el: $('comment_time'),
         deleteButton_el: $('comment_delete_button'),
@@ -29,21 +32,25 @@ postile.view.post.InlineComment = function(commentContainer, commentData, postCr
         confirmCancel_el: $('confirm_delete_cancel'),
     }
 
-    postile.data_manager.getUserData(
-        commentData.inline_comment.creator_id, 
-        function(data) {
-            this.elements.name_el.innerHTML = data.username;
+    if (!this.parentInstance.isInAnonymousBoard()) {
+        postile.data_manager.getUserData(
+            commentData.inline_comment.creator_id, 
+            function(data) {
+                this.elements.name_el.innerHTML = data.username;
 
-            goog.events.listen(
-                this.elements.name_el, 
-                goog.events.EventType.CLICK, 
-                function(e) {
-                    var profileView = 
-                        new postile.view.profile.ProfileView(data.id);
-                    profileView.open(710);
-                }.bind(this));
+                goog.events.listen(
+                    this.elements.name_el, 
+                    goog.events.EventType.CLICK, 
+                    function(e) {
+                        var profileView = 
+                            new postile.view.profile.ProfileView(data.id);
+                        profileView.open(710);
+                    }.bind(this));
 
-        }.bind(this));
+            }.bind(this));
+    } else {
+        this.elements.commentMiddle_el.style.display = 'none';
+    }
 
     this.elements.content_el.innerHTML = commentData.inline_comment.content;
     this.elements.content_el.innerHTML = postile.parseBBcode(commentData.inline_comment.content);
@@ -80,7 +87,7 @@ postile.view.post.InlineComment = function(commentContainer, commentData, postCr
 
     var currUserId = parseInt(localStorage.postile_user_id);
     if (commentData.inline_comment.creator_id == currUserId ||
-        postCreatorId == currUserId) {
+        this.parentInstance.postData.post.creator_id == currUserId) { // comment in my post, can delete
             this.elements.deleteButton_el.style.display = 'inline';
         }
 

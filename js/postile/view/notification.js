@@ -4,8 +4,9 @@ goog.require('goog.events');
 goog.require('postile.conf');
 goog.require('postile.view');
 
-postile.view.notification.Notification = function(header) {
-    //var instance = input_instance;
+postile.view.notification.Notification = function(header, opt_board) {
+    this.boardInstance = opt_board;
+
     postile.view.TipView.call(this);
     postile.ui.load(this.container, postile.conf.staticResource(['_notification.html']));
     this.container.id = 'notifications_pop_up';
@@ -68,10 +69,8 @@ postile.view.notification.Notification.prototype.open = function(a, b) {
                 return;
             }
 
-            console.log(notificationList[0]);
             this.numberOfNotification.innerHTML = notificationList.length;
             this.numberOfUnread = notificationList.length;
-
 
             // handle data lag problem
             goog.events.listen(this.markRead, goog.events.EventType.CLICK, function() {
@@ -175,19 +174,32 @@ postile.view.notification.TypeMap = {'reply in post':'writes on', 'like post': '
 postile.view.notification.InfoItem.prototype.render = function(parent, data, fromUser) {
     this.removed = false;
     this.NotificationParent = parent;
-    //console.log("rendering");
+
     this.notification_id = data.id;
     var time = data.updated_at;
-    console.log(data);
     var notificationType = data.notification_type;
     var fromUserId = data.from_user_id;
     var targetId = data.target_id;
-    var fromUserName = fromUser.username;
 
-    var profile_img_url = fromUser.image_small_url;
+    var fromUserName;
+    var profile_img_url;
+
+    if (fromUser) {
+        fromUserName = fromUser.username;
+        profile_img_url = fromUser.image_small_url;
+    } else {
+        fromUserName = 'someone'
+        profile_img_url = 'default_image/profile.png';
+    }
+
+    /*
+    if (parent.boardInstance && parent.boardInstance.boardData.anonymous) {
+        fromUserName = 'someone';
+    }
+    */
 
     /* begins the rendering of notification item */
-    //console.log(profile_img_url);
+
     this.notificationItem = goog.dom.createDom('div', 'notification');
     goog.dom.appendChild(parent.notificationListView, this.notificationItem);
 

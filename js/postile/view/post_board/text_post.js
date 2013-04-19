@@ -40,7 +40,6 @@ postile.view.post.text_post.TextPost.prototype.enterDisplayMode = function() {
         }
         else{
             marginTop = wrapper_height / 2 - height / 2 - 45; // number get by seeing the board....
-            console.log(marginTop);
         }
         elements.postContent_el.style.textAlign = 'center';
         elements.postContent_el.style.marginTop = marginTop + 'px';

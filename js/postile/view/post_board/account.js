@@ -130,7 +130,7 @@ postile.view.post_board.Account = function(opt_board) {
         instance.notificationHandler(data);
     });
     this.notification_isOpened = false;
-    this.notification = new postile.view.notification.Notification(this);
+    this.notification = new postile.view.notification.Notification(this, opt_board);
     goog.events.listen(this.message_button, goog.events.EventType.CLICK, function(e) {
         e.stopPropagation();
         if (opt_board) {
@@ -214,6 +214,7 @@ postile.view.post_board.Account.prototype.changeAccoutView = function(){
                 // get current board type to check if is anonymous
                 if(postile.router.current_view instanceof postile.view.post_board.PostBoard){
                     this.anonymous = postile.router.current_view.boardData.anonymous;
+                    /*
                     if(this.anonymous == true){
                         this.profileImageContainerImg_el.src = postile.conf.uploadsResource([ 'default_image/profile.png' ]);
                         this.usernameText_el.innerHTML = 'anonymous';
@@ -223,6 +224,11 @@ postile.view.post_board.Account.prototype.changeAccoutView = function(){
                              this.profileImageContainerImg_el.src = postile.conf.uploadsResource([ data.image_small_url ]);
                         }.bind(this));
                     }
+                    */
+                    postile.data_manager.getUserData(localStorage.postile_user_id, function(data) {
+                        this.usernameText_el.innerHTML = data.username;
+                        this.profileImageContainerImg_el.src = postile.conf.uploadsResource([ data.image_small_url ]);
+                    }.bind(this));
                 } else {
                     console.log('error, current_view is not a board');
                 }

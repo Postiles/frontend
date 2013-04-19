@@ -182,6 +182,7 @@ postile.view.post.Post.prototype.loadDisplayModeUIComponents = function() {
         commentPreviewNoComment_el: $('comment_preview_no_comment'),
         commentPreviewDisplay_el: $('comment_preview_display'),
         commentPreviewAuthor_el: $('comment_preview_author'),
+        commentPreviewMiddle_el: $('comment_preview_middle'),
         commentPreviewContent_el: $('comment_preview_content'),
     };
 }
@@ -298,7 +299,7 @@ postile.view.post.Post.prototype.initDisplayModeListener = function() {
         goog.events.EventType.CLICK, 
         function(e) {
             var postExpand = 
-                new postile.view.post.PostExpand(this.postData.post);
+                new postile.view.post.PostExpand(this);
             postExpand.open();
         }.bind(this));
 
@@ -382,7 +383,7 @@ postile.view.post.Post.prototype.initCommentModeListener = function() {
         goog.events.EventType.CLICK, 
         function(e) {
             var postExpand = 
-                new postile.view.post.PostExpand(this.postData.post);
+                new postile.view.post.PostExpand(this);
             postExpand.open();
         }.bind(this));
 
@@ -510,29 +511,33 @@ postile.view.post.Post.prototype.initEditModeListener = function() {
 postile.view.post.Post.prototype.initLockedModeListener = function() {
     var elements = this.lockedModeElements;
 
-    // author's name clicked
-    goog.events.listen(
-        elements.lockUsername_el, 
-        goog.events.EventType.CLICK, 
-        function (e) {
-            var profileView = 
-                new postile.view.profile.ProfileView(this.postData.creator.id);
-            profileView.open(710);
-        }.bind(this));
+    if (!this.isInAnonymousBoard()) {
+        // author's name clicked
+        goog.events.listen(
+            elements.lockUsername_el, 
+            goog.events.EventType.CLICK, 
+            function (e) {
+                var profileView = 
+                    new postile.view.profile.ProfileView(this.postData.creator.id);
+                profileView.open(710);
+            }.bind(this));
+    }
 }
 
 postile.view.post.Post.prototype.initNewModeListener = function() {
     var elements = this.newModeElements;
 
-    // author's name clicked
-    goog.events.listen(
-        elements.newUsername_el, 
-        goog.events.EventType.CLICK, 
-        function (e) {
-            var profileView = new postile.view.profile.ProfileView(
-                this.postData.creator.id);
-            profileView.open(710);
-        }.bind(this));
+    if (!this.isInAnonymousBoard()) {
+        // author's name clicked
+        goog.events.listen(
+            elements.newUsername_el, 
+            goog.events.EventType.CLICK, 
+            function (e) {
+                var profileView = new postile.view.profile.ProfileView(
+                    this.postData.creator.id);
+                profileView.open(710);
+            }.bind(this));
+    }
 }
 
 postile.view.post.Post.prototype.initConfirmDeleteModeListener = function() {
@@ -575,15 +580,17 @@ postile.view.post.Post.prototype.enterDisplayMode = function() {
 
     elements.postLikeCount_el.innerHTML = this.postData.likes.length;
 
-    postile.data_manager.getUserData(
-        this.postData.post.creator_id, 
-        function(data) {
-            this.postData.creator = data;
-            elements.postAuthor_el.innerHTML = data.username;
+    if (!this.isInAnonymousBoard()) {
+        postile.data_manager.getUserData(
+            this.postData.post.creator_id, 
+            function(data) {
+                this.postData.creator = data;
+                elements.postAuthor_el.innerHTML = data.username;
 
-            elements.postTitle_el.style.width = this.wrap_el.offsetWidth - 
-                    elements.postAuthor_el.offsetWidth - 40 + 'px';
-        }.bind(this));
+                elements.postTitle_el.style.width = this.wrap_el.offsetWidth - 
+                        elements.postAuthor_el.offsetWidth - 40 + 'px';
+            }.bind(this));
+    }
 
     if (this.postData.post.title) { // title exists
         elements.postNoTitle_el.style.display = 'none';
@@ -616,24 +623,44 @@ postile.view.post.Post.prototype.enterDisplayMode = function() {
             this.postData.inline_comments.length - 1 ];
 
     if (this.latestComment) { // at least one comment
-        postile.data_manager.getUserData(
-            this.latestComment.inline_comment.creator_id, 
-            function(data) {
-                this.latestComment.creator = data;
 
-                elements.commentPreviewAuthor_el.innerHTML = 
-                    this.latestComment.creator.username;
-                elements.commentPreviewContent_el.innerHTML = 
-                    postile.parseBBcode(this.latestComment.inline_comment.content);
-                postile.bbcodePostProcess(elements.commentPreviewContent_el, true);
+        if (!this.isInAnonymousBoard()) { // not anonymous
+            postile.data_manager.getUserData(
+                this.latestComment.inline_comment.creator_id, 
+                function(data) {
+                    this.latestComment.creator = data;
 
-                elements.commentPreviewNoComment_el.style.display = 'none';
-                elements.commentPreview_el.style.display = 'block';
+                    elements.commentPreviewAuthor_el.innerHTML = 
+                        this.latestComment.creator.username;
+                    elements.commentPreviewContent_el.innerHTML = 
+                        postile.parseBBcode(this.latestComment.inline_comment.content);
+                    postile.bbcodePostProcess(elements.commentPreviewContent_el, true);
 
-                elements.commentPreviewContent_el.style.width = 
-                    this.wrap_el.offsetWidth - 
-                        elements.commentPreviewAuthor_el.offsetWidth - 36 + 'px';
-            }.bind(this));
+                    elements.commentPreviewNoComment_el.style.display = 'none';
+                    elements.commentPreview_el.style.display = 'block';
+
+                    elements.commentPreviewContent_el.style.width = 
+                        this.wrap_el.offsetWidth - 
+                            elements.commentPreviewAuthor_el.offsetWidth - 36 + 'px';
+                }.bind(this));
+        } else {
+            elements.commentPreviewAuthor_el.innerHTML = '';
+            elements.commentPreviewMiddle_el.style.display = 'none';
+            elements.commentPreviewContent_el.style.width = 
+                this.wrap_el.offsetWidth - 
+                    elements.commentPreviewAuthor_el.offsetWidth - 36 + 'px';
+
+            elements.commentPreviewContent_el.innerHTML = 
+                postile.parseBBcode(this.latestComment.inline_comment.content);
+            postile.bbcodePostProcess(elements.commentPreviewContent_el, true);
+
+            elements.commentPreviewNoComment_el.style.display = 'none';
+            elements.commentPreview_el.style.display = 'block';
+
+            elements.commentPreviewContent_el.style.width = 
+                this.wrap_el.offsetWidth - 
+                    elements.commentPreviewAuthor_el.offsetWidth - 36 + 'px';
+        }
     } else { // no comment
         elements.commentPreviewDisplay_el.style.display = 'none';
         elements.commentPreview_el.style.display = 'block';
@@ -655,15 +682,17 @@ postile.view.post.Post.prototype.enterCommentMode = function() {
     var elements = this.commentModeElements;
     elements.postTitle_el.innerHTML = this.postData.post.title;
 
-    postile.data_manager.getUserData(
-        this.postData.post.creator_id, 
-        function(data) {
-            this.postData.creator = data;
+    if (!this.isInAnonymousBoard()) {
+        postile.data_manager.getUserData(
+            this.postData.post.creator_id, 
+            function(data) {
+                this.postData.creator = data;
 
-            elements.postAuthor_el.innerHTML = this.postData.creator.username;
-            elements.postTitle_el.style.width = this.wrap_el.offsetWidth - 
-                    elements.postAuthor_el.offsetWidth - 40 + 'px';
-        }.bind(this));
+                elements.postAuthor_el.innerHTML = this.postData.creator.username;
+                elements.postTitle_el.style.width = this.wrap_el.offsetWidth - 
+                        elements.postAuthor_el.offsetWidth - 40 + 'px';
+            }.bind(this));
+    }
 
     elements.commentContainer_el.style.height = 
         this.wrap_el.offsetHeight - 
@@ -692,7 +721,7 @@ postile.view.post.Post.prototype.enterCommentMode = function() {
         elements.commentContainerNoComment_el.style.display = 'none';
         for (var i in comments) {
             new postile.view.post.InlineComment(
-                elements.commentItems_el, comments[i], this.postData.post.creator_id);
+                elements.commentItems_el, comments[i], this);
         }
     } else { // no comment
         elements.commentContainerNoComment_el.style.display = 'block';
@@ -747,12 +776,16 @@ postile.view.post.Post.prototype.enterLockedMode = function() {
 
     var elements = this.lockedModeElements;
 
-    postile.data_manager.getUserData(
-        this.postData.post.creator_id, 
-        function(data) {
-            this.postData.creator = data;
-            elements.lockUsername_el.innerHTML = data.username;
-        }.bind(this));
+    if (!this.isInAnonymousBoard()) {
+        postile.data_manager.getUserData(
+            this.postData.post.creator_id, 
+            function(data) {
+                this.postData.creator = data;
+                elements.lockUsername_el.innerHTML = data.username;
+            }.bind(this));
+    } else {
+        elements.lockUsername_el.innerHTML = 'someone';
+    }
 }
 
 postile.view.post.Post.prototype.enterNewMode = function() {
@@ -768,12 +801,16 @@ postile.view.post.Post.prototype.enterNewMode = function() {
 
     var elements = this.newModeElements;
 
-    postile.data_manager.getUserData(
-        this.postData.post.creator_id, 
-        function(data) {
-            this.postData.creator = data;
-            elements.newUsername_el.innerHTML = data.username;
-        }.bind(this));
+    if (!this.isInAnonymousBoard()) {
+        postile.data_manager.getUserData(
+            this.postData.post.creator_id, 
+            function(data) {
+                this.postData.creator = data;
+                elements.newUsername_el.innerHTML = data.username;
+            }.bind(this));
+    } else {
+        elements.newUsername_el.innerHTML = 'someone';
+    }
 }
 
 postile.view.post.Post.prototype.enterConfirmDeleteMode = function() {
@@ -812,26 +849,48 @@ postile.view.post.Post.prototype.resetCommentPreview = function(data) {
     setTimeout(function() {
         clearInterval(fadeout);
 
-        postile.data_manager.getUserData(
-            data.inline_comment.creator_id, 
-            function(userData) {
-                elements.commentPreviewNoComment_el.style.display = 'none';
-                elements.commentPreviewDisplay_el.style.display = 'table-cell';
-                elements.commentPreviewAuthor_el.innerHTML = 
-                    userData.username;
-                elements.commentPreviewContent_el.innerHTML = 
-                    postile.parseBBcode(data.inline_comment.content);
+        if (!this.isInAnonymousBoard()) {
+            postile.data_manager.getUserData(
+                data.inline_comment.creator_id, 
+                function(userData) {
+                    elements.commentPreviewNoComment_el.style.display = 'none';
+                    elements.commentPreviewDisplay_el.style.display = 'table-cell';
+                    elements.commentPreviewAuthor_el.innerHTML = 
+                        userData.username;
+                    elements.commentPreviewContent_el.innerHTML = 
+                        postile.parseBBcode(data.inline_comment.content);
+                    postile.bbcodePostProcess(elements.commentPreviewContent_el);
 
-                // reset width since length of different usernames are different
-                elements.commentPreviewContent_el.style.width = 
-                    this.wrap_el.offsetWidth - 
-                        elements.commentPreviewAuthor_el.offsetWidth - 36 + 'px';
+                    // reset width since length of different usernames are different
+                    elements.commentPreviewContent_el.style.width = 
+                        this.wrap_el.offsetWidth - 
+                            elements.commentPreviewAuthor_el.offsetWidth - 36 + 'px';
 
-                fadein = setInterval(function() {
-                    opacity += 0.1;
-                    preview_el.style.opacity = opacity;
-                }, 30);
-            }.bind(this));
+                    fadein = setInterval(function() {
+                        opacity += 0.1;
+                        preview_el.style.opacity = opacity;
+                    }, 30);
+                }.bind(this));
+        } else { // in anonymous board
+            elements.commentPreviewNoComment_el.style.display = 'none';
+            elements.commentPreviewDisplay_el.style.display = 'table-cell';
+            elements.commentPreviewContent_el.innerHTML = '';
+            elements.commentPreviewMiddle_el.style.display = 'none';
+
+            elements.commentPreviewContent_el.innerHTML = 
+                postile.parseBBcode(data.inline_comment.content);
+            postile.bbcodePostProcess(elements.commentPreviewContent_el);
+
+            // reset width since length of different usernames are different
+            elements.commentPreviewContent_el.style.width = 
+                this.wrap_el.offsetWidth - 
+                    elements.commentPreviewAuthor_el.offsetWidth - 36 + 'px';
+
+            fadein = setInterval(function() {
+                opacity += 0.1;
+                preview_el.style.opacity = opacity;
+            }, 30);
+        }
     }.bind(this), 300);
 
     setTimeout(function() {
@@ -870,7 +929,7 @@ postile.view.post.Post.prototype.inlineCommentRendered = function(comment) {
 
 postile.view.post.Post.prototype.appendInlineComment = function(comment) {
     new postile.view.post.InlineComment(
-        this.commentModeElements.commentItems_el, comment, this.postData.post.creator_id);
+        this.commentModeElements.commentItems_el, comment, this);
 }
 
 postile.view.post.Post.prototype.removeInlineComment = function(comment) {
@@ -889,4 +948,8 @@ postile.view.post.Post.prototype.removeInlineComment = function(comment) {
     if (comments.length == 0) { // removed last comment
         this.commentModeElements.commentContainerNoComment_el.style.display = 'block';
     }
+}
+
+postile.view.post.Post.prototype.isInAnonymousBoard = function() {
+    return this.board.boardData.anonymous;
 }
