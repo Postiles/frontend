@@ -25,7 +25,6 @@ postile.view.post_board.Header = function(board) {
 
     this.topicTitle_el = postile.dom.getDescendantById(instance.container, 'topic_title');
     instance.topicTitle_el.innerHTML = this.board.boardData.name;
-/*
     var feedback = goog.dom.createDom('img');
     feedback.src = postile.conf.imageResource(['feedback.png']);
     feedback.style.cssFloat = 'left';
@@ -34,7 +33,6 @@ postile.view.post_board.Header = function(board) {
         new postile.feedback.FeedbackData();
     });
     goog.dom.appendChild(instance.container, feedback);
-*/
 
     // create a create post helper
 
