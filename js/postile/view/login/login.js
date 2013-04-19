@@ -45,7 +45,7 @@ postile.view.login.LoginView.prototype.login = function() {
     var password = this.passwordInput_el.value;
 
     postile.user.login(email, password, function(data) {
-        window.history.back();
+        postile.router.dispatch("topic/1"); // TODO we need a more intelligent routering method
     }, function(e) {
         this.incorrect_el.style.visibility = 'visible';
     }.bind(this));

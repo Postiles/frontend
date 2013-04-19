@@ -1,5 +1,6 @@
 goog.provide('postile.view.post_board.Account');
 
+
 postile.view.post_board.Account = function(opt_board) {
     goog.base(this);
 
@@ -48,11 +49,11 @@ postile.view.post_board.Account = function(opt_board) {
     this.profile_image_container = postile.dom.getDescendantById(this.container, 'profile_image_container');
 
     goog.events.listen(this.login_button, goog.events.EventType.CLICK, function(){
-        // redirect to login
-        // TODO 
         // how to make sure that we can go back the same place when login?
-        postile.router.dispatch('login');
-
+        // we do a inline login here
+        this.inline_login = (new postile.view.inline_login.InlineLogin()).open(this.login_button);
+        //this.inline_login.open(this.login_button);
+        console.log("inline_login");
     }.bind(this));
 
     goog.events.listen(this.signup_button, goog.events.EventType.CLICK, function(){
@@ -63,8 +64,7 @@ postile.view.post_board.Account = function(opt_board) {
     if (opt_board) {
         var switch_board_active = new Image();
         switch_board_active.src = postile.conf.imageResource(['switch_board_icon_active.png']);
-    }
-    var popup_icon_active = new Image();
+    } var popup_icon_active = new Image();
     popup_icon_active.src = postile.conf.imageResource(['popup_icon_active.png']);
     var search_icon_active = new Image();
     search_icon_active.src = postile.conf.imageResource(['search_icon_active.png']);
@@ -92,7 +92,7 @@ postile.view.post_board.Account = function(opt_board) {
         if (opt_board) {
             this.switchBoardTip.close();
         }
-        this.sBTip.open(search_button);
+        this.sBTip.open(this.search_button);
     }.bind(this), true);
 
     /* Buttons on the right up corner */
@@ -137,7 +137,7 @@ postile.view.post_board.Account = function(opt_board) {
             this.switchBoardTip.close();
         }
         this.sBTip.close();  
-        this.notification.open(message_button);
+        this.notification.open(this.message_button);
         this.notificationHandlerClear();
     }.bind(this), true);
 
@@ -205,6 +205,9 @@ postile.view.post_board.Account.prototype.changeAccoutView = function(){
                 this.profile_image_container.style.display = 'none';
                 this.login_button.style.display = 'block';
                 this.signup_button.style.display = 'block';
+
+                new postile.toast.Toast(3, "You are not logged in. Please login to enable edit functions");
+
             }else {
                 this.account_container.style.display = 'block';
                 this.profile_image_container.style.display = 'block';

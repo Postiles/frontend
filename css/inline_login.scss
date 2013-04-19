@@ -1,0 +1,56 @@
+$main-color: #024d61;
+$second-color: #D4DCDE;
+
+#inline_login{
+	width: 230px;
+	background: $second-color;
+	position: relative;
+	top: 50px;
+	left: 20px;	
+	color: $main-color;
+
+	.arrow_up {
+		width: 0px;
+		height: 0px;
+		border-left: 15px solid transparent;
+        border-right: 15px solid transparent;
+        border-bottom: 15px solid $main-color;
+        position: absolute;
+        top: -15px;
+        left: 100px;
+	}
+
+	.login_word {
+		padding: 10px;
+		color: #fff;
+		background:$main-color;
+	}
+
+	.inline_login_input {
+		clear: both;
+		margin-left: 10px;
+		margin-top: 5px;
+
+		input {
+			margin: 7px 0;
+			font-size: 14px;
+			clear:both;
+			width: 200px;
+		}
+
+		.inline_login_submit {
+			color: #fff;
+			background: $main-color;
+			padding: 2px 5px;
+			margin-top: 5px;
+			margin-bottom: 10px;
+			display: inline-block;
+			cursor: pointer;
+		}
+
+		.incorrect {
+			padding-bottom:10px;
+			display: none;
+		}
+	}
+}

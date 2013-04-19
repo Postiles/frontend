@@ -435,13 +435,13 @@ html, body {
   margin-bottom: 10px;
   bottom: 0px;
   font-size: 8pt;
-  color: #eaeaea;
 }
 
 #bottom-nav span {
   position: relative;
   display: inline;
   float: left;
+  color: #eaeaea !important;
 }
 
 #bottom-nav .item {

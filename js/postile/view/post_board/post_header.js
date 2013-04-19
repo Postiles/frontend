@@ -8,6 +8,7 @@ goog.require('postile.dom');
 goog.require('postile.view.create_helper');
 goog.require('postile.view.notification');
 goog.require('postile.view.change_password');
+goog.require('postile.view.inline_login');
 
 postile.view.post_board.Header = function(board) {
     // this variable is for identifying current active icon
