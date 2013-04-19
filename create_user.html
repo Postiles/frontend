@@ -1,0 +1,54 @@
+<html>
+<head>
+	<title>Create_User Interface</title>
+	<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+
+	<script type="text/javascript">
+		function submitform(){
+			$.ajax({
+				type: "post",			
+			  	url: "http://www.postiles.com:300/user/this_route_does_nothing",
+			  	data: {wtf: $("#password").val(), email: $("#email").val(), username: $("#name").val()},
+			  	success: function(r){
+			  		if(r.status == 'error'){
+			  			$("#feedback").css("display", "block");
+			  			$("#feedback").html("creation failed, please contact postiles.hkust@gmail.com");
+			  		}else{
+					  	$("#feedback").css("display", "block");
+					  	setTimeout('dismiss()', 4000);
+			  		}
+			  	}
+			});	
+		}
+		$(document).ready(function() {
+			$("#password").keypress(function(event) {
+	    		if (event.which == 13) {
+	        		submitform();
+	    		}
+			});
+		});
+
+		function dismiss() {
+			$("#feedback").css("display", "none");
+		}
+	</script>
+
+	<style>
+		#feedback {
+			display: none;
+		}
+	</style>
+
+</head>
+<body>
+	<p> Email Address </p>
+	<input type="text" id="email" name="email" autofocus="autofocus" />
+	<p> Name </p>
+	<input type="text" id="name" name="name" />
+	<p> Your Password to create user </p>
+	<input type="password" id="password" name="password" />
+
+	<a id="submit" href="javascript:submitform()"> Submit </a>
+	<p id="feedback"> User Created successfully, an email will be sent to the email address you mentioned. you can refresh or enter another one directly </p>
+</body>
+</html>
