@@ -413,7 +413,15 @@ postile.view.post_board.PostBoard.prototype.initView = function() {
 
     goog.dom.appendChild(goog.dom.getElement("wrapper"), this.header.container);
     goog.dom.appendChild(goog.dom.getElement("wrapper"), this.catchall);
-    goog.dom.appendChild(goog.dom.getElement("wrapper"), this.create_helper.container);
+
+    postile.data_manager.getUserData(localStorage.postile_user_id, function(data) {
+        this.cur_id = data.user_id;
+        if(this.cur_id){ // login and show
+            goog.dom.appendChild(goog.dom.getElement("wrapper"), this.create_helper.container);
+        }
+    }.bind(this)); 
+
+
     // We have to append the header before add the online people bar,
     // otherwise there is no way to get the size of the header bar.
     this.onlinepeople = new Object();
