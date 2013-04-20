@@ -393,7 +393,7 @@ postile.view.post.Post.prototype.initCommentModeListener = function() {
         goog.events.EventType.KEYDOWN, 
         function(e) {
             this.bringToFront();
-            if (e.keyCode == 13) { // enter pressed
+            if (e.keyCode == goog.events.KeyCodes.ENTER) { // enter pressed
                 this.commentModeElements.commentInput_el._at_.toBBcode();
             
                 var content = 

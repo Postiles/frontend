@@ -531,7 +531,7 @@ postile.view.post_board.PostBoard.prototype.bindKeyEvents = function() {
     var instance = this;
 
     this.keyboard_event_handler = new postile.events.EventHandler(postile.conf.getGlobalKeyHandler(),
-            goog.events.KeyHandler.EventType.KEY, function(e) {
+            goog.events.EventType.KEYUP, function(e) {
                 postile.view.post_board.handlers.keypress(instance, e);
             });
     this.keyboard_event_handler.listen();
