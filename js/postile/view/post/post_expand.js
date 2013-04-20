@@ -46,6 +46,7 @@ postile.view.post.PostExpand.prototype.open = function() {
     this.toolbar = goog.dom.getElementByClass('toolbar', instance.post_el);
 
     this.content_el = goog.dom.getElementByClass('content', this.post_el);
+    this.left_content = goog.dom.getElementByClass('left-container', this.post_el);
     
     if (this.postInstance.postData.post.image_url) {
     
@@ -55,24 +56,31 @@ postile.view.post.PostExpand.prototype.open = function() {
         goog.dom.appendChild(this.content_el, this.img_el);
         var img_el_width = 0;
         var img_el_height = 0;
+
+
+        if(this.img_el.height > this.img_el.width){
+            instance.img_el.style.height = '100%';
+        }else{
+            instance.img_el.style.width = '100%';
+        }
+
+
         this.img_el.onload = function(){
             img_el_width = this.width;
             img_el_height = this.height;
 
-            if(img_el_height > img_el_width){
-                instance.img_el.style.height = '90%';
                 // change margin top for putting the image in the middle
                 // TODO
+            if(img_el_height > img_el_width){
                 var margin_left = (instance.content_el.offsetWidth - instance.img_el.clientWidth) / 2;
-                var margin_top = (instance.content_el.offsetHeight - instance.img_el.clientHeight) / 2;
+                var margin_top = -30 +  (instance.left_content.offsetHeight - instance.img_el.clientHeight) / 2;
                 instance.img_el.style.marginTop = margin_top + 'px';
                 instance.img_el.style.marginLeft = margin_left + 'px';
-
             }else{
-                instance.img_el.style.width = '100%';
                 // change margin top for putting the image in the middle
                 // TODO
-                var margin_top = (instance.content_el.offsetHeight - instance.img_el.clientHeight) / 2;
+                var margin_top = -30 + (instance.left_content.offsetHeight - instance.img_el.clientHeight) / 2;
+                console.log(instance.left_content.offsetWidth,instance.left_content.offsetHeight, instance.img_el.offsetHeight);
                 var margin_left = (instance.content_el.offsetWidth - instance.img_el.clientWidth) / 2;
                 instance.img_el.style.marginTop = margin_top + 'px';
                 instance.img_el.style.marginLeft = margin_left + 'px';
