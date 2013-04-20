@@ -172,10 +172,13 @@ postile.faye.init = function(callback) {
     });
 }
 
-postile.faye.subscribe = function(channel, listener) {
+/**
+ * @param {Object=} opt_scope The this object to call listener with.
+ */
+postile.faye.subscribe = function(channel, listener, opt_scope) {
     var faye_action = function() {
         postile.faye.client.subscribe('/faye/' + channel, function(data) {
-            listener(data.status, data.msg);
+            listener.call(opt_scope, data.status, data.msg);
         });
     };
     if (!postile.faye.client) {

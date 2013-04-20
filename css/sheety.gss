@@ -1,0 +1,159 @@
+@def CELL_WIDTH 200px;
+@def CELL_HEIGHT 200px;
+@def CELL_BORDER_SIZE 1px;
+@def CELL_PAD_TOP 9px;
+@def CELL_PAD_LEFT 12px;
+@def CELL_ACTUAL_WIDTH sub(CELL_WIDTH,
+    mult(add(CELL_PAD_LEFT, CELL_BORDER_SIZE), 2));
+@def CELL_ACTUAL_HEIGHT sub(CELL_HEIGHT,
+    mult(add(CELL_PAD_TOP, CELL_BORDER_SIZE), 2));
+@def NUM_WCELL 3;
+@def NUM_HCELL 3;
+@def TABLE_BG #F5F9FA;
+@def TABLE_BG_DARKER #DFE8EB;
+@def CELL_BORDER_GREY rgb(195,207,194);
+@def LIGHT_CELL_BG rgb(224,237,221);
+@def LIGHT_CELL_BG_DARKER #CBDBC8;
+@def DARK_CELL_BG #024d61;
+@def DARK_CELL_BG_LIGHTER #10586c;
+@def TITLE_BLUE rgb(66,105,189);
+@def LIGHTER_GREY #a7a7a7;
+
+@defmixin CELL_ACTUAL_HEIGHT_N(N) {
+    height: sub(mult(CELL_WIDTH, N),
+        mult(add(CELL_PAD_TOP, CELL_BORDER_SIZE), 2));
+}
+
+.sheety-body {
+    background-color: TABLE_BG;
+    font-family: sans-serif;
+    font-size: 0.8em;
+}
+
+.sheety-post-list {
+    /* Higher than comment cells */
+    position: relative;
+    z-index: 100;
+
+    float: left;
+    width: CELL_WIDTH;
+}
+
+.sheety-comment-row {
+    white-space: nowrap;
+    height: CELL_HEIGHT;
+}
+
+.sheety-post-cell,
+.sheety-comment-cell,
+.sheety-new-comment-cell {
+    border: CELL_BORDER_SIZE solid CELL_BORDER_GREY;
+    display: inline-block;
+    width: CELL_ACTUAL_WIDTH;
+    height: CELL_ACTUAL_HEIGHT;
+    vertical-align: middle;
+    padding: CELL_PAD_TOP CELL_PAD_LEFT;
+    white-space: normal;
+
+    /* XXX deal with it */
+    overflow-y: hidden;
+}
+
+.sheety-new-comment-cell {
+    /* Lower than header cells */
+    z-index: -100;
+    position: absolute;
+
+    /* Move-out animation. XXX: why it has correct top? */
+    left: 0;
+    transition: left 0.5s;
+}
+
+.sheety-new-comment-cell,
+.sheety-comment-cell {
+    background-color: LIGHT_CELL_BG;
+}
+
+.sheety-comment-cell-hover {
+    background-color: LIGHT_CELL_BG_DARKER;
+}
+
+.sheety-post-cell {
+    background-color: DARK_CELL_BG;
+    color: LIGHT_CELL_BG;
+}
+
+.sheety-post-cell .who {
+    margin-top: 40px;
+    font-size: 2em;
+    text-align: center;
+}
+
+.sheety-post-cell .mkcomment {
+    margin-top: 20px;
+    font-size: 1em;
+    padding: 20px 4px;
+    text-align: center;
+}
+
+.sheety-post-cell .mkcomment-hover {
+    background-color: DARK_CELL_BG_LIGHTER;
+    cursor: pointer;
+}
+
+.sheety-post-cell .mkcomment-disabled {
+    color: grey;
+    cursor: default;
+}
+
+.sheety-comment-cell .ctime {
+    color: grey;
+}
+
+.sheety-comment-cell .author,
+.sheety-comment-cell .likes {
+    color: TITLE_BLUE;
+}
+
+.sheety-comment-cell .likes,
+.sheety-comment-cell .del {
+    cursor: pointer;
+}
+
+.sheety-comment-cell .likes-hover .like-button {
+    text-decoration: underline;
+}
+
+.sheety-comment-cell .likes-disabled,
+.sheety-comment-cell .likes-disabled .like-button {
+    cursor: default;
+    color: grey;
+}
+
+.sheety-comment-cell .del {
+    color: grey;
+}
+
+.sheety-comment-cell .del-hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.sheety-comment-cell .del-disabled {
+    cursor: default;
+    color: LIGHT_CELL_BG_DARKER;
+}
+
+.sheety-comment-cell .author,
+.sheety-comment-cell .likes,
+.sheety-comment-cell .del,
+.sheety-comment-cell .ctime {
+    display: inline;
+    font-size: 0.9em;
+}
+
+.sheety.comment-cell .content {
+    margin-top: 3px;
+}
+
+
