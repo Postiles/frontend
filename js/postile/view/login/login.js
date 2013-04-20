@@ -35,7 +35,7 @@ postile.view.login.LoginView.prototype.html_segment =
     postile.conf.staticResource(['login.html']);
 
 postile.view.login.LoginView.prototype.enterPressed = function(e) {
-    if (e.keyCode == 13) { // enter key pressed
+    if (e.keyCode == goog.events.KeyCodes.ENTER) { // enter key pressed
         this.login();
     }
 }
@@ -45,7 +45,7 @@ postile.view.login.LoginView.prototype.login = function() {
     var password = this.passwordInput_el.value;
 
     postile.user.login(email, password, function(data) {
-        postile.router.dispatch("topic/1"); // TODO we need a more intelligent routering method
+        postile.router.dispatch(window.location.hash.length > 1 ? window.location.hash.substr(1) : "topic/1"); // TODO we need a more intelligent routering method
     }, function(e) {
         this.incorrect_el.style.visibility = 'visible';
     }.bind(this));
