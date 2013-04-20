@@ -534,7 +534,7 @@ postile.view.post_board.PostBoard.prototype.bindKeyEvents = function() {
     var instance = this;
 
     this.keyboard_event_handler = new postile.events.EventHandler(postile.conf.getGlobalKeyHandler(),
-            goog.events.KeyHandler.EventType.KEY, function(e) {
+            goog.events.EventType.KEYUP, function(e) {
                 postile.view.post_board.handlers.keypress(instance, e);
             });
     this.keyboard_event_handler.listen();
@@ -1077,3 +1077,13 @@ postile.view.post_board.faye_status = {
     DELETE_COMMENT: 'delete comment',
 }
 
+postile.view.post_board.switchTo = function(targetId) {
+    if (postile.router.current_view instanceof postile.view.post_board.PostBoard) {
+        // first check if the post is in current board
+        postile.router.current_view.moveToPost(targetId);
+    } else {
+        postile.ajax(['post', 'get_post'], { post_id: targetId }, function(r) {
+            postile.router.dispatch('board/' + r.message.post.board_id + "#" + targetId);
+        });
+    }
+}

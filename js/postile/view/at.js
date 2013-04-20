@@ -20,10 +20,10 @@ postile.view.At = function(el) {
     goog.events.listen(el, goog.events.EventType.KEYUP, instance.keyUpHandler.bind(this));
     goog.events.listen(el, goog.events.EventType.KEYDOWN, instance.keyDownHandler.bind(this));
     
-    this.keyboard_event_handler = new postile.events.EventHandler(postile.conf.getGlobalKeyHandler(),
-            goog.events.KeyHandler.EventType.KEY, function(e) {
+    this.keyboard_event_handler = new postile.events.EventHandler(this.ipel.parentNode,
+            goog.events.EventType.KEYDOWN, function(e) {
                 instance.keypress(e);
-            });
+            }, true);
 }
 
 goog.inherits(postile.view.At, postile.view.TipView);

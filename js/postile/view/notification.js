@@ -3,6 +3,7 @@ goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('postile.conf');
 goog.require('postile.view');
+goog.require('postile.view.post_board');
 
 postile.view.notification.Notification = function(header, opt_board) {
     this.boardInstance = opt_board;
@@ -224,32 +225,15 @@ postile.view.notification.InfoItem.prototype.render = function(parent, data, fro
     });
 
     goog.dom.appendChild(this.notificationTitle, goog.dom.createDom('p','',' ' + postile.view.notification.TypeMap[notificationType] +' '));
-    this.targetPost = goog.dom.createDom('p', 'post_text_link', 'your post');
+    if(notificationType == 'mention' ){
+        this.targetPost = goog.dom.createDom('p', 'post_text_link', 'a post');
+    } else {
+        this.targetPost = goog.dom.createDom('p', 'post_text_link', 'your post');
+        }
     goog.dom.appendChild(this.notificationTitle, this.targetPost);
 
     goog.events.listen(this.targetPost, goog.events.EventType.CLICK, function(){
-        if (postile.router.current_view instanceof postile.view.post_board.PostBoard) {
-
-            // first check if the post is in current board
-            if(targetId in postile.router.current_view.currentPosts){
-                postile.router.current_view.moveToPost(targetId);
-            }
-            else {
-                console.log("not in current board");
-                // if not, check if post exists
-                postile.ajax(['post', 'get_post'], { post_id: targetId }, function(r) {
-                    if (r.message.post.board_id != instance.board_id) {
-                        postile.router.current_view.moveToPost(targetId);
-                        return;
-                    } else {
-                        console.log("removed");
-                        this.removeFromList();
-                        new postile.toast.Toast(3, "The post was deleted");
-                        return
-                    }
-                }.bind(this));
-            }
-        }
+        postile.view.post_board.switchTo(targetId);
     }.bind(this));
 
     /* footer part */

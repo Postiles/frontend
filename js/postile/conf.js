@@ -53,7 +53,8 @@ postile.conf = {
 
     getGlobalKeyHandler: function() {
         if(!postile.conf.getGlobalKeyHandler.handler) {
-            postile.conf.getGlobalKeyHandler.handler = new goog.events.KeyHandler(document, true);
+            //postile.conf.getGlobalKeyHandler.handler = new goog.events.KeyHandler(document, true);
+            postile.conf.getGlobalKeyHandler.handler = document.body;
         }
         return postile.conf.getGlobalKeyHandler.handler;
     },

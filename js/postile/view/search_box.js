@@ -4,6 +4,7 @@ goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('goog.async.Throttle');
 goog.require('postile.conf');
+goog.require('postile.view.post_board');
 goog.require('postile.view');
 
 postile.view.search_box.SearchBox = function(input_instance) {
@@ -142,7 +143,7 @@ postile.view.search_box.SearchBox.prototype.search = function(instance) {
                 goog.dom.appendChild(this.post_list, post_result);
 
                 goog.events.listen(post_result, goog.events.EventType.CLICK, function(){
-                    postile.router.current_view.moveToPost(post.id);
+                    postile.view.post_board.switchTo(post.id);
                 });
 
                 var result_item_title = goog.dom.createDom("div", "search_result_item_title");

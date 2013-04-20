@@ -4,18 +4,32 @@ goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('postile.conf');
 goog.require('postile.view');
+goog.require('postile.dom');
 
 
 postile.view.inline_login.InlineLogin = function(instance){
 	postile.view.TipView.call(this);
 
 	// indication of invalid email and password
-	// this.incorrect_el = goog.dom.getElement('incorrect-alert');
 	postile.ui.load(this.container, postile.conf.staticResource(['_inline_login.html']));
 	this.container.id = 'inline_login';
     this.container.style.top = '0px';
     this.container.style.left = '0px';
-	console.log("containner",this.container);
+
+	this.incorrect_el = postile.dom.getDescendantById('incorrect-alert');
+	this.email_input_el = postile.dom.getDescendantsByClass(this.container, 'inline_login_email')[0];
+	this.password_input_el = postile.dom.getDescendantsByClass(this.container, 'inline_login_password')[0];
+	this.submit_el = postile.dom.getDescendantsByClass(this.container, 'inline_login_submit')[0];
+
+	goog.events.listen(this.submit_el, goog.events.EventType.CLICK, function(){
+		this.login(this.email_input_el.value, this.password_input_el.value);
+	}.bind(this));
+
+	goog.events.listen(this.password_input_el, goog.events.EventType.KEYUP, function(e){
+		if(e.keyCode == 13){
+			this.login(this.email_input_el.value, this.password_input_el.value);
+		}
+	}.bind(this));
 
 }
 
