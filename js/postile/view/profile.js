@@ -234,26 +234,27 @@ postile.view.profile.ProfileItem.prototype.editClicked = function() {
 
 postile.view.profile.ProfileItem.prototype.saveTriggered = function() {
     postile.ajax([ 'profile', 'update_profile_item' ], 
-            { item: this.item, value: this.input_el.value }, 
-            function() {
-        this.data_el.innerHTML = this.input_el.value;
-        this.edit_el.innerHTML = 'Edit';
+        { item: this.item, value: this.input_el.value }, 
+        function() {
+            this.data_el.innerHTML = this.input_el.value;
+            this.edit_el.innerHTML = 'Edit';
 
-        if (this.className != 'signiture' &&
-                this.className == 'self-intro' &&
-                this.className == 'username') {
-            if (this.data_el.innerHTML) {
-                var description = postile.view.profile.ProfileView.prototype.findDescriptionByName(this.item);
-                this.title_el.innerHTML = description;
-                this.title_el.style.opacity = 1.0;
-            } else {
-                this.title_el.innerHTML = this.item;
-                this.title_el.style.opacity = 0.3;
+
+            if (this.className != 'signiture' &&
+                    this.className == 'self-intro' &&
+                    this.className == 'username') {
+                if (this.data_el.innerHTML) {
+                    var description = postile.view.profile.ProfileView.prototype.findDescriptionByName(this.item);
+                    this.title_el.innerHTML = description;
+                    this.title_el.style.opacity = 1.0;
+                } else {
+                    this.title_el.innerHTML = this.item;
+                    this.title_el.style.opacity = 0.3;
+                }
             }
-        }
 
-        this.clearEvent();
+            this.clearEvent();
 
-        postile.data_manager.markDataDirty(localStorage.postile_user_id); // user data changed, mark as dirty
-    }.bind(this));
+            postile.data_manager.markDataDirty(localStorage.postile_user_id); // user data changed, mark as dirty
+        }.bind(this));
 }

@@ -323,7 +323,10 @@ postile.view.post_board.PostBoard = function(board_id) {
      * Throttle subscription updating when scrolling
      * @type {postile.delayedThrottle}
      */
-    // this.scrollUpdateThrottle = new postile.DelayedThrottle(function() { instance.updateSubscribeArea(); }, 500);
+    this.scrollUpdateThrottle = new postile.DelayedThrottle(
+        function() {
+            instance.updateSubscribeArea();
+        }, 500);
 
     // Initialize according to board_id
     postile.ajax([ 'board', 'enter_board' ], { board_id: board_id }, function(data) {
@@ -466,7 +469,7 @@ postile.view.post_board.PostBoard.prototype.bindMouseEvents = function() {
     goog.events.listen(this.viewport, goog.events.EventType.SCROLL, function() {
         instance.canvasCoord[0] = - instance.viewport.scrollLeft;
         instance.canvasCoord[1] = - instance.viewport.scrollTop;
-        // instance.scrollUpdateThrottle.kick();
+        instance.scrollUpdateThrottle.kick();
     });
 
     // Start: controllers for moving the viewport
@@ -808,7 +811,7 @@ postile.view.post_board.PostBoard.prototype.getSubscribeArea = function(source) 
      * n for extend n screen length on all directions.
      * @type {number}
      */
-    var preloadRadio = 1;
+    var preloadRadio = 0.5;
 
     return {
         left: Math.floor(this.xPosFrom(-source[0] - preloadRadio*this.viewport.offsetWidth)),

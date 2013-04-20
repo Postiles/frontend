@@ -82,7 +82,7 @@ postile.view.BoardList.prototype.renderBoardListItem = function(data) {
         postile.ajax(['board', 'get_recent_posts'], { board_id: data.board.id }, function(new_data) {
             goog.dom.removeChildren(instance.right_posts);
             for (i in new_data.message) {
-                instance.renderRecentPostItem(new_data.message[i]);
+                instance.renderRecentPostItem(new_data.message[i], data);
             }
         });
     });
@@ -97,18 +97,24 @@ postile.view.BoardList.prototype.renderBoardListItem = function(data) {
     goog.dom.insertSiblingAfter(item_el, this.title);
 }
 
-postile.view.BoardList.prototype.renderRecentPostItem = function(post_info) {
+postile.view.BoardList.prototype.renderRecentPostItem = function(post_info, boardData) {
     var post_el = goog.dom.createDom('div', 'one_recent_post');
     goog.dom.appendChild(post_el, goog.dom.createDom('div', 'ball'));
     var subject_el = goog.dom.createDom('div', 'subject');
     subject_el.innerHTML = post_info.post.title;
     var meta_el = goog.dom.createDom('div', 'author');
     var author_el = goog.dom.createDom('span');
-    postile.data_manager.getUserData(post_info.post.creator_id, function(data) {
-        author_el.innerHTML = data.username;
-    });
     var time_el = goog.dom.createDom('small');
     time_el.innerHTML = post_info.post.created_at;
+
+    if (!boardData.board.anonymous) {
+        postile.data_manager.getUserData(post_info.post.creator_id, function(data) {
+            author_el.innerHTML = data.username;
+        });
+    } else {
+        time_el.style.paddingLeft = '0px';
+    }
+
     var content_el = goog.dom.createDom('div', 'content');
     content_el.innerHTML = post_info.post.content;
     goog.dom.appendChild(post_el, subject_el);
