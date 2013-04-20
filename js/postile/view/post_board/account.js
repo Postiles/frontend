@@ -14,12 +14,7 @@ postile.view.post_board.Account = function(opt_board) {
 
     // change account view for anonymous
     var profileView = new postile.view.profile.ProfileView(localStorage.postile_user_id);
-    /* Fei Pure for testing
-    this.imageUploadPop = new postile.view.image_upload.ImageUploadBlock(this);
-    goog.events.listen(this.usernameText_el, goog.events.EventType.CLICK, function(e) {
-        new postile.view.profile.ProfileView(localStorage.postile_user_id);
-    });
-    */
+
     // create view for displaying user information
     this.settingButton_el = postile.dom.getDescendantById(instance.container, 'settings_button');
 
@@ -53,6 +48,10 @@ postile.view.post_board.Account = function(opt_board) {
         // how to make sure that we can go back the same place when login?
         e.stopPropagation();
         this.inline_login.open(this.login_button);
+        if (opt_board) {
+            this.switchBoardTip.close();
+        }
+        this.sBTip.close();
     }.bind(this));
 
     goog.events.listen(this.signup_button, goog.events.EventType.CLICK, function(e){
@@ -89,11 +88,14 @@ postile.view.post_board.Account = function(opt_board) {
     this.sBTip = new postile.view.search_box.SearchBox(this.search_button);
     goog.events.listen(this.search_button, goog.events.EventType.CLICK, function(e) {
         e.stopPropagation();
-        this.notification.close();
+        if(this.logged_in){
+            this.notification.close();
+        }
         if (opt_board) {
             this.switchBoardTip.close();
         }
         this.sBTip.open(this.search_button);
+        this.inline_login.close();
     }.bind(this), true);
 
     /* Buttons on the right up corner */
@@ -102,46 +104,55 @@ postile.view.post_board.Account = function(opt_board) {
         this.switch_board_button = postile.dom.getDescendantById(instance.container, "switch_board_button");
         goog.events.listen(this.switch_board_button, goog.events.EventType.CLICK, function(e) {
             e.stopPropagation();
-            this.notification.close();
+            if(this.logged_in){
+                this.notification.close();
+            }
             this.sBTip.close();
             this.switchBoardTip.open(switch_board_button);
+            this.inline_login.close();
         }.bind(this), true);
     }
 
     this.message_button = postile.dom.getDescendantById(instance.container, "message_button");
+    postile.data_manager.getUserData(localStorage.postile_user_id, function(data) {
+        if(data.user_id){ // login and show
+            this.logged_in = true;
+            var notificationList;
+            /* get hte number of new notifications from server */
+            postile.ajax([ 'notification', 'get_notifications' ], {}, function(data) {
+                /* handle the data return after getting the boards information back */
+                notificationList = data.message.notifications;
+                if(notificationList.length != 0 ) {
+                    this.notificationHandler(data);
+                }
+                /* TODO add a notification to the mail box to notify user */
+            }.bind(this));
+            
+            this.alert_wrapper = goog.dom.createDom('div', 'notification_number_wrapper');
+            goog.dom.appendChild(this.message_button, this.alert_wrapper);
 
-    var notificationList;
-    /* get hte number of new notifications from server */
-    postile.ajax([ 'notification', 'get_notifications' ], {}, function(data) {
-        /* handle the data return after getting the boards information back */
-        notificationList = data.message.notifications;
-        if(notificationList.length != 0 ) {
-            this.notificationHandler(data);
+            this.redCircle = goog.dom.createDom('div', 'notification_redCircle');
+            goog.dom.appendChild(this.alert_wrapper, this.redCircle);
+
+            postile.faye.subscribe('notification/' + localStorage.postile_user_id, function(status, data) {
+                instance.notificationHandler(data);
+            });
+            this.notification_isOpened = false;
+            this.notification = new postile.view.notification.Notification(this, opt_board);
+            goog.events.listen(this.message_button, goog.events.EventType.CLICK, function(e) {
+                e.stopPropagation();
+                if (opt_board) {
+                    this.switchBoardTip.close();
+                }
+                this.sBTip.close();  
+                this.notification.open(this.message_button);
+                this.notificationHandlerClear();
+            }.bind(this), true);
+        }else{
+            this.logged_in = false;
+            this.message_button.style.display = 'none';
         }
-        /* TODO add a notification to the mail box to notify user */
-    }.bind(this));
-    
-    this.alert_wrapper = goog.dom.createDom('div', 'notification_number_wrapper');
-    goog.dom.appendChild(this.message_button, this.alert_wrapper);
-
-    this.redCircle = goog.dom.createDom('div', 'notification_redCircle');
-    goog.dom.appendChild(this.alert_wrapper, this.redCircle);
-
-    postile.faye.subscribe('notification/' + localStorage.postile_user_id, function(status, data) {
-        instance.notificationHandler(data);
-    });
-    this.notification_isOpened = false;
-    this.notification = new postile.view.notification.Notification(this, opt_board);
-    goog.events.listen(this.message_button, goog.events.EventType.CLICK, function(e) {
-        e.stopPropagation();
-        if (opt_board) {
-            this.switchBoardTip.close();
-        }
-        this.sBTip.close();  
-        this.notification.open(this.message_button);
-        this.notificationHandlerClear();
-    }.bind(this), true);
-
+    }.bind(this)); 
     /*
     if (opt_board) {
         this.moreButtonPop_isOpened = false;
@@ -198,7 +209,6 @@ postile.view.post_board.Account.prototype.loadUserInfo = function(){
 
 // Remember to call change account view after switching the board
 postile.view.post_board.Account.prototype.changeAccoutView = function(){
-
     postile.data_manager.getUserData(localStorage.postile_user_id, function(data) {
         this.cur_id = data.user_id;
             if(!this.cur_id){ // did not login
@@ -207,7 +217,7 @@ postile.view.post_board.Account.prototype.changeAccoutView = function(){
                 this.login_button.style.display = 'block';
                 this.signup_button.style.display = 'block';
 
-                new postile.toast.Toast(3, "You are not logged in. Please login to enable edit functions");
+                new postile.toast.Toast(1, "You are not logged in. Please login to enable edit functions");
 
             }else {
                 this.account_container.style.display = 'block';
@@ -217,18 +227,6 @@ postile.view.post_board.Account.prototype.changeAccoutView = function(){
 
                 // get current board type to check if is anonymous
                 if(postile.router.current_view instanceof postile.view.post_board.PostBoard){
-                    this.anonymous = postile.router.current_view.boardData.anonymous;
-                    /*
-                    if(this.anonymous == true){
-                        this.profileImageContainerImg_el.src = postile.conf.uploadsResource([ 'default_image/profile.png' ]);
-                        this.usernameText_el.innerHTML = 'anonymous';
-                    } else {
-                         postile.data_manager.getUserData(localStorage.postile_user_id, function(data) {
-                             this.usernameText_el.innerHTML = data.username;
-                             this.profileImageContainerImg_el.src = postile.conf.uploadsResource([ data.image_small_url ]);
-                        }.bind(this));
-                    }
-                    */
                     postile.data_manager.getUserData(localStorage.postile_user_id, function(data) {
                         this.usernameText_el.innerHTML = data.username;
                         this.profileImageContainerImg_el.src = postile.conf.uploadsResource([ data.image_small_url ]);
@@ -238,9 +236,6 @@ postile.view.post_board.Account.prototype.changeAccoutView = function(){
                 }
             }
     }.bind(this)); 
-    
-    this.anonymous = 'normal';
-
 }
 
 /* 

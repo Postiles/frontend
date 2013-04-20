@@ -96,6 +96,10 @@
                                         color: #537cbe;
                                         padding: 0px;
                                         cursor: pointer;
+                                        max-width: 100px;
+                                        white-space: nowrap;
+                                        overflow: hidden;
+                                        text-overflow: ellipsis;
 
                                         &:hover {
                                             text-decoration: underline;
@@ -364,6 +368,10 @@
         float: right;
         cursor: pointer;
         color: #537cbe;
+        max-width: 100px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
 
         &:hover {
             text-decoration: underline;
@@ -435,6 +443,10 @@
         float: left;
         cursor: pointer;
         color: #537cbe;
+        max-width: 100px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
 
         &:hover {
             text-decoration: underline;

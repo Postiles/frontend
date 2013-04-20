@@ -323,13 +323,18 @@ postile.view.post_board.PostBoard = function(board_id) {
      * Throttle subscription updating when scrolling
      * @type {postile.delayedThrottle}
      */
-    // this.scrollUpdateThrottle = new postile.DelayedThrottle(function() { instance.updateSubscribeArea(); }, 500);
+    this.scrollUpdateThrottle = new postile.DelayedThrottle(
+        function() {
+            instance.updateSubscribeArea();
+        }, 500);
 
     // Initialize according to board_id
     postile.ajax([ 'board', 'enter_board' ], { board_id: board_id }, function(data) {
         instance.boardData = data.message.board;
 
         instance.userData = postile.data_manager.getUserData(localStorage.postile_user_id, function(data) {
+            if (data[0] == 0) {
+            }
 
             postile.ajax([ 'user', 'get_additional_data' ], { target_user_id: data.id }, function(data) {
                 if (!data.message.additional.got_started) {
@@ -341,11 +346,12 @@ postile.view.post_board.PostBoard = function(board_id) {
 
             instance.channel_str = instance.boardData.id;
 
-            //No login info on anonymous
-            if(localStorage.postile_user_id != 0) {
-                postile.faye.subscribe(instance.channel_str, function(status, data) {
-                    instance.fayeHandler(status, data);
-                });
+            postile.faye.subscribe(instance.channel_str, function(status, data) {
+                instance.fayeHandler(status, data);
+            });
+
+            // No login info on anonymous
+            if (postile.conf.userLoggedIn()) {
                 postile.faye.subscribe('status/board/'+instance.boardData.id+'/user/'+instance.userData.id, function(status, data) {
                 });
             }
@@ -408,7 +414,14 @@ postile.view.post_board.PostBoard.prototype.initView = function() {
 
     goog.dom.appendChild(goog.dom.getElement("wrapper"), this.header.container);
     goog.dom.appendChild(goog.dom.getElement("wrapper"), this.catchall);
-    goog.dom.appendChild(goog.dom.getElement("wrapper"), this.create_helper.container);
+
+    postile.data_manager.getUserData(localStorage.postile_user_id, function(data) {
+        if(data.user_id){ // login and show
+            goog.dom.appendChild(goog.dom.getElement("wrapper"), this.create_helper.container);
+        }
+    }.bind(this)); 
+
+
     // We have to append the header before add the online people bar,
     // otherwise there is no way to get the size of the header bar.
     this.onlinepeople = new Object();
@@ -466,7 +479,7 @@ postile.view.post_board.PostBoard.prototype.bindMouseEvents = function() {
     goog.events.listen(this.viewport, goog.events.EventType.SCROLL, function() {
         instance.canvasCoord[0] = - instance.viewport.scrollLeft;
         instance.canvasCoord[1] = - instance.viewport.scrollTop;
-        // instance.scrollUpdateThrottle.kick();
+        instance.scrollUpdateThrottle.kick();
     });
 
     // Start: controllers for moving the viewport
@@ -517,10 +530,12 @@ postile.view.post_board.PostBoard.prototype.bindMouseEvents = function() {
     //    this.rel_data.moveCanvas(dx / 2 / length * this.offsetWidth, dy / 2 / length * this.offsetHeight);
     //});
 
-    goog.events.listen(this.canvas, goog.events.EventType.DBLCLICK, function(){
-        if (instance.disableMovingCanvas) { return; }
-        instance.postCreator.open();
-    });
+    if (postile.conf.userLoggedIn()) {
+        goog.events.listen(this.canvas, goog.events.EventType.DBLCLICK, function(){
+            if (instance.disableMovingCanvas) { return; }
+            instance.postCreator.open();
+        });
+    }
 };
 
 /**
@@ -808,7 +823,7 @@ postile.view.post_board.PostBoard.prototype.getSubscribeArea = function(source) 
      * n for extend n screen length on all directions.
      * @type {number}
      */
-    var preloadRadio = 1;
+    var preloadRadio = 0.5;
 
     return {
         left: Math.floor(this.xPosFrom(-source[0] - preloadRadio*this.viewport.offsetWidth)),

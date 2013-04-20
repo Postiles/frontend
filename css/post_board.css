@@ -47,7 +47,12 @@ html, body {
   color: #024d61;
   font-size: 14pt;
   margin-left: 80px;
-  padding-top: 10px; }
+  padding-top: 10px;
+  max-width: 400px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
 #accout_container {
   float: right;
@@ -63,7 +68,12 @@ html, body {
 
 #username_text {
   float: right;
-  cursor: pointer; }
+  cursor: pointer;
+  max-width: 250px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
 #settings_logout_buttons_container {
   clear: right;
