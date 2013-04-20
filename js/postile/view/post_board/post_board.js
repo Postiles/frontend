@@ -415,8 +415,7 @@ postile.view.post_board.PostBoard.prototype.initView = function() {
     goog.dom.appendChild(goog.dom.getElement("wrapper"), this.catchall);
 
     postile.data_manager.getUserData(localStorage.postile_user_id, function(data) {
-        this.cur_id = data.user_id;
-        if(this.cur_id){ // login and show
+        if(data.user_id){ // login and show
             goog.dom.appendChild(goog.dom.getElement("wrapper"), this.create_helper.container);
         }
     }.bind(this)); 
