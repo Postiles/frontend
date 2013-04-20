@@ -47,6 +47,10 @@ postile.conf = {
         return "/images/" + input.join("/");
     },
 
+    getSelfUserId: function() {
+        return parseInt(localStorage.postile_user_id);
+    },
+
     getGlobalKeyHandler: function() {
         if(!postile.conf.getGlobalKeyHandler.handler) {
             postile.conf.getGlobalKeyHandler.handler = new goog.events.KeyHandler(document, true);

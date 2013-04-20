@@ -109,9 +109,19 @@
 
                                 .lower_container {
                                     margin-top: -2px;
-                                    color: #999;
+                                    color: #888;
                                     font-size: 8pt;
                                     display: block;
+
+                                    .comment_like_container {
+                                        .comment_like_button {
+                                            cursor: pointer;
+
+                                            &:hover {
+                                                text-decoration: underline;
+                                            }
+                                        }
+                                    }
 
                                     .comment_delete_button {
                                         float: right;

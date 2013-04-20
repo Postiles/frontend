@@ -66,9 +66,13 @@
             margin: 0px; }
         .post_wrap .comment_mode_post .post_bottom .comment_container .comment_list .comment_container_items .post_comment .comment_inner_container .lower_container {
           margin-top: -2px;
-          color: #999;
+          color: #888;
           font-size: 8pt;
           display: block; }
+          .post_wrap .comment_mode_post .post_bottom .comment_container .comment_list .comment_container_items .post_comment .comment_inner_container .lower_container .comment_like_container .comment_like_button {
+            cursor: pointer; }
+            .post_wrap .comment_mode_post .post_bottom .comment_container .comment_list .comment_container_items .post_comment .comment_inner_container .lower_container .comment_like_container .comment_like_button:hover {
+              text-decoration: underline; }
           .post_wrap .comment_mode_post .post_bottom .comment_container .comment_list .comment_container_items .post_comment .comment_inner_container .lower_container .comment_delete_button {
             float: right;
             visibility: hidden;
