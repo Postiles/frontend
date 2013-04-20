@@ -7,6 +7,7 @@ goog.require('postile.ui');
 goog.require('postile.dom');
 
 postile.view.post.InlineComment = function(commentContainer, commentData, parentInstance) {
+    console.log(commentData);
     // create wrapper for post
     this.wrap_el = goog.dom.createDom('div', 'post_comment');
 
