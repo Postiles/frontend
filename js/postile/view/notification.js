@@ -225,7 +225,11 @@ postile.view.notification.InfoItem.prototype.render = function(parent, data, fro
     });
 
     goog.dom.appendChild(this.notificationTitle, goog.dom.createDom('p','',' ' + postile.view.notification.TypeMap[notificationType] +' '));
-    this.targetPost = goog.dom.createDom('p', 'post_text_link', 'your post');
+    if(notificationType == 'mention' ){
+        this.targetPost = goog.dom.createDom('p', 'post_text_link', 'a post');
+    } else {
+        this.targetPost = goog.dom.createDom('p', 'post_text_link', 'your post');
+        }
     goog.dom.appendChild(this.notificationTitle, this.targetPost);
 
     goog.events.listen(this.targetPost, goog.events.EventType.CLICK, function(){
