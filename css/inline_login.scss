@@ -4,17 +4,29 @@ $second-color: #D4DCDE;
 #inline_login{
 	width: 230px;
 	background: $second-color;
-	position: relative;
-	top: 50px;
-	left: 20px;	
+	position: fixed !important;
+	top: 46px !important;
+	right: 100px !important;
+	left: auto !important;
+	background: $second-color;
 	color: $main-color;
 
 	.arrow_up {
 		width: 0px;
 		height: 0px;
+		border-left: 13px solid transparent;
+        border-right: 13px solid transparent;
+        border-bottom: 13px solid $main-color;
+        position: absolute;
+        top: -12px;
+        left: 102px;
+	}
+	.arrow_up_back {
+		width: 0px;
+		height: 0px;
 		border-left: 15px solid transparent;
         border-right: 15px solid transparent;
-        border-bottom: 15px solid $main-color;
+        border-bottom: 15px solid #f5f5f5;
         position: absolute;
         top: -15px;
         left: 100px;

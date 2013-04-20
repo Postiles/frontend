@@ -49,14 +49,14 @@ postile.view.post_board.Account = function(opt_board) {
     this.account_container = postile.dom.getDescendantById(this.container, 'user_info_container');
 
     this.inline_login = new postile.view.inline_login.InlineLogin(this.login_button);
-    goog.events.listen(this.login_button, goog.events.EventType.CLICK, function(){
+    goog.events.listen(this.login_button, goog.events.EventType.CLICK, function(e){
         // how to make sure that we can go back the same place when login?
-        // we do a inline login here
+        e.stopPropagation();
         this.inline_login.open(this.login_button);
-        console.log("inline_login");
     }.bind(this));
 
-    goog.events.listen(this.signup_button, goog.events.EventType.CLICK, function(){
+    goog.events.listen(this.signup_button, goog.events.EventType.CLICK, function(e){
+        e.stopPropagation();
         postile.router.dispatch('signup');
     }.bind(this));
 
