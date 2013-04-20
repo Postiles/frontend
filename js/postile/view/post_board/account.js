@@ -1,5 +1,6 @@
 goog.provide('postile.view.post_board.Account');
 
+goog.require('postile.view.inline_login');
 
 postile.view.post_board.Account = function(opt_board) {
     goog.base(this);
@@ -46,13 +47,12 @@ postile.view.post_board.Account = function(opt_board) {
     this.signup_button = postile.dom.getDescendantById(this.container, 'signup_button_account');
 
     this.account_container = postile.dom.getDescendantById(this.container, 'user_info_container');
-    this.profile_image_container = postile.dom.getDescendantById(this.container, 'profile_image_container');
 
+    this.inline_login = new postile.view.inline_login.InlineLogin(this.login_button);
     goog.events.listen(this.login_button, goog.events.EventType.CLICK, function(){
         // how to make sure that we can go back the same place when login?
         // we do a inline login here
-        this.inline_login = (new postile.view.inline_login.InlineLogin()).open(this.login_button);
-        //this.inline_login.open(this.login_button);
+        this.inline_login.open(this.login_button);
         console.log("inline_login");
     }.bind(this));
 
@@ -64,7 +64,8 @@ postile.view.post_board.Account = function(opt_board) {
     if (opt_board) {
         var switch_board_active = new Image();
         switch_board_active.src = postile.conf.imageResource(['switch_board_icon_active.png']);
-    } var popup_icon_active = new Image();
+    }
+    var popup_icon_active = new Image();
     popup_icon_active.src = postile.conf.imageResource(['popup_icon_active.png']);
     var search_icon_active = new Image();
     search_icon_active.src = postile.conf.imageResource(['search_icon_active.png']);
@@ -202,7 +203,7 @@ postile.view.post_board.Account.prototype.changeAccoutView = function(){
         this.cur_id = data.user_id;
             if(!this.cur_id){ // did not login
                 this.account_container.style.display = 'none';
-                this.profile_image_container.style.display = 'none';
+                this.profileImageContainer_el.style.display = 'none';
                 this.login_button.style.display = 'block';
                 this.signup_button.style.display = 'block';
 
@@ -210,7 +211,7 @@ postile.view.post_board.Account.prototype.changeAccoutView = function(){
 
             }else {
                 this.account_container.style.display = 'block';
-                this.profile_image_container.style.display = 'block';
+                this.profileImageContainer_el.style.display = 'block';
                 this.login_button.style.display = 'none';
                 this.signup_button.style.display = 'none';
 
