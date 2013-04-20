@@ -1,5 +1,5 @@
 @def CELL_WIDTH 200px;
-@def CELL_HEIGHT 200px;
+@def CELL_HEIGHT 100px;
 @def CELL_BORDER_SIZE 1px;
 @def CELL_PAD_TOP 9px;
 @def CELL_PAD_LEFT 12px;
@@ -84,15 +84,15 @@
 }
 
 .sheety-post-cell .who {
-    margin-top: 40px;
+    margin-top: 0px;
     font-size: 2em;
     text-align: center;
 }
 
 .sheety-post-cell .mkcomment {
-    margin-top: 20px;
+    margin-top: 0px;
     font-size: 1em;
-    padding: 20px 4px;
+    padding: 10px 4px;
     text-align: center;
 }
 

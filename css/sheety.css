@@ -11,13 +11,13 @@
 }
 .sheety-comment-row {
   white-space: nowrap;
-  height: 200px;
+  height: 100px;
 }
 .sheety-post-cell, .sheety-comment-cell {
   border: 1px solid #c3cfc2;
   display: inline-block;
   width: 174px;
-  height: 180px;
+  height: 80px;
   vertical-align: middle;
   padding: 9px 12px;
   white-space: normal;
@@ -27,7 +27,7 @@
   border: 1px solid #c3cfc2;
   display: inline-block;
   width: 174px;
-  height: 180px;
+  height: 80px;
   vertical-align: middle;
   padding: 9px 12px;
   white-space: normal;
@@ -49,14 +49,14 @@
   color: #e0eddd;
 }
 .sheety-post-cell .who {
-  margin-top: 40px;
+  margin-top: 0;
   font-size: 2em;
   text-align: center;
 }
 .sheety-post-cell .mkcomment {
-  margin-top: 20px;
+  margin-top: 0;
   font-size: 1em;
-  padding: 20px 4px;
+  padding: 10px 4px;
   text-align: center;
 }
 .sheety-post-cell .mkcomment-hover {
