@@ -26,7 +26,7 @@ postile.user.logout = function() {
         localStorage.postile_user_id = '';
         localStorage.postile_user_session_key = '';
 
-        postile.router.dispatch('login' + '#' + window.location.pathname + window.location.hash);
+        postile.router.dispatch('login' + '#' + window.location.pathname.substr(1) + window.location.hash);
     });
 }
 
@@ -34,5 +34,5 @@ postile.user.openLoginBox = function() {
     if (postile.user.current_user) { return; } //already logged in
     if (postile.router.current_view instanceof postile.view.login.LoginView) { return; } //login window already opened
 
-    postile.router.dispatch('login' + '#' + window.location.pathname + window.location.hash);
+    postile.router.dispatch('login' + '#' + window.location.pathname.substr(1) + window.location.hash);
 }
