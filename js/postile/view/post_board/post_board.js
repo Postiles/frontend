@@ -333,6 +333,8 @@ postile.view.post_board.PostBoard = function(board_id) {
         instance.boardData = data.message.board;
 
         instance.userData = postile.data_manager.getUserData(localStorage.postile_user_id, function(data) {
+            if (data[0] == 0) {
+            }
 
             postile.ajax([ 'user', 'get_additional_data' ], { target_user_id: data.id }, function(data) {
                 if (!data.message.additional.got_started) {
@@ -344,8 +346,8 @@ postile.view.post_board.PostBoard = function(board_id) {
 
             instance.channel_str = instance.boardData.id;
 
-            //No login info on anonymous
-            if(localStorage.postile_user_id != 0) {
+            // No login info on anonymous
+            if (localStorage.postile_user_id != 0) {
                 postile.faye.subscribe(instance.channel_str, function(status, data) {
                     instance.fayeHandler(status, data);
                 });
