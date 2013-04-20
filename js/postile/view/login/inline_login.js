@@ -15,7 +15,7 @@ postile.view.inline_login.InlineLogin = function(instance){
 	this.container.id = 'inline_login';
     this.container.style.top = '0px';
     this.container.style.left = '0px';
-	console.log(this.container);
+	console.log("containner",this.container);
 
 }
 
@@ -24,8 +24,8 @@ goog.inherits(postile.view.inline_login.InlineLogin, postile.view.TipView);
 postile.view.inline_login.InlineLogin.prototype.unloaded_stylesheets = ['inline_login.css'];
 
 postile.view.inline_login.InlineLogin.prototype.open = function(a, b){
-	// postile.view.TipView.prototype.open.call(this,a,b);
-	goog.base(this, 'open', a, b);
+	postile.view.TipView.prototype.open.call(this,a,b);
+	// goog.base(this, 'open', a, b);
 }
 
 
