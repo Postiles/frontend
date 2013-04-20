@@ -346,11 +346,12 @@ postile.view.post_board.PostBoard = function(board_id) {
 
             instance.channel_str = instance.boardData.id;
 
+            postile.faye.subscribe(instance.channel_str, function(status, data) {
+                instance.fayeHandler(status, data);
+            });
+
             // No login info on anonymous
-            if (localStorage.postile_user_id != 0) {
-                postile.faye.subscribe(instance.channel_str, function(status, data) {
-                    instance.fayeHandler(status, data);
-                });
+            if (postile.conf.userLoggedIn()) {
                 postile.faye.subscribe('status/board/'+instance.boardData.id+'/user/'+instance.userData.id, function(status, data) {
                 });
             }
@@ -530,10 +531,12 @@ postile.view.post_board.PostBoard.prototype.bindMouseEvents = function() {
     //    this.rel_data.moveCanvas(dx / 2 / length * this.offsetWidth, dy / 2 / length * this.offsetHeight);
     //});
 
-    goog.events.listen(this.canvas, goog.events.EventType.DBLCLICK, function(){
-        if (instance.disableMovingCanvas) { return; }
-        instance.postCreator.open();
-    });
+    if (postile.conf.userLoggedIn()) {
+        goog.events.listen(this.canvas, goog.events.EventType.DBLCLICK, function(){
+            if (instance.disableMovingCanvas) { return; }
+            instance.postCreator.open();
+        });
+    }
 };
 
 /**

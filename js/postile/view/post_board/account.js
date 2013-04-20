@@ -14,12 +14,7 @@ postile.view.post_board.Account = function(opt_board) {
 
     // change account view for anonymous
     var profileView = new postile.view.profile.ProfileView(localStorage.postile_user_id);
-    /* Fei Pure for testing
-    this.imageUploadPop = new postile.view.image_upload.ImageUploadBlock(this);
-    goog.events.listen(this.usernameText_el, goog.events.EventType.CLICK, function(e) {
-        new postile.view.profile.ProfileView(localStorage.postile_user_id);
-    });
-    */
+
     // create view for displaying user information
     this.settingButton_el = postile.dom.getDescendantById(instance.container, 'settings_button');
 
@@ -111,7 +106,7 @@ postile.view.post_board.Account = function(opt_board) {
     this.message_button = postile.dom.getDescendantById(instance.container, "message_button");
 
     var notificationList;
-    /* get hte number of new notifications from server */
+    /* get the number of new notifications from server */
     postile.ajax([ 'notification', 'get_notifications' ], {}, function(data) {
         /* handle the data return after getting the boards information back */
         notificationList = data.message.notifications;
@@ -198,7 +193,6 @@ postile.view.post_board.Account.prototype.loadUserInfo = function(){
 
 // Remember to call change account view after switching the board
 postile.view.post_board.Account.prototype.changeAccoutView = function(){
-
     postile.data_manager.getUserData(localStorage.postile_user_id, function(data) {
         this.cur_id = data.user_id;
             if(!this.cur_id){ // did not login
@@ -217,18 +211,6 @@ postile.view.post_board.Account.prototype.changeAccoutView = function(){
 
                 // get current board type to check if is anonymous
                 if(postile.router.current_view instanceof postile.view.post_board.PostBoard){
-                    this.anonymous = postile.router.current_view.boardData.anonymous;
-                    /*
-                    if(this.anonymous == true){
-                        this.profileImageContainerImg_el.src = postile.conf.uploadsResource([ 'default_image/profile.png' ]);
-                        this.usernameText_el.innerHTML = 'anonymous';
-                    } else {
-                         postile.data_manager.getUserData(localStorage.postile_user_id, function(data) {
-                             this.usernameText_el.innerHTML = data.username;
-                             this.profileImageContainerImg_el.src = postile.conf.uploadsResource([ data.image_small_url ]);
-                        }.bind(this));
-                    }
-                    */
                     postile.data_manager.getUserData(localStorage.postile_user_id, function(data) {
                         this.usernameText_el.innerHTML = data.username;
                         this.profileImageContainerImg_el.src = postile.conf.uploadsResource([ data.image_small_url ]);
@@ -238,9 +220,6 @@ postile.view.post_board.Account.prototype.changeAccoutView = function(){
                 }
             }
     }.bind(this)); 
-    
-    this.anonymous = 'normal';
-
 }
 
 /* 

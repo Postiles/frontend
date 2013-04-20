@@ -143,8 +143,7 @@ postile.ajax.notifier.networkError = function(error_string) { //network error
 
 postile.ajax.exception_handlers = { //exception_string and corresponding handler functions.
     USER_NOT_FOUND: function(args) {
-        console.log('user not found');
-       // postile.user.openLoginBox();
+        // postile.user.openLoginBox();
         return false;
     },
     USER_NOT_LOGGED_IN: function() {

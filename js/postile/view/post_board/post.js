@@ -701,10 +701,14 @@ postile.view.post.Post.prototype.enterCommentMode = function() {
     elements.commentList_el.style.height = 
         parseInt(elements.commentContainer_el.style.height) - 34 + 'px'
 
-    elements.commentInput_el.style.width = 
-        this.wrap_el.offsetWidth - 65 + 'px';
+    if (postile.conf.userLoggedIn()) {
+        elements.commentInput_el.style.width = 
+            this.wrap_el.offsetWidth - 65 + 'px';
 
-    elements.commentInput_el.focus();
+        elements.commentInput_el.focus();
+    } else {
+        elements.commentInput_el.style.display = 'none';
+    }
 
     if (!elements.commentInput_el._at_) {
         elements.commentInput_el._at_ = new postile.view.At(elements.commentInput_el);
