@@ -249,15 +249,10 @@ postile.view.post_board.Account.prototype.changeAccoutView = function(){
                 this.login_button.style.display = 'none';
                 this.signup_button.style.display = 'none';
 
-                // get current board type to check if is anonymous
-                if(postile.router.current_view instanceof postile.view.post_board.PostBoard){
-                    postile.data_manager.getUserData(localStorage.postile_user_id, function(data) {
-                        this.usernameText_el.innerHTML = data.username;
-                        this.profileImageContainerImg_el.src = postile.conf.uploadsResource([ data.image_small_url ]);
-                    }.bind(this));
-                } else {
-                    console.log('error, current_view is not a board');
-                }
+                postile.data_manager.getUserData(localStorage.postile_user_id, function(data) {
+                    this.usernameText_el.innerHTML = data.username;
+                    this.profileImageContainerImg_el.src = postile.conf.uploadsResource([ data.image_small_url ]);
+                }.bind(this));
             }
     }.bind(this)); 
 }
