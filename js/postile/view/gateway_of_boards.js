@@ -15,6 +15,7 @@ postile.view.BoardList = function(topic) {
     goog.base(this);
     var instance = this;
     instance.currentBoardId = null;
+    instance.currentUserLiked = false;
     instance.container.className = 'gateway';
     instance.title = postile.dom.getDescendantByClass(instance.container, "title");
     instance.add = postile.dom.getDescendantByClass(instance.title, "add");
@@ -35,9 +36,17 @@ postile.view.BoardList = function(topic) {
         postile.router.dispatch('board/'+instance.currentBoardId);
     });
     goog.events.listen(instance.like_button, goog.events.EventType.CLICK, function() {
-        postile.ajax([ 'board', 'like' ], { board_id: instance.currentBoardId }, function(new_data) {
-            
-        });
+        if (!instance.currentUserLiked) {
+            postile.ajax([ 'board', 'like' ], { board_id: instance.currentBoardId }, function(new_data) {
+                instance.currentUserLiked = false;
+                instance.like_button.innerHTML = parseInt(instance.like_button.innerHTML) + 1 + " liked it";
+            });
+        } else {
+            postile.ajax([ 'board', 'unlike' ], { board_id: instance.currentBoardId }, function(new_data) {
+                instance.currentUserLiked = true;
+                instance.like_button.innerHTML = parseInt(instance.like_button.innerHTML) - 1 + " liked it";
+            });        
+        }
     });
     postile.ajax([ 'board', 'get_boards_in_topic' ], { topic_id: topic }, function(data) {
         /* handle the data return after getting the boards information back */
@@ -72,6 +81,12 @@ postile.view.BoardList.prototype.renderBoardListItem = function(data) {
     var meta_meta_el = goog.dom.createDom('div', 'info');
     var meta_creator_el = goog.dom.createDom('span', 'created');
     var meta_count_el = goog.dom.createDom('span', 'count');
+    var user_liked = false;
+    for (i in data.likes) {
+        if (data.likes[i].user_id == localStorage.postile_user_id) {
+            user_liked = true;
+        }
+    }
     postile.ajax([ 'board', 'get_post_count' ], { board_id: data.board.id }, function(new_data) {
         meta_count_el.innerHTML = new_data.message.post_count != 1 ? new_data.message.post_count + ' posts' : '1 post';
     });
@@ -88,6 +103,8 @@ postile.view.BoardList.prototype.renderBoardListItem = function(data) {
         instance.right_desc.innerHTML = description_el.innerHTML;
         instance.currentBoardId = data.board.id;
         instance.right_button.style.display = 'block';
+        instance.currentUserLiked = user_liked;
+        instance.like_button.innerHTML = data.likes.length + " liked it";
         postile.ajax(['board', 'get_recent_posts'], { board_id: data.board.id }, function(new_data) {
             goog.dom.removeChildren(instance.right_posts);
             for (i in new_data.message) {
