@@ -16,6 +16,7 @@ goog.require('goog.ui.Textarea');
 goog.require('postile.conf');
 goog.require('postile.faye');
 goog.require('postile.view');
+goog.require('postile.view.At');
 goog.require('postile.debbcode');
 goog.require('postile.view.post_board.handlers');
 goog.require('postile.templates.sheety');
@@ -543,6 +544,10 @@ postile.view.Sheety.PostList.prototype.startFloating = function() {
 postile.view.Sheety.PostCell = function() {
     goog.base(this);
 
+    this.whoButton_ = new goog.ui.Control(null,
+        goog.ui.ControlRenderer.getCustomRenderer(
+            goog.ui.ControlRenderer, 'who'));
+
     this.addButton_ = new goog.ui.Control('Add Comment',
         goog.ui.ControlRenderer.getCustomRenderer(
             goog.ui.ControlRenderer, 'mkcomment'));
@@ -552,6 +557,10 @@ goog.inherits(postile.view.Sheety.PostCell, goog.ui.Component);
 
 postile.view.Sheety.PostCell.prototype.getPostId = function() {
     return this.getModel()['post']['id'];
+};
+
+postile.view.Sheety.PostCell.prototype.getAuthorId = function() {
+    return this.getModel()['post']['creator_id'];
 };
 
 postile.view.Sheety.PostCell.prototype.getSheety = function() {
@@ -568,6 +577,10 @@ postile.view.Sheety.PostCell.prototype.createDom = function() {
     });
     this.setElementInternal(el);
 
+    this.addChild(this.whoButton_);
+    this.whoButton_.decorate(
+        goog.dom.getElementByClass('who', el));
+
     this.addChild(this.addButton_, true);
 
     // XXX: add to parent? wat?
@@ -578,6 +591,14 @@ postile.view.Sheety.PostCell.prototype.enterDocument = function() {
     goog.base(this, 'enterDocument');
 
     var sheety = this.getSheety();
+
+    // On click who: show profile
+    var profileView = new postile.view.profile.ProfileView(
+        this.getAuthorId());
+    goog.events.listen(
+        this.whoButton_,
+        goog.ui.Component.EventType.ACTION,
+        goog.bind(profileView.open, profileView, 710));
 
     // On click add-comment: start editing comment
     goog.events.listen(
@@ -617,9 +638,12 @@ postile.view.Sheety.AddCommentPop = function(postCell) {
 
     this.isShown_ = false;
     this.postCell_ = postCell;
-    this.textarea_ = new goog.ui.Textarea();
+    this.textarea_ = new postile.view.Sheety.CETextarea(null,
+        goog.ui.ControlRenderer.getCustomRenderer(
+            goog.ui.ControlRenderer, 'textarea'));
     this.submitButton_ = new goog.ui.Button('Submit');
     this.cancelButton_ = new goog.ui.Button('Cancel');
+    this.atAddOn_ = null;
 };
 goog.inherits(postile.view.Sheety.AddCommentPop, goog.ui.Container);
 
@@ -632,8 +656,8 @@ postile.view.Sheety.AddCommentPop.prototype.createDom = function() {
 
     this.getElement().innerHTML = postile.templates.sheety.newCommentPop();
     this.addChild(this.textarea_, true);
-    this.addChild(this.cancelButton_, true);
     this.addChild(this.submitButton_, true);
+    this.addChild(this.cancelButton_, true);
 };
 
 postile.view.Sheety.AddCommentPop.prototype.enterDocument = function() {
@@ -644,6 +668,7 @@ postile.view.Sheety.AddCommentPop.prototype.enterDocument = function() {
 
     // Closure bug walkaround: enable text selection
     this.textarea_.setAllowTextSelection(true);
+    this.textarea_.enableEditing();
 
     var sheety = this.getSheety();
 
@@ -652,10 +677,13 @@ postile.view.Sheety.AddCommentPop.prototype.enterDocument = function() {
         this.submitButton_,
         goog.ui.Component.EventType.ACTION,
         function(_) {
+            // Preprocess the value of the textarea.
+            var content = postile.view.At.asBBCode(
+                this.textarea_.getValue());
             var e = new goog.events.Event(
                 postile.view.Sheety.EventType.LOCAL_SUBMIT_COMMENT, {
                     postId: this.postCell_.getPostId(),
-                    content: this.textarea_.getValue()
+                    content: content
                 });
             this.setEnabled(false);
             this.dispatchEvent(e);
@@ -685,6 +713,15 @@ postile.view.Sheety.AddCommentPop.prototype.enterDocument = function() {
         }, undefined, this);
 
     // XXX: On timeout?
+
+    // Attach an `At` view to be able to @someone.
+    this.atAddOn_ = new postile.view.At(this.textarea_.getElement());
+};
+
+postile.view.Sheety.AddCommentPop.prototype.exitDocument = function() {
+    this.atAddOn_.close();
+
+    goog.base(this, 'exitDocument');
 };
 
 postile.view.Sheety.AddCommentPop.prototype.slideToShow = function() {
@@ -711,6 +748,31 @@ postile.view.Sheety.AddCommentPop.prototype.slideToHide = function() {
     goog.style.setStyle(this.getElement(), {
         'left': 0
     });
+};
+
+/**
+ * Content-editable textarea. Normally used with postile.view.At.
+ * @constructor
+ */
+postile.view.Sheety.CETextarea = function(opt_content, opt_renderer) {
+    goog.base(this, opt_content, opt_renderer);
+};
+goog.inherits(postile.view.Sheety.CETextarea, goog.ui.Control);
+
+postile.view.Sheety.CETextarea.prototype.getValue = function() {
+    return this.getElement()['innerHTML'];
+};
+
+postile.view.Sheety.CETextarea.prototype.enableEditing = function() {
+    var el = this.getElement();
+    el.contentEditable = true;
+    goog.style.setStyle(el, {
+        'user-select': 'text'
+    });
+};
+
+postile.view.Sheety.CETextarea.prototype.setValue = function(x) {
+    this.getElement()['innerHTML'] = x;
 };
 
 /**
@@ -791,6 +853,7 @@ postile.view.Sheety.CommentCell = function() {
               goog.ui.ContainerRenderer.getCustomRenderer(
                   goog.ui.ContainerRenderer, 'sheety-comment-cell'));
 
+    this.author_ = new postile.view.Sheety.CommentAuthor();
     this.like_ = new goog.ui.Control(null,
         postile.view.Sheety.LikeRenderer.getInstance());
     this.del_ = new goog.ui.Control(null,
@@ -817,6 +880,10 @@ postile.view.Sheety.CommentCell.prototype.createDom = function() {
 
     // Comment header
     el['innerHTML'] = postile.templates.sheety.comment(preProcData);
+
+    // first addChild and then decorate. Otherwise closure will barf
+    this.addChild(this.author_);
+    this.author_.decorate(goog.dom.getElementByClass('author', el));
 
     // Append like count and del button
     this.like_.setModel(preProcData);
@@ -891,6 +958,31 @@ postile.view.Sheety.CommentCell.prototype.syncLike = function() {
 
 postile.view.Sheety.CommentCell.prototype.getCommentId = function() {
     return this.getModel()['cmt_data']['id'];
+};
+
+postile.view.Sheety.CommentCell.prototype.getAuthorId = function() {
+    return this.getModel()['cmt_creator']['id'];
+};
+
+/** @constructor */
+postile.view.Sheety.CommentAuthor = function(authorId) {
+    goog.base(this, null, 
+        goog.ui.ControlRenderer.getCustomRenderer(
+            goog.ui.ControlRenderer, 'author'));
+};
+goog.inherits(postile.view.Sheety.CommentAuthor, goog.ui.Control);
+
+postile.view.Sheety.CommentAuthor.prototype.enterDocument =
+function() {
+    goog.base(this, 'enterDocument');
+
+    // On click name: show profile
+    var authorId = this.getParent().getAuthorId();
+    var profileView = new postile.view.profile.ProfileView(authorId);
+    goog.events.listen(
+        this,
+        goog.ui.Component.EventType.ACTION,
+        goog.bind(profileView.open, profileView, 710));
 };
 
 /**

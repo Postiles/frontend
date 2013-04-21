@@ -11,13 +11,13 @@
 }
 .sheety-comment-row {
   white-space: nowrap;
-  height: 100px;
+  height: 200px;
 }
 .sheety-post-cell, .sheety-comment-cell {
   border: 1px solid #c3cfc2;
   display: inline-block;
   width: 174px;
-  height: 80px;
+  height: 180px;
   vertical-align: middle;
   padding: 9px 12px;
   white-space: normal;
@@ -27,7 +27,7 @@
   border: 1px solid #c3cfc2;
   display: inline-block;
   width: 174px;
-  height: 80px;
+  height: 180px;
   vertical-align: middle;
   padding: 9px 12px;
   white-space: normal;
@@ -44,24 +44,30 @@
 .sheety-comment-cell-hover {
   background-color: #cbdbc8;
 }
+.sheety-new-comment-cell .textarea {
+  background-color: white;
+  height: 50px;
+  font-size: .7em;
+}
 .sheety-post-cell {
   background-color: #024d61;
   color: #e0eddd;
 }
 .sheety-post-cell .who {
   margin-top: 0;
-  font-size: 2em;
+  font-size: 1.8em;
   text-align: center;
+  cursor: pointer;
 }
 .sheety-post-cell .mkcomment {
-  margin-top: 0;
+  margin-top: 10px;
   font-size: 1em;
-  padding: 10px 4px;
+  padding: 4px 2px;
   text-align: center;
-}
-.sheety-post-cell .mkcomment-hover {
-  background-color: #10586c;
   cursor: pointer;
+}
+.sheety-post-cell .who-hover, .sheety-post-cell .mkcomment-hover {
+  background-color: #10586c;
 }
 .sheety-post-cell .mkcomment-disabled {
   color: grey;
@@ -70,17 +76,13 @@
 .sheety-comment-cell .ctime {
   color: grey;
 }
-.sheety-comment-cell .author {
+.sheety-comment-cell .author, .sheety-comment-cell .likes {
   color: #4269bd;
 }
-.sheety-comment-cell .likes {
-  color: #4269bd;
+.sheety-comment-cell .author, .sheety-comment-cell .likes, .sheety-comment-cell .del {
   cursor: pointer;
 }
-.sheety-comment-cell .del {
-  cursor: pointer;
-}
-.sheety-comment-cell .likes-hover .like-button {
+.sheety-comment-cell .author-hover, .sheety-comment-cell .likes-hover .like-button, .sheety-comment-cell .del-hover {
   text-decoration: underline;
 }
 .sheety-comment-cell .likes-disabled, .sheety-comment-cell .likes-disabled .like-button {
@@ -89,10 +91,6 @@
 }
 .sheety-comment-cell .del {
   color: grey;
-}
-.sheety-comment-cell .del-hover {
-  cursor: pointer;
-  text-decoration: underline;
 }
 .sheety-comment-cell .del-disabled {
   cursor: default;

@@ -1,5 +1,5 @@
 @def CELL_WIDTH 200px;
-@def CELL_HEIGHT 100px;
+@def CELL_HEIGHT 200px;
 @def CELL_BORDER_SIZE 1px;
 @def CELL_PAD_TOP 9px;
 @def CELL_PAD_LEFT 12px;
@@ -78,6 +78,12 @@
     background-color: LIGHT_CELL_BG_DARKER;
 }
 
+.sheety-new-comment-cell .textarea {
+    background-color: white;
+    height: 50px;
+    font-size: 0.7em;
+}
+
 .sheety-post-cell {
     background-color: DARK_CELL_BG;
     color: LIGHT_CELL_BG;
@@ -85,20 +91,22 @@
 
 .sheety-post-cell .who {
     margin-top: 0px;
-    font-size: 2em;
+    font-size: 1.8em;
     text-align: center;
+    cursor: pointer;
 }
 
 .sheety-post-cell .mkcomment {
-    margin-top: 0px;
+    margin-top: 10px;
     font-size: 1em;
-    padding: 10px 4px;
+    padding: 4px 2px;
     text-align: center;
+    cursor: pointer;
 }
 
+.sheety-post-cell .who-hover,
 .sheety-post-cell .mkcomment-hover {
     background-color: DARK_CELL_BG_LIGHTER;
-    cursor: pointer;
 }
 
 .sheety-post-cell .mkcomment-disabled {
@@ -115,12 +123,15 @@
     color: TITLE_BLUE;
 }
 
+.sheety-comment-cell .author,
 .sheety-comment-cell .likes,
 .sheety-comment-cell .del {
     cursor: pointer;
 }
 
-.sheety-comment-cell .likes-hover .like-button {
+.sheety-comment-cell .author-hover,
+.sheety-comment-cell .likes-hover .like-button,
+.sheety-comment-cell .del-hover {
     text-decoration: underline;
 }
 
@@ -132,11 +143,6 @@
 
 .sheety-comment-cell .del {
     color: grey;
-}
-
-.sheety-comment-cell .del-hover {
-    cursor: pointer;
-    text-decoration: underline;
 }
 
 .sheety-comment-cell .del-disabled {
