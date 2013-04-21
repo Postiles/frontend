@@ -5,6 +5,7 @@
 
 goog.provide('postile.conf');
 
+goog.require('goog.locale');
 goog.require('goog.events.KeyHandler');
 
 /**
@@ -90,7 +91,7 @@ postile.conf = {
         }
     },
 
-    currentUserId: parseInt(localStorage.postile_user_id),
+    currentUserId: parseInt(localStorage.postile_user_id)
 
 };
 

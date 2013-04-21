@@ -1,15 +1,14 @@
-goog.provide('postile.view.post_expand');
+goog.provide('postile.view.PostExpand');
 
-goog.require('postile.view');
 goog.require('goog.dom');
 goog.require('goog.events');
-goog.require('postile.conf');
 goog.require('postile.view');
+goog.require('postile.conf');
 
 /**
  * @constructor
  */
-postile.view.post.PostExpand = function(postInstance) {
+postile.view.PostExpand = function(postInstance) {
     this.postInstance = postInstance;
 
     this.in_edit = false;
@@ -19,11 +18,10 @@ postile.view.post.PostExpand = function(postInstance) {
 
     // load static html template
     postile.ui.load(this.container, postile.conf.staticResource(['_post_expand.html']));
-}
+};
+goog.inherits(postile.view.PostExpand, postile.view.PopView);
 
-goog.inherits(postile.view.post.PostExpand, postile.view.PopView);
-
-postile.view.post.PostExpand.prototype.open = function() {
+postile.view.PostExpand.prototype.open = function() {
 
     var instance = this;
 
@@ -81,12 +79,12 @@ postile.view.post.PostExpand.prototype.open = function() {
             }
             instance.title_el.style.fontSize = '14px';
             instance.title_el.style.width = '300px';
-            instance.title_el.style.float = 'left';
+            instance.title_el.style['float'] = 'left';
             instance.title_el.style.marginTop = '10px';
             instance.title_el.style.marginBottom = '5px';
 
             instance.author_el.style.display = 'inline-block';
-            instance.author_el.style.float = 'right';
+            instance.author_el.style['float'] = 'right';
             instance.author_el.style.fontSize = '14px';
         }
 
@@ -134,9 +132,9 @@ postile.view.post.PostExpand.prototype.open = function() {
     postile.view.PopView.prototype.open.call(this, 860);
 };
 
-postile.view.post.PostExpand.prototype.unloaded_stylesheets = ['_post_expand.css', '_close_button.css'];
+postile.view.PostExpand.prototype.unloaded_stylesheets = ['_post_expand.css', '_close_button.css'];
 
-postile.view.post.PostExpand.prototype.initComments = function() {
+postile.view.PostExpand.prototype.initComments = function() {
     this.commentBox_el = postile.dom.getDescendantByClass(this.post_el, 'comment-box');
     if (postile.conf.userLoggedIn()) {
         this.commentProfileImg_el = postile.dom.getDescendantByClass(this.commentBox_el, 'img');
@@ -147,11 +145,11 @@ postile.view.post.PostExpand.prototype.initComments = function() {
                 'half_opaque', function() {
                     postile.ajax(
                             [ 'inline_comment', 'new' ],
-                            {
-                                post_id: this.postInstance.postData.post.id,
-                                content: this.commentArea_el.innerHTML,
+                            { post_id: this.postInstance.postData.post.id
+                            , content: this.commentArea_el.innerHTML
                             }, function(data) {
-                                this.renderComment(data.message.inline_comment);
+                                this.renderComment(
+                                    data.message.inline_comment);
                                 this.commentArea_el.innerHTML = '';
                             }.bind(this));
                 }.bind(this));
@@ -172,7 +170,7 @@ postile.view.post.PostExpand.prototype.initComments = function() {
     }.bind(this));
 }
 
-postile.view.post.PostExpand.prototype.renderComment = function(cmt) {
+postile.view.PostExpand.prototype.renderComment = function(cmt) {
     if (!this.postInstance.isInAnonymousBoard()) {
         postile.data_manager.getUserData(cmt.creator_id, function(userData) {
             var comment_el = goog.dom.createDom('div', 'comment');
@@ -214,7 +212,7 @@ postile.view.post.PostExpand.prototype.renderComment = function(cmt) {
     }
 }
 
-postile.view.post.PostExpand.prototype.edit = function() {
+postile.view.PostExpand.prototype.edit = function() {
 
     var instance = this;
 
@@ -244,7 +242,7 @@ postile.view.post.PostExpand.prototype.edit = function() {
 
 }
 
-postile.view.post.PostExpand.prototype.submitEdit = function() {
+postile.view.PostExpand.prototype.submitEdit = function() {
 
     var instance = this;
 
@@ -258,12 +256,12 @@ postile.view.post.PostExpand.prototype.submitEdit = function() {
 
     this.content_el.contentEditable = false;
 
-}
+};
 
-postile.view.post.PostExpand.prototype.onclose = function() {
+postile.view.PostExpand.prototype.onclose = function() {
     if (this.in_edit) {
         if (window.confirm('Save your changes?')) {
             this.submitEdit();
         }
     }
-}
+};

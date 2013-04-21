@@ -32,8 +32,8 @@ postile.view.post.InlineComment = function(commentContainer, commentData, parent
         deleteButton_el: $('comment_delete_button'),
         confirmDeleteContainer_el: $('confirm_delete_container'),
         confirmOk_el: $('confirm_delete_ok'),
-        confirmCancel_el: $('confirm_delete_cancel'),
-    }
+        confirmCancel_el: $('confirm_delete_cancel')
+    };
 
     if (!this.parentInstance.isInAnonymousBoard()) {
         postile.data_manager.getUserData(

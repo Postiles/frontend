@@ -1,6 +1,6 @@
 goog.provide('postile.view.post.video_post');
 
-goog.require('postile.view.post');
+goog.require('postile.view.BasePost');
 
 postile.view.post.video_post.VideoPost = function(postData, board, mode) {
     goog.base(this, postData, board, mode);
@@ -8,7 +8,8 @@ postile.view.post.video_post.VideoPost = function(postData, board, mode) {
     goog.dom.classes.add(this.wrap_el, 'video_post');
 }
 
-goog.inherits(postile.view.post.video_post.VideoPost, postile.view.post.Post);
+goog.inherits(postile.view.post.video_post.VideoPost,
+              postile.view.BasePost);
 
 postile.view.post.video_post.VideoPost.prototype.enterDisplayMode = function() {
     goog.base(this, 'enterDisplayMode');
@@ -35,7 +36,7 @@ postile.view.post.video_post.VideoPost.prototype.initVideo = function(elements) 
         this.videoPreview_el = goog.dom.createDom('iframe', {
             'class': 'video_iframe',
             'src': this.postData.post.video_link,
-            'frameBorder': 0,
+            'frameBorder': 0
         });
 
         goog.dom.appendChild(elements.postContent_el, this.videoPreview_el);
@@ -52,7 +53,7 @@ postile.view.post.video_post.VideoPost.prototype.submitChange = function() {
     postile.ajax([ 'post', 'submit_change' ], 
             {
                 post_id: this.postData.post.id, 
-                title: title,
+                title: title
             }, 
             function(data) {
                 this.postData.post.title = title;

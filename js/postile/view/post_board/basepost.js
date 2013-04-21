@@ -1,4 +1,4 @@
-goog.provide('postile.view.post');
+goog.provide('postile.view.BasePost');
 
 goog.require('goog.dom');
 goog.require('goog.style');
@@ -10,7 +10,6 @@ goog.require('goog.dom.classes');
 goog.require('goog.ui.LabelInput');
 goog.require('goog.events.KeyHandler');
 
-goog.require('postile.i18n');
 goog.require('postile.toast');
 goog.require('postile.dom');
 goog.require('postile.ui');
@@ -19,33 +18,14 @@ goog.require('postile.debbcode');
 goog.require('postile.fx');
 goog.require('postile.view.At');
 goog.require('postile.fx.effects');
-goog.require('postile.view.post_expand');
-goog.require('postile.view.post.text_post');
-goog.require('postile.view.post.picture_post');
-goog.require('postile.view.post.video_post');
-goog.require('postile.view.post.PostExpand');
-goog.require('postile.view.post.InlineComment');
 
-/**
- * Factory function that creates a post from JSON data retrieved from the server
- */
-postile.view.post.createPostFromJSON = function(postData, board, mode) {
-    if (postData.post.image_url) { // PicturePost
-        return new postile.view.post.picture_post.PicturePost(
-            postData, board, mode);
-    } else if (postData.post.video_link) { // VideoPost
-        return new postile.view.post.video_post.VideoPost(
-            postData, board, mode);
-    } else { // TextPost
-        return new postile.view.post.text_post.TextPost(
-            postData, board, mode);
-    }
-}
+goog.require('postile.view.PostExpand');
+goog.require('postile.view.post.InlineComment');
 
 /**
  * Constructor for the abstract Post class
  */
-postile.view.post.Post = function(postData, board, mode) {
+postile.view.BasePost = function(postData, board, mode) {
     this.board = board;
     this.postData = postData;
     this.currMode = mode;
@@ -89,17 +69,17 @@ postile.view.post.Post = function(postData, board, mode) {
         });
 
     // NOTE: do not add any other event listener here unless it is for wrap_el
-}
+};
 
-postile.view.post.Post.prototype.changeCurrentMode = function(mode) {
+postile.view.BasePost.prototype.changeCurrentMode = function(mode) {
     switch (mode) {
-    case postile.view.post.Post.PostMode.DISPLAY:
+    case postile.view.BasePost.PostMode.DISPLAY:
         this.enterDisplayMode();
         break;
-    case postile.view.post.Post.PostMode.COMMENT:
+    case postile.view.BasePost.PostMode.COMMENT:
         this.enterCommentMode();
         break;
-    case postile.view.post.Post.PostMode.EDIT:
+    case postile.view.BasePost.PostMode.EDIT:
         if (this.isSelfPost()) {
             postile.ajax(
                 [ 'post', 'start_edit' ], 
@@ -109,34 +89,35 @@ postile.view.post.Post.prototype.changeCurrentMode = function(mode) {
                 }.bind(this));
         }
         break;
-    case postile.view.post.Post.PostMode.LOCKED:
+    case postile.view.BasePost.PostMode.LOCKED:
         this.enterLockedMode();
         break;
-    case postile.view.post.Post.PostMode.NEW:
+    case postile.view.BasePost.PostMode.NEW:
         this.enterNewMode();
         break;
-    case postile.view.post.Post.PostMode.CONFIRM_DELETE:
+    case postile.view.BasePost.PostMode.CONFIRM_DELETE:
         this.enterConfirmDeleteMode();
         break;
     }
-}
+};
 
 /**
  * Constant definitions for flags
+ * @enum {string}
  */
-postile.view.post.Post.PostMode = {
+postile.view.BasePost.PostMode = {
     DISPLAY: 'display',
     COMMENT: 'comment', // display inline comments
     EDIT: 'edit',
     LOCKED: 'locked', // other users are editing
     NEW: 'new', // newly created
-    CONFIRM_DELETE: 'confirm_delete',
-}
+    CONFIRM_DELETE: 'confirm_delete'
+};
 
 /**
  * Load post UI components from the static html file and bind events for it
  */
-postile.view.post.Post.prototype.loadUIComponents = function() {
+postile.view.BasePost.prototype.loadUIComponents = function() {
     // create wrapper for post
     this.wrap_el = goog.dom.createDom('div', 'post_wrap');
 
@@ -151,9 +132,9 @@ postile.view.post.Post.prototype.loadUIComponents = function() {
     this.loadLockedModeUIComponents();
     this.loadNewModeUIComponents();
     this.loadConfirmDeleteModeUIComponents();
-}
+};
 
-postile.view.post.Post.prototype.loadDisplayModeUIComponents = function() {
+postile.view.BasePost.prototype.loadDisplayModeUIComponents = function() {
     this.displayModePost_el = 
         postile.dom.getDescendantByClass(this.wrap_el, 'display_mode_post');
 
@@ -184,11 +165,11 @@ postile.view.post.Post.prototype.loadDisplayModeUIComponents = function() {
         commentPreviewDisplay_el: $('comment_preview_display'),
         commentPreviewAuthor_el: $('comment_preview_author'),
         commentPreviewMiddle_el: $('comment_preview_middle'),
-        commentPreviewContent_el: $('comment_preview_content'),
+        commentPreviewContent_el: $('comment_preview_content')
     };
 }
 
-postile.view.post.Post.prototype.loadCommentModeUIComponents = function() {
+postile.view.BasePost.prototype.loadCommentModeUIComponents = function() {
     this.commentModePost_el = 
         postile.dom.getDescendantByClass(this.wrap_el, 'comment_mode_post');
 
@@ -211,11 +192,11 @@ postile.view.post.Post.prototype.loadCommentModeUIComponents = function() {
         commentContainerNoComment_el: $('comment_container_no_comment'),
         commentItems_el: $('comment_container_items'),
         commentInput_el: $('comment_container_input'),
-        commentCloseButton_el: $('comment_list_close_button'),
+        commentCloseButton_el: $('comment_list_close_button')
     }
 }
 
-postile.view.post.Post.prototype.loadEditModeUIComponents = function() {
+postile.view.BasePost.prototype.loadEditModeUIComponents = function() {
     this.editModePost_el = 
         postile.dom.getDescendantByClass(this.wrap_el, 'edit_mode_post');
 
@@ -230,11 +211,11 @@ postile.view.post.Post.prototype.loadEditModeUIComponents = function() {
         postWysiwyfIconContainer: $('post_wysiwyf_icon_container'),
         postContent_el: $('post_content'),
         postContentPlaceHolder_el: $('post_content_placeholder'),
-        deleteIcon_el: $('post_delete_icon'),
+        deleteIcon_el: $('post_delete_icon')
     }
 }
 
-postile.view.post.Post.prototype.loadLockedModeUIComponents = function() {
+postile.view.BasePost.prototype.loadLockedModeUIComponents = function() {
     this.lockedModePost_el = 
         postile.dom.getDescendantByClass(this.wrap_el, 'locked_mode_post');
 
@@ -244,11 +225,11 @@ postile.view.post.Post.prototype.loadLockedModeUIComponents = function() {
 
     this.lockedModeElements = {
         container_el: $('post_container'),
-        lockUsername_el: $('lock_username'),
+        lockUsername_el: $('lock_username')
     }
 }
 
-postile.view.post.Post.prototype.loadNewModeUIComponents = function() {
+postile.view.BasePost.prototype.loadNewModeUIComponents = function() {
     this.newModePost_el = 
         postile.dom.getDescendantByClass(this.wrap_el, 'new_mode_post');
 
@@ -258,11 +239,11 @@ postile.view.post.Post.prototype.loadNewModeUIComponents = function() {
 
     this.newModeElements = {
         container_el: $('post_container'),
-        newUsername_el: $('new_username'),
+        newUsername_el: $('new_username')
     }
 }
 
-postile.view.post.Post.prototype.loadConfirmDeleteModeUIComponents = function() {
+postile.view.BasePost.prototype.loadConfirmDeleteModeUIComponents = function() {
     this.confirmDeleteModePost_el = 
         postile.dom.getDescendantByClass(
             this.wrap_el, 'confirm_delete_mode_post');
@@ -275,14 +256,14 @@ postile.view.post.Post.prototype.loadConfirmDeleteModeUIComponents = function() 
     this.confirmDeleteModeElements = {
         container_el: $('post_container'),
         confirmOk_el: $('confirm_ok'),
-        confirmCancel_el: $('confirm_cancel'),
+        confirmCancel_el: $('confirm_cancel')
     }
 }
 
 /**
  * Initialize the event handlers
  */
-postile.view.post.Post.prototype.initEventListeners = function() {
+postile.view.BasePost.prototype.initEventListeners = function() {
     this.initDisplayModeListener();
     this.initCommentModeListener();
     this.initEditModeListener();
@@ -291,7 +272,7 @@ postile.view.post.Post.prototype.initEventListeners = function() {
     this.initConfirmDeleteModeListener();
 }
 
-postile.view.post.Post.prototype.initDisplayModeListener = function() {
+postile.view.BasePost.prototype.initDisplayModeListener = function() {
     var elements = this.displayModeElements;
 
     // expand post
@@ -300,7 +281,7 @@ postile.view.post.Post.prototype.initDisplayModeListener = function() {
         goog.events.EventType.CLICK, 
         function(e) {
             var postExpand = 
-                new postile.view.post.PostExpand(this);
+                new postile.view.PostExpand(this);
             postExpand.open();
         }.bind(this));
 
@@ -344,7 +325,7 @@ postile.view.post.Post.prototype.initDisplayModeListener = function() {
         elements.postCommentCount_el, 
         goog.events.EventType.CLICK, 
         function(e) {
-            this.changeCurrentMode(postile.view.post.Post.PostMode.COMMENT);
+            this.changeCurrentMode(postile.view.BasePost.PostMode.COMMENT);
         }.bind(this));
 
     // enter edit mode by clicking on edit button
@@ -352,14 +333,14 @@ postile.view.post.Post.prototype.initDisplayModeListener = function() {
         elements.postEditButton_el, 
         goog.events.EventType.CLICK, 
         function(e) {
-            this.changeCurrentMode(postile.view.post.Post.PostMode.EDIT);
+            this.changeCurrentMode(postile.view.BasePost.PostMode.EDIT);
         }.bind(this));
 
     // comment preview clicked, enter comment mode
     goog.events.listen(
         elements.commentPreview_el, 
         goog.events.EventType.CLICK, function(e) {
-            this.changeCurrentMode(postile.view.post.Post.PostMode.COMMENT);
+            this.changeCurrentMode(postile.view.BasePost.PostMode.COMMENT);
         }.bind(this));
 
     // comment preview author name clicked
@@ -375,7 +356,7 @@ postile.view.post.Post.prototype.initDisplayModeListener = function() {
         }.bind(this));
 }
 
-postile.view.post.Post.prototype.initCommentModeListener = function() {
+postile.view.BasePost.prototype.initCommentModeListener = function() {
     var elements = this.commentModeElements;
 
     // expand post
@@ -384,7 +365,7 @@ postile.view.post.Post.prototype.initCommentModeListener = function() {
         goog.events.EventType.CLICK, 
         function(e) {
             var postExpand = 
-                new postile.view.post.PostExpand(this);
+                new postile.view.PostExpand(this);
             postExpand.open();
         }.bind(this));
 
@@ -404,7 +385,7 @@ postile.view.post.Post.prototype.initCommentModeListener = function() {
                 if (content.length) { // not empty comment
                     postile.ajax([ 'inline_comment', 'new' ], {
                         post_id: this.postData.post.id,
-                        content: content,
+                        content: content
                     }, function(data) {
                         // do nothing here, handled in fayeHandler
                     }.bind(this));
@@ -419,7 +400,7 @@ postile.view.post.Post.prototype.initCommentModeListener = function() {
         elements.commentCloseButton_el, 
         goog.events.EventType.CLICK, 
         function(e) {
-            this.changeCurrentMode(postile.view.post.Post.PostMode.DISPLAY);
+            this.changeCurrentMode(postile.view.BasePost.PostMode.DISPLAY);
         }.bind(this));
 
     // disable moving canvas when focused
@@ -439,7 +420,7 @@ postile.view.post.Post.prototype.initCommentModeListener = function() {
         }.bind(this));
 }
 
-postile.view.post.Post.prototype.initEditModeListener = function() {
+postile.view.BasePost.prototype.initEditModeListener = function() {
     var elements = this.editModeElements;
 
     // enter pressed when editing title
@@ -492,7 +473,7 @@ postile.view.post.Post.prototype.initEditModeListener = function() {
         goog.events.EventType.CLICK, 
         function(e) {
             this.changeCurrentMode(
-                postile.view.post.Post.PostMode.CONFIRM_DELETE);
+                postile.view.BasePost.PostMode.CONFIRM_DELETE);
         }.bind(this));
 
     // body clicked, submit change
@@ -500,7 +481,7 @@ postile.view.post.Post.prototype.initEditModeListener = function() {
         document.body, 
         goog.events.EventType.CLICK, 
         function(e) {
-            if (this.currMode == postile.view.post.Post.PostMode.EDIT) {
+            if (this.currMode == postile.view.BasePost.PostMode.EDIT) {
                 this.submitChange();
             }
         }.bind(this));
@@ -510,13 +491,13 @@ postile.view.post.Post.prototype.initEditModeListener = function() {
         this.wrap_el, 
         goog.events.EventType.CLICK, 
         function(e) {
-            if (this.currMode == postile.view.post.Post.PostMode.EDIT) {
+            if (this.currMode == postile.view.BasePost.PostMode.EDIT) {
                 e.stopPropagation();
             }
         }.bind(this));
 }
 
-postile.view.post.Post.prototype.initLockedModeListener = function() {
+postile.view.BasePost.prototype.initLockedModeListener = function() {
     var elements = this.lockedModeElements;
 
     if (!this.isInAnonymousBoard()) {
@@ -532,7 +513,7 @@ postile.view.post.Post.prototype.initLockedModeListener = function() {
     }
 }
 
-postile.view.post.Post.prototype.initNewModeListener = function() {
+postile.view.BasePost.prototype.initNewModeListener = function() {
     var elements = this.newModeElements;
 
     if (!this.isInAnonymousBoard()) {
@@ -548,7 +529,7 @@ postile.view.post.Post.prototype.initNewModeListener = function() {
     }
 }
 
-postile.view.post.Post.prototype.initConfirmDeleteModeListener = function() {
+postile.view.BasePost.prototype.initConfirmDeleteModeListener = function() {
     var elements = this.confirmDeleteModeElements;
 
     // ok clicked
@@ -572,8 +553,8 @@ postile.view.post.Post.prototype.initConfirmDeleteModeListener = function() {
         }.bind(this));
 }
 
-postile.view.post.Post.prototype.enterDisplayMode = function() {
-    this.currMode = postile.view.post.Post.PostMode.DISPLAY;
+postile.view.BasePost.prototype.enterDisplayMode = function() {
+    this.currMode = postile.view.BasePost.PostMode.DISPLAY;
 
     this.displayModePost_el.style.display = '';
 
@@ -680,8 +661,8 @@ postile.view.post.Post.prototype.enterDisplayMode = function() {
     }
 }
 
-postile.view.post.Post.prototype.enterCommentMode = function() {
-    this.currMode = postile.view.post.Post.PostMode.COMMENT;
+postile.view.BasePost.prototype.enterCommentMode = function() {
+    this.currMode = postile.view.BasePost.PostMode.COMMENT;
 
     this.commentModePost_el.style.display = '';
 
@@ -746,12 +727,12 @@ postile.view.post.Post.prototype.enterCommentMode = function() {
     elements.commentList_el.scrollTop = elements.commentList_el.scrollHeight;
 }
 
-postile.view.post.Post.prototype.bringToFront = function() {
+postile.view.BasePost.prototype.bringToFront = function() {
     this.wrap_el.style.zIndex = ++this.board.maxZIndex;
     //this.wrap_el.parentNode.appendChild(this.wrap_el); //Make sure it is infront of other posts
 }
 
-postile.view.post.Post.prototype.enterEditMode = function(req) {
+postile.view.BasePost.prototype.enterEditMode = function(req) {
     if (!this.isSelfPost()) { // not my own post, cannot edit
         return;
     }
@@ -760,7 +741,7 @@ postile.view.post.Post.prototype.enterEditMode = function(req) {
 
     this.board.disableMovingCanvas = true;
 
-    this.currMode = postile.view.post.Post.PostMode.EDIT;
+    this.currMode = postile.view.BasePost.PostMode.EDIT;
 
     this.editModePost_el.style.display = '';
 
@@ -780,8 +761,8 @@ postile.view.post.Post.prototype.enterEditMode = function(req) {
     }
 }
 
-postile.view.post.Post.prototype.enterLockedMode = function() {
-    this.currMode = postile.view.post.Post.PostMode.LOCKED;
+postile.view.BasePost.prototype.enterLockedMode = function() {
+    this.currMode = postile.view.BasePost.PostMode.LOCKED;
 
     this.lockedModePost_el.style.display = '';
     this.displayModePost_el.style.display = '';
@@ -805,8 +786,8 @@ postile.view.post.Post.prototype.enterLockedMode = function() {
     }
 }
 
-postile.view.post.Post.prototype.enterNewMode = function() {
-    this.currMode = postile.view.post.Post.PostMode.NEW;
+postile.view.BasePost.prototype.enterNewMode = function() {
+    this.currMode = postile.view.BasePost.PostMode.NEW;
 
     this.newModePost_el.style.display = '';
 
@@ -830,8 +811,8 @@ postile.view.post.Post.prototype.enterNewMode = function() {
     }
 }
 
-postile.view.post.Post.prototype.enterConfirmDeleteMode = function() {
-    this.currMode = postile.view.post.Post.PostMode.CONFIRM_DELETE;
+postile.view.BasePost.prototype.enterConfirmDeleteMode = function() {
+    this.currMode = postile.view.BasePost.PostMode.CONFIRM_DELETE;
 
     this.confirmDeleteModePost_el.style.display = '';
 
@@ -846,11 +827,11 @@ postile.view.post.Post.prototype.enterConfirmDeleteMode = function() {
     var elements = this.confirmDeleteModeElements;
 }
 
-postile.view.post.Post.prototype.isSelfPost = function() {
+postile.view.BasePost.prototype.isSelfPost = function() {
     return localStorage.postile_user_id == this.postData.post.creator_id;
 }
 
-postile.view.post.Post.prototype.resetCommentPreview = function(data) {
+postile.view.BasePost.prototype.resetCommentPreview = function(data) {
     var elements = this.displayModeElements;
 
     var preview_el = elements.commentPreview_el;
@@ -917,7 +898,7 @@ postile.view.post.Post.prototype.resetCommentPreview = function(data) {
     this.resetCommentCount();
 }
 
-postile.view.post.Post.prototype.resetCommentCount = function() {
+postile.view.BasePost.prototype.resetCommentCount = function() {
     var commentCount = this.postData.inline_comments.length;
     var commentCountText;
 
@@ -932,11 +913,11 @@ postile.view.post.Post.prototype.resetCommentCount = function() {
     this.displayModeElements.postCommentCount_el.innerHTML = commentCountText;
 }
 
-postile.view.post.Post.prototype.hideNoCommentEl = function() {
+postile.view.BasePost.prototype.hideNoCommentEl = function() {
     this.commentModeElements.commentContainerNoComment_el.style.display = 'none';
 }
 
-postile.view.post.Post.prototype.inlineCommentRendered = function(comment) {
+postile.view.BasePost.prototype.inlineCommentRendered = function(comment) {
     var comment_ids = this.postData.inline_comments.map(function(c) {
         return c.inline_comment.id;
     });
@@ -944,12 +925,12 @@ postile.view.post.Post.prototype.inlineCommentRendered = function(comment) {
     return (comment_ids.indexOf(comment.inline_comment.id) != -1);
 }
 
-postile.view.post.Post.prototype.appendInlineComment = function(comment) {
+postile.view.BasePost.prototype.appendInlineComment = function(comment) {
     new postile.view.post.InlineComment(
         this.commentModeElements.commentItems_el, comment, this);
 }
 
-postile.view.post.Post.prototype.removeInlineComment = function(comment) {
+postile.view.BasePost.prototype.removeInlineComment = function(comment) {
     var comments = this.postData.inline_comments;
 
     for (var i in this.postData.inline_comments) {
@@ -967,6 +948,6 @@ postile.view.post.Post.prototype.removeInlineComment = function(comment) {
     }
 }
 
-postile.view.post.Post.prototype.isInAnonymousBoard = function() {
+postile.view.BasePost.prototype.isInAnonymousBoard = function() {
     return this.board.boardData.anonymous;
 }

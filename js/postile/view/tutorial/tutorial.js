@@ -24,7 +24,7 @@ postile.view.tutorial.TutorialView = function(change_password) {
         viewList_el: $('view_list'),
         leftArrow_el: $('left_arrow'),
         rightArrow_el: $('right_arrow'),
-        skipButton_el: $('skip_button'),
+        skipButton_el: $('skip_button')
     }
 
     // dot indicators at the bottom

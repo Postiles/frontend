@@ -1,6 +1,6 @@
 goog.provide('postile.view.post.picture_post');
 
-goog.require('postile.view.post');
+goog.require('postile.view.BasePost');
 
 postile.view.post.picture_post.PicturePost = function(postData, board, mode) {
     goog.base(this, postData, board, mode);
@@ -11,7 +11,8 @@ postile.view.post.picture_post.PicturePost = function(postData, board, mode) {
             + postile.conf.uploadsResource([this.postData.post.image_url]) + ')';
 }
 
-goog.inherits(postile.view.post.picture_post.PicturePost, postile.view.post.Post);
+goog.inherits(postile.view.post.picture_post.PicturePost,
+              postile.view.BasePost);
 
 postile.view.post.picture_post.PicturePost.prototype.enterDisplayMode = function() {
     goog.base(this, 'enterDisplayMode');
@@ -41,7 +42,7 @@ postile.view.post.picture_post.PicturePost.prototype.submitChange = function() {
     postile.ajax([ 'post', 'submit_change' ], 
             {
                 post_id: this.postData.post.id, 
-                title: title,
+                title: title
             }, 
             function(data) {
                 this.postData.post.title = title;

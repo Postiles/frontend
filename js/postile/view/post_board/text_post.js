@@ -1,6 +1,6 @@
 goog.provide('postile.view.post.text_post');
 
-goog.require('postile.view.post');
+goog.require('postile.view.BasePost');
 
 postile.view.post.text_post.TextPost = function(postData, board, mode) {
     goog.base(this, postData, board, mode);
@@ -8,7 +8,8 @@ postile.view.post.text_post.TextPost = function(postData, board, mode) {
     goog.dom.classes.add(this.wrap_el, 'text_post');
 }
 
-goog.inherits(postile.view.post.text_post.TextPost, postile.view.post.Post);
+goog.inherits(postile.view.post.text_post.TextPost,
+              postile.view.BasePost);
 
 postile.view.post.text_post.TextPost.prototype.enterDisplayMode = function() {
     goog.base(this, 'enterDisplayMode');
@@ -106,7 +107,7 @@ postile.view.post.text_post.TextPost.prototype.submitChange = function() {
             {
                 post_id: this.postData.post.id,
                 title: title,
-                content: content,
+                content: content
             }, 
             function(data) {
                 this.postData.post.title = title;

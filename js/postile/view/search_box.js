@@ -4,8 +4,8 @@ goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('goog.async.Throttle');
 goog.require('postile.conf');
-goog.require('postile.view.post_board');
 goog.require('postile.view');
+goog.require('postile.view.switchToPost');
 
 postile.view.search_box.SearchBox = function(input_instance) {
     this.instance = input_instance;
@@ -143,13 +143,12 @@ postile.view.search_box.SearchBox.prototype.search = function(instance) {
                 goog.dom.appendChild(this.post_list, post_result);
 
                 goog.events.listen(post_result, goog.events.EventType.CLICK, function(){
-                    postile.view.post_board.switchTo(post.id);
+                    postile.view.switchToPost(post.id);
                 });
 
                 var result_item_title = goog.dom.createDom("div", "search_result_item_title");
                 if(post.title == ''){ // No Title
                     result_item_title.innerHTML = 'no title';
-                    result_item_title
                 }else{
                     result_item_title.innerHTML = post.title;
                 }
