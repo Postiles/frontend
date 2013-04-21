@@ -300,6 +300,14 @@ postile.view.post_board.PostBoard = function(board_id) {
     this.currentSubscribeArea = null;
 
     /**
+     * An array of deferreds which contain faye subscriptions.
+     * Used to clean up faye subscription during closing.
+     * @type {Array.<goog.async.Deferred>}
+     * @private
+     */
+    this.fayeSubscrDfds_ = [];
+
+    /**
      * "Max zIndex of posts currently."
      * @type {number}
      */
@@ -347,14 +355,14 @@ postile.view.post_board.PostBoard = function(board_id) {
             instance.channel_str = instance.boardData.id;
 
             if (postile.conf.userLoggedIn()) {
-                postile.faye.subscribe(instance.channel_str, function(status, data) {
+                var dfd0 = postile.faye.subscribe(instance.channel_str, function(status, data) {
                     instance.fayeHandler(status, data);
                 });
 
-                postile.faye.subscribe('status/board/'+instance.boardData.id+'/user/'+instance.userData.id, function(status, data) {
+                var dfd1 = postile.faye.subscribe('status/board/'+instance.boardData.id+'/user/'+instance.userData.id, function(status, data) {
                 });
 
-                postile.faye.subscribe('status/'+instance.boardData.id, function(status, data){
+                var dfd2 = postile.faye.subscribe('status/'+instance.boardData.id, function(status, data){
                     instance.onlinepeople.count = data.count;
                     instance.onlinepeople.id = data.users;
                     if(instance.onlinepeople.is_expended) {
@@ -363,6 +371,7 @@ postile.view.post_board.PostBoard = function(board_id) {
                         instance.updateOnlineCount();
                     }
                 });
+                instance.fayeSubscrDfds_.push(dfd0, dfd1, dfd2);
             }
             instance.initView();
             instance.initEvents();
@@ -378,7 +387,6 @@ postile.view.post_board.PostBoard = function(board_id) {
         });
     });
 }
-
 goog.inherits(postile.view.post_board.PostBoard, postile.view.FullScreenView);
 
 /**
@@ -597,9 +605,18 @@ postile.view.post_board.PostBoard.prototype.close = function() {
     if (this.window_resize_event_handler) {
         this.window_resize_event_handler.unlisten();
     }
+
     if (this.keyboard_event_handler) {
         this.keyboard_event_handler.unlisten();
     }
+
+    this.header.close();
+
+    goog.array.forEach(this.fayeSubscrDfds_, function(dfd, i) {
+        dfd.addCallback(function(subscr) {
+            subscr.cancel();
+        });
+    });
 
     /*
     postile.ajax(['topic','leave_topic'], { channel_str: this.channel_str }, function(data){
@@ -608,7 +625,8 @@ postile.view.post_board.PostBoard.prototype.close = function() {
         }
     });
     */
-}
+    goog.base(this, 'close');
+};
 
 /**
  * "Return true only when it's movable"

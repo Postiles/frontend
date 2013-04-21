@@ -73,7 +73,7 @@ postile.view.search_box.SearchBox.prototype.search = function(instance) {
         postile.ajax([ 'search', 'search_user' ], { keyword: search_value }, function(data) {
             this.people_list.innerHTML = ""; // clear previous results
 
-            var user_arr = data.message.users;
+            var user_arr = data.message.users.slice(0, 5);
 
             if (user_arr.length == 0) {
                 goog.style.showElement(this.search_result_people, false);
@@ -128,7 +128,7 @@ postile.view.search_box.SearchBox.prototype.search = function(instance) {
         postile.ajax(['search','search_post'], { keyword: search_value }, function(data) {
             this.post_list.innerHTML = "";
 
-            post_arr = data.message.posts;
+            post_arr = data.message.posts.slice(0, 5);
 
             if (post_arr.length == 0) {
                 goog.style.showElement(this.search_result_post, false);

@@ -4,6 +4,16 @@ goog.require('goog.string');
 goog.require('postile.dom');
 goog.require("postile.view.post_board.InternalLink");
 
+/**
+ * BBCode handling.
+ *
+ * Usage:
+ *
+ * 1. var html = parseBBcode(rawContent)
+ * 2. el.innerHTML = html
+ * 3. bbcodePostProcess(el)
+ */
+
 postile.parseBBcode = function(input) {
     //input = goog.string.htmlEscape(input + '');
     input = input.replace(/\[(\/?(b|i|u))\]/g, "<$1>");

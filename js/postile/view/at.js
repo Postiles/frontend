@@ -156,7 +156,7 @@ postile.view.At.prototype.setCurrent = function(current) {
 postile.view.At.prototype.fetchAndRender = function(keyword) {
     var instance = this;
     postile.ajax(['search','search_user'], { keyword: keyword }, function(r) {
-        var usr = r.message.users;
+        var usr = r.message.users.slice(0, 5);
         if (!usr.length) { return; }
         goog.dom.removeChildren(instance.container);
         for (var i in usr) {

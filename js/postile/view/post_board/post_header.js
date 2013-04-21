@@ -43,10 +43,21 @@ postile.view.post_board.Header = function(board) {
     this.topicImg_el = postile.dom.getDescendantByClass(this.topicImgContainer_el, 'topic_image');
     this.topicImg_el.src = postile.conf.uploadsResource( [this.board.boardData.image_small_url] );
     
-    goog.dom.appendChild(this.topicInnerContainer_el, new postile.view.post_board.Account(board).container);
-}
-
+    /**
+     * @private
+     */
+    this.account_ = new postile.view.post_board.Account(board);
+    goog.dom.appendChild(this.topicInnerContainer_el, this.account_.container);
+};
 goog.inherits(postile.view.post_board.Header, postile.view.NormalView);
+
+/**
+ * @overrideDoc
+ */
+postile.view.post_board.Header.prototype.close = function() {
+    this.account_.close();
+    goog.base(this, 'close');
+};
 
 postile.view.post_board.Header.prototype.dismissOthers = function() {
 }

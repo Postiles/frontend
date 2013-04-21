@@ -747,7 +747,8 @@ postile.view.post.Post.prototype.enterCommentMode = function() {
 }
 
 postile.view.post.Post.prototype.bringToFront = function() {
-    this.wrap_el.parentNode.appendChild(this.wrap_el); //Make sure it is infront of other posts
+    this.wrap_el.style.zIndex = ++this.board.maxZIndex;
+    //this.wrap_el.parentNode.appendChild(this.wrap_el); //Make sure it is infront of other posts
 }
 
 postile.view.post.Post.prototype.enterEditMode = function(req) {
