@@ -15,7 +15,17 @@
   white-space: nowrap;
   height: 100px;
 }
-.sheety-post-cell, .sheety-comment-cell, .sheety-new-comment-cell {
+.sheety-post-cell, .sheety-comment-cell {
+  border: 1px solid #c3cfc2;
+  display: inline-block;
+  width: 174px;
+  height: 88px;
+  vertical-align: middle;
+  padding: 5px 12px;
+  white-space: normal;
+  overflow-y: hidden;
+}
+.sheety-new-comment-cell {
   border: 1px solid #c3cfc2;
   display: inline-block;
   width: 174px;
@@ -91,8 +101,15 @@
 .sheety-comment-cell .author, .sheety-comment-cell .likes {
   color: #4269bd;
 }
-.sheety-comment-cell .author, .sheety-comment-cell .likes, .sheety-comment-cell .del {
+.sheety-comment-cell .author, .sheety-comment-cell .likes {
   cursor: pointer;
+}
+.sheety-comment-cell .del {
+  cursor: pointer;
+  visibility: hidden;
+}
+.sheety-comment-cell:hover .del {
+  visibility: visible;
 }
 .sheety-comment-cell .author-hover, .sheety-comment-cell .likes-hover .like-button, .sheety-comment-cell .del-hover {
   text-decoration: underline;

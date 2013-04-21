@@ -122,46 +122,51 @@ postile.view.post_board.Account = function(optBoardData) {
     }
 
     this.message_button = postile.dom.getDescendantById(instance.container, "message_button");
-    postile.data_manager.getUserData(localStorage.postile_user_id, function(data) {
-        if(data.user_id){ // login and show
-            this.logged_in = true;
-            var notificationList;
-            /* get hte number of new notifications from server */
-            postile.ajax([ 'notification', 'get_notifications' ], {}, function(data) {
-                /* handle the data return after getting the boards information back */
-                notificationList = data.message.notifications;
-                if(notificationList.length != 0 ) {
-                    this.notificationHandler(data);
-                }
-                /* TODO add a notification to the mail box to notify user */
-            }.bind(this));
-            
-            this.alert_wrapper = goog.dom.createDom('div', 'notification_number_wrapper');
-            goog.dom.appendChild(this.message_button, this.alert_wrapper);
 
-            this.redCircle = goog.dom.createDom('div', 'notification_redCircle');
-            goog.dom.appendChild(this.alert_wrapper, this.redCircle);
+    console.log(postile.conf.userLoggedIn());
+    if (postile.conf.userLoggedIn()) {
+        postile.data_manager.getUserData(localStorage.postile_user_id, function(data) {
+            if(data.user_id){ // login and show
+                this.logged_in = true;
+                var notificationList;
+                /* get hte number of new notifications from server */
+                postile.ajax([ 'notification', 'get_notifications' ], {}, function(data) {
+                    /* handle the data return after getting the boards information back */
+                    notificationList = data.message.notifications;
+                    if(notificationList.length != 0 ) {
+                        this.notificationHandler(data);
+                    }
+                    /* TODO add a notification to the mail box to notify user */
+                }.bind(this));
+                
+                this.alert_wrapper = goog.dom.createDom('div', 'notification_number_wrapper');
+                goog.dom.appendChild(this.message_button, this.alert_wrapper);
 
-            // Stores faye subscription for future disposal
-            this.fayeSubscrDfd_ = postile.faye.subscribe('notification/' + localStorage.postile_user_id, function(status, data) {
-                instance.notificationHandler(data);
-            });
-            this.notification_isOpened = false;
-            this.notification = new postile.view.notification.Notification(this, optBoardData);
-            goog.events.listen(this.message_button, goog.events.EventType.CLICK, function(e) {
-                e.stopPropagation();
-                if (optBoardData) {
-                    this.switchBoardTip.close();
-                }
-                this.sBTip.close();  
-                this.notification.open(this.message_button);
-                this.notificationHandlerClear();
-            }.bind(this), true);
-        }else{
-            this.logged_in = false;
-            this.message_button.style.display = 'none';
-        }
-    }.bind(this)); 
+                this.redCircle = goog.dom.createDom('div', 'notification_redCircle');
+                goog.dom.appendChild(this.alert_wrapper, this.redCircle);
+
+                // Stores faye subscription for future disposal
+                this.fayeSubscrDfd_ = postile.faye.subscribe('notification/' + localStorage.postile_user_id, function(status, data) {
+                    instance.notificationHandler(data);
+                });
+                this.notification_isOpened = false;
+                this.notification = new postile.view.notification.Notification(this, optBoardData);
+                goog.events.listen(this.message_button, goog.events.EventType.CLICK, function(e) {
+                    e.stopPropagation();
+                    if (optBoardData) {
+                        this.switchBoardTip.close();
+                    }
+                    this.sBTip.close();  
+                    this.notification.open(this.message_button);
+                    this.notificationHandlerClear();
+                }.bind(this), true);
+            }else{
+            }
+        }.bind(this)); 
+    } else {
+        this.logged_in = false;
+        this.message_button.style.display = 'none';
+    }
     /*
     if (optBoardData) {
         this.moreButtonPop_isOpened = false;
@@ -232,34 +237,31 @@ postile.view.post_board.Account.prototype.loadUserInfo = function(){
 
 // Remember to call change account view after switching the board
 postile.view.post_board.Account.prototype.changeAccoutView = function(){
-    postile.data_manager.getUserData(localStorage.postile_user_id, function(data) {
-        this.cur_id = data.user_id;
-            if(!this.cur_id){ // did not login
-                this.account_container.style.display = 'none';
-                this.profileImageContainer_el.style.display = 'none';
-                this.login_button.style.display = 'block';
-                this.signup_button.style.display = 'block';
+    if (postile.conf.userLoggedIn()) {
+        postile.data_manager.getUserData(localStorage.postile_user_id, function(data) {
+            this.cur_id = data.user_id;
+                if(!this.cur_id){ // did not login
+                    this.account_container.style.display = 'none';
+                    this.profileImageContainer_el.style.display = 'none';
+                    this.login_button.style.display = 'block';
+                    this.signup_button.style.display = 'block';
 
-                new postile.toast.title_bar_toast(
-                    "You are not logged in. Please login to enable edit functions", 2);
+                    new postile.toast.title_bar_toast(
+                        "You are not logged in. Please login to enable edit functions", 2);
 
-            }else {
-                this.account_container.style.display = 'block';
-                this.profileImageContainer_el.style.display = 'block';
-                this.login_button.style.display = 'none';
-                this.signup_button.style.display = 'none';
+                }else {
+                    this.account_container.style.display = 'block';
+                    this.profileImageContainer_el.style.display = 'block';
+                    this.login_button.style.display = 'none';
+                    this.signup_button.style.display = 'none';
 
-                // get current board type to check if is anonymous
-                if(postile.router.current_view instanceof postile.view.post_board.PostBoard){
                     postile.data_manager.getUserData(localStorage.postile_user_id, function(data) {
                         this.usernameText_el.innerHTML = data.username;
                         this.profileImageContainerImg_el.src = postile.conf.uploadsResource([ data.image_small_url ]);
                     }.bind(this));
-                } else {
-                    console.log('error, current_view is not a board');
                 }
-            }
-    }.bind(this)); 
+        }.bind(this)); 
+    }
 }
 
 /* 

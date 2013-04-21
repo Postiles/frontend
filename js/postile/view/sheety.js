@@ -19,6 +19,7 @@ goog.require('postile.view');
 goog.require('postile.view.At');
 goog.require('postile.debbcode');
 goog.require('postile.view.post_board.handlers');
+goog.require('postile.view.post_board.Header');
 goog.require('postile.templates.sheety');
 goog.require('postile.data_manager');
 goog.require('postile.async');
@@ -61,9 +62,10 @@ postile.view.Sheety = function(opt_boardId) {
     /**
      * Contains a list of posts. Its model is a {Array.<PostWE>}
      * The left hand side of the sheet.
+     * 45px is the height of the post_board.Header view.
      * @private
      */
-    this.postList_ = new postile.view.Sheety.PostList();
+    this.postList_ = new postile.view.Sheety.PostList(45);
 
     /**
      * Comment row container.
@@ -73,11 +75,26 @@ postile.view.Sheety = function(opt_boardId) {
     this.commentRows_ = new goog.ui.Component();
 
     /**
-     * Maps post id to row in sheet. Initialized after fetching data.
+     * Maps post-id to row in sheet. Initialized after fetching data.
      * @type {Object.<postile.view.Sheety.CommentRow>}
      * @private
      */
     this.postIdToRow_ = {};
+
+    /**
+     * Initialized after fetching board data.
+     * @type {boolean=}
+     * @private
+     */
+    this.isAnonymous_ = false;
+
+    /**
+     * The header of this full screen view.
+     * Initialized in renderPosts.
+     * @type {postile.view.post_board.Header}
+     * @private
+     */
+    this.header_ = null;
 
     /**
      * Faye channel, to be cancelled on destroy.
@@ -87,14 +104,38 @@ postile.view.Sheety = function(opt_boardId) {
      */
     this.fayeSubscr_ = null;
 
-    // Fetchs board data, then fetchs user data, finally renders the view.
-    var fetchPosts = goog.partial(
-        postile.ajax,
-        ['board', 'get_recent_posts'],
-        { 'board_id': this.boardId_, 'number': 40 });
-    postile.async.Promise.fromCallback(fetchPosts)
-    .bind(postile.view.Sheety.fetchUserOfBoardData_)
-    .bind(this.renderPosts_, this);
+    // Firstly fetches boardData to check for anonymity and renders
+    //   the header.
+    // Secondly fetches recent-posts
+    // Thirdly fetches creators of posts and (optionally)
+    //   creators of comments.
+    // Finally renders posts and comments
+    var fetchBoardData = goog.partial(postile.ajax,
+        ['board', 'enter_board'], {
+            'board_id': this.boardId_
+        });
+    postile.async.Promise.fromCallback(fetchBoardData)
+    .bind(function(response) {
+        // Got board data: renders the header
+        var boardData = response['message']['board'];
+
+        this.header_ = new postile.view.post_board.Header(boardData);
+        goog.dom.append(goog.dom.getElement('wrapper'),
+            this.header_.container);
+
+        var anony = this.isAnonymous_ = boardData['anonymous'];
+        var fetchPosts = goog.partial(
+            postile.ajax,
+            ['board', 'get_recent_posts'],
+            { 'board_id': this.boardId_, 'number': 40 });
+
+        var fetchUsers= goog.partial(
+            postile.view.Sheety.fetchUserOfBoardData_, anony);
+        // Fetches posts
+        return postile.async.Promise.fromCallback(fetchPosts)
+               // and fetches users
+               .bind(fetchUsers);
+    }, this).bind(/* And render the posts */ this.renderPosts_, this);
 
     postile.view.loadCss(['sheety.css']);
 };
@@ -136,6 +177,7 @@ postile.view.Sheety.prototype.createDom = function() {
         var postId = postEx['post']['id'];
 
         var row = new postile.view.Sheety.CommentRow(
+            this.isAnonymous_,
             postId,
             postEx['comments'] /* model */);
 
@@ -272,12 +314,16 @@ postile.view.Sheety.prototype.submitDelComment = function(e) {
 
 postile.view.Sheety.prototype.receivedNewComment = function(e) {
     var comment = e.target['inline_comment'];
-    var row = this.findRowByPostId(comment['post_id']);
+    var postId = comment['post_id'];
+    var row = this.findRowByPostId(postId);
     if (!row) {
         // No such post id
         return;
     }
-    postile.view.Sheety.fetchUserOfComment_(e.target, comment['post_id'])
+    var postCell = this.postList_.findCellByPostId(postId);
+    postile.view.Sheety.fetchUserOfComment_(e.target,
+                                            postCell.getAuthorId(),
+                                            this.isAnonymous_)
     .lift(function(commentData) {
         row.showNewComment(commentData);
     });
@@ -297,7 +343,7 @@ postile.view.Sheety.prototype.receivedDelComment = function(e) {
  * Transform a boarddata into renderable data.
  * @private
  */
-postile.view.Sheety.fetchUserOfBoardData_ = function(response) {
+postile.view.Sheety.fetchUserOfBoardData_ = function(anony, response) {
     var postExs = response['message'];
     var postProms = goog.array.map(postExs, function(postEx) {
         return postile.view.Sheety.fetchUserOfPost_(postEx['post']);
@@ -306,7 +352,7 @@ postile.view.Sheety.fetchUserOfBoardData_ = function(response) {
         var innerProms = goog.array.map(postEx['inline_comments'],
             function(comment) {
                 return postile.view.Sheety.fetchUserOfComment_(
-                    comment, postEx['post']['creator_id']);
+                    comment, postEx['post']['creator_id'], anony);
             });
         return postile.async.Promise.waitForAll(innerProms);
     });
@@ -357,7 +403,8 @@ postile.view.Sheety.PostEx;
  *   
  *   where board-data' = post-ex*
  *         post-ex = <post> <post-creator> <comment'>*
- *         comment' = <cmt-like> <cmt-liked> <cmt-data> <cmt-creator>
+ *         comment' = <cmt-like> <cmt-liked> <cmt-data> <cmt-creator>?
+ *                    (cmt-creator is not present for anonymous board)
  *
  * Processors:
  *   fetchUserOfPost: <post> -> <post> <post-creator>
@@ -377,7 +424,14 @@ postile.view.Sheety.fetchUserOfPost_ = function(post) {
            });
 };
 
-postile.view.Sheety.fetchUserOfComment_ = function(commentWe, postCid) {
+/**
+ * @param {number} postCid The creator_id of the parent post
+ * of this comment
+ * @param {boolean=} anony
+ * @return {postile.async.Promise}
+ */
+postile.view.Sheety.fetchUserOfComment_ = function(commentWe,
+                                                   postCid, anony) {
     var inlCmt = commentWe['inline_comment'];
     var cid = inlCmt['creator_id'];
     var likes = commentWe['likes'];
@@ -390,17 +444,23 @@ postile.view.Sheety.fetchUserOfComment_ = function(commentWe, postCid) {
         'cmt_data': inlCmt,
         'cmt_likeCount': likes.length,
         'cmt_liked': liked,
-        // Either the comment is created by this user
+        // Either (when the board is not anonymous)
+        //   the comment is created by this user
         // Or the post is created by this user
-        'cmt_canDel': cid == selfId || postCid == selfId
+        'cmt_canDel': (!anony && cid == selfId) || postCid == selfId
     };
 
-    return postile.async.Promise.fromCallback(fetcher)
-           .lift(function(user) {
-               // Merge with comment
-               skeleton['cmt_creator'] = user;
-               return skeleton;
-           });
+    if (anony) {
+        return postile.async.Promise.unit(skeleton);
+    }
+    else {
+        return postile.async.Promise.fromCallback(fetcher)
+               .lift(function(user) {
+                   // Merge with comment
+                   skeleton['cmt_creator'] = user;
+                   return skeleton;
+               });
+    }
 };
 
 /**
@@ -425,8 +485,10 @@ postile.view.Sheety.prototype.renderPosts_ = function(postExs) {
 /**
  * Contains many post cells.
  * @constructor
+ * @param {number=} opt_floatMarginTop Additional top value added to
+ * the floating element.
  */
-postile.view.Sheety.PostList = function() {
+postile.view.Sheety.PostList = function(opt_floatMarginTop) {
     goog.base(this);
 
     /**
@@ -435,6 +497,16 @@ postile.view.Sheety.PostList = function() {
      * @private
      */
     this.floatHandlerKey_ = null;
+
+    this.floatMarginTop_ = opt_floatMarginTop || 0;
+
+    /**
+     * Maps post-id to post-cell in post-list.
+     * Initialized in createDom.
+     * @type {Object.<postile.view.Sheety.PostCell>}
+     * @private
+     */
+    this.postIdToCell_ = {};
 };
 goog.inherits(postile.view.Sheety.PostList, goog.ui.Component);
 
@@ -447,6 +519,9 @@ postile.view.Sheety.PostList.prototype.createDom = function() {
         var cell = new postile.view.Sheety.PostCell();
         cell.setModel(postEx);
         this.addChild(cell, true);
+
+        // Store this id->cell mapping
+        this.postIdToCell_[cell.getPostId()] = cell;
     }, this);
 };
 
@@ -463,7 +538,7 @@ postile.view.Sheety.PostList.prototype.exitDocument = function() {
 postile.view.Sheety.PostList.prototype.enableFloat = function() {
     // XXX: adjust initScrollTop a bit when we have something
     // above this view.
-    var initScrollTop = document.body.scrollTop;
+    var initScrollTop = this.floatMarginTop_;
     this.floatHandlerKey_ = goog.events.listen(
         document,
         goog.events.EventType.SCROLL,
@@ -479,7 +554,16 @@ postile.view.Sheety.PostList.prototype.syncScroll =
 function(initScrollTop) {
     var el = this.getElement();
     el.style.top =
-        String(initScrollTop - document.body.scrollTop) + 'px';
+        String(initScrollTop - window.scrollY) + 'px';
+};
+
+/**
+ * Find the corresponding PostCell by the given postId, or null
+ * if not found.
+ */
+postile.view.Sheety.PostList.prototype.findCellByPostId =
+function(postId) {
+    return goog.object.get(this.postIdToCell_, postId, null);
 };
 
 /**
@@ -783,8 +867,13 @@ postile.view.Sheety.CETextarea.prototype.setValue = function(x) {
  * A row of comment cells
  * @constructor
  */
-postile.view.Sheety.CommentRow = function(postId, model) {
+postile.view.Sheety.CommentRow = function(anony, postId, model) {
     goog.base(this);
+
+    /**
+     * @type {boolean=}
+     */
+    this.isAnonymous_ = anony;
 
     /**
      * Post id of all the comments
@@ -838,7 +927,7 @@ function(commentData) {
 
 postile.view.Sheety.CommentRow.prototype.makeCommentCell =
 function(commentData, opt_recordInMap) {
-    var cell = new postile.view.Sheety.CommentCell();
+    var cell = new postile.view.Sheety.CommentCell(this.isAnonymous_);
     cell.setModel(commentData);
     if (opt_recordInMap) {
         this.commentIdToCell_[cell.getCommentId()] = cell;
@@ -851,13 +940,17 @@ function(commentData, opt_recordInMap) {
  * XXX: currently like_ and del_ doesn't share the same model,
  * since the model is pre-processed in createDom.
  * @constructor
+ * @param {boolean=} anony
  */
-postile.view.Sheety.CommentCell = function() {
+postile.view.Sheety.CommentCell = function(anony) {
     goog.base(this, undefined,
               goog.ui.ContainerRenderer.getCustomRenderer(
                   goog.ui.ContainerRenderer, 'sheety-comment-cell'));
 
-    this.author_ = new postile.view.Sheety.CommentAuthor();
+    this.isAnonymous_ = anony;
+    if (!anony) {
+        this.author_ = new postile.view.Sheety.CommentAuthor();
+    }
     this.like_ = new goog.ui.Control(null,
         postile.view.Sheety.LikeRenderer.getInstance());
     this.del_ = new goog.ui.Control(null,
@@ -874,20 +967,24 @@ postile.view.Sheety.CommentCell.prototype.createDom = function() {
         model['cmt_data']['created_at']);
 
     var preProcData = {
-        author: model['cmt_creator']['username'],
+        author: this.isAnonymous_ ? ''
+                                  : model['cmt_creator']['username'],
         ctime: ctime.toUsTimeString(),
         likeCount: model['cmt_likeCount'],
         liked: model['cmt_liked'],
         canDelete: model['cmt_canDel'],
-        content: postile.parseBBcode(model['cmt_data']['content'])
+        content: postile.parseBBcode(model['cmt_data']['content']),
+        isAnonymous: this.isAnonymous_
     };
 
     // Comment header
     el['innerHTML'] = postile.templates.sheety.comment(preProcData);
 
-    // first addChild and then decorate. Otherwise closure will barf
-    this.addChild(this.author_);
-    this.author_.decorate(goog.dom.getElementByClass('author', el));
+    if (!this.isAnonymous_) {
+        // first addChild and then decorate. Otherwise closure will barf
+        this.addChild(this.author_);
+        this.author_.decorate(goog.dom.getElementByClass('author', el));
+    }
 
     // Append like count and del button
     this.like_.setModel(preProcData);
