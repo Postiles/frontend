@@ -12,8 +12,6 @@ postile.view.post_board.Account = function(opt_board) {
     this.usernameText_el = postile.dom.getDescendantById(instance.container, 'username_text');
     //this.usernameText_el.innerHTML = this.board.userData.username;
 
-    // change account view for anonymous
-    var profileView = new postile.view.profile.ProfileView(localStorage.postile_user_id);
 
     // create view for displaying user information
     this.settingButton_el = postile.dom.getDescendantById(instance.container, 'settings_button');
@@ -33,10 +31,13 @@ postile.view.post_board.Account = function(opt_board) {
 
     this.profileImageContainer_el = postile.dom.getDescendantById(instance.container, 'profile_image_container');
     this.profileImageContainerImg_el = goog.dom.getElementByClass('image', this.profileImageContainer_el);
-    postile.data_manager.getUserData(localStorage.postile_user_id, function(data) {
-        instance.usernameText_el.innerHTML = data.username;
-        instance.profileImageContainerImg_el.src = postile.conf.uploadsResource([ data.image_small_url ]);
-    }.bind(this));
+
+    if (postile.conf.userLoggedIn()) {
+        postile.data_manager.getUserData(localStorage.postile_user_id, function(data) {
+            instance.usernameText_el.innerHTML = data.username;
+            instance.profileImageContainerImg_el.src = postile.conf.uploadsResource([ data.image_small_url ]);
+        }.bind(this));
+    }
 
     this.login_button = postile.dom.getDescendantById(this.container, 'login_button_account');
     this.signup_button = postile.dom.getDescendantById(this.container, 'signup_button_account');
@@ -175,15 +176,18 @@ postile.view.post_board.Account = function(opt_board) {
 
     // change account view for anonymous
     goog.events.listen(this.usernameText_el, goog.events.EventType.CLICK, function(){
-        if(this.anonymous == true){
+        if(!postile.conf.userLoggedIn()){
             return;
         }
+        var profileView = new postile.view.profile.ProfileView(localStorage.postile_user_id);
         profileView.open(710);
     }.bind(this));
+
     goog.events.listen(this.profileImageContainer_el, goog.events.EventType.CLICK, function(){
-        if(this.anonymous == true){
+        if(!postile.conf.userLoggedIn()){
             return;
         }
+        var profileView = new postile.view.profile.ProfileView(localStorage.postile_user_id);
         profileView.open(710);
     }.bind(this));
 }

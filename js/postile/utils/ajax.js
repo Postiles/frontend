@@ -153,13 +153,13 @@ postile.ajax.exception_handlers = { //exception_string and corresponding handler
         return false;
     },
     SERVER_ERROR: function() {
-        new postile.toast.Toast(5, "We are experiencing an magic error (again)...", [], 'red');
+        new postile.toast.Toast(5, "Server error, please refresh or contact us", [], 'red');
     },
     BOARD_NOT_FOUND: function() {
         new postile.toast.Toast(5, "Board not exist. Please check the URL you entered", [], 'red');
     },
     POST_NOT_FOUND: function() {
-        new postile.toast.Toast(5, "Post not exsit. Maybe it was deleted");
+        new postile.toast.Toast(5, "Post not exsit. Maybe it has been deleted");
     }
 }
 

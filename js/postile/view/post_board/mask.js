@@ -60,7 +60,7 @@ postile.view.post_board.PostCreator.prototype.open = function(imgUri, videoUri) 
     this.hint_el.style.display = 'block';
 
     this.escHandler = new postile.events.EventHandler(postile.conf.getGlobalKeyHandler(), 
-            goog.events.KeyHandler.EventType.KEY, function(e) { 
+            goog.events.EventType.KEYDOWN, function(e) { 
         if (e.keyCode == 27) { // esc pressed
             this.close();
         }
@@ -175,7 +175,8 @@ postile.view.post_board.PostCreator.prototype.mouseup = function(e){
                 && Math.abs(this.new_post_start_coord_in_px[0] - e.clientX) > 3 
                 && Math.abs(this.new_post_start_coord_in_px[1] - e.clientY) > 3) 
         { //do not show when dbl clicking
-            new postile.toast.Toast(5, postile._('post_zone_illegal'), [], 'red');
+            // new postile.toast.Toast(5, postile._('post_zone_illegal'), [], 'red');
+            postile.toast.title_bar_toast(postile._('post_zone_illegal'), 2);
         }
         this.new_post_start_coord_in_px = null;
         return;

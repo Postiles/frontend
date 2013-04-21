@@ -139,26 +139,30 @@ postile.view.post.PostExpand.prototype.unloaded_stylesheets = ['_post_expand.css
 
 postile.view.post.PostExpand.prototype.initComments = function() {
     this.commentBox_el = postile.dom.getDescendantByClass(this.post_el, 'comment-box');
-    this.commentProfileImg_el = postile.dom.getDescendantByClass(this.commentBox_el, 'img');
+    if (postile.conf.userLoggedIn()) {
+        this.commentProfileImg_el = postile.dom.getDescendantByClass(this.commentBox_el, 'img');
 
-    // comment input area
-    this.commentArea_el = postile.dom.getDescendantByClass(this.commentBox_el, 'input');
-    postile.ui.makeLabeledInput(this.commentArea_el, 'Enter your comments here',
-            'half_opaque', function() {
-                postile.ajax(
-                        [ 'inline_comment', 'new' ],
-                        {
-                            post_id: this.postInstance.postData.post.id,
-                            content: this.commentArea_el.innerHTML
-                        }, function(data) {
-                            this.renderComment(data.message.inline_comment);
-                            this.commentArea_el.innerHTML = '';
-                        }.bind(this));
-            }.bind(this));
+        // comment input area
+        this.commentArea_el = postile.dom.getDescendantByClass(this.commentBox_el, 'input');
+        postile.ui.makeLabeledInput(this.commentArea_el, 'Enter your comments here',
+                'half_opaque', function() {
+                    postile.ajax(
+                            [ 'inline_comment', 'new' ],
+                            {
+                                post_id: this.postInstance.postData.post.id,
+                                content: this.commentArea_el.innerHTML,
+                            }, function(data) {
+                                this.renderComment(data.message.inline_comment);
+                                this.commentArea_el.innerHTML = '';
+                            }.bind(this));
+                }.bind(this));
 
-    postile.data_manager.getUserData(localStorage.postile_user_id, function(data) {
-        this.commentProfileImg_el.src = postile.conf.uploadsResource([ data.image_small_url ]);
-    }.bind(this));
+        postile.data_manager.getUserData(localStorage.postile_user_id, function(data) {
+            this.commentProfileImg_el.src = postile.conf.uploadsResource([ data.image_small_url ]);
+        }.bind(this));
+    } else { // not logged in, do not display the comment box
+        this.commentBox_el.style.display = 'none';
+    }
 
     postile.ajax([ 'inline_comment', 'get_inline_comments' ], { post_id: this.postInstance.postData.post.id }, function(data) {
         this.comments = data.message.inline_comments;

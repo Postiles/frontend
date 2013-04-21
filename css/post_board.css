@@ -12,10 +12,16 @@ html, body {
 #title_bar {
   width: 100%;
   height: 40px;
-  background: whitesmoke;
   border-bottom: 5px solid #024d61;
-  position: relative;
   z-index: 500; }
+
+#topic_inner_container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    background: whitesmoke;
+    z-index: 500;
+}
 
 #topic_image_container {
   position: absolute;
@@ -52,6 +58,21 @@ html, body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+#title_bar_toast_container {
+    position: absolute;
+    top: 0px;
+    left: 50%;
+    height: 20px;
+    padding: 5px 70px;
+    background: rgba(0, 0, 0, 0.5);
+    color: whitesmoke;
+    text-align: center;
+    z-index: 499;
+
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
 }
 
 #accout_container {

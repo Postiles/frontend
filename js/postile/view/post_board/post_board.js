@@ -154,7 +154,7 @@ postile.view.post_board.handlers.resize = function(instance) {
     instance.viewport_position = goog.style.getRelativePosition(instance.viewport, document.body);
 
     // Update according to the new subscribe area.
-    instance.updateSubscribeArea();
+    // instance.updateSubscribeArea();
 }
 
 /**
@@ -346,26 +346,24 @@ postile.view.post_board.PostBoard = function(board_id) {
 
             instance.channel_str = instance.boardData.id;
 
-            postile.faye.subscribe(instance.channel_str, function(status, data) {
-                instance.fayeHandler(status, data);
-            });
-
-            // No login info on anonymous
             if (postile.conf.userLoggedIn()) {
+                postile.faye.subscribe(instance.channel_str, function(status, data) {
+                    instance.fayeHandler(status, data);
+                });
+
                 postile.faye.subscribe('status/board/'+instance.boardData.id+'/user/'+instance.userData.id, function(status, data) {
                 });
+
+                postile.faye.subscribe('status/'+instance.boardData.id, function(status, data){
+                    instance.onlinepeople.count = data.count;
+                    instance.onlinepeople.id = data.users;
+                    if(instance.onlinepeople.is_expended) {
+                        instance.updateOnlinePeople();
+                    }else{
+                        instance.updateOnlineCount();
+                    }
+                });
             }
-
-            postile.faye.subscribe('status/'+instance.boardData.id, function(status, data){
-                instance.onlinepeople.count = data.count;
-                instance.onlinepeople.id = data.users;
-                if(instance.onlinepeople.is_expended) {
-                    instance.updateOnlinePeople();
-                }else{
-                    instance.updateOnlineCount();
-                }
-            });
-
             instance.initView();
             instance.initEvents();
 
@@ -409,8 +407,6 @@ postile.view.post_board.PostBoard.prototype.initView = function() {
 
     goog.dom.appendChild(this.catchall, this.viewport);
     goog.dom.appendChild(this.viewport, this.canvas);
-
-    //console.log(this.create_helper);
 
     goog.dom.appendChild(goog.dom.getElement("wrapper"), this.header.container);
     goog.dom.appendChild(goog.dom.getElement("wrapper"), this.catchall);
@@ -837,6 +833,7 @@ postile.view.post_board.PostBoard.prototype.getSubscribeArea = function(source) 
  * Fetch the posts in the new area and subscribe it.
  */
 postile.view.post_board.PostBoard.prototype.updateSubscribeArea = function() {
+    // postile.toast.title_bar_toast('Loading posts for you...', 0);
     var instance = this;
     var current_loc = this.canvasCoord;
     var to_subscribe = this.getSubscribeArea(current_loc);
@@ -855,6 +852,7 @@ postile.view.post_board.PostBoard.prototype.updateSubscribeArea = function() {
     */
     to_subscribe.board_id = instance.board_id;
     postile.ajax(['board', 'move_to'], to_subscribe, function(data) {
+        // postile.toast.title_bar_toast_dismiss();
         instance.subscribedArea = to_subscribe;
         instance.renderArray(data.message.posts);
     }, 'Loading posts...', true);

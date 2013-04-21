@@ -66,7 +66,11 @@
       height: 12px;
       background: whitesmoke;
       opacity: 0.4;
+      border-radius: 6px;
       -webkit-border-radius: 6px;
+      -moz-border-radius: 6px;
+      -o-border-radius: 6px;
+      -ms-border-radius: 6px;
       cursor: pointer; }
       #tutorial_container .bottom_container .dot_container .dot:first-child {
         opacity: 1; }
