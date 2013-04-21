@@ -64,6 +64,7 @@ postile.conf.UserAgent = function() {
  */
 postile.conf.UserAgent.Feature;
 
+/*
 postile.conf.UserAgent.prototype.compatIgnored = function() {
     return goog.net.cookies.get('browser_compat_ignored');
 };
@@ -72,6 +73,7 @@ postile.conf.UserAgent.prototype.setIgnore = function() {
     goog.net.cookies.set("browser_compat_ignored", "ignored");
     this.routeDispatcher_();
 };
+*/
 
 /**
  * Checks feature and creates corresponding compatHandler.
@@ -101,20 +103,26 @@ postile.conf.UserAgent.prototype.handleOk = function() {
 
 postile.conf.UserAgent.prototype.handlePerhaps = function() {
     //console.info('[INFO] postile.conf.UserAgent: perhaps');
+    /*
     if (this.compatIgnored()) {
         this.routeDispatcher_();
     }
+    */
+    window.location.href = "/unsupported";
 };
 
 postile.conf.UserAgent.prototype.handleWarning = function() {
+    /*
     if (this.compatIgnored()) {
         this.routeDispatcher_();
     }
+    */
     //console.warn('[WARNING] postile.conf.UserAgent');
+    window.location.href = "/unsupported";
 };
 
 postile.conf.UserAgent.prototype.handleUnable = function() {
-    console.error('[ERROR] postile.conf.UserAgent: Unsupported browser!');
+    window.location.href = "/unsupported";
 };
 
 
