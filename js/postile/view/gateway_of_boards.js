@@ -16,7 +16,7 @@ postile.view.BoardList = function(topic) {
     this.currentBoardId = null;
     this.container.className = 'gateway';
     this.title = postile.dom.getDescendantByClass(this.container, "title");
-    this.add = postile.dom.getDescendantByClass(this.title, "add");
+    // this.add = postile.dom.getDescendantByClass(this.title, "add");
     this.right = postile.dom.getDescendantByClass(this.container, "right");
     this.right_title = postile.dom.getDescendantByClass(this.right, "title");
     this.right_count = postile.dom.getDescendantByClass(this.right, "count");
@@ -25,9 +25,11 @@ postile.view.BoardList = function(topic) {
     this.right_button = postile.dom.getDescendantByClass(this.right, "button");
     this.right_button.style.display = 'none';
     var new_board = new postile.view.new_board.NewBoard();
+    /*
     goog.events.listen(this.add, goog.events.EventType.CLICK, function() {
         new_board.open(500);
     });
+    */
     goog.events.listen(this.right_button, goog.events.EventType.CLICK, function() {
         postile.router.dispatch('board/'+this.currentBoardId);
     }.bind(this));

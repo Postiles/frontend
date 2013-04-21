@@ -346,26 +346,24 @@ postile.view.post_board.PostBoard = function(board_id) {
 
             instance.channel_str = instance.boardData.id;
 
-            postile.faye.subscribe(instance.channel_str, function(status, data) {
-                instance.fayeHandler(status, data);
-            });
-
-            // No login info on anonymous
             if (postile.conf.userLoggedIn()) {
+                postile.faye.subscribe(instance.channel_str, function(status, data) {
+                    instance.fayeHandler(status, data);
+                });
+
                 postile.faye.subscribe('status/board/'+instance.boardData.id+'/user/'+instance.userData.id, function(status, data) {
                 });
+
+                postile.faye.subscribe('status/'+instance.boardData.id, function(status, data){
+                    instance.onlinepeople.count = data.count;
+                    instance.onlinepeople.id = data.users;
+                    if(instance.onlinepeople.is_expended) {
+                        instance.updateOnlinePeople();
+                    }else{
+                        instance.updateOnlineCount();
+                    }
+                });
             }
-
-            postile.faye.subscribe('status/'+instance.boardData.id, function(status, data){
-                instance.onlinepeople.count = data.count;
-                instance.onlinepeople.id = data.users;
-                if(instance.onlinepeople.is_expended) {
-                    instance.updateOnlinePeople();
-                }else{
-                    instance.updateOnlineCount();
-                }
-            });
-
             instance.initView();
             instance.initEvents();
 

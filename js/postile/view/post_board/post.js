@@ -177,6 +177,7 @@ postile.view.post.Post.prototype.loadDisplayModeUIComponents = function() {
         postLikeContainer_el: $('post_like_container'),
         postLikeCount_el: $('post_like_count'),
         postLikeButton_el: $('post_like_button'),
+        postLikeMiddle2_el: $('post_like_middle_2'),
         postCommentCount_el: $('post_comment_count'),
         commentPreview_el: $('comment_preview'),
         commentPreviewNoComment_el: $('comment_preview_no_comment'),
@@ -600,11 +601,15 @@ postile.view.post.Post.prototype.enterDisplayMode = function() {
         return l.user_id;
     });
 
-    // display 'like' or 'unlike'
-    if (liked_users.indexOf(postile.conf.currentUserId) != -1) { // liked
-        elements.postLikeButton_el.innerHTML = 'Unlike';
+    if (postile.conf.userLoggedIn()) {
+        // display 'like' or 'unlike'
+        if (liked_users.indexOf(postile.conf.currentUserId) != -1) { // liked
+            elements.postLikeButton_el.innerHTML = 'Unlike';
+        } else {
+            elements.postLikeButton_el.innerHTML = 'Like';
+        }
     } else {
-        elements.postLikeButton_el.innerHTML = 'Like';
+        elements.postLikeMiddle2_el.style.display = 'none';
     }
 
     // display number of comments

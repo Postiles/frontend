@@ -27,6 +27,7 @@ postile.view.post.InlineComment = function(commentContainer, commentData, parent
         content_el: $('comment_content'),
         likeCount_el: $('comment_like_count'),
         likeButton_el: $('comment_like_button'),
+        likeDot2_el: $('comment_like_dot_2'),
         time_el: $('comment_time'),
         deleteButton_el: $('comment_delete_button'),
         confirmDeleteContainer_el: $('confirm_delete_container'),
@@ -63,10 +64,15 @@ postile.view.post.InlineComment = function(commentContainer, commentData, parent
     });
 
     this.elements.likeCount_el.innerHTML = commentData.likes.length;
-    if (likedUsers.indexOf(postile.conf.getSelfUserId()) != -1) { // like by me
-        this.elements.likeButton_el.innerHTML = 'Unlike';
+
+    if (postile.conf.userLoggedIn()) {
+        if (likedUsers.indexOf(postile.conf.getSelfUserId()) != -1) { // like by me
+            this.elements.likeButton_el.innerHTML = 'Unlike';
+        } else {
+            this.elements.likeButton_el.innerHTML = 'Like';
+        }
     } else {
-        this.elements.likeButton_el.innerHTML = 'Like';
+        this.elements.likeDot2_el.style.display = 'none';
     }
 
     this.elements.time_el.innerHTML = postile.date(
