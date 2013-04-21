@@ -91,8 +91,15 @@
 .sheety-comment-cell .author, .sheety-comment-cell .likes {
   color: #4269bd;
 }
-.sheety-comment-cell .author, .sheety-comment-cell .likes, .sheety-comment-cell .del {
+.sheety-comment-cell .author, .sheety-comment-cell .likes {
   cursor: pointer;
+}
+.sheety-comment-cell .del {
+  cursor: pointer;
+  visibility: hidden;
+}
+.sheety-comment-cell:hover .del {
+  visibility: visible;
 }
 .sheety-comment-cell .author-hover, .sheety-comment-cell .likes-hover .like-button, .sheety-comment-cell .del-hover {
   text-decoration: underline;
