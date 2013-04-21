@@ -1,38 +1,35 @@
 .sheety-body {
+  position: relative;
+  z-index: -100;
   background-color: #f5f9fa;
   font-family: sans-serif;
   font-size: .8em;
 }
 .sheety-post-list {
-  position: relative;
-  z-index: 100;
   float: left;
   width: 200px;
+  z-index: 100;
+  position: relative;
 }
 .sheety-comment-row {
   white-space: nowrap;
-  height: 200px;
+  height: 100px;
 }
-.sheety-post-cell, .sheety-comment-cell {
+.sheety-post-cell, .sheety-comment-cell, .sheety-new-comment-cell {
   border: 1px solid #c3cfc2;
   display: inline-block;
   width: 174px;
-  height: 180px;
+  height: 80px;
   vertical-align: middle;
   padding: 9px 12px;
   white-space: normal;
   overflow-y: hidden;
+}
+.sheety-post-cell {
+  z-index: 100;
+  position: relative;
 }
 .sheety-new-comment-cell {
-  border: 1px solid #c3cfc2;
-  display: inline-block;
-  width: 174px;
-  height: 180px;
-  vertical-align: middle;
-  padding: 9px 12px;
-  white-space: normal;
-  overflow-y: hidden;
-  z-index: -100;
   position: absolute;
   left: 0;
   transition: left .5s;
@@ -48,6 +45,19 @@
   background-color: white;
   height: 50px;
   font-size: .7em;
+  padding: 5px;
+}
+.sheety-new-comment-cell .comment-button {
+  border: none;
+  background: #a7d875;
+  color: whitesmoke;
+  font-size: 13pt;
+  padding: 5px 10px;
+  margin: 5px;
+  cursor: pointer;
+}
+.sheety-new-comment-cell .comment-button:hover {
+  background: #024d61;
 }
 .sheety-post-cell {
   background-color: #024d61;

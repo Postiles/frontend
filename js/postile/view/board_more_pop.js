@@ -63,9 +63,9 @@ postile.view.board_more_pop.BoardMorePop.prototype.close = function(){
     }
 }
 
-postile.view.board_more_pop.OtherBoard = function(in_board_instance) {
-    var board_instance = in_board_instance;
-    this.curId = board_instance.boardData.topic_id;
+postile.view.board_more_pop.OtherBoard = function(boardData) {
+    var board_instance = boardData;
+    this.curId = boardData.topic_id;
 
     postile.view.TipView.call(this);
     postile.ui.load(this.container, postile.conf.staticResource(['_board_more_pop_up.html']));
@@ -77,7 +77,7 @@ postile.view.board_more_pop.OtherBoard = function(in_board_instance) {
 
     this.boardList = postile.dom.getDescendantById(this.container, 'board_list');
 
-    postile.ajax([ 'board', 'get_boards_in_topic' ], { topic_id: board_instance.boardData.topic_id }, function(data) {
+    postile.ajax([ 'board', 'get_boards_in_topic' ], { topic_id: boardData.topic_id }, function(data) {
         /* handle the data return after getting the boards information back */
         var boardArray = data.message.boards;
         for(i in boardArray) {

@@ -5,8 +5,8 @@ goog.require('postile.conf');
 goog.require('postile.view');
 goog.require('postile.view.post_board');
 
-postile.view.notification.Notification = function(header, opt_board) {
-    this.boardInstance = opt_board;
+postile.view.notification.Notification = function(header, optBoardData) {
+    this.boardData = optBoardData;
 
     postile.view.TipView.call(this);
     postile.ui.load(this.container, postile.conf.staticResource(['_notification.html']));
@@ -192,12 +192,6 @@ postile.view.notification.InfoItem.prototype.render = function(parent, data, fro
         fromUserName = 'someone'
         profile_img_url = 'default_image/profile.png';
     }
-
-    /*
-    if (parent.boardInstance && parent.boardInstance.boardData.anonymous) {
-        fromUserName = 'someone';
-    }
-    */
 
     /* begins the rendering of notification item */
 

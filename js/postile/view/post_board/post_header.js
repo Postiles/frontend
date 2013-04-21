@@ -10,7 +10,7 @@ goog.require('postile.view.notification');
 goog.require('postile.view.change_password');
 goog.require('postile.view.inline_login');
 
-postile.view.post_board.Header = function(board) {
+postile.view.post_board.Header = function(boardData) {
     // this variable is for identifying current active icon
     this.curIcon = '';
 
@@ -18,7 +18,7 @@ postile.view.post_board.Header = function(board) {
 
     var instance = this;
 
-    this.board = board;
+    this.boardData = boardData;
 
     this.container.id = 'title_bar';
 
@@ -27,7 +27,7 @@ postile.view.post_board.Header = function(board) {
     this.topicInnerContainer_el = postile.dom.getDescendantById(instance.container, 'topic_inner_container');
 
     this.topicTitle_el = postile.dom.getDescendantById(this.topicInnerContainer_el, 'topic_title');
-    instance.topicTitle_el.innerHTML = this.board.boardData.name;
+    instance.topicTitle_el.innerHTML = this.boardData.name;
     var feedback = goog.dom.createDom('img');
     feedback.src = postile.conf.imageResource(['feedback.png']);
     feedback.style.cssFloat = 'left';
@@ -41,12 +41,12 @@ postile.view.post_board.Header = function(board) {
 
     this.topicImgContainer_el = postile.dom.getDescendantById(instance.container, 'topic_image_container');
     this.topicImg_el = postile.dom.getDescendantByClass(this.topicImgContainer_el, 'topic_image');
-    this.topicImg_el.src = postile.conf.uploadsResource( [this.board.boardData.image_small_url] );
+    this.topicImg_el.src = postile.conf.uploadsResource( [this.boardData.image_small_url] );
     
     /**
      * @private
      */
-    this.account_ = new postile.view.post_board.Account(board);
+    this.account_ = new postile.view.post_board.Account(this.boardData);
     goog.dom.appendChild(this.topicInnerContainer_el, this.account_.container);
 };
 goog.inherits(postile.view.post_board.Header, postile.view.NormalView);

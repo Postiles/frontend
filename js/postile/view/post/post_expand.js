@@ -132,7 +132,6 @@ postile.view.post.PostExpand.prototype.open = function() {
     this.addCloseButton(this.post_el);
 
     postile.view.PopView.prototype.open.call(this, 860);
-
 };
 
 postile.view.post.PostExpand.prototype.unloaded_stylesheets = ['_post_expand.css', '_close_button.css'];
