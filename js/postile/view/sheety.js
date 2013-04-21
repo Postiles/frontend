@@ -16,6 +16,7 @@ goog.require('goog.ui.Textarea');
 goog.require('postile.conf');
 goog.require('postile.faye');
 goog.require('postile.view');
+goog.require('postile.debbcode');
 goog.require('postile.view.post_board.handlers');
 goog.require('postile.templates.sheety');
 goog.require('postile.data_manager');
@@ -811,7 +812,7 @@ postile.view.Sheety.CommentCell.prototype.createDom = function() {
         likeCount: model['cmt_likeCount'],
         liked: model['cmt_liked'],
         canDelete: model['cmt_canDel'],
-        content: model['cmt_data']['content']
+        content: postile.parseBBcode(model['cmt_data']['content'])
     };
 
     // Comment header
@@ -828,6 +829,9 @@ postile.view.Sheety.CommentCell.prototype.createDom = function() {
     var contentFragment = soy.renderAsFragment(
         postile.templates.sheety.commentContent, preProcData);
     goog.dom.append(el, contentFragment);
+
+    // Post-process bbcode
+    postile.bbcodePostProcess(el);
 };
 
 postile.view.Sheety.CommentCell.prototype.enterDocument = function() {
