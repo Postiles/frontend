@@ -173,7 +173,7 @@ postile.conf.UserAgent.supportedBrowsers = [
         minimumVersion: '533',
         bestVersion: '535',
         walkarounds: {}
-    },
+    }/*,
     {
         name: 'IE',
         isA: goog.userAgent.IE,
@@ -181,7 +181,7 @@ postile.conf.UserAgent.supportedBrowsers = [
         minimumVersion: '9',
         bestVersion: '10',
         walkarounds: { xhr: 1, xdr: true }
-    }
+    }*/
 ];
 
 postile.conf.useragent = new postile.conf.UserAgent();

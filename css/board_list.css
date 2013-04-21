@@ -27,7 +27,7 @@
     /* background: rgb(202,219,184); */
     float: left;
     height: 100%;
-    /* visibility: hidden; */
+    visibility: hidden;
 }
 
 .gateway .left .title {
