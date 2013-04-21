@@ -409,7 +409,7 @@ postile.view.post_board.PostBoard.prototype.initView = function() {
     var instance = this;
 
     this.picker = new postile.view.post_board.PostPicker(this);
-    this.header = new postile.view.post_board.Header(this);
+    this.header = new postile.view.post_board.Header(this.boardData);
     this.postCreator = new postile.view.post_board.PostCreator(this);
     this.create_helper = new postile.view.create_helper.CreateHelper(this);
 

@@ -2,7 +2,7 @@ goog.provide('postile.view.post_board.Account');
 
 goog.require('postile.view.inline_login');
 
-postile.view.post_board.Account = function(opt_board) {
+postile.view.post_board.Account = function(optBoardData) {
     goog.base(this);
 
     /**
@@ -56,7 +56,7 @@ postile.view.post_board.Account = function(opt_board) {
         // how to make sure that we can go back the same place when login?
         e.stopPropagation();
         this.inline_login.open(this.login_button);
-        if (opt_board) {
+        if (optBoardData) {
             this.switchBoardTip.close();
         }
         this.sBTip.close();
@@ -68,7 +68,7 @@ postile.view.post_board.Account = function(opt_board) {
     }.bind(this));
 
     // preload images for switching
-    if (opt_board) {
+    if (optBoardData) {
         var switch_board_active = new Image();
         switch_board_active.src = postile.conf.imageResource(['switch_board_icon_active.png']);
     }
@@ -76,14 +76,14 @@ postile.view.post_board.Account = function(opt_board) {
     popup_icon_active.src = postile.conf.imageResource(['popup_icon_active.png']);
     var search_icon_active = new Image();
     search_icon_active.src = postile.conf.imageResource(['search_icon_active.png']);
-    if (opt_board) {
+    if (optBoardData) {
         var message_icon_active = new Image();
         message_icon_active.src = postile.conf.imageResource(['message_icon_active.png']);
     }
 
     this.function_buttons = postile.dom.getDescendantsByClass(this.container, 'function_button');
     for (var i = 0; i < this.function_buttons.length; i++) {
-        if ((!opt_board && i == 0) || i == 3) {
+        if ((!optBoardData && i == 0) || i == 3) {
             goog.dom.removeNode(this.function_buttons[i]); 
         } else {
             // no longer needed, depracated
@@ -99,7 +99,7 @@ postile.view.post_board.Account = function(opt_board) {
         if(this.logged_in){
             this.notification.close();
         }
-        if (opt_board) {
+        if (optBoardData) {
             this.switchBoardTip.close();
         }
         this.sBTip.open(this.search_button);
@@ -107,8 +107,8 @@ postile.view.post_board.Account = function(opt_board) {
     }.bind(this), true);
 
     /* Buttons on the right up corner */
-    if (opt_board) {
-        this.switchBoardTip = new postile.view.board_more_pop.OtherBoard(opt_board);
+    if (optBoardData) {
+        this.switchBoardTip = new postile.view.board_more_pop.OtherBoard(optBoardData);
         this.switch_board_button = postile.dom.getDescendantById(instance.container, "switch_board_button");
         goog.events.listen(this.switch_board_button, goog.events.EventType.CLICK, function(e) {
             e.stopPropagation();
@@ -147,10 +147,10 @@ postile.view.post_board.Account = function(opt_board) {
                 instance.notificationHandler(data);
             });
             this.notification_isOpened = false;
-            this.notification = new postile.view.notification.Notification(this, opt_board);
+            this.notification = new postile.view.notification.Notification(this, optBoardData);
             goog.events.listen(this.message_button, goog.events.EventType.CLICK, function(e) {
                 e.stopPropagation();
-                if (opt_board) {
+                if (optBoardData) {
                     this.switchBoardTip.close();
                 }
                 this.sBTip.close();  
@@ -163,7 +163,7 @@ postile.view.post_board.Account = function(opt_board) {
         }
     }.bind(this)); 
     /*
-    if (opt_board) {
+    if (optBoardData) {
         this.moreButtonPop_isOpened = false;
         this.more_button = postile.dom.getDescendantById(instance.container, "popup_button");
         this.moreButtonPop = new postile.view.board_more_pop.BoardMorePop(this.more_button);
