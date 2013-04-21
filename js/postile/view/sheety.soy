@@ -10,9 +10,12 @@
 /**
  * @param author
  * @param ctime
+ * @param isAnonymous
  */
 {template .comment}
+  {if not $isAnonymous}
   <div class="author"> {$author} </div>
+  {/if}
   <div class="ctime"> {$ctime} </div> <br />
 {/template}
 

@@ -69,7 +69,7 @@ goog.require('goog.array');
  */
 postile.async.Promise = function(opt_value) {
     if (goog.isDef(opt_value)) {
-        this.value_ = value;
+        this.value_ = opt_value;
         this.hasValue_ = true;
     }
     else {
