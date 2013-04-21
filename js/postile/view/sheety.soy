@@ -1,48 +1,62 @@
 {namespace postile.templates.sheety}
 
 /**
- * @param board_id
+ * @param who The post subject to display
  */
-{template .body}
-  <div class="sheety-title">
-    Board #{$board_id}
-  </div>
-  <div class="sheety-posts"></div>
-  <div class="sheety-comments"></div>
+{template .post}
+  <div class="who"> {$who} </div>
 {/template}
 
 /**
- * @param title
  * @param author
- * @param content Content of this post, is already escaped in the server
- * side, and may contain html so there is no need to escape it.
+ * @param ctime
  */
-{template .postItem}
-  <div class="sheety-postitem-title">
-    {$title}
-  </div>
-  <div class="sheety-postitem-author">
-    {$author}
-  </div>
-  <div class="sheety-postitem-content">
-    {$content|noAutoescape}
-  </div>
+{template .comment}
+  <div class="author"> {$author} </div>
+  <div class="ctime"> {$ctime} </div> <br />
 {/template}
 
 /**
- * @param cdatetime Creation time of this comment
- * @param author
+ * @param likeCount
+ * @param liked
+ */
+{template .commentLike}
+  ♥ +{$likeCount}
+  <span> · </span>
+  <span class="like-button">
+  {if $liked}
+   Unlike
+  {else}
+   Like
+  {/if}
+  </span>
+  <span> · </span>
+{/template}
+
+/**
+ * @param canDelete
+ */
+{template .commentDel}
+  {if $canDelete}
+  Delete
+  {/if}
+{/template}
+
+/**
  * @param content
  */
-{template .commentItem}
-  <div class="sheety-commentitem-author">
-    {$author}
-  </div>
-  <div class="sheety-commentitem-cdatetime">
-    {$cdatetime}
-  </div>
-  <div class="sheety-commentitem-content">
-    {$content|noAutoescape}
-  </div>
+{template .commentContent}
+  <div class="content"> {$content|noAutoescape} </div>
 {/template}
 
+
+/**
+ * @param likes
+ */
+
+/**
+ * Just some buttons
+ */
+{template .newCommentPop}
+  <div class="new-comment-input"></div>
+{/template}

@@ -70,18 +70,11 @@ postile.view.board_more_pop.OtherBoard = function(in_board_instance) {
     postile.view.TipView.call(this);
     postile.ui.load(this.container, postile.conf.staticResource(['_board_more_pop_up.html']));
 
-    this.create_button = postile.dom.getDescendantByCondition(this.container, function(tag) { return tag.tagName && tag.tagName.toUpperCase() == 'P'; });
-    
-    this.board_list_el = postile.dom.getDescendantByClass(this.container, 'board_list');
-    goog.events.listen(this.board_list_el, goog.events.EventType.CLICK, function(){
+    this.other_header_el = postile.dom.getDescendantByClass(this.container, 'other_header');
+    goog.events.listen(this.other_header_el, goog.events.EventType.CLICK, function(){
         postile.router.dispatch('topic/1');
     }.bind(this));
 
-    var new_board = new postile.view.new_board.NewBoard();
-    goog.events.listen(this.create_button, goog.events.EventType.CLICK, function() {
-        new_board.open(500);
-    });
-    
     this.boardList = postile.dom.getDescendantById(this.container, 'board_list');
 
     postile.ajax([ 'board', 'get_boards_in_topic' ], { topic_id: board_instance.boardData.topic_id }, function(data) {

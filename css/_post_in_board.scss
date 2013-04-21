@@ -96,6 +96,10 @@
                                         color: #537cbe;
                                         padding: 0px;
                                         cursor: pointer;
+                                        max-width: 100px;
+                                        white-space: nowrap;
+                                        overflow: hidden;
+                                        text-overflow: ellipsis;
 
                                         &:hover {
                                             text-decoration: underline;
@@ -184,10 +188,10 @@
 
                 .comment_container_input {
                     float: left;
-                    margin-top: 2px;
+                    margin-top: 1px;
                     margin-left: 8px;
                     padding: 2px 5px;
-                    height: 16px;
+                    height: 19px;
                     border: none;
                     outline: none;
                     resize: none;
@@ -364,6 +368,10 @@
         float: right;
         cursor: pointer;
         color: #537cbe;
+        max-width: 100px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
 
         &:hover {
             text-decoration: underline;
@@ -435,6 +443,10 @@
         float: left;
         cursor: pointer;
         color: #537cbe;
+        max-width: 100px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
 
         &:hover {
             text-decoration: underline;

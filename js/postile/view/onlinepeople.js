@@ -46,7 +46,6 @@ postile.view.onlinepeople.OnlinePeople.prototype.render = function() {
 
 
 
-    console.log(title_bar_bound);
     var coord = new goog.math.Coordinate(title_bar_bound.width,
                              title_bar_bound.height);
     coord.x = coord.x - this.BAR_WIDTH;

@@ -24,7 +24,9 @@ postile.view.post_board.Header = function(board) {
 
     postile.ui.load(this.container, postile.conf.staticResource(['post_board_title_bar.html']));
 
-    this.topicTitle_el = postile.dom.getDescendantById(instance.container, 'topic_title');
+    this.topicInnerContainer_el = postile.dom.getDescendantById(instance.container, 'topic_inner_container');
+
+    this.topicTitle_el = postile.dom.getDescendantById(this.topicInnerContainer_el, 'topic_title');
     instance.topicTitle_el.innerHTML = this.board.boardData.name;
     var feedback = goog.dom.createDom('img');
     feedback.src = postile.conf.imageResource(['feedback.png']);
@@ -33,7 +35,7 @@ postile.view.post_board.Header = function(board) {
     goog.events.listen(feedback, goog.events.EventType.CLICK, function() {
         new postile.feedback.FeedbackData();
     });
-    goog.dom.appendChild(instance.container, feedback);
+    goog.dom.appendChild(this.topicInnerContainer_el, feedback);
 
     // create a create post helper
 
@@ -41,7 +43,7 @@ postile.view.post_board.Header = function(board) {
     this.topicImg_el = postile.dom.getDescendantByClass(this.topicImgContainer_el, 'topic_image');
     this.topicImg_el.src = postile.conf.uploadsResource( [this.board.boardData.image_small_url] );
     
-    goog.dom.appendChild(this.container, new postile.view.post_board.Account(board).container);
+    goog.dom.appendChild(this.topicInnerContainer_el, new postile.view.post_board.Account(board).container);
 }
 
 goog.inherits(postile.view.post_board.Header, postile.view.NormalView);

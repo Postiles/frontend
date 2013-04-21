@@ -16,7 +16,7 @@ postile.view.inline_login.InlineLogin = function(instance){
     this.container.style.top = '0px';
     this.container.style.left = '0px';
 
-	this.incorrect_el = postile.dom.getDescendantById('incorrect-alert');
+	this.incorrect_el = postile.dom.getDescendantById(this.container, 'incorrect-alert');
 	this.email_input_el = postile.dom.getDescendantsByClass(this.container, 'inline_login_email')[0];
 	this.password_input_el = postile.dom.getDescendantsByClass(this.container, 'inline_login_password')[0];
 	this.submit_el = postile.dom.getDescendantsByClass(this.container, 'inline_login_submit')[0];
@@ -40,6 +40,7 @@ postile.view.inline_login.InlineLogin.prototype.unloaded_stylesheets = ['inline_
 postile.view.inline_login.InlineLogin.prototype.open = function(a, b){
 	postile.view.TipView.prototype.open.call(this,a,b);
 	// goog.base(this, 'open', a, b);
+	this.incorrect_el.style.display = 'none';
 }
 
 
@@ -47,6 +48,6 @@ postile.view.inline_login.InlineLogin.prototype.login = function(email, password
 	postile.user.login(email, password, function(data) {
     	window.location.reload();
     }, function(e) {
-        this.incorrect_el.style.visibility = 'visible';
+        this.incorrect_el.style.display = 'block';
     }.bind(this));
 }

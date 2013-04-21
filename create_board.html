@@ -1,0 +1,70 @@
+<html>
+<head>
+	<title>Create_User Interface</title>
+	<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+
+	<script type="text/javascript">
+		function submitform(){
+			$.ajax({
+				type: "post",			
+			  	url: "http://www.postiles.com:300/board/new",
+			  	data: {
+			  		anonymous: $('#anonymous').is(':checked'),
+			  		topic_id: '1', 
+			  		name: $("#board_name").val(), 
+			  		description: $("#board_discription").val(),
+			  		default_view: $('#board_type').val()[0],
+			  		session_key: $('#password').val(),
+			  		user_id: '50'
+			  	},
+			  	success: function(r){
+			  		if(r.status == 'error'){
+			  			$("#feedback").css("display", "block");
+			  			$("#feedback").html("creation failed, please contact postiles.hkust@gmail.com");
+			  		}else{
+					  	$("#feedback").css("display", "block");
+					  	setTimeout('dismiss()', 4000);
+			  		}
+			  	}
+			});	
+		}
+		$(document).ready(function() {
+			$("#password").keypress(function(event) {
+	    		if (event.which == 13) {
+	        		submitform();
+	    		}
+			});
+		});
+
+		function dismiss() {
+			$("#feedback").css("display", "none");
+		}
+	</script>
+
+	<style>
+		#feedback {
+			display: none;
+		}
+	</style>
+
+</head>
+<body>
+	<p> Board Name </p>
+	<input type="text" id="board_name" name="name" autofocus="autofocus" />
+	<p> Board discription </p>
+	<input type="text" id="board_discription" name="discription"/>
+	<p> Board Type </p>
+	<select multiple = "multiple" size = "2" id = 'board_type'>
+  		<option value="sheet">sheet</option>
+  		<option value="free">free</option>
+	</select>
+
+	<input type="checkbox" id="anonymous" name="anonymous" >Anonymous</input>
+
+	<p> Your Password to create a board </p>
+	<input type="password" id="password" name="password" />
+
+	<a id="submit" href="javascript:submitform()"> Submit </a>
+	<p id="feedback"> Board Created successfully </p>
+</body>
+</html>

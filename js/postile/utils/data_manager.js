@@ -25,6 +25,8 @@ postile.data_manager.userData = { };
  * @param {Object=} opt_this (Optional) This object to call callback with
  */
 postile.data_manager.getUserData = function(user_id, callback, opt_this) {
+    goog.asserts.assert(goog.isDef(user_id));
+
     var maybeUser = postile.data_manager.userData[user_id];
 
     if (goog.isDef(maybeUser)) {

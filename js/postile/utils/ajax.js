@@ -143,8 +143,7 @@ postile.ajax.notifier.networkError = function(error_string) { //network error
 
 postile.ajax.exception_handlers = { //exception_string and corresponding handler functions.
     USER_NOT_FOUND: function(args) {
-        console.log('user not found');
-       // postile.user.openLoginBox();
+        // postile.user.openLoginBox();
         return false;
     },
     USER_NOT_LOGGED_IN: function() {
@@ -153,13 +152,13 @@ postile.ajax.exception_handlers = { //exception_string and corresponding handler
         return false;
     },
     SERVER_ERROR: function() {
-        new postile.toast.Toast(5, "We are experiencing an magic error (again)...", [], 'red');
+        new postile.toast.Toast(5, "Server error, please refresh or contact us", [], 'red');
     },
     BOARD_NOT_FOUND: function() {
         new postile.toast.Toast(5, "Board not exist. Please check the URL you entered", [], 'red');
     },
     POST_NOT_FOUND: function() {
-        new postile.toast.Toast(5, "Post not exsit. Maybe it was deleted");
+        new postile.toast.Toast(5, "Post not exsit. Maybe it has been deleted");
     }
 }
 
@@ -172,10 +171,13 @@ postile.faye.init = function(callback) {
     });
 }
 
-postile.faye.subscribe = function(channel, listener) {
+/**
+ * @param {Object=} opt_scope The this object to call listener with.
+ */
+postile.faye.subscribe = function(channel, listener, opt_scope) {
     var faye_action = function() {
         postile.faye.client.subscribe('/faye/' + channel, function(data) {
-            listener(data.status, data.msg);
+            listener.call(opt_scope, data.status, data.msg);
         });
     };
     if (!postile.faye.client) {

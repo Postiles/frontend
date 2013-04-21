@@ -51,6 +51,10 @@ postile.conf = {
         return parseInt(localStorage.postile_user_id);
     },
 
+    userLoggedIn: function() {
+        return localStorage.postile_user_id && localStorage.postile_user_id != '0';
+    },
+
     getGlobalKeyHandler: function() {
         if(!postile.conf.getGlobalKeyHandler.handler) {
             //postile.conf.getGlobalKeyHandler.handler = new goog.events.KeyHandler(document, true);
