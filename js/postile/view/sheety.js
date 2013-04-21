@@ -19,6 +19,7 @@ goog.require('postile.view');
 goog.require('postile.view.At');
 goog.require('postile.debbcode');
 goog.require('postile.view.post_board.handlers');
+goog.require('postile.view.post_board.Header');
 goog.require('postile.templates.sheety');
 goog.require('postile.data_manager');
 goog.require('postile.async');
@@ -61,9 +62,10 @@ postile.view.Sheety = function(opt_boardId) {
     /**
      * Contains a list of posts. Its model is a {Array.<PostWE>}
      * The left hand side of the sheet.
+     * 45px is the height of the post_board.Header view.
      * @private
      */
-    this.postList_ = new postile.view.Sheety.PostList();
+    this.postList_ = new postile.view.Sheety.PostList(45);
 
     /**
      * Comment row container.
@@ -80,6 +82,14 @@ postile.view.Sheety = function(opt_boardId) {
     this.postIdToRow_ = {};
 
     /**
+     * The header of this full screen view.
+     * Initialized in renderPosts.
+     * @type {postile.view.post_board.Header}
+     * @private
+     */
+    this.header_ = null;
+
+    /**
      * Faye channel, to be cancelled on destroy.
      * Initialized in this.enterDocument.
      * @type {Faye.Subscription}
@@ -87,14 +97,29 @@ postile.view.Sheety = function(opt_boardId) {
      */
     this.fayeSubscr_ = null;
 
-    // Fetchs board data, then fetchs user data, finally renders the view.
+    // Fetchs post data, then fetchs user data, finally renders the view.
     var fetchPosts = goog.partial(
         postile.ajax,
         ['board', 'get_recent_posts'],
         { 'board_id': this.boardId_, 'number': 40 });
-    postile.async.Promise.fromCallback(fetchPosts)
-    .bind(postile.view.Sheety.fetchUserOfBoardData_)
-    .bind(this.renderPosts_, this);
+    var promRenderableData = postile.async.Promise.fromCallback(fetchPosts)
+    .bind(postile.view.Sheety.fetchUserOfBoardData_);
+    var fetchBoardData = goog.partial(postile.ajax, ['board', 'enter_board'], {
+        'board_id': this.boardId_
+    });
+    var promBoardData = postile.async.Promise.fromCallback(fetchBoardData);
+
+    // Fetch board data and display a header
+    postile.async.Promise.waitForAll([promRenderableData, promBoardData])
+    .lift(function(xs) {
+        var renderableData = xs[0];
+        var boardData = xs[1];
+        this.header_ =
+            new postile.view.post_board.Header(boardData['message']['board']);
+        goog.dom.append(goog.dom.getElement('wrapper'),
+            this.header_.container);
+        this.renderPosts_(renderableData);
+    }, this);
 
     postile.view.loadCss(['sheety.css']);
 };
@@ -425,8 +450,10 @@ postile.view.Sheety.prototype.renderPosts_ = function(postExs) {
 /**
  * Contains many post cells.
  * @constructor
+ * @param {number=} opt_floatMarginTop Additional top value added to
+ * the floating element.
  */
-postile.view.Sheety.PostList = function() {
+postile.view.Sheety.PostList = function(opt_floatMarginTop) {
     goog.base(this);
 
     /**
@@ -435,6 +462,8 @@ postile.view.Sheety.PostList = function() {
      * @private
      */
     this.floatHandlerKey_ = null;
+
+    this.floatMarginTop_ = opt_floatMarginTop || 0;
 };
 goog.inherits(postile.view.Sheety.PostList, goog.ui.Component);
 
@@ -463,7 +492,7 @@ postile.view.Sheety.PostList.prototype.exitDocument = function() {
 postile.view.Sheety.PostList.prototype.enableFloat = function() {
     // XXX: adjust initScrollTop a bit when we have something
     // above this view.
-    var initScrollTop = document.body.scrollTop;
+    var initScrollTop = this.floatMarginTop_;
     this.floatHandlerKey_ = goog.events.listen(
         document,
         goog.events.EventType.SCROLL,
@@ -479,7 +508,7 @@ postile.view.Sheety.PostList.prototype.syncScroll =
 function(initScrollTop) {
     var el = this.getElement();
     el.style.top =
-        String(initScrollTop - document.body.scrollTop) + 'px';
+        String(initScrollTop - window.scrollY) + 'px';
 };
 
 /**
