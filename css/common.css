@@ -51,7 +51,8 @@ MIC: postile.view
 	width: 100%;
 	height: 100%;
 	display: table;
-    position: absolute;
+    position: fixed;
+    z-index: 19520;
     left: 0;
     top: 0;
     opacity: 0; /* to be changed by JS */
