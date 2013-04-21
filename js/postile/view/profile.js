@@ -239,7 +239,6 @@ postile.view.profile.ProfileItem.prototype.saveTriggered = function() {
             this.data_el.innerHTML = this.input_el.value;
             this.edit_el.innerHTML = 'Edit';
 
-
             if (this.className != 'signiture' &&
                     this.className == 'self-intro' &&
                     this.className == 'username') {
