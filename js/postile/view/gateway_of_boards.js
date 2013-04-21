@@ -13,36 +13,43 @@ goog.require('postile.dom');
  */
 postile.view.BoardList = function(topic) {
     goog.base(this);
-    this.currentBoardId = null;
-    this.container.className = 'gateway';
-    this.title = postile.dom.getDescendantByClass(this.container, "title");
-    this.add = postile.dom.getDescendantByClass(this.title, "add");
-    this.right = postile.dom.getDescendantByClass(this.container, "right");
-    this.right_title = postile.dom.getDescendantByClass(this.right, "title");
-    this.right_count = postile.dom.getDescendantByClass(this.right, "count");
-    this.right_desc = postile.dom.getDescendantByClass(this.right, "desc");
-    this.right_posts = postile.dom.getDescendantByClass(this.right, "posts");
-    this.right_button = postile.dom.getDescendantByClass(this.right, "button");
-    this.right_button.style.display = 'none';
+    var instance = this;
+    instance.currentBoardId = null;
+    instance.container.className = 'gateway';
+    instance.title = postile.dom.getDescendantByClass(instance.container, "title");
+    instance.add = postile.dom.getDescendantByClass(instance.title, "add");
+    instance.right = postile.dom.getDescendantByClass(instance.container, "right");
+    instance.right_title = postile.dom.getDescendantByClass(instance.right, "title");
+    instance.right_count = postile.dom.getDescendantByClass(instance.right, "count");
+    instance.right_desc = postile.dom.getDescendantByClass(instance.right, "desc");
+    instance.right_posts = postile.dom.getDescendantByClass(instance.right, "posts");
+    instance.right_button = postile.dom.getDescendantByClass(instance.right, "button");
+    instance.like_button = postile.dom.getDescendantByClass(instance.right, "like");
+    instance.right_button.style.display = 'none';
     var new_board = new postile.view.new_board.NewBoard();
-    goog.events.listen(this.add, goog.events.EventType.CLICK, function() {
+    goog.events.listen(instance.add, goog.events.EventType.CLICK, function() {
         new_board.open(500);
     });
-    goog.events.listen(this.right_button, goog.events.EventType.CLICK, function() {
-        postile.router.dispatch('board/'+this.currentBoardId);
-    }.bind(this));
+    goog.events.listen(instance.right_button, goog.events.EventType.CLICK, function() {
+        postile.router.dispatch('board/'+instance.currentBoardId);
+    });
+    goog.events.listen(instance.like_button, goog.events.EventType.CLICK, function() {
+        postile.ajax([ 'board', 'like' ], { board_id: instance.currentBoardId }, function(new_data) {
+            
+        });
+    });
     postile.ajax([ 'board', 'get_boards_in_topic' ], { topic_id: topic }, function(data) {
         /* handle the data return after getting the boards information back */
         var boardArray = data.message.boards;
         for(i in boardArray) {
-            this.renderBoardListItem(boardArray[i]);
+            instance.renderBoardListItem(boardArray[i]);
         }
-    }.bind(this));
+    });
     var account = new postile.view.post_board.Account();
     account.container.style.position = "absolute";
     account.container.style.top = '0';
     account.container.style.right = '0';
-    goog.dom.appendChild(this.container, account.container);
+    goog.dom.appendChild(instance.container, account.container);
 }
 
 goog.inherits(postile.view.BoardList, postile.view.FullScreenView);
@@ -74,6 +81,7 @@ postile.view.BoardList.prototype.renderBoardListItem = function(data) {
         postile.router.dispatch('board/'+data.board.id);
     });
     goog.events.listen(item_el, goog.events.EventType.MOUSEOVER, function() {
+        instance.right.style.visibility = 'visible';
         instance.right_title.innerHTML = title_el.innerHTML;
         instance.right_count.innerHTML = meta_count_el.innerHTML;
         instance.right_desc.innerHTML = description_el.innerHTML;
