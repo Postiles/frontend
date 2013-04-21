@@ -2,6 +2,7 @@ goog.provide('postile.toast');
 
 goog.require('goog.dom');
 goog.require('goog.events');
+goog.require('postile.fx');
 
 /**
  * Initialized when the first Toast object is created.
@@ -72,3 +73,60 @@ postile.toast.Toast.prototype.abort = function() {
     goog.dom.removeNode(this.line_el);
 }
 
+postile.toast.title_bar_toast_on = false;
+postile.toast.title_bar_toast_anim = 0;
+postile.toast.title_bar_toast_container = null;
+postile.toast.title_bar_toast_anim_time_left = 0;
+
+postile.toast.title_bar_toast = function(text, duration) {
+    if (!postile.toast.title_bar_toast_container) {
+        postile.toast.title_bar_toast_container = 
+            goog.dom.getElement('title_bar_toast_container');
+    }
+    postile.toast.title_bar_toast_container.innerHTML = text;
+    postile.toast.title_bar_toast_container.style.marginLeft = 
+        - postile.toast.title_bar_toast_container.offsetWidth / 2 + 'px';
+
+    var top = 0;
+
+    postile.toast.title_bar_toast_anim_time_left = 100;
+
+    var downAnim = setInterval(function() {
+        top += 4;
+        postile.toast.title_bar_toast_container.style.top = top + 'px';
+        postile.toast.title_bar_toast_anim_time_left -= 10;
+        if (top == 40) {
+            clearInterval(downAnim);
+        }
+    }, 10);
+
+    if (postile.toast.title_bar_toast_on) { // has active toast
+        clearTimeout(postile.toast.title_bar_toast_anim);
+    }
+
+    postile.toast.title_bar_toast_on = true;
+
+    if (duration != 0) {
+        postile.toast.title_bar_toast_anim = setTimeout(function() {
+            postile.toast.title_bar_toast_dismiss();
+        }.bind(this), duration * 1000);
+    }
+}
+
+postile.toast.title_bar_toast_dismiss = function() {
+    if (postile.toast.title_bar_toast_on) {
+        console.log(postile.toast.title_bar_toast_anim_time_left);
+        setTimeout(function() {
+            var top = 40;
+
+            var upAnim = setInterval(function() {
+                top -= 4;
+                postile.toast.title_bar_toast_container.style.top = top + 'px';
+                if (top == 0) {
+                    clearInterval(upAnim);
+                    postile.toast.title_bar_toast_on = false;
+                }
+            }, 10);
+        }, postile.toast.title_bar_toast_anim_time_left + 1000);
+    }
+}

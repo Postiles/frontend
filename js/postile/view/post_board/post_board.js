@@ -154,7 +154,7 @@ postile.view.post_board.handlers.resize = function(instance) {
     instance.viewport_position = goog.style.getRelativePosition(instance.viewport, document.body);
 
     // Update according to the new subscribe area.
-    instance.updateSubscribeArea();
+    // instance.updateSubscribeArea();
 }
 
 /**
@@ -407,8 +407,6 @@ postile.view.post_board.PostBoard.prototype.initView = function() {
 
     goog.dom.appendChild(this.catchall, this.viewport);
     goog.dom.appendChild(this.viewport, this.canvas);
-
-    //console.log(this.create_helper);
 
     goog.dom.appendChild(goog.dom.getElement("wrapper"), this.header.container);
     goog.dom.appendChild(goog.dom.getElement("wrapper"), this.catchall);
@@ -835,6 +833,13 @@ postile.view.post_board.PostBoard.prototype.getSubscribeArea = function(source) 
  * Fetch the posts in the new area and subscribe it.
  */
 postile.view.post_board.PostBoard.prototype.updateSubscribeArea = function() {
+    try {
+        a.b;
+    } catch(e) {
+        console.log(e.stack);
+    }
+    console.log('updaing');
+    postile.toast.title_bar_toast('Loading posts for you...', 0);
     var instance = this;
     var current_loc = this.canvasCoord;
     var to_subscribe = this.getSubscribeArea(current_loc);
@@ -853,6 +858,7 @@ postile.view.post_board.PostBoard.prototype.updateSubscribeArea = function() {
     */
     to_subscribe.board_id = instance.board_id;
     postile.ajax(['board', 'move_to'], to_subscribe, function(data) {
+        postile.toast.title_bar_toast_dismiss();
         instance.subscribedArea = to_subscribe;
         instance.renderArray(data.message.posts);
     }, 'Loading posts...', true);
