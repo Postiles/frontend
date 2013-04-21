@@ -50,6 +50,7 @@
     line-height: 20px;
     padding: 4px 8px;
     cursor: pointer;
+    display: none;
 }
 
 .gateway .left .title .add:hover {
