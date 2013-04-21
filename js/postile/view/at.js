@@ -7,6 +7,24 @@ goog.require('postile.conf');
 goog.require('postile.view');
 goog.require('postile.events');
 
+/**
+ * Decorates a dom element to provide `at' functionality.
+ *
+ * Usecase:
+ * - When decorating a comment textarea
+ *   at = new postile.view.At(el)
+ *   at.toBBcode()  // pre-process the innerhtml
+ *   // And submit el.inerHTML to backend
+ *
+ * - When decorating a post textarea
+ *   ???
+ */
+
+/**
+ * Enables `at' functionality for the given element.
+ * @param {Element} el A div element that has its contentEditable
+ * set to true.
+ */
 postile.view.At = function(el) {
     postile.view.TipView.call(this);
 
@@ -205,9 +223,11 @@ postile.view.At.prototype.close = function() {
     postile.view.TipView.prototype.close.call(this);
 }
 
-/*
-this function is used for inline commenting. for posting, a similar function in postile.WYSIWYF is used
-*/
+/**
+ * Preprocess the containing div's innerHTML.
+ * This function is used for inline commenting.
+ * For posting, a similar function in postile.WYSIWYF is used.
+ */
 postile.view.At.prototype.toBBcode = function() {
     var ats = postile.dom.getDescendantsByCondition(this.ipel, function(cel) {
         return cel.tagName && cel.getAttribute('at-user');
@@ -216,3 +236,26 @@ postile.view.At.prototype.toBBcode = function() {
         goog.dom.replaceNode(goog.dom.createTextNode('[at]' + ats[i].getAttribute('at-user') + '[/at]'), ats[i]);
     }
 }
+
+/**
+ * The same as toBBcode, but rather than modifying the element inplace,
+ * this function returns the bbcode instead.
+ * XXX: keep in sync with toBBcode.
+ * @param {string} html The innerHTML of the original element to read from
+ * @return {string} The converted BBCode.
+ */
+postile.view.At.asBBCode = function(html) {
+    // Deep copy
+    var el = goog.dom.createDom('div', {
+        'innerHTML': html
+    });
+
+    var ats = postile.dom.getDescendantsByCondition(el, function(cel) {
+        return cel.tagName && cel.getAttribute('at-user');
+    });
+    for (var i in ats) {
+        goog.dom.replaceNode(goog.dom.createTextNode('[at]' + ats[i].getAttribute('at-user') + '[/at]'), ats[i]);
+    }
+    return el.innerHTML;
+};
+

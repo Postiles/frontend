@@ -126,15 +126,14 @@ postile.view.PopView = function() {
     this.mask = goog.dom.createDom('div', 'pop_mask');
 
     /* handle outside click event */
-    /*
     goog.events.listen(this.mask, goog.events.EventType.CLICK, function(e) {
-        console.log(e.target);
+        this.close();
+        e.stopPropagation();
     }.bind(this));
-    */
-
-    this.mask.style.position = 'absolute';
-    this.mask.style.top = '0px';
-    this.mask.style.zIndex = '300';
+    
+    goog.events.listen(this.container, goog.events.EventType.CLICK, function(e) {
+        e.stopPropagation();
+    }.bind(this));
 
     goog.dom.appendChild(this.mask, this.container_wrap);
 }
@@ -149,7 +148,7 @@ goog.inherits(postile.view.PopView, postile.view.View);
 postile.view.PopView.prototype.open = function(opt_width) {
     if (!goog.isDef(opt_width) || opt_width > document.body.clientWidth) {
         // Not specified or too large for screen
-        this.container.style.width = document.body.clientWidth + 'px';
+        // this.container.style.width = document.body.clientWidth + 'px';
     } else {
         this.container.style.width = opt_width + 'px';
     }

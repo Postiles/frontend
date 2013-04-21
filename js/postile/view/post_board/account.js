@@ -23,7 +23,7 @@ postile.view.post_board.Account = function(opt_board) {
     // create view for displaying user information
     this.settingButton_el = postile.dom.getDescendantById(instance.container, 'settings_button');
 
-    this.change_password = new postile.view.change_password.ChangePassword(this);
+    this.change_password = new postile.view.change_password.ChangePassword();
     goog.events.listen(this.settingButton_el, goog.events.EventType.CLICK, function(e){
         this.change_password.open(500);
     }.bind(this));

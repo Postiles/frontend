@@ -18,6 +18,7 @@ goog.require('postile.view.tutorial');
 goog.require('postile.ui');
 goog.require('postile.feedback');
 goog.require('postile.log');
+goog.require('postile.view.InvitedUserQuickLogin');
 
 /**
  * Exported entry point.
@@ -55,6 +56,7 @@ postile.entry.init_router_map = function() {
     postile.router.map['console'] = postile.view.WelcomePage;
     postile.router.map['signup'] = postile.view.signup.SignupView;
     postile.router.map['tutorial'] = postile.view.tutorial.TutorialView;
+    postile.router.map['start'] = postile.view.InvitedUserQuickLogin;
 };
 
 goog.exportSymbol('postile.entry.main', postile.entry.main);
