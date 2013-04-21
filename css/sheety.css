@@ -1,70 +1,107 @@
 .sheety-body {
-    color: white;
-    cursor: default;
-    background-color: rgb(3,76,97);
+  background-color: #f5f9fa;
+  font-family: sans-serif;
+  font-size: .8em;
 }
-
-.sheety-title {
-    padding: 0.67em;
-    font-size: 2em;
+.sheety-post-list {
+  position: relative;
+  z-index: 100;
+  float: left;
+  width: 200px;
 }
-
-.sheety-posts {
-    float: left;
-    width: 200px;
+.sheety-comment-row {
+  white-space: nowrap;
+  height: 100px;
 }
-
-.sheety-comments {
-    float: left;
-    background-color: rgb(182, 199, 164);
+.sheety-post-cell, .sheety-comment-cell {
+  border: 1px solid #c3cfc2;
+  display: inline-block;
+  width: 174px;
+  height: 80px;
+  vertical-align: middle;
+  padding: 9px 12px;
+  white-space: normal;
+  overflow-y: hidden;
 }
-
-.sheety-postitem {
-    padding: 10px 20px;
-    transition: background-color 0.5s, color 0.5s;
+.sheety-new-comment-cell {
+  border: 1px solid #c3cfc2;
+  display: inline-block;
+  width: 174px;
+  height: 80px;
+  vertical-align: middle;
+  padding: 9px 12px;
+  white-space: normal;
+  overflow-y: hidden;
+  z-index: -100;
+  position: absolute;
+  left: 0;
+  transition: left .5s;
+  background-color: #e0eddd;
 }
-
-.sheety-postitem:nth-child(2n+1) {
-    background-color: rgb(0, 70, 90);
+.sheety-comment-cell {
+  background-color: #e0eddd;
 }
-
-.sheety-postitem-title {
-    font-style: bold;
-    font-size: 1.15em;
-    color: rgb(182, 199, 164);
-    transition: color 0.5s;
+.sheety-comment-cell-hover {
+  background-color: #cbdbc8;
 }
-
-.sheety-postitem-author {
-    font-size: 0.85em;
+.sheety-post-cell {
+  background-color: #024d61;
+  color: #e0eddd;
 }
-
-.sheety-postitem-hover,
-.sheety-postitem-hover:nth-child(2n+1) {
-    background-color: rgb(202, 219, 184);
-    color: rgb(0, 70, 90);
+.sheety-post-cell .who {
+  margin-top: 0;
+  font-size: 2em;
+  text-align: center;
 }
-
-.sheety-postitem-hover .sheety-postitem-title {
-    color: rgb(80, 0, 0);
+.sheety-post-cell .mkcomment {
+  margin-top: 0;
+  font-size: 1em;
+  padding: 10px 4px;
+  text-align: center;
 }
-
-
-.sheety-commentitem {
-    padding: 8px;
-    cursor: pointer;
-    display: inline-block;
+.sheety-post-cell .mkcomment-hover {
+  background-color: #10586c;
+  cursor: pointer;
 }
-
-.sheety-commentitem-hover {
-    background-color: rgb(182, 199, 164);
+.sheety-post-cell .mkcomment-disabled {
+  color: grey;
+  cursor: default;
 }
-
-.sheety-commentitem-active {
-    background-color: rgb(172, 189, 154);
+.sheety-comment-cell .ctime {
+  color: grey;
 }
-
-.sheety-commentitem-cdatetime {
-    font-size: 0.75em;
+.sheety-comment-cell .author {
+  color: #4269bd;
 }
-
+.sheety-comment-cell .likes {
+  color: #4269bd;
+  cursor: pointer;
+}
+.sheety-comment-cell .del {
+  cursor: pointer;
+}
+.sheety-comment-cell .likes-hover .like-button {
+  text-decoration: underline;
+}
+.sheety-comment-cell .likes-disabled, .sheety-comment-cell .likes-disabled .like-button {
+  cursor: default;
+  color: grey;
+}
+.sheety-comment-cell .del {
+  color: grey;
+}
+.sheety-comment-cell .del-hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+.sheety-comment-cell .del-disabled {
+  cursor: default;
+  color: #cbdbc8;
+}
+.sheety-comment-cell .author, .sheety-comment-cell .likes, .sheety-comment-cell .del, .sheety-comment-cell .ctime {
+  display: inline;
+  font-size: .9em;
+}
+.sheety.comment-cell .content {
+  margin-top: 3px;
+}
