@@ -15,7 +15,17 @@
   white-space: nowrap;
   height: 100px;
 }
-.sheety-post-cell, .sheety-comment-cell, .sheety-new-comment-cell {
+.sheety-post-cell, .sheety-comment-cell {
+  border: 1px solid #c3cfc2;
+  display: inline-block;
+  width: 174px;
+  height: 88px;
+  vertical-align: middle;
+  padding: 5px 12px;
+  white-space: normal;
+  overflow-y: hidden;
+}
+.sheety-new-comment-cell {
   border: 1px solid #c3cfc2;
   display: inline-block;
   width: 174px;
