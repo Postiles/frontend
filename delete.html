@@ -1,0 +1,164 @@
+<html>
+<head>
+	<title>Create_User Interface</title>
+	<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+
+	<script type="text/javascript">
+		var is_post;
+
+		function search(){
+			is_post = $('#is_comment').is(':checked');
+
+			if(!$('#is_comment').is(':checked')){
+				$.ajax({
+					type: "post",			
+				  	url: "http://www.postiles.com:300/search/search_post",
+				  	data: {
+				  		keyword: $('#key_words').val(),
+				  	},
+				  	success: function(r){
+				  		if(r.status == 'error'){
+				  			$("#feedback").css("display", "block");
+				  			$("#feedback").html("Delete failed, please contact postiles.hkust@gmail.com");
+				  		}else{
+				  			var dataArray = r.message.posts;
+				  				console.log(dataArray);
+				  			for(i in dataArray){
+				  				console.log(dataArray[i]);
+				  				appendPost(dataArray[i]);
+				  			}
+						  	$("#next_step").css("display", "block");
+				  		}
+				  	}
+				});	
+			}else {
+				$.ajax({
+					type: "post",			
+				  	url: "http://www.postiles.com:300/search/search_comment",
+				  	data: {
+				  		keyword: $('#key_words').val(),
+				  	},
+				  	success: function(r){
+				  		if(r.status == 'error'){
+				  			$("#feedback").css("display", "block");
+				  			$("#feedback").html("Delete failed, please contact postiles.hkust@gmail.com");
+				  		}else{
+				  			var dataArray = r.message.inline_comments;
+				  			for(i in dataArray){
+				  				appendComment(dataArray[i]);
+				  			}
+						  	$("#next_step").css("display", "block");
+				  		}
+				  	}
+				});	
+			}
+		}
+
+		function appendPost(p){
+			$("#result_list").append("<div>id:"+p.post.id+" title:"+p.post.title+" content:"+p.post.content+"</div>");
+		}
+
+		function appendComment(p){
+			$("#result_list").append("<div>id:"+p.inline_comment.id+" content:"+p.inline_comment.content+"</div>");
+		}
+
+
+		function submitform(){
+			if(!$('#is_comment').is(':checked')){
+				$.ajax({
+					type: "post",			
+				  	url: "http://www.postiles.com:300/post/delete",
+				  	data: {
+				  		post_id: $('#id').val(),
+				  		session_key: $('#password').val(),
+				  		user_id: '50'
+				  	},
+				  	success: function(r){
+				  		if(r.status == 'error'){
+				  			$("#feedback").css("display", "block");
+				  			$("#feedback").html("Delete failed, please contact postiles.hkust@gmail.com");
+				  		}else{
+						  	$("#feedback").css("display", "block");
+						  	setTimeout('dismiss()', 4000);
+				  		}
+				  	}
+				});	
+			}else{
+				$.ajax({
+					type: "post",			
+				  	url: "http://www.postiles.com:300/inline_comment/delete",
+				  	data: {
+				  		comment_id: $('#id').val(),
+				  		session_key: $('#password').val(),
+				  		user_id: '50'
+				  	},
+				  	success: function(r){
+				  		if(r.status == 'error'){
+				  			$("#feedback").css("display", "block");
+				  			$("#feedback").html("Delete failed, please contact postiles.hkust@gmail.com");
+				  		}else{
+						  	$("#feedback").css("display", "block");
+						  	setTimeout('dismiss()', 4000);
+				  		}
+				  	}
+				});	
+			}
+		}
+		$(document).ready(function() {
+			$("#password").keypress(function(event) {
+	    		if (event.which == 13) {
+	        		submitform();
+	    		}
+			});
+			$("#key_words").keypress(function(event) {
+	    		if (event.which == 13) {
+	        		search();
+	    		}
+			});
+		});
+
+		function dismiss() {
+			$("#feedback").css("display", "none");
+		}
+	</script>
+
+	<style>
+		#feedback {
+			display: none;
+		}
+		#next_step {
+			display: none;
+		}
+
+	</style>
+
+</head>
+<body>
+	<p>Instruction: first search the post or comment, then delete the entry by entering the id</p>
+	<p> Your Password to operate </p>
+	<input type="password" id="password" name="password" />
+
+	</br>
+	</br>
+	<input type="checkbox" id="is_comment" name="is_comment" >If it is a comment check this, if it is a post, leave it blank</input>
+
+	<p> Key words </p>
+	<input type="text" id="key_words" name="key_words" autofocus="autofocus" />
+
+	</br>
+	</br>
+
+	<a id="submit" href="javascript:search()"> Search </a>
+
+	<div id="result_list">
+	</div>
+
+	<div id='next_step'>
+		<p> id </p>
+		<input type="text" id="id" name="id"/>
+
+		<a id="submit" href="javascript:submitform()"> delete </a>
+		<p id="feedback"> Delete successfully </p>
+	</div>
+</body>
+</html>
