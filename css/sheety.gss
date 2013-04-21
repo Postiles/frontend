@@ -90,6 +90,21 @@
     background-color: white;
     height: 50px;
     font-size: 0.7em;
+    padding: 5px;
+}
+
+.sheety-new-comment-cell .comment-button {
+    border: none;
+    background: #A7D875;
+    color: whitesmoke;
+    font-size: 13pt;
+    padding: 5px 10px;
+    margin: 5px;
+    cursor: pointer;
+}
+
+.sheety-new-comment-cell .comment-button:hover {
+    background: #024d61;
 }
 
 .sheety-post-cell {

@@ -644,7 +644,9 @@ postile.view.Sheety.AddCommentPop = function(postCell) {
         goog.ui.ControlRenderer.getCustomRenderer(
             goog.ui.ControlRenderer, 'textarea'));
     this.submitButton_ = new goog.ui.Button('Submit');
+    this.submitButton_.addClassName('comment-button');
     this.cancelButton_ = new goog.ui.Button('Cancel');
+    this.cancelButton_.addClassName('comment-button');
     this.atAddOn_ = null;
 };
 goog.inherits(postile.view.Sheety.AddCommentPop, goog.ui.Container);

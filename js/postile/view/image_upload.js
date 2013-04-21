@@ -39,6 +39,7 @@ postile.view.image_upload.ImageUploadBlock = function(input_instance) {
 	goog.dom.appendChild(this.uploadContent, this.fakefile);
 	goog.dom.appendChild(this.fakefile, this.fileInput);
 	
+    this.addCloseButton(this.container);
 }
 goog.inherits(postile.view.image_upload.ImageUploadBlock, postile.view.PopView);
 

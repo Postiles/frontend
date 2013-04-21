@@ -20,7 +20,6 @@ postile.view.video_upload.VideoUpload = function(input_instance) {
 	this.user_input_el = postile.dom.getDescendantByClass(this.container, 'text');
 
     goog.events.listen(this.user_input_el, goog.events.EventType.KEYDOWN, function(e) {
-//    	if(postile.brower_compact.is
 		if(e.keyCode == 17 || e.keyCode == 91) { // control button
 			goog.events.listen(this.user_input_el, goog.events.EventType.KEYUP, function(e) {
 				if(e.keyCode == 86) {
@@ -36,13 +35,14 @@ postile.view.video_upload.VideoUpload = function(input_instance) {
 
 	this.container.style.top = '0px';
     this.container.style.left = '0px';
+
+    this.addCloseButton(this.container);
 }
 
 goog.inherits(postile.view.video_upload.VideoUpload, postile.view.PopView);
 postile.view.video_upload.VideoUpload.prototype.unloaded_stylesheets = ['video_upload.css'];
 
 postile.view.video_upload.VideoUpload.prototype.showPreview = function(){
-	
 	var user_input_url = this.user_input_el.value;
 
 	var embedCode = postile.re.getEmbed(user_input_url);

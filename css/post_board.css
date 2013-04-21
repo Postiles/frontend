@@ -59,7 +59,7 @@ html, body {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
+/*
 #title_bar_toast_container {
     position: absolute;
     top: 0px;
@@ -74,6 +74,7 @@ html, body {
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
 }
+*/
 
 #accout_container {
   float: right;
