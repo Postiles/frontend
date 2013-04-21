@@ -833,13 +833,7 @@ postile.view.post_board.PostBoard.prototype.getSubscribeArea = function(source) 
  * Fetch the posts in the new area and subscribe it.
  */
 postile.view.post_board.PostBoard.prototype.updateSubscribeArea = function() {
-    try {
-        a.b;
-    } catch(e) {
-        console.log(e.stack);
-    }
-    console.log('updaing');
-    postile.toast.title_bar_toast('Loading posts for you...', 0);
+    // postile.toast.title_bar_toast('Loading posts for you...', 0);
     var instance = this;
     var current_loc = this.canvasCoord;
     var to_subscribe = this.getSubscribeArea(current_loc);
@@ -858,7 +852,7 @@ postile.view.post_board.PostBoard.prototype.updateSubscribeArea = function() {
     */
     to_subscribe.board_id = instance.board_id;
     postile.ajax(['board', 'move_to'], to_subscribe, function(data) {
-        postile.toast.title_bar_toast_dismiss();
+        // postile.toast.title_bar_toast_dismiss();
         instance.subscribedArea = to_subscribe;
         instance.renderArray(data.message.posts);
     }, 'Loading posts...', true);

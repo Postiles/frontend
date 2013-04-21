@@ -5,7 +5,7 @@ goog.provide('postile.locale.zh_TW');
 postile.locale.en.text = {
     inline_comment_prompt: 'Enter your comment here...',
     post_title_prompt: 'Title (optional)',
-    post_zone_illegal: 'The zone you chose was illegal. Please reselect one.',
+    post_zone_illegal: 'The zone you chose is not available.',
     mask_for_creating_post: 'Click & Drag to add a post. Press <i>Esc</i> or <i>double click again</i> to quit',
     mask_for_picking_post: 'Click to select a post to link to',
     linked: 'LINKED',
@@ -27,7 +27,7 @@ postile.locale.en.date = {
 postile.locale.zh_CN.text = {
     inline_comment_prompt: '在此输入评论...',
     post_title_prompt: '标题（选填）',
-    post_zone_illegal: '您选择的区域不合法。请重新选择',
+    post_zone_illegal: '您选择的区域不可用',
     mask_for_creating_post: '拖拽发帖、双击返回',
     mask_for_picking_post: '请点击选择要链接的帖子',
     linked: '已链接',

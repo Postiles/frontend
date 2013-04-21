@@ -64,10 +64,8 @@ html, body {
     position: absolute;
     top: 0px;
     left: 50%;
-    height: 30px;
-    padding-top: 10px;
-    padding-left: 50px;
-    padding-right: 50px;
+    height: 20px;
+    padding: 5px 70px;
     background: rgba(0, 0, 0, 0.5);
     color: whitesmoke;
     text-align: center;

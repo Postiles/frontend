@@ -79,10 +79,8 @@ postile.toast.title_bar_toast_container = null;
 postile.toast.title_bar_toast_anim_time_left = 0;
 
 postile.toast.title_bar_toast = function(text, duration) {
-    if (!postile.toast.title_bar_toast_container) {
-        postile.toast.title_bar_toast_container = 
-            goog.dom.getElement('title_bar_toast_container');
-    }
+    postile.toast.title_bar_toast_container = 
+        goog.dom.getElement('title_bar_toast_container');
     postile.toast.title_bar_toast_container.innerHTML = text;
     postile.toast.title_bar_toast_container.style.marginLeft = 
         - postile.toast.title_bar_toast_container.offsetWidth / 2 + 'px';
@@ -115,7 +113,6 @@ postile.toast.title_bar_toast = function(text, duration) {
 
 postile.toast.title_bar_toast_dismiss = function() {
     if (postile.toast.title_bar_toast_on) {
-        console.log(postile.toast.title_bar_toast_anim_time_left);
         setTimeout(function() {
             var top = 40;
 

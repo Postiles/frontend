@@ -479,6 +479,13 @@ postile.view.post.Post.prototype.initEditModeListener = function() {
             }
         }.bind(this));
 
+    goog.events.listen(
+        elements.postContentPlaceHolder_el,
+        goog.events.EventType.CLICK,
+        function(e) {
+            elements.postContent_el.focus();
+        }.bind(this));
+
     // delete icon clicked
     goog.events.listen(
         elements.deleteIcon_el, 
