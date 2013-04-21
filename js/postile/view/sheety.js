@@ -468,7 +468,10 @@ postile.view.Sheety.PostList.prototype.enableFloat = function() {
         document,
         goog.events.EventType.SCROLL,
         goog.bind(this.syncScroll, this, initScrollTop));
-    this.startFloating();
+
+    // XXX: not floating on document but on #wrapper
+    // to be able to set z-index difference on post-list and sheety-body.
+    this.startFloating(goog.dom.getElement('wrapper'));
     this.syncScroll(initScrollTop);
 };
 
@@ -483,7 +486,7 @@ function(initScrollTop) {
  * Make self a fix-positioned element, and attach event handlers
  * to sync it with y-scrolling.
  */
-postile.view.Sheety.PostList.prototype.startFloating = function() {
+postile.view.Sheety.PostList.prototype.startFloating = function(parentEl) {
     var elem = this.getElement();
     var STORED_STYLE_PROPS_ = [
         'position', 'top', 'left', 'width', 'cssFloat'];
@@ -495,7 +498,6 @@ postile.view.Sheety.PostList.prototype.startFloating = function() {
     // Read properties of element before modifying it.
     var originalLeft_ = goog.style.getPageOffsetLeft(elem);
     var originalWidth_ = goog.style.getContentBoxSize(elem).width;
-    var parentElement = document.body;
     var placeholder_ = goog.dom.createDom('div', {
         'style': 'visibility: hidden'
     });
@@ -531,7 +533,7 @@ postile.view.Sheety.PostList.prototype.startFloating = function() {
     // If parents are the same, avoid detaching and reattaching elem.
     // This prevents Flash embeds from being reloaded, for example.
     elem.parentNode.replaceChild(placeholder_, elem);
-    parentElement.appendChild(elem);
+    parentEl.appendChild(elem);
 
     elem.style.position = 'fixed';
     elem.style.top = '0';

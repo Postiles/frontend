@@ -1,5 +1,5 @@
 @def CELL_WIDTH 200px;
-@def CELL_HEIGHT 200px;
+@def CELL_HEIGHT 100px;
 @def CELL_BORDER_SIZE 1px;
 @def CELL_PAD_TOP 9px;
 @def CELL_PAD_LEFT 12px;
@@ -25,18 +25,22 @@
 }
 
 .sheety-body {
+    /* Lower than post-list */
+    position: relative;
+    z-index: -100;
+
     background-color: TABLE_BG;
     font-family: sans-serif;
     font-size: 0.8em;
 }
 
 .sheety-post-list {
-    /* Higher than comment cells */
-    position: relative;
-    z-index: 100;
-
     float: left;
     width: CELL_WIDTH;
+
+    /* Higher than sheety-body */
+    z-index: 100;
+    position: relative;
 }
 
 .sheety-comment-row {
@@ -59,9 +63,13 @@
     overflow-y: hidden;
 }
 
+.sheety-post-cell {
+    /* Higher than new-comment-cell */
+    z-index: 100;
+    position: relative;
+}
+
 .sheety-new-comment-cell {
-    /* Lower than header cells */
-    z-index: -100;
     position: absolute;
 
     /* Move-out animation. XXX: why it has correct top? */
