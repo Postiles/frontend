@@ -5,8 +5,9 @@ library for ajax-related activities
 goog.provide('postile.ajax');
 goog.provide('postile.faye');
 
-goog.require('postile.conf');
 goog.require('goog.net.jsloader');
+goog.require('goog.async.Deferred');
+goog.require('postile.conf');
 goog.require('postile.user');
 
 postile.ajax = function(url, data, onsuccess, onfail, notifier_text) {
@@ -172,19 +173,29 @@ postile.faye.init = function(callback) {
 }
 
 /**
+ * Subscribes to a faye channel.
+ * @param {String} channel The channel to subscribe on
+ * @param {function(string, Object)} listener The callback function to
+ * be called when message arrives.
  * @param {Object=} opt_scope The this object to call listener with.
+ * @return {goog.async.Deferred} A deferred object whose callback value is a
+ * {Faye.Subscription} object, which you could call .cancel() on it.
  */
 postile.faye.subscribe = function(channel, listener, opt_scope) {
+    var dfd = new goog.async.Deferred();
     var faye_action = function() {
-        postile.faye.client.subscribe('/faye/' + channel, function(data) {
-            listener.call(opt_scope, data.status, data.msg);
-        });
+        var subscr = postile.faye.client.subscribe('/faye/' + channel,
+            function(data) {
+                listener.call(opt_scope, data.status, data.msg);
+            });
+        dfd.callback(subscr);
     };
     if (!postile.faye.client) {
         postile.faye.init(faye_action);
     } else {
         faye_action();
     }
+    return dfd;
 };
 
 postile.faye.publish = function(channel, status, data) {
