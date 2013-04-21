@@ -157,6 +157,14 @@
     cursor: pointer;
 }
 
+.sheety-comment-cell .del {
+    visibility: hidden;
+}
+
+.sheety-comment-cell:hover .del {
+    visibility: visible;
+}
+
 .sheety-comment-cell .author-hover,
 .sheety-comment-cell .likes-hover .like-button,
 .sheety-comment-cell .del-hover {
