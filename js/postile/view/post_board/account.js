@@ -221,7 +221,8 @@ postile.view.post_board.Account.prototype.changeAccoutView = function(){
                 this.login_button.style.display = 'block';
                 this.signup_button.style.display = 'block';
 
-                new postile.toast.Toast(1, "You are not logged in. Please login to enable edit functions");
+                new postile.toast.title_bar_toast(
+                    "You are not logged in. Please login to enable edit functions", 2);
 
             }else {
                 this.account_container.style.display = 'block';

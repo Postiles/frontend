@@ -40,6 +40,7 @@ postile.view.BoardList = function(topic) {
             this.renderBoardListItem(boardArray[i]);
         }
     }.bind(this));
+
     var account = new postile.view.post_board.Account();
     account.container.style.position = "absolute";
     account.container.style.top = '0';

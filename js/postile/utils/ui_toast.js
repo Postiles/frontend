@@ -31,6 +31,7 @@ postile.toast.Toast = function(duration, text, callbacks, opt_color) {
         postile.toast.toast_container = goog.dom.createDom('div', 'toast_container');
         goog.dom.appendChild(document.body, postile.toast.toast_container);
     }
+
     var i;
     var temp;
     var section = /\[[^\[\]]+\]/g;
@@ -79,13 +80,34 @@ postile.toast.title_bar_toast_container = null;
 postile.toast.title_bar_toast_anim_time_left = 0;
 
 postile.toast.title_bar_toast = function(text, duration) {
+    /*
     postile.toast.title_bar_toast_container = 
         goog.dom.getElement('title_bar_toast_container');
+    */
+
+    postile.toast.title_bar_toast_container = 
+        goog.dom.createDom('div', 'title_bar_toast_container');
+
+    goog.dom.appendChild(document.body, postile.toast.title_bar_toast_container);
+
+    // TODO: move to a css file
+    postile.toast.title_bar_toast_container.style.position = 'absolute';
+    postile.toast.title_bar_toast_container.style.top = '-40px';
+    postile.toast.title_bar_toast_container.style.left = '50%';
+    postile.toast.title_bar_toast_container.style.background = 'rgba(0, 0, 0, 0.5)';
+    postile.toast.title_bar_toast_container.style.color = 'whitesmoke';
+    postile.toast.title_bar_toast_container.style.padding = '5px 80px';
+    postile.toast.title_bar_toast_container.style.zIndex = '600';
+    postile.toast.title_bar_toast_container.style.zIndex = '600';
+    postile.toast.title_bar_toast_container.style.zIndex = '600';
+    postile.toast.title_bar_toast_container.style.borderBottomLeftRadius = '10px';
+    postile.toast.title_bar_toast_container.style.borderBottomRightRadius = '10px';
+
     postile.toast.title_bar_toast_container.innerHTML = text;
     postile.toast.title_bar_toast_container.style.marginLeft = 
         - postile.toast.title_bar_toast_container.offsetWidth / 2 + 'px';
 
-    var top = 0;
+    var top = -40;
 
     postile.toast.title_bar_toast_anim_time_left = 100;
 
@@ -93,7 +115,7 @@ postile.toast.title_bar_toast = function(text, duration) {
         top += 4;
         postile.toast.title_bar_toast_container.style.top = top + 'px';
         postile.toast.title_bar_toast_anim_time_left -= 10;
-        if (top == 40) {
+        if (top == 0) {
             clearInterval(downAnim);
         }
     }, 10);
@@ -114,12 +136,12 @@ postile.toast.title_bar_toast = function(text, duration) {
 postile.toast.title_bar_toast_dismiss = function() {
     if (postile.toast.title_bar_toast_on) {
         setTimeout(function() {
-            var top = 40;
+            var top = 0;
 
             var upAnim = setInterval(function() {
                 top -= 4;
                 postile.toast.title_bar_toast_container.style.top = top + 'px';
-                if (top == 0) {
+                if (top == -40) {
                     clearInterval(upAnim);
                     postile.toast.title_bar_toast_on = false;
                 }
