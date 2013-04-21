@@ -5,6 +5,13 @@ goog.require('postile.view.inline_login');
 postile.view.post_board.Account = function(opt_board) {
     goog.base(this);
 
+    /**
+     * Stores the faye subscription for future disposal.
+     * @type {goog.async.Deferred}
+     * @private
+     */
+    this.fayeSubscrDfd_ = null;
+
     postile.ui.load(this.container, postile.conf.staticResource(['account_container.html']));
     
     this.container.id = 'accout_container';
@@ -135,7 +142,8 @@ postile.view.post_board.Account = function(opt_board) {
             this.redCircle = goog.dom.createDom('div', 'notification_redCircle');
             goog.dom.appendChild(this.alert_wrapper, this.redCircle);
 
-            postile.faye.subscribe('notification/' + localStorage.postile_user_id, function(status, data) {
+            // Stores faye subscription for future disposal
+            this.fayeSubscrDfd_ = postile.faye.subscribe('notification/' + localStorage.postile_user_id, function(status, data) {
                 instance.notificationHandler(data);
             });
             this.notification_isOpened = false;
@@ -191,10 +199,21 @@ postile.view.post_board.Account = function(opt_board) {
         profileView.open(710);
     }.bind(this));
 }
-
 goog.inherits(postile.view.post_board.Account, postile.view.NormalView);
 
 postile.view.post_board.Account.prototype.unloaded_stylesheets = ['post_board.css'];
+
+/**
+ * @inheritDoc
+ */
+postile.view.post_board.Account.prototype.close = function() {
+    if (this.fayeSubscrDfd_) {
+        this.fayeSubscrDfd_.addCallback(function(subscr) {
+            subscr.cancel();
+        });
+    }
+    goog.base(this, 'close');
+};
 
 postile.view.post_board.Account.prototype.notificationHandler = function(data) {
     this.notificationHandlerClear();

@@ -95,7 +95,12 @@ postile.view.View = function() {
         window.location.hash = '#' + this.urlHash;
     }
     */
-}
+};
+
+/**
+ * Closes this view and unlistens any event handlers attached to the dom.
+ */
+postile.view.View.prototype.close = goog.nullFunction;
 
 /**
  * Specifies a list of css files that a view needs to load.
@@ -195,7 +200,7 @@ postile.view.PopView.prototype.escPressed = function(e) {
 
 postile.view.closeCurrentFullScreenView = function() {
     var cv = postile.router.current_view;
-    if (cv && cv.close) {
+    if (cv) {
         // Destruct the original fullscreenview
         cv.close();
     }

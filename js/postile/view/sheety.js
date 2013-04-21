@@ -77,6 +77,14 @@ postile.view.Sheety = function(opt_boardId) {
      */
     this.postIdToRow_ = {};
 
+    /**
+     * Faye channel, to be cancelled on destroy.
+     * Initialized in this.enterDocument.
+     * @type {Faye.Subscription}
+     * @private
+     */
+    this.fayeSubscr_ = null;
+
     // Fetchs board data, then fetchs user data, finally renders the view.
     var fetchPosts = goog.partial(
         postile.ajax,
@@ -143,8 +151,6 @@ postile.view.Sheety.prototype.createDom = function() {
 postile.view.Sheety.prototype.enterDocument = function() {
     goog.base(this, 'enterDocument');
 
-    this.postList_.enableFloat();
-
     goog.events.listen(this,
         postile.view.Sheety.EventType.LOCAL_SUBMIT_COMMENT,
         goog.bind(this.submitNewComment, this));
@@ -166,27 +172,36 @@ postile.view.Sheety.prototype.enterDocument = function() {
         postile.view.Sheety.EventType.REMOTE_DEL_COMMENT,
         goog.bind(this.receivedDelComment, this));
 
-    postile.faye.subscribe(this.boardId_, function(code, data) {
-        // Copied from view/post_board/post_board.js
-        switch (code) {
-        case postile.view.post_board.faye_status.INLINE_COMMENT:
-            this.dispatchEvent(
-                new goog.events.Event(
-                    postile.view.Sheety.EventType.REMOTE_NEW_COMMENT,
-                    data));
-            break;
+    this.fayeSubscr_ = postile.faye.subscribe(this.boardId_,
+        function(code, data) {
+            // Copied from view/post_board/post_board.js
+            switch (code) {
+            case postile.view.post_board.faye_status.INLINE_COMMENT:
+                this.dispatchEvent(
+                    new goog.events.Event(
+                        postile.view.Sheety.EventType.REMOTE_NEW_COMMENT,
+                        data));
+                break;
 
-        case postile.view.post_board.faye_status.DELETE_COMMENT:
-            this.dispatchEvent(
-                new goog.events.Event(
-                    postile.view.Sheety.EventType.REMOTE_DEL_COMMENT,
-                    data));
-            break;
+            case postile.view.post_board.faye_status.DELETE_COMMENT:
+                this.dispatchEvent(
+                    new goog.events.Event(
+                        postile.view.Sheety.EventType.REMOTE_DEL_COMMENT,
+                        data));
+                break;
 
-        default:
-            return;
-        }
-    }, this);
+            default:
+                return;
+            }
+        }, this);
+};
+
+postile.view.Sheety.prototype.exitDocument = function() {
+    this.fayeSubscr_.addCallback(function(subscr) {
+        subscr.cancel();
+    });
+
+    goog.base(this, 'exitDocument');
 };
 
 /**
@@ -411,6 +426,13 @@ postile.view.Sheety.prototype.renderPosts_ = function(postExs) {
  */
 postile.view.Sheety.PostList = function() {
     goog.base(this);
+
+    /**
+     * Used to unlisten document event.
+     * Initialized in this.enableFloat()
+     * @private
+     */
+    this.floatHandlerKey_ = null;
 };
 goog.inherits(postile.view.Sheety.PostList, goog.ui.Component);
 
@@ -426,11 +448,21 @@ postile.view.Sheety.PostList.prototype.createDom = function() {
     }, this);
 };
 
+postile.view.Sheety.PostList.prototype.enterDocument = function() {
+    goog.base(this, 'enterDocument');
+    this.enableFloat();
+};
+
+postile.view.Sheety.PostList.prototype.exitDocument = function() {
+    goog.events.unlistenByKey(this.floatHandlerKey_);
+    goog.base(this, 'exitDocument');
+};
+
 postile.view.Sheety.PostList.prototype.enableFloat = function() {
     // XXX: adjust initScrollTop a bit when we have something
     // above this view.
     var initScrollTop = document.body.scrollTop;
-    goog.events.listen(
+    this.floatHandlerKey_ = goog.events.listen(
         document,
         goog.events.EventType.SCROLL,
         goog.bind(this.syncScroll, this, initScrollTop));
