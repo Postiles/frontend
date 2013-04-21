@@ -25,8 +25,7 @@ postile.view.BoardList = function(topic) {
     instance.right_desc = postile.dom.getDescendantByClass(instance.right, "desc");
     instance.right_posts = postile.dom.getDescendantByClass(instance.right, "posts");
     instance.right_button = postile.dom.getDescendantByClass(instance.right, "button");
-    instance.like_button = postile.dom.getDescendantByClass(instance.right, "like");
-    instance.right_button.style.display = 'none';
+    instance.like_button = postile.dom.getDescendantByClass(instance.right, "like");    
     var new_board = new postile.view.new_board.NewBoard();
     goog.events.listen(instance.add, goog.events.EventType.CLICK, function() {
         alert("This function is temporarily disabled by the administrator.");
@@ -60,6 +59,9 @@ postile.view.BoardList = function(topic) {
     account.container.style.top = '0';
     account.container.style.right = '0';
     goog.dom.appendChild(instance.container, account.container);
+    if (!localStorage.postile_user_id) {
+        instance.like_button.style.display = "none";
+    }
 }
 
 goog.inherits(postile.view.BoardList, postile.view.FullScreenView);
