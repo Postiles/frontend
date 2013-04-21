@@ -1,7 +1,7 @@
 @def CELL_WIDTH 200px;
 @def CELL_HEIGHT 100px;
 @def CELL_BORDER_SIZE 1px;
-@def CELL_PAD_TOP 9px;
+@def CELL_PAD_TOP 5px;
 @def CELL_PAD_LEFT 12px;
 @def CELL_ACTUAL_WIDTH sub(CELL_WIDTH,
     mult(add(CELL_PAD_LEFT, CELL_BORDER_SIZE), 2));
@@ -27,7 +27,7 @@
 .sheety-body {
     /* Lower than post-list */
     position: relative;
-    z-index: -100;
+    z-index: 100;
 
     background-color: TABLE_BG;
     font-family: sans-serif;
@@ -61,6 +61,7 @@
 
     /* XXX deal with it */
     overflow-y: hidden;
+    overflow: visible;
 }
 
 .sheety-post-cell {
@@ -91,14 +92,15 @@
     height: 50px;
     font-size: 0.7em;
     padding: 5px;
+    overflow: scroll;
 }
 
 .sheety-new-comment-cell .comment-button {
     border: none;
     background: #A7D875;
     color: whitesmoke;
-    font-size: 13pt;
-    padding: 5px 10px;
+    font-size: 11pt;
+    padding: 2px 13px;
     margin: 5px;
     cursor: pointer;
 }
