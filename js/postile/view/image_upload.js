@@ -2,6 +2,7 @@ goog.provide('postile.view.image_upload');
 
 goog.require('goog.dom');
 goog.require('goog.events');
+goog.require('postile.i18n');
 goog.require('postile.conf');
 goog.require('postile.view');
 goog.require('postile.uploader');

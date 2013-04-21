@@ -25,11 +25,12 @@ goog.require('goog.ui.Textarea');
 goog.require('postile.view.post_board.Header');
 goog.require('goog.events.KeyHandler');
 goog.require('postile.events');
-goog.require('postile.view.post');
+goog.require('postile.view.createPostFromJSON');
+goog.require('postile.view.switchToPost');
+goog.require('postile.view.BasePost');
 goog.require('postile.view.board_more_pop');
 goog.require('postile.view.confirm_delete');
 goog.require('postile.view.profile');
-goog.require('postile.view.notification');
 goog.require('postile.view.image_upload');
 goog.require('postile.view.create_helper');
 goog.require('postile.view.video_upload');
@@ -236,7 +237,7 @@ postile.view.post_board.PostBoard = function(board_id) {
     /**
      * "An object containing all posts,
      *  as key = post_id and value = Post object"
-     * @type {Object.<number, postile.view.post.Post>}
+     * @type {Object.<number, postile.view.BasePost>}
      * @see createPost, removePost, moveToPost, renderArray, fayeHandler.
      */
     this.currentPosts = {};
@@ -341,8 +342,8 @@ postile.view.post_board.PostBoard = function(board_id) {
         instance.boardData = data.message.board;
 
         instance.userData = postile.data_manager.getUserData(localStorage.postile_user_id, function(data) {
-            if (data[0] == 0) {
-            }
+            // Unused code
+            //if (data[0] == 0) { }
 
             postile.ajax([ 'user', 'get_additional_data' ], { target_user_id: data.id }, function(data) {
                 if (!data.message.additional.got_started) {
@@ -855,6 +856,7 @@ postile.view.post_board.PostBoard.prototype.updateSubscribeArea = function() {
     var instance = this;
     var current_loc = this.canvasCoord;
     var to_subscribe = this.getSubscribeArea(current_loc);
+
     do {
         if (!this.subscribedArea) { break; }
         if (to_subscribe.left != this.subscribedArea.left) { break; }
@@ -913,7 +915,7 @@ postile.view.post_board.PostBoard.prototype.renderArray = function(array) {
  * @param {mode} the mode that the post starts with
  */
 postile.view.post_board.PostBoard.prototype.renderPost = function(postData, mode) {
-    mode = mode || postile.view.post.Post.PostMode.DISPLAY; // default to display mode
+    mode = mode || postile.view.BasePost.PostMode.DISPLAY; // default to display mode
 
     if (!postData.post.id) { // invalid post
         return;
@@ -936,12 +938,12 @@ postile.view.post_board.PostBoard.prototype.renderPost = function(postData, mode
             this.currentPosts[postId].changeCurrentMode(mode);
         }
     } else { // new post to add to list
-        this.currentPosts[postId] = postile.view.post.createPostFromJSON(postData, this, mode);
+        this.currentPosts[postId] = postile.view.createPostFromJSON(postData, this, mode);
     }
 
-    if (postData.post.in_edit && mode != postile.view.post.Post.PostMode.NEW) {
+    if (postData.post.in_edit && mode != postile.view.BasePost.PostMode.NEW) {
         if (!this.currentPosts[postId].isSelfPost()) {
-            this.currentPosts[postId].changeCurrentMode(postile.view.post.Post.PostMode.LOCKED);
+            this.currentPosts[postId].changeCurrentMode(postile.view.BasePost.PostMode.LOCKED);
         }
     }
 }
@@ -976,7 +978,7 @@ postile.view.post_board.PostBoard.prototype.fayeHandler = function(status, data)
         var currPost = this.currentPosts[data.post.id];
 
         if (!currPost.isSelfPost()) { // not my own post
-            this.renderPost(data, postile.view.post.Post.PostMode.DISPLAY);
+            this.renderPost(data, postile.view.BasePost.PostMode.DISPLAY);
         }
         break;
 
@@ -984,10 +986,10 @@ postile.view.post_board.PostBoard.prototype.fayeHandler = function(status, data)
         var currPost = this.currentPosts[data.post.id];
         if (data.post.id in this.currentPosts) { // already exists
             if (!currPost.isSelfPost()) { // not my own post
-                currPost.changeCurrentMode(postile.view.post.Post.PostMode.LOCKED);
+                currPost.changeCurrentMode(postile.view.BasePost.PostMode.LOCKED);
             }
         } else { // newly created
-            this.renderPost(data, postile.view.post.Post.PostMode.NEW);
+            this.renderPost(data, postile.view.BasePost.PostMode.NEW);
         }
         break;
 
@@ -1054,7 +1056,7 @@ postile.view.post_board.PostBoard.prototype.createPost = function(info) {
     ret.text_content = '';
 
     postile.ajax(['post', 'new'], req, function(data) {
-        instance.renderPost(data.message, postile.view.post.Post.PostMode.EDIT);
+        instance.renderPost(data.message, postile.view.BasePost.PostMode.EDIT);
     });
 }
 
@@ -1067,7 +1069,7 @@ postile.view.post_board.PostBoard.prototype.createImagePost = function(info, ima
     req.board_id = this.board_id;
 
     postile.ajax(['post', 'new'], req, function(data) {
-        instance.renderPost(data.message, postile.view.post.Post.PostMode.EDIT);
+        instance.renderPost(data.message, postile.view.BasePost.PostMode.EDIT);
     });
 }
 
@@ -1080,7 +1082,7 @@ postile.view.post_board.PostBoard.prototype.createVideoPost = function(info, vid
     req.board_id = this.board_id;
 
     postile.ajax(['post', 'new'], req, function(data) {
-        instance.renderPost(data.message, postile.view.post.Post.PostMode.EDIT);
+        instance.renderPost(data.message, postile.view.BasePost.PostMode.EDIT);
     });
 }
 
@@ -1090,6 +1092,7 @@ postile.view.post_board.PostBoard.prototype.removePost = function(id) {
     }
     delete this.currentPosts[id];
 }
+
 
 /**
  * Status code. Must be kept in sync with backend.
@@ -1102,16 +1105,15 @@ postile.view.post_board.faye_status = {
     FINISH: 'finish',
     INLINE_COMMENT: 'inline comment',
     NOTIFICATION: 'notification',
-    DELETE_COMMENT: 'delete comment',
+    DELETE_COMMENT: 'delete comment'
 }
 
-postile.view.post_board.switchTo = function(targetId) {
-    if (postile.router.current_view instanceof postile.view.post_board.PostBoard) {
+postile.view.switchToPost.registry.push(function(postId) {
+    if (postile.router.current_view instanceof
+        postile.view.post_board.PostBoard) {
         // first check if the post is in current board
-        postile.router.current_view.moveToPost(targetId);
-    } else {
-        postile.ajax(['post', 'get_post'], { post_id: targetId }, function(r) {
-            postile.router.dispatch('board/' + r.message.post.board_id + "#" + targetId);
-        });
+        postile.router.current_view.moveToPost(postId);
+        return true;
     }
-}
+});
+

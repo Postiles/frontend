@@ -3,7 +3,7 @@ goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('postile.conf');
 goog.require('postile.view');
-goog.require('postile.view.post_board');
+goog.require('postile.view.switchToPost');
 
 postile.view.notification.Notification = function(header, optBoardData) {
     this.boardData = optBoardData;
@@ -227,7 +227,7 @@ postile.view.notification.InfoItem.prototype.render = function(parent, data, fro
     goog.dom.appendChild(this.notificationTitle, this.targetPost);
 
     goog.events.listen(this.targetPost, goog.events.EventType.CLICK, function(){
-        postile.view.post_board.switchTo(targetId);
+        postile.view.switchToPost(targetId);
     }.bind(this));
 
     /* footer part */

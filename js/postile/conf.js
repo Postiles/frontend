@@ -5,6 +5,7 @@
 
 goog.provide('postile.conf');
 
+goog.require('goog.locale');
 goog.require('goog.events.KeyHandler');
 
 /**
@@ -14,7 +15,7 @@ postile.conf = {
 
     dhost: 'www.postiles.com',
 
-    dport: 300,
+    dport: 3000,
 
     fayeLocation: 'http://www.postiles.com:9292/faye',
 
@@ -90,7 +91,7 @@ postile.conf = {
         }
     },
 
-    currentUserId: parseInt(localStorage.postile_user_id),
+    currentUserId: parseInt(localStorage.postile_user_id)
 
 };
 

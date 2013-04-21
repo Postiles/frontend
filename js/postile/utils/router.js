@@ -1,8 +1,11 @@
 goog.provide('postile.router');
 
+goog.require('goog.events');
+
+goog.require('postile.ajax');
 goog.require('postile.view.WelcomePage');
 goog.require('postile.view.Sheety');
-goog.require('goog.events');
+goog.require('postile.view.switchToPost');
 
 /**
  * Initialize
@@ -48,3 +51,16 @@ postile.router.current_view = null;
  * @type {Object.<string, constructor>}
  */
 postile.router.map = {};
+
+/**
+ * Implements the default post switcher
+ */
+postile.view.switchToPost.defaultSwitcher = function(postId) {
+    postile.ajax(['post', 'get_post'], {
+        post_id: postId
+    }, function(r) {
+        postile.router.dispatch('board/' +
+            r.message.post.board_id + "#" + postId);
+    });
+};
+
