@@ -17,6 +17,7 @@ postile.view.BoardList = function(topic) {
     instance.currentBoardId = null;
     instance.currentUserLiked = false;
     instance.container.className = 'gateway';
+    instance.currentTarget = null;
     instance.title = postile.dom.getDescendantByClass(instance.container, "title");
     instance.add = postile.dom.getDescendantByClass(instance.title, "add");
     instance.right = postile.dom.getDescendantByClass(instance.container, "right");
@@ -33,7 +34,7 @@ postile.view.BoardList = function(topic) {
         //new_board.open(500);
     });
     goog.events.listen(instance.right_button, goog.events.EventType.CLICK, function() {
-        postile.router.dispatch('board/'+instance.currentBoardId);
+        postile.router.dispatch(instance.currentTarget);
     });
     goog.events.listen(instance.like_button, goog.events.EventType.CLICK, function() {
         if (!instance.currentUserLiked) {
@@ -103,7 +104,7 @@ postile.view.BoardList.prototype.renderBoardListItem = function(data) {
     });
     */
     goog.events.listen(item_el, goog.events.EventType.CLICK, function() {
-        postile.router.dispatch('board/'+data.board.id);
+        postile.router.dispatch(instance.currentTarget);
     });
     goog.events.listen(item_el, goog.events.EventType.MOUSEOVER, function() {
         instance.right.style.visibility = 'visible';
@@ -113,6 +114,7 @@ postile.view.BoardList.prototype.renderBoardListItem = function(data) {
         instance.right_perspective.className = meta_perspective_el.className + ' perspective';
         instance.right_perspective.innerHTML = data.board.default_view ? 'Sheet' : 'Free';
         instance.currentBoardId = data.board.id;
+        instance.currentTarget = (data.board.default_view ? 'sheet' : 'board') + '/' + instance.currentBoardId;
         instance.right_button.style.display = 'block';
         instance.currentUserLiked = user_liked;
         instance.like_button.innerHTML = data.likes.length + " liked it";
