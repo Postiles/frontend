@@ -7,7 +7,7 @@ goog.require('postile.view');
 
 goog.require('postile.view');
 
-postile.view.tutorial.TutorialView = function() {
+postile.view.tutorial.TutorialView = function(change_password) {
     goog.base(this);
 
     postile.ui.load(this.container,
@@ -92,6 +92,10 @@ postile.view.tutorial.TutorialView = function() {
                     history.back();
                 });
         }.bind(this));
+        
+    if (change_password) {
+        new postile.view.change_password.ChangePassword(change_password).open(500);
+    }
 }
 
 goog.inherits(postile.view.tutorial.TutorialView, postile.view.FullScreenView);
