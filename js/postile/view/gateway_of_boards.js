@@ -1,9 +1,9 @@
 goog.provide('postile.view.BoardList');
 
 goog.require('goog.dom');
+goog.require('goog.events');
 goog.require('postile.view.new_board');
 goog.require('postile.view');
-goog.require('goog.events');
 goog.require('postile.view.post_board.Account');
 goog.require('postile.dom');
 
