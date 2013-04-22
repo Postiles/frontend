@@ -341,6 +341,10 @@ postile.view.post_board.PostBoard = function(board_id) {
     postile.ajax([ 'board', 'enter_board' ], { board_id: board_id }, function(data) {
         instance.boardData = data.message.board;
 
+        if (instance.boardData.default_view == 'sheet') {
+            postile.router.dispatch('sheet/' + instance.boardData.id);
+        }
+
         instance.userData = postile.data_manager.getUserData(localStorage.postile_user_id, function(data) {
             // Unused code
             //if (data[0] == 0) { }
@@ -611,7 +615,9 @@ postile.view.post_board.PostBoard.prototype.close = function() {
         this.keyboard_event_handler.unlisten();
     }
 
-    this.header.close();
+    if (this.header) {
+        this.header.close();
+    }
 
     goog.array.forEach(this.fayeSubscrDfds_, function(dfd, i) {
         dfd.addCallback(function(subscr) {

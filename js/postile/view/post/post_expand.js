@@ -9,6 +9,7 @@ goog.require('postile.conf');
  * @constructor
  */
 postile.view.PostExpand = function(postInstance) {
+    console.log('hehehe');
     this.postInstance = postInstance;
 
     this.in_edit = false;
@@ -141,6 +142,7 @@ postile.view.PostExpand.prototype.initComments = function() {
 
         // comment input area
         this.commentArea_el = postile.dom.getDescendantByClass(this.commentBox_el, 'input');
+        this.commentArea_el._at_ = new postile.view.At(this.commentArea_el);
         postile.ui.makeLabeledInput(this.commentArea_el, 'Enter your comments here',
                 'half_opaque', function() {
                     postile.ajax(

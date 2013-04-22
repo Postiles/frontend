@@ -13,9 +13,11 @@
 */
 .at_box {
     border: 3px solid #024d61;
+    z-index: 310;
 
     /* Kept in sync with _post_in_board.css:.post_wrap */
     font-size: 10px;
+    -webkit-box-shadow: 0px 0px 4px #000;
 }
 
 .at_single {
