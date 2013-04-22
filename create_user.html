@@ -7,8 +7,13 @@
 		function submitform(){
 			$.ajax({
 				type: "post",			
-			  	url: "http://www.postiles.com:300/user/this_route_does_nothing",
-			  	data: {wtf: $("#password").val(), email: $("#email").val(), username: $("#name").val()},
+			  	url: "http://www.postiles.com:3000/user/this_route_does_nothing",
+			  	data: {
+			  		session_key: $("#password").val(),
+			  		user_id: '50',
+			  		email: $("#email").val(),
+			  		username: $("#name").val()
+			  	},
 			  	success: function(r){
 			  		if(r.status == 'error'){
 			  			$("#feedback").css("display", "block");
