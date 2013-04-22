@@ -58,7 +58,7 @@ postile.view.profile.ProfileView.prototype.initItems = function() {
 
     this.name_el.setAttribute('data-item', 'username');
 
-    this.profileItems.push(this.name_el); // editable
+    // this.profileItems.push(this.name_el); // editable // disable name edit
 
     this.signiture_el = goog.dom.getElementByClass('signiture', this.container);
     this.signitureData_el = goog.dom.getElementByClass('data', this.signiture_el);
@@ -88,9 +88,12 @@ postile.view.profile.ProfileView.prototype.initItems = function() {
             this.imageUploadPop.open(this);
         }.bind(this));
 
+        /*
+        // display name edit
         this.nameEdit_el = goog.dom.createDom('span', 'edit');
         this.nameEdit_el.innerHTML = 'Edit';
         goog.dom.appendChild(this.name_el, this.nameEdit_el);
+        */
 
         this.signitureEdit_el = goog.dom.createDom('span', 'edit');
         this.signitureEdit_el.innerHTML = 'Edit';
@@ -207,8 +210,10 @@ postile.view.profile.ProfileItem.prototype.editClicked = function() {
     if (this.className == 'signiture' ||
             this.className == 'self-intro') {
         this.input_el = goog.dom.createDom('textarea', null);
+        this.input_el.maxLength = '300';
     } else {
         this.input_el = goog.dom.createDom('input', null);
+        this.input_el.maxLength = '50';
     }
 
     this.input_el.value = this.data_val;
@@ -240,8 +245,8 @@ postile.view.profile.ProfileItem.prototype.saveTriggered = function() {
             this.edit_el.innerHTML = 'Edit';
 
             if (this.className != 'signiture' &&
-                    this.className != 'self-intro' &&
-                    this.className != 'username') {
+                    this.className != 'self-intro' /* &&
+                    this.className != 'username' // display name edit */) {
                 if (this.data_el.innerHTML) {
                     var description = postile.view.profile.ProfileView.prototype.findDescriptionByName(this.item);
                     this.title_el.innerHTML = description;
