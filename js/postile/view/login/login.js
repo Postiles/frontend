@@ -7,6 +7,10 @@ goog.require('postile.view');
 
 postile.view.login.LoginView = function() { //constructor
     postile.view.FullScreenView.call(this);
+    
+    postile.ajax(['user','authenticate'], {}, function(e) {
+        postile.router.dispatch('topic/1');
+    });
 
     this.emailInput_el = goog.dom.getElement('email-input');
     this.passwordInput_el = goog.dom.getElement('password-input');
