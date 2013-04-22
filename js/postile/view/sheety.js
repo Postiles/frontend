@@ -142,14 +142,20 @@ postile.view.Sheety = function(opt_boardId) {
         // Got board data: renders the header
         var boardData = xs[0]['message']['board'];
 
+        if (boardData.default_view != 'sheet') {
+            postile.router.dispatch('board/' + boardData.id);
+            return;
+        }
+
         this.header_ = new postile.view.post_board.Header(boardData);
         goog.dom.append(this.getRootEl_(), this.header_.container);
 
         var anony = this.isAnonymous_ = boardData['anonymous'];
 
         // and fetches users
-        return postile.view.Sheety.fetchUserOfBoardData_(anony, xs[1]);
-    }, this).bind(/* And render the posts */ this.renderPosts_, this);
+        return postile.view.Sheety.fetchUserOfBoardData_(anony, xs[1])
+            .bind(/* And render the posts */ this.renderPosts_, this);
+    }, this);
 
     postile.view.loadCss(['sheety-gen.css']);
 };
