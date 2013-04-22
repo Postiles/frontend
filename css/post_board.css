@@ -91,12 +91,13 @@ html, body {
 }
 */
 
-#accout_container {
+#account_container {
   float: right;
+  position: relative;
 }
 
 .account_item {
-  float: left; }
+  float: right; }
 
 #user_info_container {
   color:#024d61;
@@ -135,7 +136,6 @@ html, body {
 }
 
 #profile_image_container {
-  float: left;
   margin-top: 2px;
   width: 36px;
   height: 36px;
@@ -144,7 +144,7 @@ html, body {
 }
 
 #profile_image_container img {
-  float: left;
+  float: right;
   padding: 3px;
   width: 30px;
   height: 30px; }
@@ -169,13 +169,7 @@ html, body {
   margin-left: 6px;
   margin-right: 6px; }
 
-#function_button_container {
-  margin-left: 10px;
-  position: relative;
-}
-
 .function_button {
-  float: left;
   width: 40px;
   height: 40px;
   position: relative;

@@ -89,10 +89,7 @@ postile.conf = {
         if ('postile_debug_locale' in localStorage) {
             goog.locale.setLocale(localStorage["postile_debug_locale"]);
         }
-    },
-
-    currentUserId: parseInt(localStorage.postile_user_id)
-
+    }
 };
 
 postile.conf.getGlobalKeyHandler.handler = null;

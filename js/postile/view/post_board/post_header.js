@@ -2,7 +2,7 @@ goog.provide('postile.view.post_board.Header');
 
 goog.require('goog.events');
 goog.require('postile.view.profile');
-goog.require('postile.view.post_board.Account');
+goog.require('postile.view.account');
 goog.require('goog.dom');
 goog.require('postile.dom');
 goog.require('postile.view.create_helper');
@@ -50,7 +50,7 @@ postile.view.post_board.Header = function(boardData) {
     /**
      * @private
      */
-    this.account_ = new postile.view.post_board.Account(this.boardData);
+    this.account_ = new postile.view.account.Account(this.boardData);
     goog.dom.appendChild(this.topicInnerContainer_el, this.account_.container);
 };
 goog.inherits(postile.view.post_board.Header, postile.view.NormalView);

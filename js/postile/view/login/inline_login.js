@@ -7,7 +7,7 @@ goog.require('postile.view');
 goog.require('postile.dom');
 
 
-postile.view.inline_login.InlineLogin = function(instance){
+postile.view.inline_login.InlineLogin = function(){
 	postile.view.TipView.call(this);
 
 	// indication of invalid email and password
