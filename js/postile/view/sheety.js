@@ -48,6 +48,14 @@ postile.view.GoogFSV.prototype.close = function() {
 };
 
 /**
+ * By full-screen-view's convention.
+ * @see docs/FullScreenView.md
+ */
+postile.view.GoogFSV.prototype.getRootEl_ = function() {
+    return document.body;
+};
+
+/**
  * Spread-sheety view.
  * @constructor
  */
@@ -135,9 +143,7 @@ postile.view.Sheety = function(opt_boardId) {
         var boardData = xs[0]['message']['board'];
 
         this.header_ = new postile.view.post_board.Header(boardData);
-        var wrapper = goog.dom.getElement('wrapper');
-        goog.asserts.assert(wrapper);
-        goog.dom.append(wrapper, this.header_.container);
+        goog.dom.append(this.getRootEl_(), this.header_.container);
 
         var anony = this.isAnonymous_ = boardData['anonymous'];
 
@@ -145,7 +151,7 @@ postile.view.Sheety = function(opt_boardId) {
         return postile.view.Sheety.fetchUserOfBoardData_(anony, xs[1]);
     }, this).bind(/* And render the posts */ this.renderPosts_, this);
 
-    postile.view.loadCss(['sheety.css']);
+    postile.view.loadCss(['sheety-gen.css']);
 };
 goog.inherits(postile.view.Sheety, postile.view.GoogFSV);
 
@@ -499,7 +505,7 @@ postile.view.Sheety.prototype.renderPosts_ = function(postExs) {
     this.setModel(postExs);
     this.postList_.setModel(postExs);
     this.commentRows_.setModel(comments);
-    this.render(goog.dom.getElement('wrapper'));
+    this.render(this.getRootEl_());
 };
 
 /**
@@ -560,7 +566,7 @@ postile.view.Sheety.PostList.prototype.enableFloat = function() {
         goog.events.EventType.SCROLL,
         goog.bind(this.syncScroll, this, initScrollTop));
 
-    // XXX: not floating on document but on #wrapper
+    // Floating on the current parent.
     // to be able to set z-index difference on post-list and sheety-body.
     this.startFloating(this.getParent().getElement());
     this.syncScroll(initScrollTop);
