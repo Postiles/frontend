@@ -124,6 +124,8 @@
       background: whitesmoke;
       white-space: nowrap;
       overflow: hidden; }
+    .post_wrap .comment_mode_post .post_bottom .comment_container .comment_container_input_too_long {
+      -webkit-box-shadow: 0px 0px 4px #fe7a15; }
     .post_wrap .comment_mode_post .post_bottom .comment_container .comment_list_close_button {
       position: relative;
       right: 5px;
@@ -147,6 +149,12 @@
     .post_wrap .edit_mode_post .post_wysiwyf_icon_container {
       padding-top: 3px;
       height: 14px; }
+    .post_wrap .edit_mode_post .post_content {
+      overflow: scroll; }
+    .post_wrap .edit_mode_post .post_content_length_display {
+      display: none;
+      color: #fe7a15;
+      text-align: center; }
     .post_wrap .edit_mode_post .post_content_placeholder {
       position: absolute;
       text-align: center;
@@ -205,7 +213,7 @@
   /* 13px for post_bottom and 6px padding for it */
   height: 100%;
   box-sizing: border-box;
-  overflow: hidden; }
+  overflow: visible; }
   .post_container .post_inner_container {
     padding: 6px 12px; }
   .post_container .video_post .video_iframe {

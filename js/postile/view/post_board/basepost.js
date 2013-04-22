@@ -18,6 +18,7 @@ goog.require('postile.debbcode');
 goog.require('postile.fx');
 goog.require('postile.view.At');
 goog.require('postile.fx.effects');
+goog.require('postile.length_control');
 
 goog.require('postile.view.PostExpand');
 goog.require('postile.view.post.InlineComment');
@@ -210,6 +211,7 @@ postile.view.BasePost.prototype.loadEditModeUIComponents = function() {
         postAuthor_el: $('post_author'),
         postWysiwyfIconContainer: $('post_wysiwyf_icon_container'),
         postContent_el: $('post_content'),
+        postContentLengthDisplay_el: $('post_content_length_display'),
         postContentPlaceHolder_el: $('post_content_placeholder'),
         deleteIcon_el: $('post_delete_icon')
     }
@@ -375,23 +377,45 @@ postile.view.BasePost.prototype.initCommentModeListener = function() {
         goog.events.EventType.KEYDOWN, 
         function(e) {
             this.bringToFront();
+            var content = 
+                goog.string.trim(
+                    this.commentModeElements.commentInput_el.innerHTML);
+
             if (e.keyCode == goog.events.KeyCodes.ENTER) { // enter pressed
                 this.commentModeElements.commentInput_el._at_.toBBcode();
-            
-                var content = 
-                    goog.string.trim(
-                        this.commentModeElements.commentInput_el.innerHTML);
 
-                if (content.length) { // not empty comment
-                    postile.ajax([ 'inline_comment', 'new' ], {
-                        post_id: this.postData.post.id,
-                        content: content
-                    }, function(data) {
-                        // do nothing here, handled in fayeHandler
-                    }.bind(this));
+                if (content.length && 
+                    postile.length_control.getLengthWithoutDoms(content) <= 20) {
+                        postile.ajax([ 'inline_comment', 'new' ], {
+                            post_id: this.postData.post.id,
+                            content: content
+                        }, function(data) {
+                            // do nothing here, handled in fayeHandler
+                        }.bind(this));
 
                     this.commentModeElements.commentInput_el.innerHTML = '';
+                } else {
+                    e.preventDefault();
                 }
+            }
+        }.bind(this));
+
+    // comment input key down
+    goog.events.listen(
+        elements.commentInput_el, 
+        goog.events.EventType.KEYUP,
+        function(e) {
+            var content = 
+                goog.string.trim(
+                    this.commentModeElements.commentInput_el.innerHTML);
+
+            var diff = postile.length_control.getLengthWithoutDoms(content) - 20;
+            if (diff > 0) {
+                goog.dom.classes.add(this.commentModeElements.commentInput_el, 
+                    'comment_container_input_too_long');
+            } else {
+                goog.dom.classes.remove(this.commentModeElements.commentInput_el, 
+                    'comment_container_input_too_long');
             }
         }.bind(this));
 
@@ -450,12 +474,45 @@ postile.view.BasePost.prototype.initEditModeListener = function() {
         goog.events.EventType.KEYUP, 
         function(e) {
             var elements = this.editModeElements;
+
             if (this.wrap_el.className.indexOf('text_post') != -1) { // text post
                 var content = elements.postContent_el.innerHTML;
                 if (goog.string.isEmpty(content) || content == '<br>') {
                     elements.postContentPlaceHolder_el.style.display = 'block';
                 } else {
                     elements.postContentPlaceHolder_el.style.display = 'none';
+                }
+
+                var chompedLength = 0;
+
+                var spans = content.match(/<span.*?>.*?<\/span>?/g);
+                if (spans && spans.length > 0) { // has match
+                    for (var i in spans) {
+                        chompedLength += spans[i].length;
+                    }
+                }
+
+                var nbsps = content.match(/\&nbsp;/g);
+                if (nbsps && nbsps.length > 0) { // has match
+                    chompedLength += 5 * nbsps.length;
+                }
+
+                var divs = content.match(/<div.*?>.*?<\/div>?/g);
+                if (divs && divs.length > 0) {
+                    chompedLength += 11 * divs.length;
+                }
+
+                var brs = content.match(/<br>/g);
+                if (brs && brs.length > 0) {
+                    chompedLength += 3 * brs.length;
+                }
+
+                var diff = content.length - chompedLength - 5000;
+                if (diff > 0) {
+                    elements.postContentLengthDisplay_el.innerHTML = 
+                        'too long by ' + diff;
+                } else {
+                    elements.postContentLengthDisplay_el.innerHTML = '';
                 }
             }
         }.bind(this));

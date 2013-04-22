@@ -341,51 +341,55 @@ postile.view.post_board.PostBoard = function(board_id) {
     postile.ajax([ 'board', 'enter_board' ], { board_id: board_id }, function(data) {
         instance.boardData = data.message.board;
 
-        instance.userData = postile.data_manager.getUserData(localStorage.postile_user_id, function(data) {
-            // Unused code
-            //if (data[0] == 0) { }
+        if (instance.boardData.default_view == 'sheet') { // go to sheety view
+            new postile.view.Sheety(instance.boardData.id);
+        } else {
+            instance.userData = postile.data_manager.getUserData(localStorage.postile_user_id, function(data) {
+                // Unused code
+                //if (data[0] == 0) { }
 
-            postile.ajax([ 'user', 'get_additional_data' ], { target_user_id: data.id }, function(data) {
-                if (!data.message.additional.got_started) {
-                    postile.router.dispatch('tutorial');
-                }
-            });
-
-            instance.userData = data;
-
-            instance.channel_str = instance.boardData.id;
-
-            if (postile.conf.userLoggedIn()) {
-                var dfd0 = postile.faye.subscribe(instance.channel_str, function(status, data) {
-                    instance.fayeHandler(status, data);
-                });
-
-                var dfd1 = postile.faye.subscribe('status/board/'+instance.boardData.id+'/user/'+instance.userData.id, function(status, data) {
-                });
-
-                var dfd2 = postile.faye.subscribe('status/'+instance.boardData.id, function(status, data){
-                    instance.onlinepeople.count = data.count;
-                    instance.onlinepeople.id = data.users;
-                    if(instance.onlinepeople.is_expended) {
-                        instance.updateOnlinePeople();
-                    }else{
-                        instance.updateOnlineCount();
+                postile.ajax([ 'user', 'get_additional_data' ], { target_user_id: data.id }, function(data) {
+                    if (!data.message.additional.got_started) {
+                        postile.router.dispatch('tutorial');
                     }
                 });
-                instance.fayeSubscrDfds_.push(dfd0, dfd1, dfd2);
-            }
-            instance.initView();
-            instance.initEvents();
 
-            // Initialize viewport size
-            postile.view.post_board.handlers.resize(instance);
+                instance.userData = data;
 
-            // Get to the post, if set in URL
-            var new_post = parseInt(window.location.hash.substr(1));
-            if (new_post) {
-                instance.moveToPost(new_post);
-            }
-        });
+                instance.channel_str = instance.boardData.id;
+
+                if (postile.conf.userLoggedIn()) {
+                    var dfd0 = postile.faye.subscribe(instance.channel_str, function(status, data) {
+                        instance.fayeHandler(status, data);
+                    });
+
+                    var dfd1 = postile.faye.subscribe('status/board/'+instance.boardData.id+'/user/'+instance.userData.id, function(status, data) {
+                    });
+
+                    var dfd2 = postile.faye.subscribe('status/'+instance.boardData.id, function(status, data){
+                        instance.onlinepeople.count = data.count;
+                        instance.onlinepeople.id = data.users;
+                        if(instance.onlinepeople.is_expended) {
+                            instance.updateOnlinePeople();
+                        }else{
+                            instance.updateOnlineCount();
+                        }
+                    });
+                    instance.fayeSubscrDfds_.push(dfd0, dfd1, dfd2);
+                }
+                instance.initView();
+                instance.initEvents();
+
+                // Initialize viewport size
+                postile.view.post_board.handlers.resize(instance);
+
+                // Get to the post, if set in URL
+                var new_post = parseInt(window.location.hash.substr(1));
+                if (new_post) {
+                    instance.moveToPost(new_post);
+                }
+            });
+        }
     });
 }
 goog.inherits(postile.view.post_board.PostBoard, postile.view.FullScreenView);
@@ -611,7 +615,9 @@ postile.view.post_board.PostBoard.prototype.close = function() {
         this.keyboard_event_handler.unlisten();
     }
 
-    this.header.close();
+    if (this.header) {
+        this.header.close();
+    }
 
     goog.array.forEach(this.fayeSubscrDfds_, function(dfd, i) {
         dfd.addCallback(function(subscr) {

@@ -10,7 +10,7 @@ postile.feedback.FeedbackData = function(img) {
     po.location = window.location.href;
     po.errorList = JSON.stringify(postile.conf.error_log.slice(Math.max(0, postile.conf.error_log.length - 10), postile.conf.error_log.length));
     if (img) { po.image = img; }
-    var nwin = window.open('http://feedback.postiles.com/', '_blank', 'width=480,height=240');
+    var nwin = window.open('http://feedback.postiles.com/', '_blank', 'width=480,height=280');
     var rt = function(e) {
         if (e.data == 'REQUEST_ERROR_INFO') {
             nwin.postMessage(po, "*");

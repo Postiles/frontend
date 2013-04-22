@@ -71,7 +71,9 @@ postile.view.post.text_post.TextPost.prototype.enterEditMode = function(req) {
 
     elements.postContent_el.focus();
     elements.postContent_el.style.cursor = 'auto';
-    elements.postContent_el.style.height = this.wrap_el.offsetHeight - 30 + 'px';
+    elements.postContent_el.style.height = this.wrap_el.offsetHeight - 65 + 'px';
+
+    elements.postContentLengthDisplay_el.style.display = 'block';
 
     elements.postContentPlaceHolder_el.style.display = 'block';
     elements.postContentPlaceHolder_el.style.width = elements.postContent_el.offsetWidth + 'px';

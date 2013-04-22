@@ -5,6 +5,12 @@ java -jar tmp\SoyToJsSrcCompiler.jar `
     --srcs "$(gci js\postile\ -recurse -include '*.soy')"
 
 # XXX: compile gss stylesheets here.
+echo "Compiling gss stylesheets..."
+Foreach ($gssFile in $(gci css\ -recurse -include '*.gss')) {
+    java -jar tmp\closure-stylesheets.jar `
+        --pretty-print $gssFile `
+	--output-file $(echo $gssFile | %{$_ -replace "\.gss", "-gen.css"})
+}
 
 echo "Building deps.js as $(pwd)\js\postile\deps.js"
 tmp\closure\bin\build\depswriter.py `

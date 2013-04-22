@@ -4,7 +4,7 @@ goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('postile.view.new_board');
 goog.require('postile.view');
-goog.require('postile.view.post_board.Account');
+goog.require('postile.view.account');
 goog.require('postile.dom');
 
 /**
@@ -18,6 +18,7 @@ postile.view.BoardList = function(topic) {
     instance.currentUserLiked = false;
     instance.container.className = 'gateway';
     instance.currentTarget = null;
+
     instance.title = postile.dom.getDescendantByClass(instance.container, "title");
     instance.add = postile.dom.getDescendantByClass(instance.title, "add");
     instance.right = postile.dom.getDescendantByClass(instance.container, "right");
@@ -28,6 +29,8 @@ postile.view.BoardList = function(topic) {
     instance.right_button = postile.dom.getDescendantByClass(instance.right, "button");
     instance.right_perspective = postile.dom.getDescendantByClass(instance.right, "perspective");
     instance.like_button = postile.dom.getDescendantByClass(instance.right, "like");    
+    instance.recent_posts_title = postile.dom.getDescendantByClass(instance.right, "posts_title");    
+
     var new_board = new postile.view.new_board.NewBoard();
     goog.events.listen(instance.add, goog.events.EventType.CLICK, function() {
         alert("This function is temporarily disabled by the administrator.");
@@ -56,7 +59,7 @@ postile.view.BoardList = function(topic) {
             instance.renderBoardListItem(boardArray[i]);
         }
     });
-    var account = new postile.view.post_board.Account();
+    var account = new postile.view.account.Account();
     account.container.style.position = "absolute";
     account.container.style.top = '0';
     account.container.style.right = '0';
@@ -95,9 +98,16 @@ postile.view.BoardList.prototype.renderBoardListItem = function(data) {
             user_liked = true;
         }
     }
-    postile.ajax([ 'board', 'get_post_count' ], { board_id: data.board.id }, function(new_data) {
-        meta_count_el.innerHTML = new_data.message.post_count != 1 ? new_data.message.post_count + ' posts' : '1 post';
-    });
+
+    if (data.board.default_view == 'sheet') {
+        postile.ajax([ 'board', 'get_comment_count' ], { board_id: data.board.id }, function(new_data) {
+            meta_count_el.innerHTML = new_data.message.comment_count != 1 ? new_data.message.comment_count + ' comments' : '1 comment';
+        });
+    } else {
+        postile.ajax([ 'board', 'get_post_count' ], { board_id: data.board.id }, function(new_data) {
+            meta_count_el.innerHTML = new_data.message.post_count != 1 ? new_data.message.post_count + ' posts' : '1 post';
+        });
+    }
     /*
     postile.data_manager.getUserData(data.board.creator_id, function(data) {
         meta_creator_el.innerHTML = data.username;
@@ -112,18 +122,26 @@ postile.view.BoardList.prototype.renderBoardListItem = function(data) {
         instance.right_count.innerHTML = meta_count_el.innerHTML;
         instance.right_desc.innerHTML = description_el.innerHTML;
         instance.right_perspective.className = meta_perspective_el.className + ' perspective';
-        instance.right_perspective.innerHTML = data.board.default_view ? 'Sheet' : 'Free';
+        instance.right_perspective.innerHTML = data.board.default_view == 'sheet' ? 'Sheet' : 'Free';
         instance.currentBoardId = data.board.id;
-        instance.currentTarget = (data.board.default_view ? 'sheet' : 'board') + '/' + instance.currentBoardId;
+        instance.currentTarget = 'board/' + instance.currentBoardId;
         instance.right_button.style.display = 'block';
         instance.currentUserLiked = user_liked;
         instance.like_button.innerHTML = data.likes.length + " liked it";
-        postile.ajax(['board', 'get_recent_posts'], { board_id: data.board.id }, function(new_data) {
+
+        if (data.board.default_view != 'sheet') {
+            instance.recent_posts_title.style.display = 'block';
+            postile.ajax(['board', 'get_recent_posts'], { board_id: data.board.id }, function(new_data) {
+                goog.dom.removeChildren(instance.right_posts);
+                for (i in new_data.message) {
+                    instance.renderRecentPostItem(new_data.message[i], data);
+                }
+            });
+        } else {
+            instance.recent_posts_title.style.display = 'none';
             goog.dom.removeChildren(instance.right_posts);
-            for (i in new_data.message) {
-                instance.renderRecentPostItem(new_data.message[i], data);
-            }
-        });
+        }
+
         if (meta_incognito_el) {
             meta_incognito_el.innerHTML = 'incognito';
         }
@@ -144,11 +162,13 @@ postile.view.BoardList.prototype.renderBoardListItem = function(data) {
     goog.dom.appendChild(item_el, meta_el);
     goog.dom.appendChild(item_el, goog.dom.createDom('div', 'clear'));
     goog.dom.insertSiblingAfter(item_el, this.title);
-    if (data.board.default_view) {
+
+    if (data.board.default_view == 'sheet') {
         meta_perspective_el = goog.dom.createDom('span', 'sheet');
     } else {
         meta_perspective_el = goog.dom.createDom('span', 'grid');
     }
+
     goog.dom.appendChild(meta_meta_el, meta_perspective_el);
     if (data.board.anonymous) {
         meta_incognito_el = goog.dom.createDom('span', 'incognito');
@@ -164,7 +184,7 @@ postile.view.BoardList.prototype.renderRecentPostItem = function(post_info, boar
     var meta_el = goog.dom.createDom('div', 'author');
     var author_el = goog.dom.createDom('span');
     var time_el = goog.dom.createDom('small');
-    time_el.innerHTML = post_info.post.created_at;
+    time_el.innerHTML = postile.date(post_info.post.created_at, 'inline');
 
     if (!boardData.board.anonymous) {
         postile.data_manager.getUserData(post_info.post.creator_id, function(data) {

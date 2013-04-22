@@ -25,6 +25,10 @@
 }
 
 .sheety-body {
+    position: relative;
+}
+
+.sheety-comment-rows {
     /* Lower than post-list */
     position: relative;
     z-index: 100;

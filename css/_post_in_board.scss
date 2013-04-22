@@ -200,6 +200,10 @@
                     overflow: hidden;
                 }
 
+                .comment_container_input_too_long {
+                    -webkit-box-shadow: 0px 0px 4px #fe7a15;
+                }
+
                 .comment_list_close_button {
                     position: relative;
                     right: 5px;
@@ -234,6 +238,13 @@
         }
 
         .post_content {
+            overflow: scroll;
+        }
+
+        .post_content_length_display {
+            display: none;
+            color: #fe7a15;
+            text-align: center;
         }
 
         .post_content_placeholder {
@@ -328,7 +339,7 @@
     padding-bottom: 25px; /* 13px for post_bottom and 6px padding for it */
     height: 100%;
     box-sizing: border-box;
-    overflow: hidden;
+    overflow: visible;
 
     .post_inner_container {
         padding: 6px 12px;

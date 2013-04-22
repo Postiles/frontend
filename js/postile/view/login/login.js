@@ -7,6 +7,10 @@ goog.require('postile.view');
 
 postile.view.login.LoginView = function() { //constructor
     postile.view.FullScreenView.call(this);
+    
+    postile.ajax(['user','authenticate'], {}, function(e) {
+        postile.router.dispatch('topic/1');
+    });
 
     this.emailInput_el = goog.dom.getElement('email-input');
     this.passwordInput_el = goog.dom.getElement('password-input');
@@ -19,7 +23,6 @@ postile.view.login.LoginView = function() { //constructor
     goog.events.listen(this.loginButtonContainer_el, goog.events.EventType.CLICK, this.login.bind(this));
 
     this.signup_btn_el = goog.dom.getElement('sign-up-button');
-    console.log(this.signup_btn_el);
     goog.events.listen(this.signup_btn_el, goog.events.EventType.CLICK, function() {
         postile.router.dispatch('signup');
     });
@@ -50,14 +53,4 @@ postile.view.login.LoginView.prototype.login = function() {
         this.incorrect_el.style.visibility = 'visible';
     }.bind(this));
 }
-
-/**
- * Close this view.
- * XXX: hack
- * @inheritDoc
- */
-postile.view.login.LoginView.prototype.close = function() {
-    this.container.innerHTML = '<div id="wrapper"></div>';
-    goog.base(this, 'close');
-};
 

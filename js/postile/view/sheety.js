@@ -1,6 +1,7 @@
 goog.provide('postile.view.Sheety');
 
 goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('goog.object');
 goog.require('goog.functions');
 goog.require('goog.dom');
@@ -47,6 +48,14 @@ postile.view.GoogFSV.prototype.close = function() {
 };
 
 /**
+ * By full-screen-view's convention.
+ * @see docs/FullScreenView.md
+ */
+postile.view.GoogFSV.prototype.getRootEl_ = function() {
+    return document.body;
+};
+
+/**
  * Spread-sheety view.
  * @constructor
  */
@@ -62,10 +71,9 @@ postile.view.Sheety = function(opt_boardId) {
     /**
      * Contains a list of posts. Its model is a {Array.<PostWE>}
      * The left hand side of the sheet.
-     * 45px is the height of the post_board.Header view.
      * @private
      */
-    this.postList_ = new postile.view.Sheety.PostList(45);
+    this.postList_ = new postile.view.Sheety.PostList();
 
     /**
      * Comment row container.
@@ -97,6 +105,12 @@ postile.view.Sheety = function(opt_boardId) {
     this.header_ = null;
 
     /**
+     * To be kept in sync with post_board.css:#title_bar.
+     * XXX: shall we dynamically calculate it?
+     */
+    this.headerHeight_ = 45;
+
+    /**
      * Faye channel, to be cancelled on destroy.
      * Initialized in this.enterDocument.
      * @type {Faye.Subscription}
@@ -114,30 +128,31 @@ postile.view.Sheety = function(opt_boardId) {
         ['board', 'enter_board'], {
             'board_id': this.boardId_
         });
-    postile.async.Promise.fromCallback(fetchBoardData)
-    .bind(function(response) {
+    // Fetches posts
+    var fetchRecentPosts = goog.partial(
+        postile.ajax,
+        ['board', 'get_recent_posts'],
+        { 'board_id': this.boardId_, 'number': 0 });
+
+    // Parallelly fetch boardData and recentPosts
+    postile.async.Promise.waitForAll(
+        [postile.async.Promise.fromCallback(fetchBoardData),
+         postile.async.Promise.fromCallback(fetchRecentPosts)])
+    .bind(function(xs) {
         // Got board data: renders the header
-        var boardData = response['message']['board'];
+        var boardData = xs[0]['message']['board'];
 
         this.header_ = new postile.view.post_board.Header(boardData);
-        goog.dom.append(goog.dom.getElement('wrapper'),
-            this.header_.container);
+        goog.dom.append(this.getRootEl_(), this.header_.container);
 
         var anony = this.isAnonymous_ = boardData['anonymous'];
-        var fetchPosts = goog.partial(
-            postile.ajax,
-            ['board', 'get_recent_posts'],
-            { 'board_id': this.boardId_, 'number': 40 });
 
-        var fetchUsers= goog.partial(
-            postile.view.Sheety.fetchUserOfBoardData_, anony);
-        // Fetches posts
-        return postile.async.Promise.fromCallback(fetchPosts)
-               // and fetches users
-               .bind(fetchUsers);
-    }, this).bind(/* And render the posts */ this.renderPosts_, this);
+        // and fetches users
+        return postile.view.Sheety.fetchUserOfBoardData_(anony, xs[1])
+            .bind(/* And render the posts */ this.renderPosts_, this);
+    }, this);
 
-    postile.view.loadCss(['sheety.css']);
+    postile.view.loadCss(['sheety-gen.css']);
 };
 goog.inherits(postile.view.Sheety, postile.view.GoogFSV);
 
@@ -173,6 +188,11 @@ postile.view.Sheety.prototype.createDom = function() {
     var el = goog.dom.createDom('div', 'sheety-body');
     this.setElementInternal(el);
 
+    // Adjust margin-top for the header.
+    goog.style.setStyle(el, {
+        'top': this.headerHeight_ + 'px'
+    });
+
     goog.array.forEach(this.getModel(), function(postEx) {
         var postId = postEx['post']['id'];
 
@@ -190,6 +210,9 @@ postile.view.Sheety.prototype.createDom = function() {
 
     this.addChild(this.postList_, true);
     this.addChild(this.commentRows_, true);
+
+    goog.dom.classes.add(this.commentRows_.getElement(),
+        'sheety-comment-rows');
 };
 
 postile.view.Sheety.prototype.enterDocument = function() {
@@ -244,6 +267,8 @@ postile.view.Sheety.prototype.exitDocument = function() {
     this.fayeSubscr_.addCallback(function(subscr) {
         subscr.cancel();
     });
+
+    this.header_.container.remove();
 
     goog.base(this, 'exitDocument');
 };
@@ -444,13 +469,15 @@ postile.view.Sheety.fetchUserOfComment_ = function(commentWe,
         'cmt_data': inlCmt,
         'cmt_likeCount': likes.length,
         'cmt_liked': liked,
-        // Either (when the board is not anonymous)
+        // Either (even if when the board is anonymous)
         //   the comment is created by this user
         // Or the post is created by this user
-        'cmt_canDel': (!anony && cid == selfId) || postCid == selfId
+        'cmt_canDel': cid == selfId || postCid == selfId
     };
 
     if (anony) {
+        // Just don't fetch user.
+        // XXX: hack indeed
         return postile.async.Promise.unit(skeleton);
     }
     else {
@@ -479,16 +506,14 @@ postile.view.Sheety.prototype.renderPosts_ = function(postExs) {
     this.setModel(postExs);
     this.postList_.setModel(postExs);
     this.commentRows_.setModel(comments);
-    this.render(goog.dom.getElement('wrapper'));
+    this.render(this.getRootEl_());
 };
 
 /**
  * Contains many post cells.
  * @constructor
- * @param {number=} opt_floatMarginTop Additional top value added to
- * the floating element.
  */
-postile.view.Sheety.PostList = function(opt_floatMarginTop) {
+postile.view.Sheety.PostList = function() {
     goog.base(this);
 
     /**
@@ -497,8 +522,6 @@ postile.view.Sheety.PostList = function(opt_floatMarginTop) {
      * @private
      */
     this.floatHandlerKey_ = null;
-
-    this.floatMarginTop_ = opt_floatMarginTop || 0;
 
     /**
      * Maps post-id to post-cell in post-list.
@@ -538,15 +561,15 @@ postile.view.Sheety.PostList.prototype.exitDocument = function() {
 postile.view.Sheety.PostList.prototype.enableFloat = function() {
     // XXX: adjust initScrollTop a bit when we have something
     // above this view.
-    var initScrollTop = this.floatMarginTop_;
+    var initScrollTop = this.getParent().headerHeight_;
     this.floatHandlerKey_ = goog.events.listen(
         document,
         goog.events.EventType.SCROLL,
         goog.bind(this.syncScroll, this, initScrollTop));
 
-    // XXX: not floating on document but on #wrapper
+    // Floating on the current parent.
     // to be able to set z-index difference on post-list and sheety-body.
-    this.startFloating(goog.dom.getElement('wrapper'));
+    this.startFloating(this.getParent().getElement());
     this.syncScroll(initScrollTop);
 };
 
@@ -748,6 +771,22 @@ postile.view.Sheety.AddCommentPop.prototype.createDom = function() {
     this.addChild(this.cancelButton_, true);
 };
 
+postile.view.Sheety.AddCommentPop.prototype.submit = function() {
+    // Preprocess the value of the textarea.
+    // XXX: check for emptiness.
+    var content = postile.view.At.asBBCode(
+        this.textarea_.getValue());
+    if (content) {
+        var e = new goog.events.Event(
+            postile.view.Sheety.EventType.LOCAL_SUBMIT_COMMENT, {
+                postId: this.postCell_.getPostId(),
+                content: content
+            });
+        this.setEnabled(false);
+        this.dispatchEvent(e);
+    }
+}
+
 postile.view.Sheety.AddCommentPop.prototype.enterDocument = function() {
     goog.base(this, 'enterDocument');
 
@@ -765,16 +804,16 @@ postile.view.Sheety.AddCommentPop.prototype.enterDocument = function() {
         this.submitButton_,
         goog.ui.Component.EventType.ACTION,
         function(_) {
-            // Preprocess the value of the textarea.
-            var content = postile.view.At.asBBCode(
-                this.textarea_.getValue());
-            var e = new goog.events.Event(
-                postile.view.Sheety.EventType.LOCAL_SUBMIT_COMMENT, {
-                    postId: this.postCell_.getPostId(),
-                    content: content
-                });
-            this.setEnabled(false);
-            this.dispatchEvent(e);
+            this.submit();
+        }, undefined, this);
+
+    goog.events.listen(
+        this.getElement(),
+        goog.events.EventType.KEYDOWN,
+        function(e) {
+            if (e.keyCode == 13) {
+                this.submit();
+            }
         }, undefined, this);
 
     // On click cancel: dispatch cancel event and hide self
@@ -817,6 +856,7 @@ postile.view.Sheety.AddCommentPop.prototype.slideToShow = function() {
     this.isShown_ = true;
     this.setEnabled(true);
     this.textarea_.setValue('');
+    this.textarea_.getElement().focus();
 
     // Absolute positioning
     var postEl = this.postCell_.getElement();
@@ -846,6 +886,11 @@ postile.view.Sheety.CETextarea = function(opt_content, opt_renderer) {
     goog.base(this, opt_content, opt_renderer);
 };
 goog.inherits(postile.view.Sheety.CETextarea, goog.ui.Control);
+
+postile.view.Sheety.CETextarea.prototype.enterDocument = function() {
+    goog.base(this, 'enterDocument');
+
+};
 
 postile.view.Sheety.CETextarea.prototype.getValue = function() {
     return this.getElement()['innerHTML'];
@@ -937,8 +982,8 @@ function(commentData, opt_recordInMap) {
 
 /**
  * Display a certain comment. Can do like and delete here.
- * XXX: currently like_ and del_ doesn't share the same model,
- * since the model is pre-processed in createDom.
+ * XXX: currently like_ and del_ doesn't share the same model as self
+ * does, since the model is pre-processed in createDom.
  * @constructor
  * @param {boolean=} anony
  */
@@ -997,6 +1042,58 @@ postile.view.Sheety.CommentCell.prototype.createDom = function() {
     var contentFragment = soy.renderAsFragment(
         postile.templates.sheety.commentContent, preProcData);
     goog.dom.append(el, contentFragment);
+
+    //console.log(preProcData.content);
+
+    this.wrapper = goog.dom.getElement('title_bar');
+    this.content_el = goog.dom.getElementByClass('content', el);
+    // create a span to get the length
+    var dummy_span = goog.dom.createDom('div', 'dummy_span');
+    dummy_span.style.display = 'table-cell';
+    dummy_span.innerHTML = preProcData.content;
+    goog.dom.appendChild(this.wrapper, dummy_span);
+
+    //console.log(dummy_span);
+
+    // get length
+    var width = dummy_span.offsetWidth;
+    var height = dummy_span.offsetHeight;
+
+    //console.log(width);
+
+    // TODO get the height and length 
+    // Currently we hard code it.
+    var wrapper_width = 200;
+    var wrapper_height = 60;
+
+    goog.dom.removeNode(dummy_span);
+
+    var marginTop = 0;
+
+    if(wrapper_width > 1.7 * width){
+        // check the height:
+
+        //console.log('entering expand');
+        if(height > wrapper_height){
+            marginTop = 0;
+        }
+        else{
+            marginTop = wrapper_height / 2 - height / 2 -10; // number get by seeing the board....
+        }
+        this.content_el.style.textAlign = 'center';
+        this.content_el.style.marginTop = marginTop + 'px';
+        this.content_el.style.fontSize = '20px';
+    }
+    else {
+        marginTop = 0;
+        this.content_el.style.textAlign = '';
+        this.content_el.style.marginTop = marginTop + 'px';
+        this.content_el.style.fontSize = '10pt';
+    }
+
+
+    // dirty code ends here
+
 
     // Post-process bbcode
     postile.bbcodePostProcess(el);

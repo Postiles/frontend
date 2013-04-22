@@ -21,7 +21,6 @@ postile.router.init = function() {
  * @param {string} route the actual url to map.
  */
 postile.router.dispatch = function(route) {
-    console.log('dispatch', route);
     var splitted = route.split('#', 1);
     history.pushState(splitted[1], null, '/' + route);
     postile.router.execute(splitted[0]);
@@ -32,13 +31,12 @@ postile.router.dispatch = function(route) {
  * @param {string} route the actual url to map.
  */
 postile.router.execute = function(route) {
-    console.log('execute', route);
     var args = route.split('/');
     var kwd = args.shift();
     if (kwd in postile.router.map) { //route found
         postile.router.current_view = new (Function.prototype.bind.apply(postile.router.map[kwd], [null].concat(args)));
     } else { //rescue
-        postile.router.dispatch("topic/1");
+        postile.router.dispatch("login/");
     }
 }
 

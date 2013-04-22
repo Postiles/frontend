@@ -12,7 +12,7 @@
 			if(!$('#is_comment').is(':checked')){
 				$.ajax({
 					type: "post",			
-				  	url: "http://www.postiles.com:300/search/search_post",
+				  	url: "http://www.postiles.com:3000/search/search_post",
 				  	data: {
 				  		keyword: $('#key_words').val(),
 				  	},
@@ -34,7 +34,7 @@
 			}else {
 				$.ajax({
 					type: "post",			
-				  	url: "http://www.postiles.com:300/search/search_comment",
+				  	url: "http://www.postiles.com:3000/search/search_comment",
 				  	data: {
 				  		keyword: $('#key_words').val(),
 				  	},
@@ -67,7 +67,7 @@
 			if(!$('#is_comment').is(':checked')){
 				$.ajax({
 					type: "post",			
-				  	url: "http://www.postiles.com:300/post/delete",
+				  	url: "http://www.postiles.com:3000/post/delete",
 				  	data: {
 				  		post_id: $('#id').val(),
 				  		session_key: $('#password').val(),
@@ -86,7 +86,7 @@
 			}else{
 				$.ajax({
 					type: "post",			
-				  	url: "http://www.postiles.com:300/inline_comment/delete",
+				  	url: "http://www.postiles.com:3000/inline_comment/delete",
 				  	data: {
 				  		comment_id: $('#id').val(),
 				  		session_key: $('#password').val(),

@@ -35,7 +35,7 @@ postile.entry.main = function() {
  * Originally known as postile.init.
  */
 postile.entry.router_dispatch = function() {
-    postile.conf.initDbgConfiguration();
+    //postile.conf.initDbgConfiguration();
     postile.router.init();
     postile.entry.init_router_map();
     if (!goog.userAgent.WEBKIT) {
@@ -49,7 +49,7 @@ postile.entry.router_dispatch = function() {
  * Originally known as postile.router_map.
  */
 postile.entry.init_router_map = function() {
-    postile.router.map['sheet'] = postile.view.Sheety;
+    // postile.router.map['sheet'] = postile.view.Sheety;
     postile.router.map['board'] = postile.view.post_board.PostBoard;
     postile.router.map['login'] = postile.view.login.LoginView;
     postile.router.map['topic'] = postile.view.BoardList;

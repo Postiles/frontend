@@ -7,7 +7,7 @@
 		function submitform(){
 			$.ajax({
 				type: "post",			
-			  	url: "http://www.postiles.com:300/board/new",
+			  	url: "http://www.postiles.com:3000/board/toosimple",
 			  	data: {
 			  		anonymous: $('#anonymous').is(':checked'),
 			  		topic_id: '1', 
@@ -15,7 +15,7 @@
 			  		description: $("#board_discription").val(),
 			  		default_view: $('#board_type').val()[0],
 			  		session_key: $('#password').val(),
-			  		user_id: '50'
+			  		user_id: '50',
 			  	},
 			  	success: function(r){
 			  		if(r.status == 'error'){
