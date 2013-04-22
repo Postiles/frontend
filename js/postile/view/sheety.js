@@ -1021,6 +1021,58 @@ postile.view.Sheety.CommentCell.prototype.createDom = function() {
         postile.templates.sheety.commentContent, preProcData);
     goog.dom.append(el, contentFragment);
 
+    console.log(preProcData.content);
+
+    this.wrapper = goog.dom.getElement('wrapper');
+    this.content_el = goog.dom.getElementByClass('content', el);
+    // create a span to get the length
+    var dummy_span = goog.dom.createDom('div', 'dummy_span');
+    dummy_span.style.display = 'table-cell';
+    dummy_span.innerHTML = preProcData.content;
+    goog.dom.appendChild(this.wrapper, dummy_span);
+
+    console.log(dummy_span);
+
+    // get length
+    var width = dummy_span.offsetWidth;
+    var height = dummy_span.offsetHeight;
+
+    console.log(width);
+
+    // TODO get the height and length 
+    // Currently we hard code it.
+    var wrapper_width = 200;
+    var wrapper_height = 60;
+
+    goog.dom.removeNode(dummy_span);
+
+    var marginTop = 0;
+
+    if(wrapper_width > 1.7 * width){
+        // check the height:
+
+        console.log('entering expand');
+        if(height > wrapper_height){
+            marginTop = 0;
+        }
+        else{
+            marginTop = wrapper_height / 2 - height / 2 -10; // number get by seeing the board....
+        }
+        this.content_el.style.textAlign = 'center';
+        this.content_el.style.marginTop = marginTop + 'px';
+        this.content_el.style.fontSize = '20px';
+    }
+    else {
+        marginTop = 0;
+        this.content_el.style.textAlign = '';
+        this.content_el.style.marginTop = marginTop + 'px';
+        this.content_el.style.fontSize = '10pt';
+    }
+
+
+    // dirty code ends here
+
+
     // Post-process bbcode
     postile.bbcodePostProcess(el);
 };
