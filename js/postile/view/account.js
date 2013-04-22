@@ -24,6 +24,10 @@ postile.view.account.Account = function(opt_boardData) {
         postile.view.account.initComponents.switch_board(instance, opt_boardData);
     }
     
+    if (!document.body.getAttribute("postiles-chrome-plugin-injected")) {
+        postile.view.account.initComponents.feedback(instance);
+    }
+    
     if (postile.conf.userLoggedIn()) {
         postile.data_manager.getUserData(localStorage.postile_user_id, function(data) {
             postile.view.account.initComponents.profile(instance, postile.conf.uploadsResource([ data.image_small_url ]));
@@ -33,7 +37,6 @@ postile.view.account.Account = function(opt_boardData) {
         postile.view.account.initComponents.signup(instance);
         postile.view.account.initComponents.login(instance);
         new postile.toast.title_bar_toast("You are not logged in. Please login to enable edit functions", 2);
-    
     }
 }
 goog.inherits(postile.view.account.Account, postile.view.NormalView);
@@ -209,5 +212,18 @@ postile.view.account.initComponents = {
                 notificationHandlerClear();
             }, true);
         });  
+    },
+    feedback: function(instance) {  
+        var feedback = instance.createAccountItem('feedback_button'); //no use
+        feedback.innerHTML = 'Feedback';
+        feedback.style.cursor = 'pointer';
+        feedback.style.margin = '6px 0 0 10px';
+        feedback.style.color = '#FFF';
+        feedback.style.background = '#024d61';
+        feedback.style.padding = '4px';
+        feedback.style.fontSize = '14px';
+        goog.events.listen(feedback, goog.events.EventType.CLICK, function() {
+            new postile.feedback.FeedbackData();
+        });
     }
 };

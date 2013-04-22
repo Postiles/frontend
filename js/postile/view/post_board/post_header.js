@@ -28,18 +28,6 @@ postile.view.post_board.Header = function(boardData) {
 
     this.topicTitle_el = postile.dom.getDescendantById(this.topicInnerContainer_el, 'topic_title');
     instance.topicTitle_el.innerHTML = this.boardData.name;
-    
-    if (!document.body.getAttribute("postiles-chrome-plugin-injected")) {
-        var feedback = goog.dom.createDom('img');
-        feedback.className = 'feedback_button';
-        feedback.src = postile.conf.imageResource(['feedback.png']);
-        feedback.style.cssFloat = 'left';
-        feedback.style.margin = '6px 0 0 10px';
-        goog.events.listen(feedback, goog.events.EventType.CLICK, function() {
-            new postile.feedback.FeedbackData();
-        });
-        goog.dom.appendChild(this.topicInnerContainer_el, feedback);
-    }
 
     // create a create post helper
 
