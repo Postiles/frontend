@@ -142,11 +142,6 @@ postile.view.Sheety = function(opt_boardId) {
         // Got board data: renders the header
         var boardData = xs[0]['message']['board'];
 
-        if (boardData.default_view != 'sheet') {
-            postile.router.dispatch('board/' + boardData.id);
-            return;
-        }
-
         this.header_ = new postile.view.post_board.Header(boardData);
         goog.dom.append(this.getRootEl_(), this.header_.container);
 
@@ -776,6 +771,22 @@ postile.view.Sheety.AddCommentPop.prototype.createDom = function() {
     this.addChild(this.cancelButton_, true);
 };
 
+postile.view.Sheety.AddCommentPop.prototype.submit = function() {
+    // Preprocess the value of the textarea.
+    // XXX: check for emptiness.
+    var content = postile.view.At.asBBCode(
+        this.textarea_.getValue());
+    if (content) {
+        var e = new goog.events.Event(
+            postile.view.Sheety.EventType.LOCAL_SUBMIT_COMMENT, {
+                postId: this.postCell_.getPostId(),
+                content: content
+            });
+        this.setEnabled(false);
+        this.dispatchEvent(e);
+    }
+}
+
 postile.view.Sheety.AddCommentPop.prototype.enterDocument = function() {
     goog.base(this, 'enterDocument');
 
@@ -793,17 +804,16 @@ postile.view.Sheety.AddCommentPop.prototype.enterDocument = function() {
         this.submitButton_,
         goog.ui.Component.EventType.ACTION,
         function(_) {
-            // Preprocess the value of the textarea.
-            // XXX: check for emptiness.
-            var content = postile.view.At.asBBCode(
-                this.textarea_.getValue());
-            var e = new goog.events.Event(
-                postile.view.Sheety.EventType.LOCAL_SUBMIT_COMMENT, {
-                    postId: this.postCell_.getPostId(),
-                    content: content
-                });
-            this.setEnabled(false);
-            this.dispatchEvent(e);
+            this.submit();
+        }, undefined, this);
+
+    goog.events.listen(
+        this.getElement(),
+        goog.events.EventType.KEYDOWN,
+        function(e) {
+            if (e.keyCode == 13) {
+                this.submit();
+            }
         }, undefined, this);
 
     // On click cancel: dispatch cancel event and hide self
@@ -846,6 +856,7 @@ postile.view.Sheety.AddCommentPop.prototype.slideToShow = function() {
     this.isShown_ = true;
     this.setEnabled(true);
     this.textarea_.setValue('');
+    this.textarea_.getElement().focus();
 
     // Absolute positioning
     var postEl = this.postCell_.getElement();
@@ -875,6 +886,11 @@ postile.view.Sheety.CETextarea = function(opt_content, opt_renderer) {
     goog.base(this, opt_content, opt_renderer);
 };
 goog.inherits(postile.view.Sheety.CETextarea, goog.ui.Control);
+
+postile.view.Sheety.CETextarea.prototype.enterDocument = function() {
+    goog.base(this, 'enterDocument');
+
+};
 
 postile.view.Sheety.CETextarea.prototype.getValue = function() {
     return this.getElement()['innerHTML'];

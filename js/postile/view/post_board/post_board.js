@@ -342,7 +342,7 @@ postile.view.post_board.PostBoard = function(board_id) {
         instance.boardData = data.message.board;
 
         if (instance.boardData.default_view == 'sheet') {
-            postile.router.dispatch('sheet/' + instance.boardData.id);
+            new postile.view.Sheety(instance.boardData.id);
         }
 
         instance.userData = postile.data_manager.getUserData(localStorage.postile_user_id, function(data) {

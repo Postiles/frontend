@@ -18,6 +18,7 @@ postile.view.BoardList = function(topic) {
     instance.currentUserLiked = false;
     instance.container.className = 'gateway';
     instance.currentTarget = null;
+
     instance.title = postile.dom.getDescendantByClass(instance.container, "title");
     instance.add = postile.dom.getDescendantByClass(instance.title, "add");
     instance.right = postile.dom.getDescendantByClass(instance.container, "right");
@@ -28,6 +29,8 @@ postile.view.BoardList = function(topic) {
     instance.right_button = postile.dom.getDescendantByClass(instance.right, "button");
     instance.right_perspective = postile.dom.getDescendantByClass(instance.right, "perspective");
     instance.like_button = postile.dom.getDescendantByClass(instance.right, "like");    
+    instance.recent_posts_title = postile.dom.getDescendantByClass(instance.right, "posts_title");    
+
     var new_board = new postile.view.new_board.NewBoard();
     goog.events.listen(instance.add, goog.events.EventType.CLICK, function() {
         alert("This function is temporarily disabled by the administrator.");
@@ -95,9 +98,16 @@ postile.view.BoardList.prototype.renderBoardListItem = function(data) {
             user_liked = true;
         }
     }
-    postile.ajax([ 'board', 'get_post_count' ], { board_id: data.board.id }, function(new_data) {
-        meta_count_el.innerHTML = new_data.message.post_count != 1 ? new_data.message.post_count + ' posts' : '1 post';
-    });
+
+    if (data.board.default_view == 'sheet') {
+        postile.ajax([ 'board', 'get_comment_count' ], { board_id: data.board.id }, function(new_data) {
+            meta_count_el.innerHTML = new_data.message.comment_count != 1 ? new_data.message.comment_count + ' comments' : '1 comment';
+        });
+    } else {
+        postile.ajax([ 'board', 'get_post_count' ], { board_id: data.board.id }, function(new_data) {
+            meta_count_el.innerHTML = new_data.message.post_count != 1 ? new_data.message.post_count + ' posts' : '1 post';
+        });
+    }
     /*
     postile.data_manager.getUserData(data.board.creator_id, function(data) {
         meta_creator_el.innerHTML = data.username;
@@ -112,18 +122,26 @@ postile.view.BoardList.prototype.renderBoardListItem = function(data) {
         instance.right_count.innerHTML = meta_count_el.innerHTML;
         instance.right_desc.innerHTML = description_el.innerHTML;
         instance.right_perspective.className = meta_perspective_el.className + ' perspective';
-        instance.right_perspective.innerHTML = data.board.default_view ? 'Sheet' : 'Free';
+        instance.right_perspective.innerHTML = data.board.default_view == 'sheet' ? 'Sheet' : 'Free';
         instance.currentBoardId = data.board.id;
-        instance.currentTarget = (data.board.default_view ? 'sheet' : 'board') + '/' + instance.currentBoardId;
+        instance.currentTarget = (data.board.default_view == 'sheet' ? 'sheet' : 'board') + '/' + instance.currentBoardId;
         instance.right_button.style.display = 'block';
         instance.currentUserLiked = user_liked;
         instance.like_button.innerHTML = data.likes.length + " liked it";
-        postile.ajax(['board', 'get_recent_posts'], { board_id: data.board.id }, function(new_data) {
+
+        if (data.board.default_view != 'sheet') {
+            instance.recent_posts_title.style.display = 'block';
+            postile.ajax(['board', 'get_recent_posts'], { board_id: data.board.id }, function(new_data) {
+                goog.dom.removeChildren(instance.right_posts);
+                for (i in new_data.message) {
+                    instance.renderRecentPostItem(new_data.message[i], data);
+                }
+            });
+        } else {
+            instance.recent_posts_title.style.display = 'none';
             goog.dom.removeChildren(instance.right_posts);
-            for (i in new_data.message) {
-                instance.renderRecentPostItem(new_data.message[i], data);
-            }
-        });
+        }
+
         if (meta_incognito_el) {
             meta_incognito_el.innerHTML = 'incognito';
         }
