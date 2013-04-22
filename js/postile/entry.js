@@ -35,7 +35,7 @@ postile.entry.main = function() {
  * Originally known as postile.init.
  */
 postile.entry.router_dispatch = function() {
-    postile.conf.initDbgConfiguration();
+    //postile.conf.initDbgConfiguration();
     postile.router.init();
     postile.entry.init_router_map();
     if (!goog.userAgent.WEBKIT) {
