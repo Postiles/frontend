@@ -240,8 +240,8 @@ postile.view.profile.ProfileItem.prototype.saveTriggered = function() {
             this.edit_el.innerHTML = 'Edit';
 
             if (this.className != 'signiture' &&
-                    this.className == 'self-intro' &&
-                    this.className == 'username') {
+                    this.className != 'self-intro' &&
+                    this.className != 'username') {
                 if (this.data_el.innerHTML) {
                     var description = postile.view.profile.ProfileView.prototype.findDescriptionByName(this.item);
                     this.title_el.innerHTML = description;

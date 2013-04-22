@@ -124,6 +124,8 @@
       background: whitesmoke;
       white-space: nowrap;
       overflow: hidden; }
+    .post_wrap .comment_mode_post .post_bottom .comment_container .comment_container_input_too_long {
+      -webkit-box-shadow: 0px 0px 4px #fe7a15; }
     .post_wrap .comment_mode_post .post_bottom .comment_container .comment_list_close_button {
       position: relative;
       right: 5px;

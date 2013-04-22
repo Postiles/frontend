@@ -200,6 +200,10 @@
                     overflow: hidden;
                 }
 
+                .comment_container_input_too_long {
+                    -webkit-box-shadow: 0px 0px 4px #fe7a15;
+                }
+
                 .comment_list_close_button {
                     position: relative;
                     right: 5px;

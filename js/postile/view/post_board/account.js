@@ -123,7 +123,6 @@ postile.view.post_board.Account = function(optBoardData) {
 
     this.message_button = postile.dom.getDescendantById(instance.container, "message_button");
 
-    console.log(postile.conf.userLoggedIn());
     if (postile.conf.userLoggedIn()) {
         postile.data_manager.getUserData(localStorage.postile_user_id, function(data) {
             if(data.user_id){ // login and show

@@ -18,6 +18,7 @@ goog.require('postile.debbcode');
 goog.require('postile.fx');
 goog.require('postile.view.At');
 goog.require('postile.fx.effects');
+goog.require('postile.length_control');
 
 goog.require('postile.view.PostExpand');
 goog.require('postile.view.post.InlineComment');
@@ -376,23 +377,45 @@ postile.view.BasePost.prototype.initCommentModeListener = function() {
         goog.events.EventType.KEYDOWN, 
         function(e) {
             this.bringToFront();
+            var content = 
+                goog.string.trim(
+                    this.commentModeElements.commentInput_el.innerHTML);
+
             if (e.keyCode == goog.events.KeyCodes.ENTER) { // enter pressed
                 this.commentModeElements.commentInput_el._at_.toBBcode();
-            
-                var content = 
-                    goog.string.trim(
-                        this.commentModeElements.commentInput_el.innerHTML);
 
-                if (content.length) { // not empty comment
-                    postile.ajax([ 'inline_comment', 'new' ], {
-                        post_id: this.postData.post.id,
-                        content: content
-                    }, function(data) {
-                        // do nothing here, handled in fayeHandler
-                    }.bind(this));
+                if (content.length && 
+                    postile.length_control.getLengthWithoutDoms(content) <= 20) {
+                        postile.ajax([ 'inline_comment', 'new' ], {
+                            post_id: this.postData.post.id,
+                            content: content
+                        }, function(data) {
+                            // do nothing here, handled in fayeHandler
+                        }.bind(this));
 
                     this.commentModeElements.commentInput_el.innerHTML = '';
+                } else {
+                    e.preventDefault();
                 }
+            }
+        }.bind(this));
+
+    // comment input key down
+    goog.events.listen(
+        elements.commentInput_el, 
+        goog.events.EventType.KEYUP,
+        function(e) {
+            var content = 
+                goog.string.trim(
+                    this.commentModeElements.commentInput_el.innerHTML);
+
+            var diff = postile.length_control.getLengthWithoutDoms(content) - 20;
+            if (diff > 0) {
+                goog.dom.classes.add(this.commentModeElements.commentInput_el, 
+                    'comment_container_input_too_long');
+            } else {
+                goog.dom.classes.remove(this.commentModeElements.commentInput_el, 
+                    'comment_container_input_too_long');
             }
         }.bind(this));
 
@@ -441,9 +464,7 @@ postile.view.BasePost.prototype.initEditModeListener = function() {
         function(e) {
             if (e.keyCode == 13 && e.ctrlKey) {
                 e.preventDefault();
-                if (elements.postContent_el.innerHTML.length <= 5000) {
-                    this.submitChange();
-                }
+                this.submitChange();
             }
         }.bind(this));
 
@@ -453,6 +474,7 @@ postile.view.BasePost.prototype.initEditModeListener = function() {
         goog.events.EventType.KEYUP, 
         function(e) {
             var elements = this.editModeElements;
+
             if (this.wrap_el.className.indexOf('text_post') != -1) { // text post
                 var content = elements.postContent_el.innerHTML;
                 if (goog.string.isEmpty(content) || content == '<br>') {
@@ -482,7 +504,7 @@ postile.view.BasePost.prototype.initEditModeListener = function() {
 
                 var brs = content.match(/<br>/g);
                 if (brs && brs.length > 0) {
-                    chompedLength += 3 * divs.length;
+                    chompedLength += 3 * brs.length;
                 }
 
                 var diff = content.length - chompedLength - 5000;
@@ -517,9 +539,7 @@ postile.view.BasePost.prototype.initEditModeListener = function() {
         goog.events.EventType.CLICK, 
         function(e) {
             if (this.currMode == postile.view.BasePost.PostMode.EDIT) {
-                if (this.editModeElements.postContent_el.innerHTML.length <= 5000) {
-                    this.submitChange();
-                }
+                this.submitChange();
             }
         }.bind(this));
 
