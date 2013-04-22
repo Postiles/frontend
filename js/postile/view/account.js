@@ -2,7 +2,10 @@ goog.provide('postile.view.post_board.Account');
 
 goog.require('postile.view.inline_login');
 
-postile.view.post_board.Account = function(optBoardData) {
+/*
+opt_boardData: set iff inside a board/sheet
+*/
+postile.view.post_board.Account = function(opt_boardData) {
     goog.base(this);
 
     /**
@@ -56,7 +59,7 @@ postile.view.post_board.Account = function(optBoardData) {
         // how to make sure that we can go back the same place when login?
         e.stopPropagation();
         this.inline_login.open(this.login_button);
-        if (optBoardData) {
+        if (opt_boardData) {
             this.switchBoardTip.close();
         }
         this.sBTip.close();
@@ -68,7 +71,7 @@ postile.view.post_board.Account = function(optBoardData) {
     }.bind(this));
 
     // preload images for switching
-    if (optBoardData) {
+    if (opt_boardData) {
         var switch_board_active = new Image();
         switch_board_active.src = postile.conf.imageResource(['switch_board_icon_active.png']);
     }
@@ -76,14 +79,14 @@ postile.view.post_board.Account = function(optBoardData) {
     popup_icon_active.src = postile.conf.imageResource(['popup_icon_active.png']);
     var search_icon_active = new Image();
     search_icon_active.src = postile.conf.imageResource(['search_icon_active.png']);
-    if (optBoardData) {
+    if (opt_boardData) {
         var message_icon_active = new Image();
         message_icon_active.src = postile.conf.imageResource(['message_icon_active.png']);
     }
 
     this.function_buttons = postile.dom.getDescendantsByClass(this.container, 'function_button');
     for (var i = 0; i < this.function_buttons.length; i++) {
-        if ((!optBoardData && i == 0) || i == 3) {
+        if ((!opt_boardData && i == 0) || i == 3) {
             goog.dom.removeNode(this.function_buttons[i]); 
         } else {
             // no longer needed, depracated
@@ -99,7 +102,7 @@ postile.view.post_board.Account = function(optBoardData) {
         if(this.logged_in){
             this.notification.close();
         }
-        if (optBoardData) {
+        if (opt_boardData) {
             this.switchBoardTip.close();
         }
         this.sBTip.open(this.search_button);
@@ -107,8 +110,8 @@ postile.view.post_board.Account = function(optBoardData) {
     }.bind(this), true);
 
     /* Buttons on the right up corner */
-    if (optBoardData) {
-        this.switchBoardTip = new postile.view.board_more_pop.OtherBoard(optBoardData);
+    if (opt_boardData) {
+        this.switchBoardTip = new postile.view.board_more_pop.OtherBoard(opt_boardData);
         this.switch_board_button = postile.dom.getDescendantById(instance.container, "switch_board_button");
         goog.events.listen(this.switch_board_button, goog.events.EventType.CLICK, function(e) {
             e.stopPropagation();
@@ -149,10 +152,10 @@ postile.view.post_board.Account = function(optBoardData) {
                     instance.notificationHandler(data);
                 });
                 this.notification_isOpened = false;
-                this.notification = new postile.view.notification.Notification(this, optBoardData);
+                this.notification = new postile.view.notification.Notification(this, opt_boardData);
                 goog.events.listen(this.message_button, goog.events.EventType.CLICK, function(e) {
                     e.stopPropagation();
-                    if (optBoardData) {
+                    if (opt_boardData) {
                         this.switchBoardTip.close();
                     }
                     this.sBTip.close();  
@@ -167,7 +170,7 @@ postile.view.post_board.Account = function(optBoardData) {
         this.message_button.style.display = 'none';
     }
     /*
-    if (optBoardData) {
+    if (opt_boardData) {
         this.moreButtonPop_isOpened = false;
         this.more_button = postile.dom.getDescendantById(instance.container, "popup_button");
         this.moreButtonPop = new postile.view.board_more_pop.BoardMorePop(this.more_button);
