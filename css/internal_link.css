@@ -1,11 +1,14 @@
 .internal_link_wrap  {
-    width: 200px;
+    max-width: 160px;
+    min-width: 116px;
     top: 20px;
     left: -50px;
     border: 2px solid #024d61;
     background: #EEE;
     padding: 8px;
     box-sizing: border-box;
+    font-size: 10pt;
+    line-height: 16px;
 }
 
 .internal_link_wrap .arrow {
