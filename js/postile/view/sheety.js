@@ -1023,7 +1023,7 @@ postile.view.Sheety.CommentCell.prototype.createDom = function() {
 
     console.log(preProcData.content);
 
-    this.wrapper = goog.dom.getElement('wrapper');
+    this.wrapper = goog.dom.getElement('title_bar');
     this.content_el = goog.dom.getElementByClass('content', el);
     // create a span to get the length
     var dummy_span = goog.dom.createDom('div', 'dummy_span');
