@@ -162,11 +162,13 @@ postile.view.BoardList.prototype.renderBoardListItem = function(data) {
     goog.dom.appendChild(item_el, meta_el);
     goog.dom.appendChild(item_el, goog.dom.createDom('div', 'clear'));
     goog.dom.insertSiblingAfter(item_el, this.title);
-    if (data.board.default_view) {
+
+    if (data.board.default_view == 'sheet') {
         meta_perspective_el = goog.dom.createDom('span', 'sheet');
     } else {
         meta_perspective_el = goog.dom.createDom('span', 'grid');
     }
+
     goog.dom.appendChild(meta_meta_el, meta_perspective_el);
     if (data.board.anonymous) {
         meta_incognito_el = goog.dom.createDom('span', 'incognito');
