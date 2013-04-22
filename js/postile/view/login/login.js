@@ -51,13 +51,3 @@ postile.view.login.LoginView.prototype.login = function() {
     }.bind(this));
 }
 
-/**
- * Close this view.
- * XXX: hack
- * @inheritDoc
- */
-postile.view.login.LoginView.prototype.close = function() {
-    this.container.innerHTML = '<div id="wrapper"></div>';
-    goog.base(this, 'close');
-};
-

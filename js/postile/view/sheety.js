@@ -468,10 +468,10 @@ postile.view.Sheety.fetchUserOfComment_ = function(commentWe,
         'cmt_data': inlCmt,
         'cmt_likeCount': likes.length,
         'cmt_liked': liked,
-        // Either (when the board is not anonymous)
+        // Either (even if when the board is anonymous)
         //   the comment is created by this user
         // Or the post is created by this user
-        'cmt_canDel': (!anony && cid == selfId) || postCid == selfId
+        'cmt_canDel': cid == selfId || postCid == selfId
     };
 
     if (anony) {
@@ -1021,7 +1021,7 @@ postile.view.Sheety.CommentCell.prototype.createDom = function() {
         postile.templates.sheety.commentContent, preProcData);
     goog.dom.append(el, contentFragment);
 
-    console.log(preProcData.content);
+    //console.log(preProcData.content);
 
     this.wrapper = goog.dom.getElement('title_bar');
     this.content_el = goog.dom.getElementByClass('content', el);
@@ -1031,13 +1031,13 @@ postile.view.Sheety.CommentCell.prototype.createDom = function() {
     dummy_span.innerHTML = preProcData.content;
     goog.dom.appendChild(this.wrapper, dummy_span);
 
-    console.log(dummy_span);
+    //console.log(dummy_span);
 
     // get length
     var width = dummy_span.offsetWidth;
     var height = dummy_span.offsetHeight;
 
-    console.log(width);
+    //console.log(width);
 
     // TODO get the height and length 
     // Currently we hard code it.
@@ -1051,7 +1051,7 @@ postile.view.Sheety.CommentCell.prototype.createDom = function() {
     if(wrapper_width > 1.7 * width){
         // check the height:
 
-        console.log('entering expand');
+        //console.log('entering expand');
         if(height > wrapper_height){
             marginTop = 0;
         }

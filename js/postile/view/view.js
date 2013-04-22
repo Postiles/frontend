@@ -226,6 +226,18 @@ goog.inherits(postile.view.FullScreenView, postile.view.View);
  */
 postile.view.FullScreenView.prototype.html_segment = null;
 
+postile.view.FullScreenView.prototype.getRootEl_ = function() {
+    return document.body;
+};
+
+/**
+ * By convention, destroy its dom.
+ * @inheritDoc
+ */
+postile.view.FullScreenView.prototype.close = function() {
+    this.getRootEl_().innerHTML = '';
+};
+
 /**
  * Smaller view. Known subclasses are inline comment view and post
  * deletion confirmation dialog, notification
