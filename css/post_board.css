@@ -13,7 +13,16 @@ html, body {
   width: 100%;
   height: 40px;
   border-bottom: 5px solid #024d61;
-  z-index: 500; }
+  z-index: 500;
+
+  /**
+   * Sheety board uses real scrolling so this is needed.
+   * WARNING: #title_bar's real height (45px) is hard coded in several places:
+   * this-file:#viewport_container, sheety.js:Sheety and somewhere else.
+   * Edit with caution.
+   */
+  position: fixed;
+}
 
 #topic_inner_container {
     width: 100%;
@@ -334,6 +343,8 @@ html, body {
 .viewport_container {
   overflow: hidden;
   position: relative;   
+  /* To be kept in sync with title_bar's total height. */
+  top: 45px;
 }
 
 .canvas_viewport {

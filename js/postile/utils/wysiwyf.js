@@ -116,7 +116,8 @@ postile.WYSIWYF = {
             editor.buttons[i].onclick = function() { if (!editor.selectionInEditor()) { return; } editor.buttonOperate(this.style.backgroundPosition.toLowerCase()); } 
             icon_container_el.appendChild(editor.buttons[i]);
         }
-        editor.toDisplayMode(0);
+        editor.toDisplayMode(1);
+        /*
         if (editor.post) {
             editor.onEditListener = new postile.events.ContentChangeListener(editor.editor_el, function(){
                 var i;
@@ -137,10 +138,11 @@ postile.WYSIWYF = {
             });
             editor.onEditListener.listen();
         }
+        */
         editor.at = new postile.view.At(this.editor_el);
     },
     /******Define buttons and corresponding operations******/
-    editButtons: new Array(
+    editButtons: new Array(/*
     {
         bgPos: '-' + (13 * 8) + 'px 0px',
         callback: function (editor) {
@@ -174,7 +176,7 @@ postile.WYSIWYF = {
             }, editor.post);
         },
         display: [true, true]
-    }, /* {
+    }, {
         bgPos: '-' + (13 * 2) + 'px 0px',
         callback: function (editor) {
             //Img
@@ -184,13 +186,13 @@ postile.WYSIWYF = {
             }
         },
         display: [true, true]
-    }, */ {
+    }, {
         bgPos: '-' + (13 * 7) + 'px 0px',
         callback: function (editor) {
             editor.toDisplayMode(1);
         },
         display: [true, false]
-    }, {
+    }, */ {
         bgPos: '0px 0px',
         callback: function (editor) {
             //Bold
@@ -211,13 +213,13 @@ postile.WYSIWYF = {
             document.execCommand('Underline', false, null);
         },
         display: [false, true]
-    }, {
+    } /*, {
         bgPos: '-' + (13 * 6) + 'px 0px',
         callback: function (editor) {
             editor.toDisplayMode(0);
         },
         display: [false, true]
-    }),
+    }*/),
     /*
     input parameters for "merge"
         characters (array)

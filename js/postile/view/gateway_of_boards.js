@@ -164,7 +164,7 @@ postile.view.BoardList.prototype.renderRecentPostItem = function(post_info, boar
     var meta_el = goog.dom.createDom('div', 'author');
     var author_el = goog.dom.createDom('span');
     var time_el = goog.dom.createDom('small');
-    time_el.innerHTML = post_info.post.created_at;
+    time_el.innerHTML = postile.date(post_info.post.created_at, 'inline');
 
     if (!boardData.board.anonymous) {
         postile.data_manager.getUserData(post_info.post.creator_id, function(data) {
