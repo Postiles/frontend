@@ -1,5 +1,8 @@
 .sheety-body {
   position: relative;
+}
+.sheety-comment-rows {
+  position: relative;
   z-index: 100;
   background-color: #f5f9fa;
   font-family: sans-serif;

@@ -1,6 +1,7 @@
 goog.provide('postile.view.Sheety');
 
 goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('goog.object');
 goog.require('goog.functions');
 goog.require('goog.dom');
@@ -62,10 +63,9 @@ postile.view.Sheety = function(opt_boardId) {
     /**
      * Contains a list of posts. Its model is a {Array.<PostWE>}
      * The left hand side of the sheet.
-     * 45px is the height of the post_board.Header view.
      * @private
      */
-    this.postList_ = new postile.view.Sheety.PostList(45);
+    this.postList_ = new postile.view.Sheety.PostList();
 
     /**
      * Comment row container.
@@ -97,6 +97,12 @@ postile.view.Sheety = function(opt_boardId) {
     this.header_ = null;
 
     /**
+     * To be kept in sync with post_board.css:#title_bar.
+     * XXX: shall we dynamically calculate it?
+     */
+    this.headerHeight_ = 45;
+
+    /**
      * Faye channel, to be cancelled on destroy.
      * Initialized in this.enterDocument.
      * @type {Faye.Subscription}
@@ -114,27 +120,29 @@ postile.view.Sheety = function(opt_boardId) {
         ['board', 'enter_board'], {
             'board_id': this.boardId_
         });
-    postile.async.Promise.fromCallback(fetchBoardData)
-    .bind(function(response) {
+    // Fetches posts
+    var fetchRecentPosts = goog.partial(
+        postile.ajax,
+        ['board', 'get_recent_posts'],
+        { 'board_id': this.boardId_, 'number': 40 });
+
+    // Parallelly fetch boardData and recentPosts
+    postile.async.Promise.waitForAll(
+        [postile.async.Promise.fromCallback(fetchBoardData),
+         postile.async.Promise.fromCallback(fetchRecentPosts)])
+    .bind(function(xs) {
         // Got board data: renders the header
-        var boardData = response['message']['board'];
+        var boardData = xs[0]['message']['board'];
 
         this.header_ = new postile.view.post_board.Header(boardData);
-        goog.dom.append(goog.dom.getElement('wrapper'),
-            this.header_.container);
+        var wrapper = goog.dom.getElement('wrapper');
+        goog.asserts.assert(wrapper);
+        goog.dom.append(wrapper, this.header_.container);
 
         var anony = this.isAnonymous_ = boardData['anonymous'];
-        var fetchPosts = goog.partial(
-            postile.ajax,
-            ['board', 'get_recent_posts'],
-            { 'board_id': this.boardId_, 'number': 40 });
 
-        var fetchUsers= goog.partial(
-            postile.view.Sheety.fetchUserOfBoardData_, anony);
-        // Fetches posts
-        return postile.async.Promise.fromCallback(fetchPosts)
-               // and fetches users
-               .bind(fetchUsers);
+        // and fetches users
+        return postile.view.Sheety.fetchUserOfBoardData_(anony, xs[1]);
     }, this).bind(/* And render the posts */ this.renderPosts_, this);
 
     postile.view.loadCss(['sheety.css']);
@@ -173,6 +181,11 @@ postile.view.Sheety.prototype.createDom = function() {
     var el = goog.dom.createDom('div', 'sheety-body');
     this.setElementInternal(el);
 
+    // Adjust margin-top for the header.
+    goog.style.setStyle(el, {
+        'top': this.headerHeight_ + 'px'
+    });
+
     goog.array.forEach(this.getModel(), function(postEx) {
         var postId = postEx['post']['id'];
 
@@ -190,6 +203,9 @@ postile.view.Sheety.prototype.createDom = function() {
 
     this.addChild(this.postList_, true);
     this.addChild(this.commentRows_, true);
+
+    goog.dom.classes.add(this.commentRows_.getElement(),
+        'sheety-comment-rows');
 };
 
 postile.view.Sheety.prototype.enterDocument = function() {
@@ -244,6 +260,8 @@ postile.view.Sheety.prototype.exitDocument = function() {
     this.fayeSubscr_.addCallback(function(subscr) {
         subscr.cancel();
     });
+
+    this.header_.container.remove();
 
     goog.base(this, 'exitDocument');
 };
@@ -451,6 +469,8 @@ postile.view.Sheety.fetchUserOfComment_ = function(commentWe,
     };
 
     if (anony) {
+        // Just don't fetch user.
+        // XXX: hack indeed
         return postile.async.Promise.unit(skeleton);
     }
     else {
@@ -485,10 +505,8 @@ postile.view.Sheety.prototype.renderPosts_ = function(postExs) {
 /**
  * Contains many post cells.
  * @constructor
- * @param {number=} opt_floatMarginTop Additional top value added to
- * the floating element.
  */
-postile.view.Sheety.PostList = function(opt_floatMarginTop) {
+postile.view.Sheety.PostList = function() {
     goog.base(this);
 
     /**
@@ -497,8 +515,6 @@ postile.view.Sheety.PostList = function(opt_floatMarginTop) {
      * @private
      */
     this.floatHandlerKey_ = null;
-
-    this.floatMarginTop_ = opt_floatMarginTop || 0;
 
     /**
      * Maps post-id to post-cell in post-list.
@@ -538,7 +554,7 @@ postile.view.Sheety.PostList.prototype.exitDocument = function() {
 postile.view.Sheety.PostList.prototype.enableFloat = function() {
     // XXX: adjust initScrollTop a bit when we have something
     // above this view.
-    var initScrollTop = this.floatMarginTop_;
+    var initScrollTop = this.getParent().headerHeight_;
     this.floatHandlerKey_ = goog.events.listen(
         document,
         goog.events.EventType.SCROLL,
@@ -546,7 +562,7 @@ postile.view.Sheety.PostList.prototype.enableFloat = function() {
 
     // XXX: not floating on document but on #wrapper
     // to be able to set z-index difference on post-list and sheety-body.
-    this.startFloating(goog.dom.getElement('wrapper'));
+    this.startFloating(this.getParent().getElement());
     this.syncScroll(initScrollTop);
 };
 
@@ -766,6 +782,7 @@ postile.view.Sheety.AddCommentPop.prototype.enterDocument = function() {
         goog.ui.Component.EventType.ACTION,
         function(_) {
             // Preprocess the value of the textarea.
+            // XXX: check for emptiness.
             var content = postile.view.At.asBBCode(
                 this.textarea_.getValue());
             var e = new goog.events.Event(
@@ -937,8 +954,8 @@ function(commentData, opt_recordInMap) {
 
 /**
  * Display a certain comment. Can do like and delete here.
- * XXX: currently like_ and del_ doesn't share the same model,
- * since the model is pre-processed in createDom.
+ * XXX: currently like_ and del_ doesn't share the same model as self
+ * does, since the model is pre-processed in createDom.
  * @constructor
  * @param {boolean=} anony
  */

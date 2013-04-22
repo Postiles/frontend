@@ -11,4 +11,4 @@ python tmp/closure/bin/build/closurebuilder.py \
 	--output_mode=compiled \
 	--compiler_jar=tmp/compiler.jar \
 	--compiler_flags="$CFLAGS" \
-	> compiled.js
+	--output_file=compiled.js

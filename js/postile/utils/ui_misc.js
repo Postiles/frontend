@@ -4,15 +4,32 @@ goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('goog.dom.classes');
 goog.require('goog.string');
+goog.require('goog.object');
 goog.require('postile.fx');
 goog.require('postile.conf.useragent');
 
+/**
+ * Get a url synchronously. The result is cached.
+ */
 postile.syncGet = function(url) {
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', url, false);
-    xhr.send();
-    return xhr.responseText;
-}
+    var response;
+    if (!goog.object.containsKey(postile.syncGet.cache_, url)) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', url, false /* not async */);
+        xhr.send();
+        response = xhr.responseText;
+        postile.syncGet.cache_[url] = response;
+    }
+    else {
+        response = postile.syncGet.cache_[url];
+    }
+    return response;
+};
+
+/**
+ * Locally caches url => content for syncGet.
+ */
+postile.syncGet.cache_ = {};
 
 //fetch HTML from a specific url and fill it into a container
 postile.ui.load = function (target_el, source_url) {

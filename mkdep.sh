@@ -10,7 +10,7 @@ echo "Compiling gss stylesheets..."
 for gssFile in $(find css/ -name "*.gss"); do
     java -jar tmp/closure-stylesheets.jar \
         --pretty-print $gssFile \
-	> $(echo $gssFile | sed s/\.gss/.css/) ;
+	--output-file $(echo $gssFile | sed s/\.gss/.css/) ;
 done
 
 echo "Building deps.js..."
