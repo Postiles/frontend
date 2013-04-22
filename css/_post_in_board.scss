@@ -339,7 +339,7 @@
     padding-bottom: 25px; /* 13px for post_bottom and 6px padding for it */
     height: 100%;
     box-sizing: border-box;
-    overflow: hidden;
+    overflow: visible;
 
     .post_inner_container {
         padding: 6px 12px;

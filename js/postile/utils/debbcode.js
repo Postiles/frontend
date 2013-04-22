@@ -38,12 +38,12 @@ postile.bbcodePostProcess = function(el, opt_no_mouseevent) {
             });
         }
     }
-    var handleOneInternalLink = function(el) {
-        el.src = postile.conf.imageResource(['link_icon.png']);
+    var handleOneInternalLink = function(sel) {
+        sel.src = postile.conf.imageResource(['link_icon.png']);
         if (!opt_no_mouseevent) {
-            var htv = new postile.view.post_board.InternalLink(el.getAttribute("link-to-post-id"));
-            goog.events.listen(el, goog.events.EventType.MOUSEOVER, function() {
-                htv.open(el);
+            var htv = new postile.view.post_board.InternalLink(sel.getAttribute("link-to-post-id"));
+            goog.events.listen(sel, goog.events.EventType.MOUSEOVER, function() {
+                htv.open(sel, el.parentNode);
             });
         }
     }

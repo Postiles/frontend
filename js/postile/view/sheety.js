@@ -48,6 +48,14 @@ postile.view.GoogFSV.prototype.close = function() {
 };
 
 /**
+ * By full-screen-view's convention.
+ * @see docs/FullScreenView.md
+ */
+postile.view.GoogFSV.prototype.getRootEl_ = function() {
+    return document.body;
+};
+
+/**
  * Spread-sheety view.
  * @constructor
  */
@@ -135,9 +143,7 @@ postile.view.Sheety = function(opt_boardId) {
         var boardData = xs[0]['message']['board'];
 
         this.header_ = new postile.view.post_board.Header(boardData);
-        var wrapper = goog.dom.getElement('wrapper');
-        goog.asserts.assert(wrapper);
-        goog.dom.append(wrapper, this.header_.container);
+        goog.dom.append(this.getRootEl_(), this.header_.container);
 
         var anony = this.isAnonymous_ = boardData['anonymous'];
 
@@ -145,7 +151,7 @@ postile.view.Sheety = function(opt_boardId) {
         return postile.view.Sheety.fetchUserOfBoardData_(anony, xs[1]);
     }, this).bind(/* And render the posts */ this.renderPosts_, this);
 
-    postile.view.loadCss(['sheety.css']);
+    postile.view.loadCss(['sheety-gen.css']);
 };
 goog.inherits(postile.view.Sheety, postile.view.GoogFSV);
 
@@ -499,7 +505,7 @@ postile.view.Sheety.prototype.renderPosts_ = function(postExs) {
     this.setModel(postExs);
     this.postList_.setModel(postExs);
     this.commentRows_.setModel(comments);
-    this.render(goog.dom.getElement('wrapper'));
+    this.render(this.getRootEl_());
 };
 
 /**
@@ -560,7 +566,7 @@ postile.view.Sheety.PostList.prototype.enableFloat = function() {
         goog.events.EventType.SCROLL,
         goog.bind(this.syncScroll, this, initScrollTop));
 
-    // XXX: not floating on document but on #wrapper
+    // Floating on the current parent.
     // to be able to set z-index difference on post-list and sheety-body.
     this.startFloating(this.getParent().getElement());
     this.syncScroll(initScrollTop);
@@ -1014,6 +1020,58 @@ postile.view.Sheety.CommentCell.prototype.createDom = function() {
     var contentFragment = soy.renderAsFragment(
         postile.templates.sheety.commentContent, preProcData);
     goog.dom.append(el, contentFragment);
+
+    console.log(preProcData.content);
+
+    this.wrapper = goog.dom.getElement('title_bar');
+    this.content_el = goog.dom.getElementByClass('content', el);
+    // create a span to get the length
+    var dummy_span = goog.dom.createDom('div', 'dummy_span');
+    dummy_span.style.display = 'table-cell';
+    dummy_span.innerHTML = preProcData.content;
+    goog.dom.appendChild(this.wrapper, dummy_span);
+
+    console.log(dummy_span);
+
+    // get length
+    var width = dummy_span.offsetWidth;
+    var height = dummy_span.offsetHeight;
+
+    console.log(width);
+
+    // TODO get the height and length 
+    // Currently we hard code it.
+    var wrapper_width = 200;
+    var wrapper_height = 60;
+
+    goog.dom.removeNode(dummy_span);
+
+    var marginTop = 0;
+
+    if(wrapper_width > 1.7 * width){
+        // check the height:
+
+        console.log('entering expand');
+        if(height > wrapper_height){
+            marginTop = 0;
+        }
+        else{
+            marginTop = wrapper_height / 2 - height / 2 -10; // number get by seeing the board....
+        }
+        this.content_el.style.textAlign = 'center';
+        this.content_el.style.marginTop = marginTop + 'px';
+        this.content_el.style.fontSize = '20px';
+    }
+    else {
+        marginTop = 0;
+        this.content_el.style.textAlign = '';
+        this.content_el.style.marginTop = marginTop + 'px';
+        this.content_el.style.fontSize = '10pt';
+    }
+
+
+    // dirty code ends here
+
 
     // Post-process bbcode
     postile.bbcodePostProcess(el);

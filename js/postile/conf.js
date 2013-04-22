@@ -15,7 +15,7 @@ postile.conf = {
 
     dhost: 'www.postiles.com',
 
-    dport: 3000,
+    dport: 3389,
 
     fayeLocation: 'http://www.postiles.com:9292/faye',
 
