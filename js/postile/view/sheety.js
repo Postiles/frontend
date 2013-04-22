@@ -132,7 +132,7 @@ postile.view.Sheety = function(opt_boardId) {
     var fetchRecentPosts = goog.partial(
         postile.ajax,
         ['board', 'get_recent_posts'],
-        { 'board_id': this.boardId_, 'number': 40 });
+        { 'board_id': this.boardId_, 'number': 0 });
 
     // Parallelly fetch boardData and recentPosts
     postile.async.Promise.waitForAll(

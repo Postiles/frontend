@@ -124,7 +124,7 @@ postile.view.BoardList.prototype.renderBoardListItem = function(data) {
         instance.right_perspective.className = meta_perspective_el.className + ' perspective';
         instance.right_perspective.innerHTML = data.board.default_view == 'sheet' ? 'Sheet' : 'Free';
         instance.currentBoardId = data.board.id;
-        instance.currentTarget = (data.board.default_view == 'sheet' ? 'sheet' : 'board') + '/' + instance.currentBoardId;
+        instance.currentTarget = 'board/' + instance.currentBoardId;
         instance.right_button.style.display = 'block';
         instance.currentUserLiked = user_liked;
         instance.like_button.innerHTML = data.likes.length + " liked it";

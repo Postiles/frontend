@@ -148,7 +148,6 @@ postile.ajax.exception_handlers = { //exception_string and corresponding handler
         return false;
     },
     USER_NOT_LOGGED_IN: function() {
-        console.log('user_not_logged_in');
         postile.user.openLoginBox();
         return false;
     },
