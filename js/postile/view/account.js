@@ -1,219 +1,52 @@
-goog.provide('postile.view.post_board.Account');
+goog.provide('postile.view.account');
 
 goog.require('postile.view.inline_login');
 
 /*
 opt_boardData: set iff inside a board/sheet
 */
-postile.view.post_board.Account = function(opt_boardData) {
+postile.view.account.Account = function(opt_boardData) {
     goog.base(this);
-
-    /**
-     * Stores the faye subscription for future disposal.
-     * @type {goog.async.Deferred}
-     * @private
-     */
-    this.fayeSubscrDfd_ = null;
-
-    postile.ui.load(this.container, postile.conf.staticResource(['account_container.html']));
     
-    this.container.id = 'accout_container';
+    this.container.id = 'account_container';
+    
+    this.tips = [];
+    
     var instance = this;
-    this.usernameText_el = postile.dom.getDescendantById(instance.container, 'username_text');
-    //this.usernameText_el.innerHTML = this.board.userData.username;
-
-
-    // create view for displaying user information
-    this.settingButton_el = postile.dom.getDescendantById(instance.container, 'settings_button');
-
-    this.change_password = new postile.view.change_password.ChangePassword();
-    goog.events.listen(this.settingButton_el, goog.events.EventType.CLICK, function(e){
-        this.change_password.open(500);
-    }.bind(this));
-
-    /* logout button */
-    this.logoutButton_el = postile.dom.getDescendantById(instance.container, 'logout_button');
-    goog.events.listen(this.logoutButton_el, goog.events.EventType.CLICK, function(e) {
-        postile.user.logout();
-    });
-
-    /* testing end */
-
-    this.profileImageContainer_el = postile.dom.getDescendantById(instance.container, 'profile_image_container');
-    this.profileImageContainerImg_el = goog.dom.getElementByClass('image', this.profileImageContainer_el);
-
+    
+    postile.view.account.initComponents.search(instance);
+    
+    if (postile.conf.userLoggedIn()) {
+        postile.view.account.initComponents.notification(instance);
+    }
+    
+    if (opt_boardData) {
+        postile.view.account.initComponents.switch_board(instance, opt_boardData);
+    }
+    
+    if (!document.body.getAttribute("postiles-chrome-plugin-injected")) {
+        postile.view.account.initComponents.feedback(instance);
+    }
+    
     if (postile.conf.userLoggedIn()) {
         postile.data_manager.getUserData(localStorage.postile_user_id, function(data) {
-            instance.usernameText_el.innerHTML = data.username;
-            instance.profileImageContainerImg_el.src = postile.conf.uploadsResource([ data.image_small_url ]);
-        }.bind(this));
-    }
-
-    this.login_button = postile.dom.getDescendantById(this.container, 'login_button_account');
-    this.signup_button = postile.dom.getDescendantById(this.container, 'signup_button_account');
-
-    this.account_container = postile.dom.getDescendantById(this.container, 'user_info_container');
-
-    this.inline_login = new postile.view.inline_login.InlineLogin(this.login_button);
-    goog.events.listen(this.login_button, goog.events.EventType.CLICK, function(e){
-        // how to make sure that we can go back the same place when login?
-        e.stopPropagation();
-        this.inline_login.open(this.login_button);
-        if (opt_boardData) {
-            this.switchBoardTip.close();
-        }
-        this.sBTip.close();
-    }.bind(this));
-
-    goog.events.listen(this.signup_button, goog.events.EventType.CLICK, function(e){
-        e.stopPropagation();
-        postile.router.dispatch('signup');
-    }.bind(this));
-
-    // preload images for switching
-    if (opt_boardData) {
-        var switch_board_active = new Image();
-        switch_board_active.src = postile.conf.imageResource(['switch_board_icon_active.png']);
-    }
-    var popup_icon_active = new Image();
-    popup_icon_active.src = postile.conf.imageResource(['popup_icon_active.png']);
-    var search_icon_active = new Image();
-    search_icon_active.src = postile.conf.imageResource(['search_icon_active.png']);
-    if (opt_boardData) {
-        var message_icon_active = new Image();
-        message_icon_active.src = postile.conf.imageResource(['message_icon_active.png']);
-    }
-
-    this.function_buttons = postile.dom.getDescendantsByClass(this.container, 'function_button');
-    for (var i = 0; i < this.function_buttons.length; i++) {
-        if ((!opt_boardData && i == 0) || i == 3) {
-            goog.dom.removeNode(this.function_buttons[i]); 
-        } else {
-            // no longer needed, depracated
-            //new postile.view.post_board.FunctionButton(this.function_buttons[i]);
-        }
-    }
-
-    // bool for if this opened
-    this.search_button = postile.dom.getDescendantById(instance.container, "search_button");
-    this.sBTip = new postile.view.search_box.SearchBox(this.search_button);
-    goog.events.listen(this.search_button, goog.events.EventType.CLICK, function(e) {
-        e.stopPropagation();
-        if(this.logged_in){
-            this.notification.close();
-        }
-        if (opt_boardData) {
-            this.switchBoardTip.close();
-        }
-        this.sBTip.open(this.search_button);
-        this.inline_login.close();
-    }.bind(this), true);
-
-    /* Buttons on the right up corner */
-    if (opt_boardData) {
-        this.switchBoardTip = new postile.view.board_more_pop.OtherBoard(opt_boardData);
-        this.switch_board_button = postile.dom.getDescendantById(instance.container, "switch_board_button");
-        goog.events.listen(this.switch_board_button, goog.events.EventType.CLICK, function(e) {
-            e.stopPropagation();
-            if(this.logged_in){
-                this.notification.close();
-            }
-            this.sBTip.close();
-            this.switchBoardTip.open(this.switch_board_button);
-            this.inline_login.close();
-        }.bind(this), true);
-    }
-
-    this.message_button = postile.dom.getDescendantById(instance.container, "message_button");
-
-    if (postile.conf.userLoggedIn()) {
-        postile.data_manager.getUserData(localStorage.postile_user_id, function(data) {
-            if(data.user_id){ // login and show
-                this.logged_in = true;
-                var notificationList;
-                /* get hte number of new notifications from server */
-                postile.ajax([ 'notification', 'get_notifications' ], {}, function(data) {
-                    /* handle the data return after getting the boards information back */
-                    notificationList = data.message.notifications;
-                    if(notificationList.length != 0 ) {
-                        this.notificationHandler(data);
-                    }
-                    /* TODO add a notification to the mail box to notify user */
-                }.bind(this));
-                
-                this.alert_wrapper = goog.dom.createDom('div', 'notification_number_wrapper');
-                goog.dom.appendChild(this.message_button, this.alert_wrapper);
-
-                this.redCircle = goog.dom.createDom('div', 'notification_redCircle');
-                goog.dom.appendChild(this.alert_wrapper, this.redCircle);
-
-                // Stores faye subscription for future disposal
-                this.fayeSubscrDfd_ = postile.faye.subscribe('notification/' + localStorage.postile_user_id, function(status, data) {
-                    instance.notificationHandler(data);
-                });
-                this.notification_isOpened = false;
-                this.notification = new postile.view.notification.Notification(this, opt_boardData);
-                goog.events.listen(this.message_button, goog.events.EventType.CLICK, function(e) {
-                    e.stopPropagation();
-                    if (opt_boardData) {
-                        this.switchBoardTip.close();
-                    }
-                    this.sBTip.close();  
-                    this.notification.open(this.message_button);
-                    this.notificationHandlerClear();
-                }.bind(this), true);
-            }else{
-            }
-        }.bind(this)); 
+            postile.view.account.initComponents.profile(instance, postile.conf.uploadsResource([ data.image_small_url ]));
+            postile.view.account.initComponents.user_info(instance, data.username);
+        });
     } else {
-        this.logged_in = false;
-        this.message_button.style.display = 'none';
+        postile.view.account.initComponents.signup(instance);
+        postile.view.account.initComponents.login(instance);
+        new postile.toast.title_bar_toast("You are not logged in. Please login to enable edit functions", 2);
     }
-    /*
-    if (opt_boardData) {
-        this.moreButtonPop_isOpened = false;
-        this.more_button = postile.dom.getDescendantById(instance.container, "popup_button");
-        this.moreButtonPop = new postile.view.board_more_pop.BoardMorePop(this.more_button);
-        goog.events.listen(this.more_button, goog.events.EventType.CLICK, function(e) {
-            e.stopPropagation();
-            if(this.moreButtonPop_isOpened){
-                this.moreButtonPop_isOpened = false;
-                this.moreButtonPop.close();
-            }else{
-                this.moreButtonPop.open(this.more_button);
-                this.moreButtonPop_isOpened = true;
-            }
-        }.bind(this));
-    }
-    */
-
-    this.changeAccoutView();
-
-    // change account view for anonymous
-    goog.events.listen(this.usernameText_el, goog.events.EventType.CLICK, function(){
-        if(!postile.conf.userLoggedIn()){
-            return;
-        }
-        var profileView = new postile.view.profile.ProfileView(localStorage.postile_user_id);
-        profileView.open(710);
-    }.bind(this));
-
-    goog.events.listen(this.profileImageContainer_el, goog.events.EventType.CLICK, function(){
-        if(!postile.conf.userLoggedIn()){
-            return;
-        }
-        var profileView = new postile.view.profile.ProfileView(localStorage.postile_user_id);
-        profileView.open(710);
-    }.bind(this));
 }
-goog.inherits(postile.view.post_board.Account, postile.view.NormalView);
+goog.inherits(postile.view.account.Account, postile.view.NormalView);
 
-postile.view.post_board.Account.prototype.unloaded_stylesheets = ['post_board.css'];
+postile.view.account.Account.prototype.unloaded_stylesheets = ['post_board.css'];
 
 /**
  * @inheritDoc
  */
-postile.view.post_board.Account.prototype.close = function() {
+postile.view.account.Account.prototype.close = function() {
     if (this.fayeSubscrDfd_) {
         this.fayeSubscrDfd_.addCallback(function(subscr) {
             subscr.cancel();
@@ -222,23 +55,9 @@ postile.view.post_board.Account.prototype.close = function() {
     goog.base(this, 'close');
 };
 
-postile.view.post_board.Account.prototype.notificationHandler = function(data) {
-    this.notificationHandlerClear();
-    goog.dom.classes.add( this.alert_wrapper, 'notification_number_pop_up_wraper_animiation');
-    goog.dom.classes.add( this.redCircle, 'notification_number_pop_up_animiation');
-}
-postile.view.post_board.Account.prototype.notificationHandlerClear = function() {
-    goog.dom.classes.remove( this.alert_wrapper, 'notification_number_pop_up_wraper_animiation');
-    goog.dom.classes.remove( this.redCircle, 'notification_number_pop_up_animiation');
-}
-
-postile.view.post_board.Account.prototype.loadUserInfo = function(){
-    /* settings button */
-}
-
-
+/*
 // Remember to call change account view after switching the board
-postile.view.post_board.Account.prototype.changeAccoutView = function(){
+postile.view.account.Account.prototype.changeAccoutView = function(){
     if (postile.conf.userLoggedIn()) {
         postile.data_manager.getUserData(localStorage.postile_user_id, function(data) {
             this.cur_id = data.user_id;
@@ -248,8 +67,7 @@ postile.view.post_board.Account.prototype.changeAccoutView = function(){
                     this.login_button.style.display = 'block';
                     this.signup_button.style.display = 'block';
 
-                    new postile.toast.title_bar_toast(
-                        "You are not logged in. Please login to enable edit functions", 2);
+                    
 
                 }else {
                     this.account_container.style.display = 'block';
@@ -265,27 +83,147 @@ postile.view.post_board.Account.prototype.changeAccoutView = function(){
         }.bind(this)); 
     }
 }
-
-/* 
-postile.view.post_board.FunctionButton = function(dom) { // constructor
-    this.body_el = dom;
-    this.image_el = goog.dom.getElementsByTagNameAndClass('img', null, this.body_el)[0];
-
-    this.id = this.body_el.id;
-
-    goog.events.listen(this.body_el, goog.events.EventType.CLICK, function(e) {
-        this.open();
-    }.bind(this));
-}
-
-postile.view.post_board.FunctionButton.prototype.open = function() {
-    this.body_el.style.backgroundColor = '#024d61'
-    this.image_el.style.webkitFilter = 'brightness(95%)';
-}
-
-postile.view.post_board.FunctionButton.prototype.close = function() {
-    this.body_el.style.backgroundColor = 'transparent';
-    this.image_el.style.webkitFilter = '';
-}
-
 */
+
+postile.view.account.Account.prototype.closeAllTips = function() {
+    for (var i in this.tips) {
+        this.tips[i].close();
+    }
+}
+
+postile.view.account.Account.prototype.createAccountItem = function(id, additional_class) {
+    var container = goog.dom.createDom('div', 'account_item' + (additional_class ? (' ' + additional_class) : ''));
+    container.id = id;
+    goog.dom.appendChild(this.container, container);
+    return container;
+}
+
+postile.view.account.initComponents = {
+    search: function(instance) {
+        var search_button = instance.createAccountItem('search_button', 'function_button');
+        search_button.innerHTML = '<addr title="Search for content"> <img src="/images/search_icon.png" /> </addr> <div class="pop_tip"> <div class="tip_arrow"></div> <div class="tip_text">Search</div> </div>';
+        var sBTip = new postile.view.search_box.SearchBox(search_button);
+        instance.tips.push(sBTip);
+        goog.events.listen(search_button, goog.events.EventType.CLICK, function(e) {
+            e.stopPropagation();
+            instance.closeAllTips();
+            sBTip.open(search_button);
+        }, true);
+    },
+    user_info: function(instance, user_name) {
+        var account_container = instance.createAccountItem('user_info_container');
+        account_container.innerHTML = '<div id="username_text"></div> <div id="settings_logout_buttons_container"> <div id="settings_button" class="accout_button"> CHANGE PASSWORD </div> <div id="accout_button_delimeter" class="accout_button"> | </div> <div id="logout_button" class="accout_button"> LOGOUT </div> </div>';
+        var usernameText_el = postile.dom.getDescendantById(account_container, 'username_text');
+        usernameText_el.innerHTML = user_name;
+        var settingButton_el = postile.dom.getDescendantById(account_container, 'settings_button');
+        var logoutButton_el = postile.dom.getDescendantById(account_container, 'logout_button');
+        var change_password = new postile.view.change_password.ChangePassword();
+        goog.events.listen(settingButton_el, goog.events.EventType.CLICK, function(e){
+            change_password.open(500);
+        });
+        goog.events.listen(logoutButton_el, goog.events.EventType.CLICK, function(e) {
+            postile.user.logout();
+        });
+        goog.events.listen(usernameText_el, goog.events.EventType.CLICK, function(){
+            var profileView = new postile.view.profile.ProfileView(localStorage.postile_user_id);
+            profileView.open(710);
+        });
+    },
+    profile: function(instance, img_src) {
+        var profileImageContainer_el = instance.createAccountItem('profile_image_container');
+        profileImageContainer_el.innerHTML = '<img class="image" /><div id="profile_image_left_caret"></div>';
+        profileImageContainer_el.firstChild.src = img_src;  
+        goog.events.listen(profileImageContainer_el, goog.events.EventType.CLICK, function(){
+            var profileView = new postile.view.profile.ProfileView(localStorage.postile_user_id);
+            profileView.open(710);
+        });
+    },
+    switch_board: function(instance, opt_boardData) {
+        var switch_board_button = instance.createAccountItem('switch_board_button', 'function_button');
+        switch_board_button.innerHTML = '<addr title="Switch Discussion Board"> <img src="/images/switch_board_icon.png" /> </addr> <div class="pop_tip"> <div class="tip_arrow"></div> <div class="tip_text">Switch Board</div> </div>';
+        var switchBoardTip = new postile.view.board_more_pop.OtherBoard(opt_boardData);
+        instance.tips.push(switchBoardTip);
+        goog.events.listen(switch_board_button, goog.events.EventType.CLICK, function(e) {
+            e.stopPropagation();
+            instance.closeAllTips();
+            switchBoardTip.open(switch_board_button);
+        }, true);
+    },
+    signup: function(instance) {
+        var signup = instance.createAccountItem('signup_button_account', 'account_login_button');
+        signup.innerHTML = 'Signup';
+        goog.events.listen(signup, goog.events.EventType.CLICK, function(e){
+            postile.router.dispatch('signup');
+        });
+    },
+    login: function(instance) {
+        var login = instance.createAccountItem('login_button_account', 'account_login_button');
+        login.innerHTML = 'Login';
+        var inline_login = new postile.view.inline_login.InlineLogin();
+        instance.tips.push(inline_login);
+            goog.events.listen(login, goog.events.EventType.CLICK, function(e){
+            e.stopPropagation();
+            instance.closeAllTips();
+            inline_login.open(login);
+        });
+    },
+    notification: function(instance) {
+        var message_button = instance.createAccountItem('message_button', 'function_button');
+        message_button.innerHTML = '<addr title="See Messages"> <img src="/images/message_icon.png" /> </addr> <div class="pop_tip"> <div class="tip_arrow"></div> <div class="tip_text">Message</div> </div>';
+        var alert_wrapper;
+        var redCircle;
+        var notificationHandlerClear = function() {
+            goog.dom.classes.remove(alert_wrapper, 'notification_number_pop_up_wraper_animiation');
+            goog.dom.classes.remove(redCircle, 'notification_number_pop_up_animiation');
+        }
+        var notificationHandler = function(data) {
+            notificationHandlerClear();
+            goog.dom.classes.add(alert_wrapper, 'notification_number_pop_up_wraper_animiation');
+            goog.dom.classes.add(redCircle, 'notification_number_pop_up_animiation');
+        }
+        postile.data_manager.getUserData(localStorage.postile_user_id, function(data) {
+            var notificationList;
+            /* get hte number of new notifications from server */
+            postile.ajax([ 'notification', 'get_notifications' ], {}, function(data) {
+                /* handle the data return after getting the boards information back */
+                notificationList = data.message.notifications;
+                if(notificationList.length != 0 ) {
+                    notificationHandler(data);
+                }
+                /* TODO add a notification to the mail box to notify user */
+            });
+            
+            alert_wrapper = goog.dom.createDom('div', 'notification_number_wrapper');
+            goog.dom.appendChild(message_button, alert_wrapper);
+
+            redCircle = goog.dom.createDom('div', 'notification_redCircle');
+            goog.dom.appendChild(alert_wrapper, redCircle);
+
+            // Stores faye subscription for future disposal
+            instance.fayeSubscrDfd_ = postile.faye.subscribe('notification/' + localStorage.postile_user_id, function(status, data) {
+                instance.notificationHandler(data);
+            });
+            var notification = new postile.view.notification.Notification();
+            instance.tips.push(notification);
+            goog.events.listen(message_button, goog.events.EventType.CLICK, function(e) {
+                e.stopPropagation();
+                instance.closeAllTips();
+                notification.open(message_button);
+                notificationHandlerClear();
+            }, true);
+        });  
+    },
+    feedback: function(instance) {  
+        var feedback = instance.createAccountItem('feedback_button'); //no use
+        feedback.innerHTML = 'Feedback';
+        feedback.style.cursor = 'pointer';
+        feedback.style.margin = '6px 0 0 10px';
+        feedback.style.color = '#FFF';
+        feedback.style.background = '#024d61';
+        feedback.style.padding = '4px';
+        feedback.style.fontSize = '14px';
+        goog.events.listen(feedback, goog.events.EventType.CLICK, function() {
+            new postile.feedback.FeedbackData();
+        });
+    }
+};

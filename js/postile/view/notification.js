@@ -5,9 +5,7 @@ goog.require('postile.conf');
 goog.require('postile.view');
 goog.require('postile.view.switchToPost');
 
-postile.view.notification.Notification = function(header, optBoardData) {
-    this.boardData = optBoardData;
-
+postile.view.notification.Notification = function() {
     postile.view.TipView.call(this);
     postile.ui.load(this.container, postile.conf.staticResource(['_notification.html']));
     this.container.id = 'notifications_pop_up';

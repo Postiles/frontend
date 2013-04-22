@@ -1,63 +1,25 @@
-<div id="user_info_container" class="account_item">
-    <div id="username_text"></div>
-    <div id="settings_logout_buttons_container">
-        <div id="settings_button" class="accout_button">
-            CHANGE PASSWORD
-        </div>
-        <div id="accout_button_delimeter" class="accout_button">
-            |
-        </div>
-        <div id="logout_button" class="accout_button">
-            LOGOUT
-        </div>
+<!--
+<div id="popup_button" class="function_button">
+    <addr title="More Options in This Board">
+        <img src='/images/popup_icon.png' />
+    </addr>
+    <div class="pop_tip">
+        <div class="tip_arrow"></div>
+        <div class="tip_text">More</div>
     </div>
-</div>
-<div id="profile_image_container" class="account_item">
-    <img class='image' />
-    <div id="profile_image_left_caret"></div>
-</div>
-<div id="login_button_account" class="account_item account_login_button">
-    Login
-</div>
-<div id="signup_button_account" class="account_item account_login_button">
-    Signup
 </div>
 
-<div id="function_button_container" class="account_item">
-    <div id="switch_board_button" class="function_button">
-        <addr title="Switch Discussion Board">
-            <img src='/images/switch_board_icon.png' />
-        </addr>
-        <div class="pop_tip">
-            <div class="tip_arrow"></div>
-            <div class="tip_text">Switch Board</div>
-        </div>
-    </div>
-    <div id="message_button" class="function_button">
-        <addr title="See Messages">
-            <img src='/images/message_icon.png' />
-        </addr>
-        <div class="pop_tip">
-            <div class="tip_arrow"></div>
-            <div class="tip_text">Message</div>
-        </div>
-    </div>
-    <div id="search_button" class="function_button">
-        <addr title="Search for content">
-            <img src='/images/search_icon.png' />
-        </addr>
-        <div class="pop_tip">
-            <div class="tip_arrow"></div>
-            <div class="tip_text">Search</div>
-        </div>
-    </div>
-    <div id="popup_button" class="function_button">
-        <addr title="More Options in This Board">
-            <img src='/images/popup_icon.png' />
-        </addr>
-        <div class="pop_tip">
-            <div class="tip_arrow"></div>
-            <div class="tip_text">More</div>
-        </div>
-    </div>
-</div>
+this.moreButtonPop_isOpened = false;
+this.more_button = postile.dom.getDescendantById(instance.container, "popup_button");
+this.moreButtonPop = new postile.view.board_more_pop.BoardMorePop(this.more_button);
+goog.events.listen(this.more_button, goog.events.EventType.CLICK, function(e) {
+    e.stopPropagation();
+    if(this.moreButtonPop_isOpened){
+        this.moreButtonPop_isOpened = false;
+        this.moreButtonPop.close();
+    }else{
+        this.moreButtonPop.open(this.more_button);
+        this.moreButtonPop_isOpened = true;
+    }
+}.bind(this));
+-->
