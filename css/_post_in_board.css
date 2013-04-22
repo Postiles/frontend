@@ -147,6 +147,12 @@
     .post_wrap .edit_mode_post .post_wysiwyf_icon_container {
       padding-top: 3px;
       height: 14px; }
+    .post_wrap .edit_mode_post .post_content {
+      overflow: scroll; }
+    .post_wrap .edit_mode_post .post_content_length_display {
+      display: none;
+      color: #fe7a15;
+      text-align: center; }
     .post_wrap .edit_mode_post .post_content_placeholder {
       position: absolute;
       text-align: center;

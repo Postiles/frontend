@@ -210,6 +210,7 @@ postile.view.BasePost.prototype.loadEditModeUIComponents = function() {
         postAuthor_el: $('post_author'),
         postWysiwyfIconContainer: $('post_wysiwyf_icon_container'),
         postContent_el: $('post_content'),
+        postContentLengthDisplay_el: $('post_content_length_display'),
         postContentPlaceHolder_el: $('post_content_placeholder'),
         deleteIcon_el: $('post_delete_icon')
     }
@@ -440,7 +441,9 @@ postile.view.BasePost.prototype.initEditModeListener = function() {
         function(e) {
             if (e.keyCode == 13 && e.ctrlKey) {
                 e.preventDefault();
-                this.submitChange();
+                if (elements.postContent_el.innerHTML.length <= 5000) {
+                    this.submitChange();
+                }
             }
         }.bind(this));
 
@@ -456,6 +459,38 @@ postile.view.BasePost.prototype.initEditModeListener = function() {
                     elements.postContentPlaceHolder_el.style.display = 'block';
                 } else {
                     elements.postContentPlaceHolder_el.style.display = 'none';
+                }
+
+                var chompedLength = 0;
+
+                var spans = content.match(/<span.*?>.*?<\/span>?/g);
+                if (spans && spans.length > 0) { // has match
+                    for (var i in spans) {
+                        chompedLength += spans[i].length;
+                    }
+                }
+
+                var nbsps = content.match(/\&nbsp;/g);
+                if (nbsps && nbsps.length > 0) { // has match
+                    chompedLength += 5 * nbsps.length;
+                }
+
+                var divs = content.match(/<div.*?>.*?<\/div>?/g);
+                if (divs && divs.length > 0) {
+                    chompedLength += 11 * divs.length;
+                }
+
+                var brs = content.match(/<br>/g);
+                if (brs && brs.length > 0) {
+                    chompedLength += 3 * divs.length;
+                }
+
+                var diff = content.length - chompedLength - 5000;
+                if (diff > 0) {
+                    elements.postContentLengthDisplay_el.innerHTML = 
+                        'too long by ' + diff;
+                } else {
+                    elements.postContentLengthDisplay_el.innerHTML = '';
                 }
             }
         }.bind(this));
@@ -482,7 +517,9 @@ postile.view.BasePost.prototype.initEditModeListener = function() {
         goog.events.EventType.CLICK, 
         function(e) {
             if (this.currMode == postile.view.BasePost.PostMode.EDIT) {
-                this.submitChange();
+                if (this.editModeElements.postContent_el.innerHTML.length <= 5000) {
+                    this.submitChange();
+                }
             }
         }.bind(this));
 

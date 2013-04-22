@@ -234,6 +234,13 @@
         }
 
         .post_content {
+            overflow: scroll;
+        }
+
+        .post_content_length_display {
+            display: none;
+            color: #fe7a15;
+            text-align: center;
         }
 
         .post_content_placeholder {
