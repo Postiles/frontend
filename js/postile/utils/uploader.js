@@ -6,13 +6,14 @@ goog.require('goog.dom');
 
 
 /* How to handle these global variables ? */
-postile.uploader.dragInit = function(instance){
+postile.uploader.dragInit = function(drag_board_el, instance){
     postile.uploader.tests = {formdata: !!window.FormData};
-    var dragBox = instance;
-    dragBox.addEventListener("dragenter", dragEnter, false);
-    dragBox.addEventListener("dragexit", dragExit, false);
-    dragBox.addEventListener("dragover", dragOver, false);
-    dragBox.addEventListener("drop", this.dragUpload, false); 
+    postile.uploader.image_upload = instance;
+    this.dragBox = drag_board_el;
+    this.dragBox.addEventListener("dragenter", dragEnter, false);
+    this.dragBox.addEventListener("dragexit", dragExit, false);
+    this.dragBox.addEventListener("dragover", dragOver, false);
+    this.dragBox.addEventListener("drop", this.dragUpload, false); 
     delete postile.uploader.formData;
 };
     
@@ -31,11 +32,16 @@ postile.uploader.dragUpload = function(evt){
   	    var file = files[0]; // get the photo
         postile.uploader.formData = new FormData() ;
         postile.uploader.formData.append('image', file); // NOTICE: always use "image" as the name, need to change
-        // TODO: Give Feedback to the user 
+        postile.uploader.formData.append('upload_path', postile.uploader.upload_path);
+        postile.uploader.formData.append('user_id', localStorage.postile_user_id);
+        postile.uploader.formData.append('session_key', localStorage.postile_user_session_key);
 
         console.log(postile.uploader.formData);
 
         postile.uploader.submit();
+
+        postile.uploader.image_upload.close();
+        console.log('image_close');
     }
 };
 
@@ -63,12 +69,13 @@ postile.uploader.iframeInit = function(){
     var input_name = goog.dom.createDom('input', {'name': 'image', 'type':'file'});
     var input_submit = goog.dom.createDom('input', {'name': 'submitBtn', 'type':'submit', 'value':'Upload'});
     // create a 0 width 0 height iFrame
-    var iframe = goog.dom.createDom('iframe', {'id':'upload_target', 'name':'upload_target', 'src': '#', 'style': 'width:0;height:0;border:0px solid #fff;'})
+    var iframe = goog.dom.createDom('iframe', {'id':'upload_target', 'name':'upload_target', 'src': '#', 'style': 'width:0;height:0;border:0px solid #fff;'});
     
     goog.dom.appendChild(goog.dom.getElement("iframe"), hform);
     goog.dom.appendChild(hform, input_name);
     goog.dom.appendChild(hform, input_submit);
     goog.dom.appendChild(goog.dom.getElement("iframe"), iframe);
+
 };
     
 postile.uploader.iframeUpload = function(){ // How to call this function?

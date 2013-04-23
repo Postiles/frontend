@@ -16,7 +16,7 @@ postile.view.image_upload.ImageUploadBlock = function(input_instance) {
 	this.dragBoard = goog.dom.createDom('div', 'upload_drag_board');
  	goog.dom.appendChild(this.container, this.dragBoard);
 
- 	postile.uploader.dragInit(this.dragBoard);
+ 	postile.uploader.dragInit(this.dragBoard, this);
 
  	this.uploadContent = goog.dom.createDom('div', 'upload_content');
  	goog.dom.appendChild(this.dragBoard, this.uploadContent);
