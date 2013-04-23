@@ -28,16 +28,6 @@
     position: relative;
 }
 
-.sheety-comment-rows {
-    /* Lower than post-list */
-    position: relative;
-    z-index: 100;
-
-    background-color: TABLE_BG;
-    font-family: sans-serif;
-    font-size: 0.8em;
-}
-
 .sheety-post-list {
     float: left;
     width: CELL_WIDTH;
@@ -45,6 +35,44 @@
     /* Higher than sheety-body */
     z-index: 100;
     position: relative;
+}
+
+.sheety-skiplist {
+    position: fixed;
+    top: 45px;
+    right: 0px;
+    width: 25px;
+
+    background-color: LIGHT_CELL_BG;
+    border: solid 2px #ccc;
+
+    /* Higher than sheety-body */
+    z-index: 100;
+
+    transition: opacity 0.3s;
+}
+
+.sheety-skiplist-button {
+    cursor: pointer;
+    text-align: center;
+    display: block;
+}
+
+.sheety-skiplist-button-hover {
+    background-color: LIGHT_CELL_BG_DARKER;
+}
+
+.sheety-skiplist-button-active {
+    background-color: LIGHTER_GREY;
+}
+
+.sheety-comment-rows {
+    /* Lower than post-list */
+    position: relative;
+
+    background-color: TABLE_BG;
+    font-family: sans-serif;
+    font-size: 0.8em;
 }
 
 .sheety-comment-row {
@@ -108,6 +136,10 @@
     font-size: 0.7em;
     padding: 5px;
     overflow: hidden;
+}
+
+.sheety-new-comment-cell .textarea-disabled {
+    background-color: #ccc;
 }
 
 .sheety-new-comment-cell .comment-button {
