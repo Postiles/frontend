@@ -247,6 +247,7 @@
     height: 18px;
     font-size: 8pt; }
   .post_container .post_like_container {
+    float: left;
     color: #537cbe; }
   .post_container .post_like_count_el {
     float: left; }
