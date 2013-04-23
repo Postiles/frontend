@@ -355,7 +355,7 @@ html, body {
   height: 100%;
   overflow: scroll;
   user-select: none;
-  -moz-user-select: none;
+  -moz-user-select: -moz-none;
   -webkit-user-select: none;
   position: relative; 
 }
