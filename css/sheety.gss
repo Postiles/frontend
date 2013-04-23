@@ -98,7 +98,11 @@
     /* XXX deal with it */
     overflow-y: hidden;
 
+    transition: height 0.2s;
     -webkit-transition: height 0.2s;
+    -moz-transition: height 0.2s;
+    -o-transition: height 0.2s;
+    -ms-transition: height 0.2s;
 }
 
 .sheety-comment-cell-hover {

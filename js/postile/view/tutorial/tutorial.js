@@ -102,6 +102,7 @@ goog.inherits(postile.view.tutorial.TutorialView, postile.view.FullScreenView);
 postile.view.tutorial.TutorialView.prototype.unloaded_stylesheets = [ 'tutorial.css' ];
 
 postile.view.tutorial.TutorialView.prototype.endTutorial = function(viewIndex) {
+    postile.toast.title_bar_toast('Preparing the contents for you', 100);
     postile.ajax(
         [ 'user', 'finish_tutorial' ], 
         { target_user_id: localStorage.postile_user_id },

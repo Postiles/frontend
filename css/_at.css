@@ -17,7 +17,11 @@
 
     /* Kept in sync with _post_in_board.css:.post_wrap */
     font-size: 10px;
+    box-shadow: 0px 0px 4px #000;
     -webkit-box-shadow: 0px 0px 4px #000;
+    -moz-box-shadow: 0px 0px 4px #000;
+    -o-box-shadow: 0px 0px 4px #000;
+    -ms-box-shadow: 0px 0px 4px #000;
 }
 
 .at_single {
