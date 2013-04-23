@@ -54,7 +54,7 @@ postile.data_manager.RequestCollector = function(opt_waitFor) {
         // duplicate request can share our result.
         goog.object.forEach(this.idToDfd_, function(_, userId) {
             postile.data_manager.userData[userId] = this;
-        });
+        }, this);
 
         // User ids
         var idArray = goog.object.getKeys(this.idToDfd_);
