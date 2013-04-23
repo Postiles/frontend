@@ -26,6 +26,9 @@
 
 .sheety-body {
     position: relative;
+    /* Just zero, so that other fixed-positioned elements, E.g. header,
+       will be on the top */
+    z-index: 0;
 }
 
 .sheety-post-list {
@@ -99,7 +102,10 @@
 }
 
 .sheety-comment-cell-hover {
-    z-index: 1000;
+    /* To be higher than other comment-cell,
+       but not higher than fixed-positioned elements, E.g. header
+       and skiplist. */
+    z-index: 1;
     height: 200px;
 }
 
