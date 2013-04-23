@@ -59,6 +59,8 @@ postile.view.tutorial.TutorialView = function(change_password) {
                 if (this.currView < this.numItems - 1) {
                     this.switchToView(this.currView + 1);
                     e.preventDefault();
+                } else if (this.currView == this.numItems - 1) {
+                    this.endTutorial();
                 }
             }
         }.bind(this));
@@ -78,6 +80,8 @@ postile.view.tutorial.TutorialView = function(change_password) {
         function(e) {
             if (this.currView < this.numItems - 1) {
                 this.switchToView(this.currView + 1);
+            } else if (this.currView == this.numItems - 1) {
+                this.endTutorial();
             }
         }.bind(this));
 
@@ -85,12 +89,7 @@ postile.view.tutorial.TutorialView = function(change_password) {
         this.elements.skipButton_el,
         goog.events.EventType.CLICK,
         function(e) {
-            postile.ajax(
-                [ 'user', 'finish_tutorial' ], 
-                { target_user_id: localStorage.postile_user_id },
-                function(data) {
-                    history.back();
-                });
+            this.endTutorial();
         }.bind(this));
         
     if (change_password) {
@@ -101,6 +100,15 @@ postile.view.tutorial.TutorialView = function(change_password) {
 goog.inherits(postile.view.tutorial.TutorialView, postile.view.FullScreenView);
 
 postile.view.tutorial.TutorialView.prototype.unloaded_stylesheets = [ 'tutorial.css' ];
+
+postile.view.tutorial.TutorialView.prototype.endTutorial = function(viewIndex) {
+    postile.ajax(
+        [ 'user', 'finish_tutorial' ], 
+        { target_user_id: localStorage.postile_user_id },
+        function(data) {
+            history.back();
+        });
+}
 
 postile.view.tutorial.TutorialView.prototype.switchToView = function(viewIndex) {
     if (viewIndex == this.currView) {
@@ -130,10 +138,10 @@ postile.view.tutorial.TutorialView.prototype.switchToView = function(viewIndex) 
                 if (viewIndex == 0) {
                     this.elements.leftArrow_el.style.display = 'none';
                 } else if (viewIndex == this.numItems - 1) {
-                    this.elements.rightArrow_el.style.display = 'none';
+                    // this.elements.rightArrow_el.style.display = 'none';
                 } else {
                     this.elements.leftArrow_el.style.display = 'block';
-                    this.elements.rightArrow_el.style.display = 'block';
+                    // this.elements.rightArrow_el.style.display = 'block';
                 }
 
             }
