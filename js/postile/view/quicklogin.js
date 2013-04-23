@@ -11,6 +11,7 @@ postile.view.InvitedUserQuickLogin = function(param) {
     }
     var rawUn = goog.crypt.base64.decodeString(encodedUn);
     if (window.location.hash.length < 2) {
+        alert(window.location.hash + window.location.hash.length);
         postile.user.openLoginBox(); return;
     }
     var encodedPw = window.location.hash.substr(1);

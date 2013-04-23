@@ -39,7 +39,7 @@ postile.entry.router_dispatch = function() {
     postile.router.init();
     postile.entry.init_router_map();
     if (!goog.userAgent.WEBKIT) {
-        postile.router.dispatch(window.location.pathname.substr(1));
+        postile.router.dispatch(window.location.pathname.substr(1) + window.location.hash);
     }
 };
 
