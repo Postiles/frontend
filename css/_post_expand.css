@@ -51,6 +51,7 @@
           display: inline-block;
          }
         .post-expand .container .left .left-container .content {
+            min-height: 300px;
           margin-top: 15px;
           font-size: 11pt; }
     .post-expand .container .right {
@@ -87,8 +88,8 @@
             margin-left: 10px;
             margin-right: 10px; }
             .post-expand .container .right .comment-box .form .field .input {
-              width: 240px;
-              padding: 4px 0;
+              width: 220px;
+              padding: 2px 4px;
               background: #024d62;
               color: whitesmoke;
               border-top: 1px solid whitesmoke;

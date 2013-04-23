@@ -1,5 +1,28 @@
 goog.provide('postile.length_control');
 
+postile.length_control.LengthController = function(dom_el, maxLength) {
+    this.dom_el = dom_el;
+    this.dom_el.style.border = '1px solid whitesmoke';
+    this.dom_el.lengthOverflow = false;
+    this.maxLength = maxLength;
+
+    goog.events.listen(
+        this.dom_el,
+        goog.events.EventType.KEYUP,
+        function(e) {
+            var content = goog.string.trim(this.dom_el.innerHTML);
+            var diff = postile.length_control.getLengthWithoutDoms(content) - this.maxLength;
+
+            if (diff > 0) {
+                this.dom_el.style.border = '1px solid #fe7a15';
+                this.dom_el.lengthOverflow = true;
+            } else {
+                this.dom_el.style.border = '1px solid whitesmoke';
+                this.dom_el.lengthOverflow = false;
+            }
+        }.bind(this));
+}
+
 postile.length_control.getLengthWithoutDoms = function(content) {
     var chompedLength = 0;
 

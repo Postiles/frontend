@@ -93,28 +93,35 @@ postile.view.post.text_post.TextPost.prototype.enterEditMode = function(req) {
 
     this.y_editor = new postile.WYSIWYF.Editor(elements.postContent_el, 
             elements.postWysiwyfIconContainer, this);
+
+    if (!elements.postContent_el._lc_) {
+        elements.postContent_el._lc_ = 
+            new postile.length_control.LengthController(elements.postContent_el, 5000);
+    }
 }
 
 postile.view.post.text_post.TextPost.prototype.submitChange = function() {
     var elements = this.editModeElements;
 
-    var title = elements.postTitle_el.value;
-    var content = this.y_editor.getBbCode();
+    if (!elements.postContent_el.lengthOverflow) {
+        var title = elements.postTitle_el.value;
+        var content = this.y_editor.getBbCode();
 
-    if (!content) { // content is empty
-        return;
+        if (!content) { // content is empty
+            return;
+        }
+
+        postile.ajax([ 'post', 'submit_change' ], 
+                {
+                    post_id: this.postData.post.id,
+                    title: title,
+                    content: content
+                }, 
+                function(data) {
+                    this.postData.post.title = title;
+                    this.postData.post.content = content;
+                    this.enterDisplayMode();
+                    this.board.disableMovingCanvas = false;
+                }.bind(this));
     }
-
-    postile.ajax([ 'post', 'submit_change' ], 
-            {
-                post_id: this.postData.post.id,
-                title: title,
-                content: content
-            }, 
-            function(data) {
-                this.postData.post.title = title;
-                this.postData.post.content = content;
-                this.enterDisplayMode();
-                this.board.disableMovingCanvas = false;
-            }.bind(this));
 }

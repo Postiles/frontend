@@ -384,38 +384,20 @@ postile.view.BasePost.prototype.initCommentModeListener = function() {
             if (e.keyCode == goog.events.KeyCodes.ENTER) { // enter pressed
                 this.commentModeElements.commentInput_el._at_.toBBcode();
 
-                if (content.length && 
-                    postile.length_control.getLengthWithoutDoms(content) <= 20) {
-                        postile.ajax([ 'inline_comment', 'new' ], {
-                            post_id: this.postData.post.id,
-                            content: content
-                        }, function(data) {
-                            // do nothing here, handled in fayeHandler
-                        }.bind(this));
+                console.log(this.commentModeElements.commentInput_el.lengthOverflow);
+
+                if (!this.commentModeElements.commentInput_el.lengthOverflow) {
+                    postile.ajax([ 'inline_comment', 'new' ], {
+                        post_id: this.postData.post.id,
+                        content: content
+                    }, function(data) {
+                        // do nothing here, handled in fayeHandler
+                    }.bind(this));
 
                     this.commentModeElements.commentInput_el.innerHTML = '';
                 } else {
                     e.preventDefault();
                 }
-            }
-        }.bind(this));
-
-    // comment input key down
-    goog.events.listen(
-        elements.commentInput_el, 
-        goog.events.EventType.KEYUP,
-        function(e) {
-            var content = 
-                goog.string.trim(
-                    this.commentModeElements.commentInput_el.innerHTML);
-
-            var diff = postile.length_control.getLengthWithoutDoms(content) - 20;
-            if (diff > 0) {
-                goog.dom.classes.add(this.commentModeElements.commentInput_el, 
-                    'comment_container_input_too_long');
-            } else {
-                goog.dom.classes.remove(this.commentModeElements.commentInput_el, 
-                    'comment_container_input_too_long');
             }
         }.bind(this));
 
@@ -481,38 +463,6 @@ postile.view.BasePost.prototype.initEditModeListener = function() {
                     elements.postContentPlaceHolder_el.style.display = 'block';
                 } else {
                     elements.postContentPlaceHolder_el.style.display = 'none';
-                }
-
-                var chompedLength = 0;
-
-                var spans = content.match(/<span.*?>.*?<\/span>?/g);
-                if (spans && spans.length > 0) { // has match
-                    for (var i in spans) {
-                        chompedLength += spans[i].length;
-                    }
-                }
-
-                var nbsps = content.match(/\&nbsp;/g);
-                if (nbsps && nbsps.length > 0) { // has match
-                    chompedLength += 5 * nbsps.length;
-                }
-
-                var divs = content.match(/<div.*?>.*?<\/div>?/g);
-                if (divs && divs.length > 0) {
-                    chompedLength += 11 * divs.length;
-                }
-
-                var brs = content.match(/<br>/g);
-                if (brs && brs.length > 0) {
-                    chompedLength += 3 * brs.length;
-                }
-
-                var diff = content.length - chompedLength - 5000;
-                if (diff > 0) {
-                    elements.postContentLengthDisplay_el.innerHTML = 
-                        'too long by ' + diff;
-                } else {
-                    elements.postContentLengthDisplay_el.innerHTML = '';
                 }
             }
         }.bind(this));
@@ -762,6 +712,11 @@ postile.view.BasePost.prototype.enterCommentMode = function() {
 
     if (!elements.commentInput_el._at_) {
         elements.commentInput_el._at_ = new postile.view.At(elements.commentInput_el);
+    }
+
+    if (!elements.commentInput_el._lc_) {
+        elements.commentInput_el._lc_ = 
+            new postile.length_control.LengthController(elements.commentInput_el, 300);
     }
     
     if (this.postData.post.title) { // title exists
