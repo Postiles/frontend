@@ -85,7 +85,7 @@ postile.view.post.text_post.TextPost.prototype.enterEditMode = function(req) {
         postile.bbcodePostProcess(elements.postContent_el);
     }
 
-    if (goog.string.isEmpty(content) || content == '<br>') {
+    if (!content || content == '<br>') {
         elements.postContentPlaceHolder_el.style.display = 'block';
     } else {
         elements.postContentPlaceHolder_el.style.display = 'none';
