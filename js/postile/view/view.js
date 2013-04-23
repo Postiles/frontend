@@ -197,12 +197,13 @@ postile.view.PopView.prototype.escPressed = function(e) {
     }
 };
 
-postile.view.closeCurrentFullScreenView = function() {
+postile.view.switchCurrentFullScreenViewTo = function(newView) {
     var cv = postile.router.current_view;
     if (cv) {
         // Destruct the original fullscreenview
         cv.close();
     }
+    postile.router.current_view = newView;
 };
 
 /**
@@ -211,7 +212,7 @@ postile.view.closeCurrentFullScreenView = function() {
  * @constructor
  */
 postile.view.FullScreenView = function() {
-    postile.view.closeCurrentFullScreenView();
+    postile.view.switchCurrentFullScreenViewTo(this);
     goog.base(this);
     this.container = document.body;
     this.container.className = '';
