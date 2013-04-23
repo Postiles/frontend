@@ -346,11 +346,11 @@ postile.view.post_board.PostBoard = function(board_id) {
         } else {
             if (postile.conf.userLoggedIn()) {
                 postile.data_manager.getUserData(
-                    localStorage.postile_user_id, 
+                    localStorage.postile_user_id,
                     function(data) {
                         postile.ajax(
-                            [ 'user', 'get_additional_data' ], 
-                            { target_user_id: data.id }, 
+                            [ 'user', 'get_additional_data' ],
+                            { target_user_id: data.id },
                             function(data) {
                                 if (!data.message.additional.got_started) {
                                     postile.router.dispatch('tutorial');
@@ -362,18 +362,18 @@ postile.view.post_board.PostBoard = function(board_id) {
                         instance.channel_str = instance.boardData.id;
 
                         var dfd0 = postile.faye.subscribe(
-                            instance.channel_str, 
+                            instance.channel_str,
                             function(status, data) {
                                 instance.fayeHandler(status, data);
                             });
 
                         var dfd1 = postile.faye.subscribe(
-                            'status/board/'+instance.boardData.id+'/user/'+instance.userData.id, 
+                            'status/board/'+instance.boardData.id+'/user/'+instance.userData.id,
                             function(status, data) {
                             });
 
                         var dfd2 = postile.faye.subscribe(
-                            'status/'+instance.boardData.id, 
+                            'status/'+instance.boardData.id,
                             function(status, data){
                                 instance.onlinepeople.count = data.count;
                                 instance.onlinepeople.id = data.users;
@@ -439,7 +439,7 @@ postile.view.post_board.PostBoard.prototype.initView = function() {
         if(data.user_id){ // login and show
             goog.dom.appendChild(goog.dom.getElement("wrapper"), this.create_helper.container);
         }
-    }.bind(this)); 
+    }.bind(this));
 
 
     // We have to append the header before add the online people bar,
@@ -976,8 +976,8 @@ postile.view.post_board.PostBoard.prototype.renderById = function(pid, callback)
     postile.ajax(['post', 'get_post'], { post_id: pid }, function(r) {
         if (r.message.post.board_id != instance.board_id) {
             new postile.toast.title_bar_toast(
-                "The post is not in the current board. [Click to go] to another board and view.", 
-                10, 
+                "The post is not in the current board. [Click to go] to another board and view.",
+                10,
                 [
                     function() {
                         postile.router.dispatch('board/' + r.message.post.board_id + '#' + pid);
