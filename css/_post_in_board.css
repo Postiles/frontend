@@ -149,7 +149,7 @@
       padding-top: 3px;
       height: 14px; }
     .post_wrap .edit_mode_post .post_content {
-      overflow: scroll; }
+      overflow: hidden; }
     .post_wrap .edit_mode_post .post_content_length_display {
       display: none;
       color: #fe7a15;

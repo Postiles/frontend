@@ -9,14 +9,12 @@ postile.view.notification.Notification = function() {
     postile.view.TipView.call(this);
     postile.ui.load(this.container, postile.conf.staticResource(['_notification.html']));
     this.container.id = 'notifications_pop_up';
-    //console.log("notification called");
     this.container.style.top = '0px';
     this.container.style.left = '0px';
     this.opened = false;
 
     this.notificationListView = postile.dom.getDescendantById(this.container, 'notification_list');
     this.markRead = postile.dom.getDescendantByClass(this.container, 'mark_read');
-    //console.log(this.markRead);
 
     this.numberOfNotification = postile.dom.getDescendantById(this.container, 'number_of_unread');
 
@@ -28,7 +26,6 @@ postile.view.notification.Notification.prototype.close = function() {
     postile.view.TipView.prototype.close.call(this);
     this.opened = false;
     if(this.listedNotification == undefined) {
-        console.log("Loading notification");
         return;
     }
 
@@ -139,7 +136,6 @@ postile.view.notification.Notification.prototype.seeMore = function() {
 
 postile.view.notification.Notification.prototype.appendOneMore = function() {
     if(this.numberOfUnread > this.currentMax) { // still can append
-        console.log(this.currentIndex);
         this.listedNotification[this.currentIndex] = new postile.view.notification.InfoItem();
         this.listedNotification[this.currentIndex].render(this,
                                                           this.notificationList[this.currentIndex].notification,
@@ -197,7 +193,6 @@ postile.view.notification.InfoItem.prototype.render = function(parent, data, fro
     goog.dom.appendChild(parent.notificationListView, this.notificationItem);
 
 
-    //console.log(profile_img_url);
     this.profile_img = goog.dom.createDom('img', {
         'class':'notification_profile',
         'src': postile.conf.uploadsResource([profile_img_url]),

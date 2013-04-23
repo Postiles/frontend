@@ -21,7 +21,7 @@ postile.view.onlinepeople.OnlinePeople = function(header) {
     postile.view.TipView.call(this);
     this.container.id="onlinepeople_container";
     this.container.style.zIndex = '450';
-    console.log(this.container);
+
     postile.ui.load(this.container,
             postile.conf.staticResource(['_onlinepeople.html']));
     this.container.style.top = '0px';

@@ -439,12 +439,12 @@ postile.view.BasePost.prototype.initEditModeListener = function() {
             }
         }.bind(this));
 
-    // ctrl + enter pressed for post content
+    // ctrl + enter or shift + enter pressed for post content
     goog.events.listen(
         elements.postContent_el, 
         goog.events.EventType.KEYDOWN, 
         function(e) {
-            if (e.keyCode == 13 && e.ctrlKey) {
+            if (e.keyCode == 13 && (e.ctrlKey || e.shiftKey)) {
                 e.preventDefault();
                 this.submitChange();
             }

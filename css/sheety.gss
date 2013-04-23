@@ -99,7 +99,7 @@
     height: 50px;
     font-size: 0.7em;
     padding: 5px;
-    overflow: scroll;
+    overflow: hidden;
 }
 
 .sheety-new-comment-cell .comment-button {

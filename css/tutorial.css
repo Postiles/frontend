@@ -26,9 +26,12 @@
     border-left: 45px solid whitesmoke;
     border-bottom: 60px solid transparent; }
   #tutorial_container .slideshow {
-    position: relative;
-    top: 5%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
     margin: 0 auto;
+    margin-top: -300px;
+    margin-left: -400px;
     width: 800px;
     overflow: hidden; }
     #tutorial_container .slideshow .view_list {
@@ -53,27 +56,29 @@
           #tutorial_container .slideshow .view_list .view_item .description .highlight {
             margin: 10px;
             color: whitesmoke; }
-  #tutorial_container .bottom_container .dot_container {
-    position: relative;
-    top: 50px;
-    width: 150px;
-    margin-left: auto;
-    margin-right: auto; }
-    #tutorial_container .bottom_container .dot_container .dot {
-      float: left;
-      margin-left: 8px;
-      width: 12px;
-      height: 12px;
-      background: whitesmoke;
-      opacity: 0.4;
-      border-radius: 6px;
-      -webkit-border-radius: 6px;
-      -moz-border-radius: 6px;
-      -o-border-radius: 6px;
-      -ms-border-radius: 6px;
-      cursor: pointer; }
-      #tutorial_container .bottom_container .dot_container .dot:first-child {
-        opacity: 1; }
+  #tutorial_container .bottom_container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: 260px;
+    margin-left: -75px; }
+    #tutorial_container .bottom_container .dot_container {
+      width: 150px; }
+      #tutorial_container .bottom_container .dot_container .dot {
+        float: left;
+        margin-left: 8px;
+        width: 12px;
+        height: 12px;
+        background: whitesmoke;
+        opacity: 0.4;
+        border-radius: 6px;
+        -webkit-border-radius: 6px;
+        -moz-border-radius: 6px;
+        -o-border-radius: 6px;
+        -ms-border-radius: 6px;
+        cursor: pointer; }
+        #tutorial_container .bottom_container .dot_container .dot:first-child {
+          opacity: 1; }
   #tutorial_container .skip_button {
     position: absolute;
     top: 0px;
