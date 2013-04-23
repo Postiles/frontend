@@ -385,7 +385,7 @@ postile.view.BasePost.prototype.initCommentModeListener = function() {
                     goog.string.trim(
                         this.commentModeElements.commentInput_el.innerHTML);
 
-                if (!this.commentModeElements.commentInput_el.lengthOverflow) {
+                if (content && !this.commentModeElements.commentInput_el.lengthOverflow) {
                     postile.ajax([ 'inline_comment', 'new' ], {
                         post_id: this.postData.post.id,
                         content: content

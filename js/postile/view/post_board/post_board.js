@@ -344,51 +344,62 @@ postile.view.post_board.PostBoard = function(board_id) {
         if (instance.boardData.default_view == 'sheet') { // go to sheety view
             new postile.view.Sheety(instance.boardData.id);
         } else {
-            instance.userData = postile.data_manager.getUserData(localStorage.postile_user_id, function(data) {
-                // Unused code
-                //if (data[0] == 0) { }
+            if (postile.conf.userLoggedIn()) {
+                postile.data_manager.getUserData(
+                    localStorage.postile_user_id, 
+                    function(data) {
+                        postile.ajax(
+                            [ 'user', 'get_additional_data' ], 
+                            { target_user_id: data.id }, 
+                            function(data) {
+                                if (!data.message.additional.got_started) {
+                                    postile.router.dispatch('tutorial');
+                                }
+                        });
 
-                postile.ajax([ 'user', 'get_additional_data' ], { target_user_id: data.id }, function(data) {
-                    if (!data.message.additional.got_started) {
-                        postile.router.dispatch('tutorial');
-                    }
-                });
+                        instance.userData = data;
 
-                instance.userData = data;
+                        instance.channel_str = instance.boardData.id;
 
-                instance.channel_str = instance.boardData.id;
+                        var dfd0 = postile.faye.subscribe(
+                            instance.channel_str, 
+                            function(status, data) {
+                                instance.fayeHandler(status, data);
+                            });
 
-                if (postile.conf.userLoggedIn()) {
-                    var dfd0 = postile.faye.subscribe(instance.channel_str, function(status, data) {
-                        instance.fayeHandler(status, data);
+                        var dfd1 = postile.faye.subscribe(
+                            'status/board/'+instance.boardData.id+'/user/'+instance.userData.id, 
+                            function(status, data) {
+                            });
+
+                        var dfd2 = postile.faye.subscribe(
+                            'status/'+instance.boardData.id, 
+                            function(status, data){
+                                instance.onlinepeople.count = data.count;
+                                instance.onlinepeople.id = data.users;
+                                if(instance.onlinepeople.is_expended) {
+                                    instance.updateOnlinePeople();
+                                }else{
+                                    instance.updateOnlineCount();
+                                }
+                            });
+
+                        instance.fayeSubscrDfds_.push(dfd0, dfd1, dfd2);
                     });
+            }
 
-                    var dfd1 = postile.faye.subscribe('status/board/'+instance.boardData.id+'/user/'+instance.userData.id, function(status, data) {
-                    });
+            instance.initView();
+            instance.initEvents();
 
-                    var dfd2 = postile.faye.subscribe('status/'+instance.boardData.id, function(status, data){
-                        instance.onlinepeople.count = data.count;
-                        instance.onlinepeople.id = data.users;
-                        if(instance.onlinepeople.is_expended) {
-                            instance.updateOnlinePeople();
-                        }else{
-                            instance.updateOnlineCount();
-                        }
-                    });
-                    instance.fayeSubscrDfds_.push(dfd0, dfd1, dfd2);
-                }
-                instance.initView();
-                instance.initEvents();
+            // Initialize viewport size
+            postile.view.post_board.handlers.resize(instance);
 
-                // Initialize viewport size
-                postile.view.post_board.handlers.resize(instance);
+            // Get to the post, if set in URL
+            var new_post = parseInt(window.location.hash.substr(1));
+            if (new_post) {
+                instance.moveToPost(new_post);
+            }
 
-                // Get to the post, if set in URL
-                var new_post = parseInt(window.location.hash.substr(1));
-                if (new_post) {
-                    instance.moveToPost(new_post);
-                }
-            });
         }
     });
 }
