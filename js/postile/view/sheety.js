@@ -663,10 +663,10 @@ postile.view.Sheety.prototype.switchToPost = function(postId) {
         }, function(response) {
             var postData = response['message'];
             var boardId = postData['post']['board_id'];
-            if (boardId == this.boardId_) {
+            //if (boardId == this.boardId_) {
                 // Should never happen, since sheety doesn't really
                 // updates its post.
-            }
+            //}
             new postile.toast.Toast(10, "The comment is not in the " +
                 "current board. [Click to go] to another board and " +
                 "view.", [function() {

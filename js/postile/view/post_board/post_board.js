@@ -875,6 +875,7 @@ postile.view.post_board.PostBoard.prototype.updateSubscribeArea = function() {
     var current_loc = this.canvasCoord;
     var to_subscribe = this.getSubscribeArea(current_loc);
 
+    /*
     do {
         if (!this.subscribedArea) { break; }
         if (to_subscribe.left != this.subscribedArea.left) { break; }
@@ -883,6 +884,7 @@ postile.view.post_board.PostBoard.prototype.updateSubscribeArea = function() {
         if (to_subscribe.bottom != this.subscribedArea.bottom) { break; }
         return;
     } while(false);
+    */
     /*
     if (!this.isAreaFullInside(this.currentSubscribeArea, this.getVisibleArea(currentLoc))) {
         // TODO: display loading
