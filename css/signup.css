@@ -2,6 +2,10 @@ html, body {
   margin: 0px;
   background: #024d61;
   height: 100%; }
+  html a:link, body a:link {
+    color: whitesmoke; }
+  html a:visited, body a:visited {
+    color: whitesmoke; }
   html #signup_wrapper, body #signup_wrapper {
     color: #eeeeee;
     font-family: HelveticaNeue; }
@@ -52,3 +56,7 @@ html, body {
       cursor: pointer;
       font-size: 36px;
       font-weight: bold; }
+    html #signup_wrapper #contact, body #signup_wrapper #contact {
+      position: absolute;
+      right: 10px;
+      bottom: 5px; }

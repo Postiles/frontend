@@ -950,7 +950,9 @@ postile.view.post_board.PostBoard.prototype.renderPost = function(postData, mode
 
     if (postData.post.in_edit && mode != postile.view.BasePost.PostMode.NEW) {
         if (!this.currentPosts[postId].isSelfPost()) {
-            this.currentPosts[postId].changeCurrentMode(postile.view.BasePost.PostMode.LOCKED);
+            if (postData.post.content != null) { // not new post, do not change mode
+                this.currentPosts[postId].changeCurrentMode(postile.view.BasePost.PostMode.LOCKED);
+            }
         }
     }
 }
