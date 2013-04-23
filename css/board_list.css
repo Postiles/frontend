@@ -37,7 +37,7 @@
     margin-top: 32px;
     position: relative;
     width: 600px;
-    margin-bottom: 15px;
+    margin-bottom: 12px;
 }
 
 .gateway .left .title .add {
@@ -283,5 +283,5 @@
 .gateway .left .subtitle_incognito, .gateway .left .subtitle_public {
     color: #FFF;
     font-size: 15pt;
-    padding: 14px 0;
+    padding: 12px 0;
 }
