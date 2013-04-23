@@ -159,15 +159,19 @@ postile.view.PostExpand.prototype.initComments = function() {
         postile.ui.makeLabeledInput(this.commentArea_el, 'Enter your comments here',
                 'half_opaque', function() {
                     if (!this.commentArea_el.lengthOverflow) {
+                        this.commentArea_el._at_.toBBcode();
+                        var content = 
+                            goog.string.trim(
+                                this.commentArea_el.innerHTML);
                         postile.ajax(
-                                [ 'inline_comment', 'new' ],
-                                { post_id: this.postInstance.postData.post.id
-                                , content: this.commentArea_el.innerHTML
-                                }, function(data) {
-                                    this.renderComment(
-                                        data.message.inline_comment);
-                                    this.commentArea_el.innerHTML = '';
-                                }.bind(this));
+                            [ 'inline_comment', 'new' ],
+                            { post_id: this.postInstance.postData.post.id
+                            , content: this.commentArea_el.innerHTML
+                            }, function(data) {
+                                this.renderComment(
+                                    data.message.inline_comment);
+                                this.commentArea_el.innerHTML = '';
+                            }.bind(this));
                     }
                 }.bind(this));
 

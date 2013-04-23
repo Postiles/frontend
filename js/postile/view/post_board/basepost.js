@@ -377,14 +377,13 @@ postile.view.BasePost.prototype.initCommentModeListener = function() {
         goog.events.EventType.KEYDOWN, 
         function(e) {
             this.bringToFront();
-            var content = 
-                goog.string.trim(
-                    this.commentModeElements.commentInput_el.innerHTML);
 
             if (e.keyCode == goog.events.KeyCodes.ENTER) { // enter pressed
                 this.commentModeElements.commentInput_el._at_.toBBcode();
 
-                console.log(this.commentModeElements.commentInput_el.lengthOverflow);
+                var content = 
+                    goog.string.trim(
+                        this.commentModeElements.commentInput_el.innerHTML);
 
                 if (!this.commentModeElements.commentInput_el.lengthOverflow) {
                     postile.ajax([ 'inline_comment', 'new' ], {
@@ -392,9 +391,8 @@ postile.view.BasePost.prototype.initCommentModeListener = function() {
                         content: content
                     }, function(data) {
                         // do nothing here, handled in fayeHandler
+                        this.commentModeElements.commentInput_el.innerHTML = '';
                     }.bind(this));
-
-                    this.commentModeElements.commentInput_el.innerHTML = '';
                 } else {
                     e.preventDefault();
                 }
