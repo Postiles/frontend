@@ -36,6 +36,21 @@ postile.view.video_upload.VideoUpload = function(input_instance) {
 	this.container.style.top = '0px';
     this.container.style.left = '0px';
 
+	this.video_preview_el = postile.dom.getDescendantByClass(this.container, 'video_preview');
+	this.iframe = postile.dom.getDescendantByClass(this.video_preview_el,'iframe_preview');
+
+	this.reset_button = postile.dom.getDescendantByClass(this.container, 'reset_button');
+	this.cancel_button = postile.dom.getDescendantByClass(this.container, 'cancel_button');
+	this.ok_button = postile.dom.getDescendantByClass(this.container, 'ok_button');
+
+	goog.events.listen(this.ok_button, goog.events.EventType.CLICK, function(){
+		if (postile.router.current_view instanceof postile.view.post_board.PostBoard) {
+            console.log(this.embedCode);
+            postile.router.current_view.postCreator.open(['video_placeholder.png'], this.embedCode);
+            this.close();
+        }
+	}.bind(this));
+
     this.addCloseButton(this.container);
 }
 
@@ -45,23 +60,16 @@ postile.view.video_upload.VideoUpload.prototype.unloaded_stylesheets = ['video_u
 postile.view.video_upload.VideoUpload.prototype.showPreview = function(){
 	var user_input_url = this.user_input_el.value;
 
-	var embedCode = postile.re.getEmbed(user_input_url);
-	if(embedCode == 'invalid'){
+	this.embedCode = postile.re.getEmbed(user_input_url);
+            console.log(this.embedCode);
+
+	this.iframe.setAttribute('src', this.embedCode);
+	if(this.embedCode == 'invalid'){
 		var submit_waiting = new postile.toast.Toast(2, "Please provide valid input.");
 		return;
 	}
 	goog.dom.classes.add(this.lower_part_el, 'upload_video_lower_animation');
 	goog.dom.classes.add(this.upper_part_el, 'upload_video_upper_animation');
-
-	this.video_preview_el = postile.dom.getDescendantByClass(this.container, 'video_preview');
-	this.iframe = postile.dom.getDescendantByClass(this.video_preview_el,'iframe_preview');
-	this.iframe.setAttribute('src', embedCode);
-
-	console.log(this.video_preview_el);
-
-	this.reset_button = postile.dom.getDescendantByClass(this.container, 'reset_button');
-	this.cancel_button = postile.dom.getDescendantByClass(this.container, 'cancel_button');
-	this.ok_button = postile.dom.getDescendantByClass(this.container, 'ok_button');
 
 	goog.events.listen(this.reset_button, goog.events.EventType.CLICK, function(){
 		goog.dom.classes.remove(this.lower_part_el, 'upload_video_lower_animation');		
@@ -69,13 +77,6 @@ postile.view.video_upload.VideoUpload.prototype.showPreview = function(){
 	}.bind(this));
 	goog.events.listen(this.cancel_button, goog.events.EventType.CLICK, function(){
 		this.close();
-	}.bind(this));
-	goog.events.listen(this.ok_button, goog.events.EventType.CLICK, function(){
-		if (postile.router.current_view instanceof postile.view.post_board.PostBoard) {
-            console.log(postile.router.current_view);
-            postile.router.current_view.postCreator.open(['video_placeholder.png'], embedCode);
-            this.close();
-        }
 	}.bind(this));
 
 }
