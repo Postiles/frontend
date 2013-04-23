@@ -1102,7 +1102,7 @@ postile.view.Sheety.CommentCell.prototype.enterDocument = function() {
     goog.base(this, 'enterDocument');
 
     var el = this.getElement();
-    this.maxHeight = Math.max(this.content_el.offsetHeight + 35, 88);
+    this.maxHeight = Math.max(this.content_el.offsetHeight + 28, 88);
 
     goog.events.listen(
         el,
