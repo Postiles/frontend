@@ -72,6 +72,16 @@ postile.view.Sheety = function(opt_boardId) {
     this.boardId_ = goog.isDef(opt_boardId) ? opt_boardId : 1;
 
     /**
+     * The post to scroll to once the board is rendered.
+     * XXX: need a better way to handle location hash if
+     *   some more complex encoding scheme is used in the future.
+     * @type {number?}
+     * @private
+     */
+    this.initPostId_ = window.location.hash ?
+        parseInt(window.location.hash.substring(1)) : null;
+
+    /**
      * Contains a list of posts. Its model is a {Array.<PostWE>}
      * The left hand side of the sheet.
      * @private
@@ -599,7 +609,7 @@ postile.view.Sheety.prototype.switchToPost = function(postId) {
         }, function(response) {
             var postData = response['message'];
             var boardId = postData['post']['board_id'];
-            if (boardId == this.board_id_) {
+            if (boardId == this.boardId_) {
                 // Should never happen, since sheety doesn't really
                 // updates its post.
             }
@@ -639,6 +649,13 @@ postile.view.Sheety.prototype.renderPosts_ = function(postExs) {
     this.postList_.setModel(postExs);
     this.commentRows_.setModel(comments);
     this.render(this.getRootEl_());
+
+    if (!goog.isNull(this.initPostId_)) {
+        var row = this.findRowByPostId(this.initPostId_);
+        if (row) {
+            this.moveViewportToRow(row);
+        }
+    }
 };
 
 /**
