@@ -201,7 +201,7 @@ postile.view.account.initComponents = {
 
             // Stores faye subscription for future disposal
             instance.fayeSubscrDfd_ = postile.faye.subscribe('notification/' + localStorage.postile_user_id, function(status, data) {
-                instance.notificationHandler(data);
+                notificationHandler(data);
             });
             var notification = new postile.view.notification.Notification();
             instance.tips.push(notification);
@@ -217,7 +217,7 @@ postile.view.account.initComponents = {
         var feedback = instance.createAccountItem('feedback_button'); //no use
         feedback.innerHTML = 'Feedback';
         feedback.style.cursor = 'pointer';
-        feedback.style.margin = '6px 0 0 10px';
+        feedback.style.margin = '6px 4px 0 10px';
         feedback.style.color = '#FFF';
         feedback.style.background = '#024d61';
         feedback.style.padding = '4px';

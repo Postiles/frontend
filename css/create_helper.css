@@ -2,20 +2,22 @@
 	background: #024d61;
 	width: 83px;
 	height: 120px;
-	margin-left: -33px;
+	/* margin-left: -33px; */
 	position: absolute;
 	top: 80px;
 	left: 0px;
-	z-index: 101;
+	z-index: 200;
 
 	-webkit-transition: margin-left 0.2s;
 	-moz-transition: margin-left 0.2s;
 	transition: margin-left 0.2s;
 }
 
+/*
 #create_helper_wrapper:hover {
 	margin-left: 0px;
 }
+*/
 
 #create_helper_wrapper .create_helper_pop{
 	float: left;

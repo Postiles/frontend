@@ -139,7 +139,7 @@ postile.ajax.notifier.show = function(notifier_text){};
 postile.ajax.notifier.hide = function(){};
 
 postile.ajax.notifier.networkError = function(error_string) { //network error
-    new postile.toast.Toast(5, "Network error: "+error_string+'.', [], 'red');
+    postile.toast.title_bar_toast('Network error: '+error_string+'.', 3);
 }
 
 postile.ajax.exception_handlers = { //exception_string and corresponding handler functions.
@@ -152,13 +152,13 @@ postile.ajax.exception_handlers = { //exception_string and corresponding handler
         return false;
     },
     SERVER_ERROR: function() {
-        new postile.toast.Toast(5, "Server error, please refresh or contact us", [], 'red');
+        new postile.toast.title_bar_toast("Server error, please refresh", 3);
     },
     BOARD_NOT_FOUND: function() {
-        new postile.toast.Toast(5, "Board not exist. Please check the URL you entered", [], 'red');
+        new postile.toast.title_bar_toast("Board not exist.", 3);
     },
     POST_NOT_FOUND: function() {
-        new postile.toast.Toast(5, "Post not exsit. Maybe it has been deleted");
+        new postile.toast.title_bar_toast("Post not exsit. Maybe it has been deleted", 3);
     }
 }
 

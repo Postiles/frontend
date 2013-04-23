@@ -175,7 +175,6 @@ postile.view.post_board.PostCreator.prototype.mouseup = function(e){
                 && Math.abs(this.new_post_start_coord_in_px[0] - e.clientX) > 3 
                 && Math.abs(this.new_post_start_coord_in_px[1] - e.clientY) > 3) 
         { //do not show when dbl clicking
-            // new postile.toast.Toast(5, postile._('post_zone_illegal'), [], 'red');
             postile.toast.title_bar_toast(postile._('post_zone_illegal'), 2);
         }
         this.new_post_start_coord_in_px = null;

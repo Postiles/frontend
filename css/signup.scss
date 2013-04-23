@@ -7,6 +7,14 @@ html, body {
     background:$main-color;
     height:100%;
 
+    a:link {
+        color: whitesmoke;
+    }
+
+    a:visited {
+        color: whitesmoke;
+    }
+
     #signup_wrapper {
         color: $text-color;
         font-family:HelveticaNeue;
@@ -56,6 +64,7 @@ html, body {
                 }
             }
         }
+
         #btn{
             position: absolute;
             margin-top:210px;
@@ -67,6 +76,12 @@ html, body {
             cursor: pointer;
             font-size:36px;
             font-weight:bold;
+        }
+
+        #contact {
+            position: absolute;
+            right: 10px;
+            bottom: 5px;
         }
     }
 }

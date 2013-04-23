@@ -19,8 +19,9 @@ postile.view.BoardList = function(topic) {
     instance.container.className = 'gateway';
     instance.currentTarget = null;
 
-    instance.title = postile.dom.getDescendantByClass(instance.container, "title");
-    instance.add = postile.dom.getDescendantByClass(instance.title, "add");
+    instance.title_inc = postile.dom.getDescendantByClass(instance.container, "subtitle_incognito");
+    instance.title_pub = postile.dom.getDescendantByClass(instance.container, "subtitle_public");
+    instance.add = postile.dom.getDescendantByClass(instance.container, "add");
     instance.right = postile.dom.getDescendantByClass(instance.container, "right");
     instance.right_title = postile.dom.getDescendantByClass(instance.right, "title");
     instance.right_count = postile.dom.getDescendantByClass(instance.right, "count");
@@ -86,7 +87,7 @@ postile.view.BoardList.prototype.renderBoardListItem = function(data) {
     var description_el = goog.dom.createDom('div', 'desc');
     description_el.innerHTML = data.board.description;
     var meta_meta_el = goog.dom.createDom('div', 'info');
-    var meta_incognito_el = null;
+    /* var meta_incognito_el = null; */
     var meta_perspective_el = null;
     /*
     var meta_creator_el = goog.dom.createDom('span', 'created');
@@ -141,15 +142,18 @@ postile.view.BoardList.prototype.renderBoardListItem = function(data) {
             instance.recent_posts_title.style.display = 'none';
             goog.dom.removeChildren(instance.right_posts);
         }
-
+        /*
         if (meta_incognito_el) {
             meta_incognito_el.innerHTML = 'incognito';
         }
+        */
     });
     goog.events.listen(item_el, goog.events.EventType.MOUSEOUT, function() {
+        /*
         if (meta_incognito_el) {
             meta_incognito_el.innerHTML = '';
         }
+        */
     });
     goog.dom.appendChild(item_el, img_el);
     goog.dom.appendChild(meta_el, title_el);
@@ -161,7 +165,12 @@ postile.view.BoardList.prototype.renderBoardListItem = function(data) {
     goog.dom.appendChild(meta_el, meta_meta_el);
     goog.dom.appendChild(item_el, meta_el);
     goog.dom.appendChild(item_el, goog.dom.createDom('div', 'clear'));
-    goog.dom.insertSiblingAfter(item_el, this.title);
+    
+    if (data.board.anonymous) {
+        goog.dom.insertSiblingAfter(item_el, instance.title_inc);
+    } else {
+        goog.dom.insertSiblingAfter(item_el, instance.title_pub);
+    }
 
     if (data.board.default_view == 'sheet') {
         meta_perspective_el = goog.dom.createDom('span', 'sheet');
@@ -170,10 +179,12 @@ postile.view.BoardList.prototype.renderBoardListItem = function(data) {
     }
 
     goog.dom.appendChild(meta_meta_el, meta_perspective_el);
+    /*
     if (data.board.anonymous) {
         meta_incognito_el = goog.dom.createDom('span', 'incognito');
         goog.dom.appendChild(meta_meta_el, meta_incognito_el);
     }
+    */
 }
 
 postile.view.BoardList.prototype.renderRecentPostItem = function(post_info, boardData) {

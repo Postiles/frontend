@@ -14,6 +14,7 @@ html, body {
   height: 40px;
   border-bottom: 5px solid #024d61;
   z-index: 500;
+  min-width: 1000px;
 
   /**
    * Sheety board uses real scrolling so this is needed.
@@ -56,7 +57,7 @@ html, body {
 #topic_image_right_caret {
   position: relative;
   left: 60px;
-  top: 10px;
+  top: 12px;
   width: 0;
   height: 0;
   border-top: 6px solid transparent;
@@ -74,6 +75,14 @@ html, body {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+#topic_description {
+    float: left;
+    margin-top: 16px;
+    font-size: 10pt;
+    margin-left: 10px;
+}
+
 /*
 #title_bar_toast_container {
     position: absolute;
@@ -346,7 +355,7 @@ html, body {
   height: 100%;
   overflow: scroll;
   user-select: none;
-  -moz-user-select: none;
+  -moz-user-select: -moz-none;
   -webkit-user-select: none;
   position: relative; 
 }
@@ -356,8 +365,8 @@ html, body {
 }
 
 .canvas {
-  width: 5000px;
-  height: 4000px;
+  width: 10000px;
+  height: 8000px;
   position: absolute;
   background: url(/images/noisy_grid.png);
   display: none; }

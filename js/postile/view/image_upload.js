@@ -16,7 +16,7 @@ postile.view.image_upload.ImageUploadBlock = function(input_instance) {
 	this.dragBoard = goog.dom.createDom('div', 'upload_drag_board');
  	goog.dom.appendChild(this.container, this.dragBoard);
 
- 	postile.uploader.dragInit(this.dragBoard);
+ 	postile.uploader.dragInit(this.dragBoard, this);
 
  	this.uploadContent = goog.dom.createDom('div', 'upload_content');
  	goog.dom.appendChild(this.dragBoard, this.uploadContent);
@@ -56,7 +56,7 @@ postile.view.image_upload.ImageUploadBlock.prototype.open = function(a) {
 
 	goog.events.listen(this.fileInput, goog.events.EventType.CHANGE, function(e) {
 		postile.uploader.clickUpload(this.fileInput);
-		new postile.toast.Toast(3, "Uploading... Please wait until entering create-post mode");
+		new postile.toast.title_bar_toast("Uploading... Please wait until entering create-post mode", 3);
 		this.close();
 	}.bind(this));
 }

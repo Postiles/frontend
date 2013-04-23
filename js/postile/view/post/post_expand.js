@@ -116,8 +116,12 @@ postile.view.PostExpand.prototype.open = function() {
         instance.author_el.style.fontSize = '14px';
 
     } else {
+        if (!this.content_el._lc_) {
+            this.content_el._lc_ = 
+                postile.length_control.LengthController(this.content_el, 50);
+        }
+
         this.content_el.innerHTML = postile.parseBBcode(this.postInstance.postData.post.content);
-        
         postile.bbcodePostProcess(this.content_el);
 
         if (this.postInstance.postData.post.creator_id == localStorage.postile_user_id) { //created by current user, can edit
@@ -142,10 +146,24 @@ postile.view.PostExpand.prototype.initComments = function() {
 
         // comment input area
         this.commentArea_el = postile.dom.getDescendantByClass(this.commentBox_el, 'input');
-        this.commentArea_el._at_ = new postile.view.At(this.commentArea_el);
+
+        if (!this.commentArea_el._at_) {
+            this.commentArea_el._at_ = new postile.view.At(this.commentArea_el);
+        }
+
+        if (!this.commentArea_el._lc_) {
+            this.commentArea_el._lc_ = 
+                new postile.length_control.LengthController(this.commentArea_el, 300);
+        }
+
         postile.ui.makeLabeledInput(this.commentArea_el, 'Enter your comments here',
                 'half_opaque', function() {
-                    postile.ajax(
+                    if (!this.commentArea_el.lengthOverflow) {
+                        this.commentArea_el._at_.toBBcode();
+                        var content = 
+                            goog.string.trim(
+                                this.commentArea_el.innerHTML);
+                        postile.ajax(
                             [ 'inline_comment', 'new' ],
                             { post_id: this.postInstance.postData.post.id
                             , content: this.commentArea_el.innerHTML
@@ -154,7 +172,9 @@ postile.view.PostExpand.prototype.initComments = function() {
                                     data.message.inline_comment);
                                 this.commentArea_el.innerHTML = '';
                             }.bind(this));
+                    }
                 }.bind(this));
+
 
         postile.data_manager.getUserData(localStorage.postile_user_id, function(data) {
             this.commentProfileImg_el.src = postile.conf.uploadsResource([ data.image_small_url ]);
@@ -215,7 +235,6 @@ postile.view.PostExpand.prototype.renderComment = function(cmt) {
 }
 
 postile.view.PostExpand.prototype.edit = function() {
-
     var instance = this;
 
     if (this.in_edit) { return; }
@@ -237,26 +256,25 @@ postile.view.PostExpand.prototype.edit = function() {
     });
 
     postile.ajax(['post','start_edit'], { post_id: this.postInstance.postData.post.id }, function() {
-
         instance.y_editor = new postile.WYSIWYF.Editor(instance.content_el, actual_tools);
-
     });
 
 }
 
 postile.view.PostExpand.prototype.submitEdit = function() {
-
     var instance = this;
 
-    postile.ajax(['post','submit_change'], { post_id: this.postInstance.postData.post.id, content: this.y_editor.getBbCode(), title: this.title_el.innerHTML }, function() {
-        instance.in_edit = false;
-    });
+    if (!instance.content_el.lengthOverflow) {
+        postile.ajax(['post','submit_change'], { post_id: this.postInstance.postData.post.id, content: this.y_editor.getBbCode(), title: this.title_el.innerHTML }, function() {
+            instance.in_edit = false;
+        });
 
-    goog.dom.removeChildren(this.toolbar);
+        goog.dom.removeChildren(this.toolbar);
 
-    delete this.y_editor;
+        delete this.y_editor;
 
-    this.content_el.contentEditable = false;
+        this.content_el.contentEditable = false;
+    }
 
 };
 

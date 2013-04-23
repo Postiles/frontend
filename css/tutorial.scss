@@ -35,9 +35,12 @@
     }
 
     .slideshow {
-        position: relative;
-        top: 5%;
+        position: absolute;
+        top: 50%;
+        left: 50%;
         margin: 0 auto;
+        margin-top: -300px;
+        margin-left: -400px;
         width: 800px;
         overflow: hidden;
 
@@ -78,13 +81,14 @@
     }
 
     .bottom_container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-top: 260px;
+        margin-left: -75px;
 
         .dot_container {
-            position: relative;
-            top: 50px;
             width: 150px;
-            margin-left: auto;
-            margin-right: auto;
 
             .dot {
                 float: left;

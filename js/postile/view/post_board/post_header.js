@@ -27,10 +27,12 @@ postile.view.post_board.Header = function(boardData) {
     this.topicInnerContainer_el = postile.dom.getDescendantById(instance.container, 'topic_inner_container');
 
     this.topicTitle_el = postile.dom.getDescendantById(this.topicInnerContainer_el, 'topic_title');
-    instance.topicTitle_el.innerHTML = this.boardData.name;
+    this.topicTitle_el.innerHTML = this.boardData.name;
+
+    this.topicDescription_el = postile.dom.getDescendantById(this.topicInnerContainer_el, 'topic_description');
+    this.topicDescription_el.innerHTML = this.boardData.description;
 
     // create a create post helper
-
     this.topicImgContainer_el = postile.dom.getDescendantById(instance.container, 'topic_image_container');
     this.topicImg_el = postile.dom.getDescendantByClass(this.topicImgContainer_el, 'topic_image');
     this.topicImg_el.src = postile.conf.uploadsResource( [this.boardData.image_small_url] );

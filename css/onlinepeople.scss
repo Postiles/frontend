@@ -5,7 +5,7 @@ $grey:#9e9e9e;
 
 #onlinepeople_container {
     z-index:-1;
-    width:300px;
+    width:200px;
     line-height:100%;
     position:fix !important;
     background:$background-color;
@@ -18,6 +18,9 @@ $grey:#9e9e9e;
         cursor: pointer;
         .item_container{
             height:50px;
+            &:hover {
+                background: #cedadd;
+            }
         }
         position:relative;
         img.onlinepeople_profile{
@@ -51,7 +54,7 @@ $grey:#9e9e9e;
             float: left;
             margin: -0.5px;
             padding: 0px;
-            padding-left: 60px;
+            padding-left: 10px;
             margin-left: 15px;
         }
     }

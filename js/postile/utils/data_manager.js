@@ -54,7 +54,7 @@ postile.data_manager.RequestCollector = function(opt_waitFor) {
         // duplicate request can share our result.
         goog.object.forEach(this.idToDfd_, function(_, userId) {
             postile.data_manager.userData[userId] = this;
-        });
+        }, this);
 
         // User ids
         var idArray = goog.object.getKeys(this.idToDfd_);
@@ -79,6 +79,7 @@ postile.data_manager.RequestCollector = function(opt_waitFor) {
                 postile.data_manager.userData[userId] = user;
             }, this);
         }, this));
+
 
     }, opt_waitFor ? opt_waitFor : 10, this);
 
@@ -153,7 +154,7 @@ postile.data_manager.markDataDirty = function(user_id) {
 postile.data_manager.userIsCached = function(user_id) {
     var maybeUser = postile.data_manager.userData[user_id];
     return goog.isDef(maybeUser) &&
-           !(maybeUser instanceof postile.data_manager.RequestCollector());
+           !(maybeUser instanceof postile.data_manager.RequestCollector);
 };
 
 postile.data_manager.getCachedUser = function(user_id) {

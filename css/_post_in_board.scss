@@ -191,17 +191,12 @@
                     margin-top: 1px;
                     margin-left: 8px;
                     padding: 2px 5px;
-                    height: 19px;
-                    border: none;
+                    height: 18px;
                     outline: none;
                     resize: none;
                     background: whitesmoke;
                     white-space: nowrap;
                     overflow: hidden;
-                }
-
-                .comment_container_input_too_long {
-                    -webkit-box-shadow: 0px 0px 4px #fe7a15;
                 }
 
                 .comment_list_close_button {
@@ -238,7 +233,7 @@
         }
 
         .post_content {
-            overflow: scroll;
+            overflow: hidden;
         }
 
         .post_content_length_display {
@@ -390,11 +385,12 @@
     }
 
     .post_middle_container {
-        height: 17px;
+        height: 18px;
         font-size: 8pt;
     }
 
     .post_like_container {
+        float: left;
         color: #537cbe;
     }
 
@@ -501,10 +497,6 @@
 
     .post_inner_container {
         background: rgba(0, 0, 0, 0.5);
-        /*
-        opacity: 0;
-        -webkit-transition: opacity 0.4s;
-        */
 
         .post_title {
             color: whitesmoke !important;

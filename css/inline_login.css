@@ -1,10 +1,8 @@
 #inline_login {
-  width: 230px;
   background: #d4dcde;
-  position: fixed !important;
+  position: absolute !important;
   top: 46px !important;
-  right: 60px !important;
-  left: auto !important;
+  left: -90px !important;
   background: #d4dcde;
   color: #024d61; }
   #inline_login .arrow_up {
@@ -12,7 +10,7 @@
     height: 0px;
     border-left: 13px solid transparent;
     border-right: 13px solid transparent;
-    border-bottom: 13px solid #024d61;
+    border-bottom: 13px solid #d4dcde;
     position: absolute;
     top: -12px;
     left: 102px; }
@@ -25,27 +23,35 @@
     position: absolute;
     top: -15px;
     left: 100px; }
-  #inline_login .login_word {
-    padding: 10px;
-    color: #fff;
-    background: #024d61; }
-  #inline_login .inline_login_input {
-    clear: both;
-    margin-left: 10px;
-    margin-top: 5px; }
+    #inline_login .inline_login_input {
+
+    }
     #inline_login .inline_login_input input {
-      margin: 7px 0;
-      font-size: 14px;
+      margin: 6px 10px 0 10px;
+      font-size: 11pt;
+      padding: 4px 6px;
       clear: both;
+      border: 0 none;
       width: 200px; }
+    #inline_login .inline_login_input .hint {
+      margin-left: 10px;
+      margin-top: 10px;
+      font-size: 11pt;
+    }
     #inline_login .inline_login_input .inline_login_submit {
       color: #fff;
       background: #024d61;
-      padding: 2px 5px;
-      margin-top: 5px;
+      display: block;
+      font-size: 11pt;
+      padding: 5px 0;
+      text-align: center;
+      width: 85px;
+      margin: 0 auto;
+      margin-top: 12px;
       margin-bottom: 10px;
-      display: inline-block;
       cursor: pointer; }
     #inline_login .inline_login_input .incorrect {
-      padding-bottom: 10px;
+      padding: 10px 10px 0 10px;
+      font-size: 10pt;
+      color: #333;
       display: none; }

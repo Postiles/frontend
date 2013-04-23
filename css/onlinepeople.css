@@ -1,6 +1,6 @@
 #onlinepeople_container {
   z-index: -1;
-  width: 300px;
+  width: 200px;
   line-height: 100%;
   position: fix !important;
   background: #f2f7f7;
@@ -13,6 +13,8 @@
     position: relative; }
     #onlinepeople_container #online_people_list .item_container {
       height: 50px; }
+      #onlinepeople_container #online_people_list .item_container:hover {
+        background: #cedadd; }
     #onlinepeople_container #online_people_list img.onlinepeople_profile {
       float: left;
       width: 40px;
@@ -38,5 +40,5 @@
       float: left;
       margin: -0.5px;
       padding: 0px;
-      padding-left: 60px;
+      padding-left: 10px;
       margin-left: 15px; }
