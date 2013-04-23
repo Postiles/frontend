@@ -901,6 +901,11 @@ postile.view.Sheety.AddCommentPop.prototype.createDom = function() {
     this.addChild(this.textarea_, true);
     this.addChild(this.submitButton_, true);
     this.addChild(this.cancelButton_, true);
+
+    if (!this.textarea_._lc_) {
+        this.textarea_._lc_ = 
+            new postile.length_control.LengthController(this.textarea_.getElement(), 1000);
+    }
 };
 
 postile.view.Sheety.AddCommentPop.prototype.submit = function() {
@@ -908,7 +913,7 @@ postile.view.Sheety.AddCommentPop.prototype.submit = function() {
     // XXX: check for emptiness.
     var content = postile.view.At.asBBCode(
         this.textarea_.getValue());
-    if (content) {
+    if (content && !this.textarea_.getElement().lengthOverflow) {
         var e = new goog.events.Event(
             postile.view.Sheety.EventType.LOCAL_SUBMIT_COMMENT, {
                 postId: this.postCell_.getPostId(),
@@ -1322,7 +1327,7 @@ postile.view.Sheety.CommentCell.prototype.enterDocument = function() {
     goog.base(this, 'enterDocument');
 
     var el = this.getElement();
-    this.maxHeight = Math.max(this.content_el.offsetHeight + 28, 88);
+    this.maxHeight = Math.max(this.content_el.offsetHeight + 35, 88);
 
     // To allow text selection
     goog.style.setUnselectable(this.getElement(), false);

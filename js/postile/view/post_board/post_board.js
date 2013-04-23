@@ -217,7 +217,7 @@ postile.view.post_board.PostBoard = function(board_id) {
      * The size of the canvas currently.
      * @type {Array.<number>}
      */
-    this.canvasSize = [5000, 4000];
+    this.canvasSize = [10000, 8000];
 
     /**
      * "The animation for the outbound shadow."
@@ -961,9 +961,7 @@ postile.view.post_board.PostBoard.prototype.renderPost = function(postData, mode
 
     if (postData.post.in_edit && mode != postile.view.BasePost.PostMode.NEW) {
         if (!this.currentPosts[postId].isSelfPost()) {
-            if (postData.post.content != null) { // not new post, do not change mode
-                this.currentPosts[postId].changeCurrentMode(postile.view.BasePost.PostMode.LOCKED);
-            }
+            this.currentPosts[postId].changeCurrentMode(postile.view.BasePost.PostMode.LOCKED);
         }
     }
 }
