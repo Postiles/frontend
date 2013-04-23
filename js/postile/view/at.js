@@ -120,10 +120,10 @@ postile.view.At.prototype.choose = function(profile) {
     instance.range.deleteContents();
 
     instance.range.insertNode(atNode);
-    instance.range.collapse();
+    instance.range.collapse(false);
     
     instance.range.insertNode(document.createTextNode('\u00a0'));
-    instance.range.collapse();
+    instance.range.collapse(false);
 
     var sel = window.getSelection();
     sel.removeAllRanges();

@@ -738,7 +738,11 @@ postile.view.BasePost.prototype.enterCommentMode = function() {
 }
 
 postile.view.BasePost.prototype.bringToFront = function() {
-    this.wrap_el.style.zIndex = ++this.board.maxZIndex;
+    if(this.board.currentTopPost) {
+        this.board.currentTopPost.wrap_el.style.zIndex = 100;
+    }
+    this.wrap_el.style.zIndex = 101;
+    this.board.currentTopPost = this;
     //this.wrap_el.parentNode.appendChild(this.wrap_el); //Make sure it is infront of other posts
 }
 
