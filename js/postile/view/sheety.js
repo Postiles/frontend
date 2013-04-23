@@ -1151,7 +1151,6 @@ postile.view.Sheety.CommentCell.prototype.createDom = function() {
 
     // dirty code ends here
 
-
     // Post-process bbcode
     postile.bbcodePostProcess(el);
 };
@@ -1160,6 +1159,7 @@ postile.view.Sheety.CommentCell.prototype.enterDocument = function() {
     goog.base(this, 'enterDocument');
 
     var el = this.getElement();
+    this.maxHeight = Math.max(this.content_el.offsetHeight + 28, 88);
 
     // To allow text selection
     goog.style.setUnselectable(this.getElement(), false);
@@ -1168,13 +1168,16 @@ postile.view.Sheety.CommentCell.prototype.enterDocument = function() {
         el,
         goog.events.EventType.MOUSEOVER,
         function() {
-            goog.dom.classes.add(el, 'sheety-comment-cell-hover');
+            el.style.height = this.maxHeight + 'px';
+            el.style.zIndex = '1000';
         }, undefined, this);
 
     goog.events.listen(
         el,
         goog.events.EventType.MOUSEOUT,
         function() {
+            el.style.height = '88px';
+            el.style.zIndex = '1';
             goog.dom.classes.remove(el, 'sheety-comment-cell-hover');
         }, undefined, this);
 
