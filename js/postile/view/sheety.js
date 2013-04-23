@@ -819,7 +819,7 @@ postile.view.Sheety.AddCommentPop.prototype.createDom = function() {
 
     if (!this.textarea_._lc_) {
         this.textarea_._lc_ = 
-            new postile.length_control.LengthController(this.textarea_, 20);
+            new postile.length_control.LengthController(this.textarea_.getElement(), 1000);
     }
 };
 
@@ -828,7 +828,7 @@ postile.view.Sheety.AddCommentPop.prototype.submit = function() {
     // XXX: check for emptiness.
     var content = postile.view.At.asBBCode(
         this.textarea_.getValue());
-    if (content && !this.textarea_.lengthOverflow) {
+    if (content && !this.textarea_.getElement().lengthOverflow) {
         var e = new goog.events.Event(
             postile.view.Sheety.EventType.LOCAL_SUBMIT_COMMENT, {
                 postId: this.postCell_.getPostId(),
