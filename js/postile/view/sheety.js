@@ -793,10 +793,6 @@ postile.view.Sheety.AddCommentPop.prototype.enterDocument = function() {
     // Actually not really needed..
     this.setEnabled(false);
 
-    // Closure bug walkaround: enable text selection
-    this.textarea_.setAllowTextSelection(true);
-    this.textarea_.enableEditing();
-
     var sheety = this.getSheety();
 
     // On click submit: dispatch submit event and disable self
@@ -811,7 +807,7 @@ postile.view.Sheety.AddCommentPop.prototype.enterDocument = function() {
         this.getElement(),
         goog.events.EventType.KEYDOWN,
         function(e) {
-            if (e.keyCode == 13) {
+            if (e.keyCode == 13 && this.isEnabled()) {
                 this.submit();
             }
         }, undefined, this);
@@ -896,12 +892,26 @@ postile.view.Sheety.CETextarea.prototype.getValue = function() {
     return this.getElement()['innerHTML'];
 };
 
-postile.view.Sheety.CETextarea.prototype.enableEditing = function() {
+postile.view.Sheety.CETextarea.prototype.enableEditing = function(enable) {
+    this.setAllowTextSelection(enable);
+
     var el = this.getElement();
-    el.contentEditable = true;
-    goog.style.setStyle(el, {
-        'user-select': 'text'
-    });
+    el.contentEditable = enable;
+    if (enable) {
+        goog.style.setStyle(el, {
+            'user-select': 'text'
+        });
+    }
+    else {
+        goog.style.setStyle(el, {
+            'user-select': 'none'
+        });
+    }
+};
+
+postile.view.Sheety.CETextarea.prototype.setEnabled = function(enable) {
+    goog.base(this, 'setEnabled', enable);
+    this.enableEditing(enable);
 };
 
 postile.view.Sheety.CETextarea.prototype.setValue = function(x) {
