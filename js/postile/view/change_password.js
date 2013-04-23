@@ -35,7 +35,6 @@ postile.view.change_password.ChangePassword = function(old_pswd) {
         }
 
         postile.ajax(['user', 'change_password'], { old_password: cur_pass, new_password: new_pass}, function(r) {
-            console.log(r);
             new postile.toast.title_bar_toast("Password modification was successful", 3);
             this.close();
         }.bind(this));
