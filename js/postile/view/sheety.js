@@ -15,6 +15,7 @@ goog.require('goog.ui.Container');
 goog.require('goog.ui.Control');
 goog.require('goog.ui.Textarea');
 goog.require('goog.math.Size');
+goog.require('goog.math.Coordinate');
 
 goog.require('postile.conf');
 goog.require('postile.faye');
@@ -85,11 +86,25 @@ postile.view.Sheety = function(opt_boardId) {
     this.commentRows_ = new goog.ui.Component();
 
     /**
+     * Contains buttons that when clicked, skip to somewhere
+     * in the postlist.
+     */
+    this.skipList_ = new postile.view.Sheety.SkipList();
+
+    /**
      * Maps post-id to row in sheet. Initialized after fetching data.
      * @type {Object.<postile.view.Sheety.CommentRow>}
      * @private
      */
     this.postIdToRow_ = {};
+
+    /**
+     * Maps first character of a post to its comment row in sheet.
+     * Initialized after fetching data.
+     * @type {Object.<postile.view.Sheety.CommentRow>}
+     * @private
+     */
+    this.alphabetToRow_ = {};
 
     /**
      * Initialized after fetching board data.
@@ -198,6 +213,7 @@ postile.view.Sheety.prototype.createDom = function() {
         'top': this.headerHeight_ + 'px'
     });
 
+    // Render comments
     goog.array.forEach(this.getModel(), function(postEx) {
         var postId = postEx['post']['id'];
 
@@ -210,11 +226,34 @@ postile.view.Sheety.prototype.createDom = function() {
         // XXX: move this out of createDom?
         this.postIdToRow_[postId] = row;
 
+        // Add mapping from first character of post-title to row.
+        // XXX: this assumes that rows are sorted alphabetically
+        // in the backend. Shall we move this out of createDom?
+        var mbTitle = postEx['post']['title'];
+        if (mbTitle) {
+            // Since some of the old sheety-boards does not have
+            // their post-title set, we need to check it.
+            var ch = mbTitle.charAt(0);
+            if (!this.alphabetToRow_[ch]) {
+                this.alphabetToRow_[ch] = row;
+            }
+        }
+
         this.commentRows_.addChild(row, true);
     }, this);
 
+
+    this.skipList_.setEnabledChars(
+        goog.object.getKeys(this.alphabetToRow_));
+
+    // Really attach children
+    this.addChild(this.skipList_, true);
     this.addChild(this.postList_, true);
     this.addChild(this.commentRows_, true);
+
+    // Hide some of the unused characters.
+    // XXX: this couples with the code above and assumes
+    // post never changes.
 
     goog.dom.classes.add(this.commentRows_.getElement(),
         'sheety-comment-rows');
@@ -243,6 +282,10 @@ postile.view.Sheety.prototype.enterDocument = function() {
     goog.events.listen(this,
         postile.view.Sheety.EventType.REMOTE_DEL_COMMENT,
         goog.bind(this.receivedDelComment, this));
+
+    goog.events.listen(this.skipList_,
+        postile.view.Sheety.SkipList.EventType.GOTO,
+        goog.bind(this.moveViewportByAlphabet, this));
 
     this.fayeSubscr_ = postile.faye.subscribe(this.boardId_,
         function(code, data) {
@@ -284,6 +327,14 @@ postile.view.Sheety.prototype.exitDocument = function() {
  */
 postile.view.Sheety.prototype.findRowByPostId = function(postId) {
     return goog.object.get(this.postIdToRow_, postId, null);
+};
+
+/**
+ * Find the corresponding CommentRow whose title starts with
+ * this character.
+ */
+postile.view.Sheety.prototype.findRowByAlphabet = function(ch) {
+    return this.alphabetToRow_[ch];
 };
 
 postile.view.Sheety.prototype.submitNewComment = function(e) {
@@ -495,6 +546,42 @@ postile.view.Sheety.fetchUserOfComment_ = function(commentWe,
     }
 };
 
+postile.view.Sheety.prototype.moveViewportByAlphabet = function(e) {
+    var ch = /** @type {string} */ (e.target);
+    var row = this.findRowByAlphabet(ch);
+    this.moveViewportToRow(row);
+}
+
+/**
+ * Ease-scroll to that row.
+ */
+postile.view.Sheety.prototype.moveViewportToRow = function(row) {
+    var rowEl = row.getElement();
+    var contEl = this.getRootEl_();
+    var coordSrc = new goog.math.Coordinate(
+        contEl.scrollLeft, contEl.scrollTop);
+    var coordDst = 
+        goog.style.getContainerOffsetToScrollInto(rowEl, contEl, true);
+    // XXX I actually don't quite get what's going on here
+    // but it seems that this is right.
+    var coordDiff = new goog.math.Coordinate(
+        coordDst.x - contEl.scrollLeft,
+        coordDst.y - contEl.scrollTop);
+
+    new postile.fx.Animate(function(iter) {
+        contEl.scrollLeft = (coordDiff.x - coordSrc.x) * iter +
+          coordSrc.x;
+        contEl.scrollTop = (coordDiff.y - coordSrc.y) * iter +
+          coordSrc.y;
+    }, 300, {
+        ease: postile.fx.ease.sin_ease,
+        callback: function() {
+            contEl.scrollLeft = coordDiff.x;
+            contEl.scrollTop = coordDiff.y;
+        }
+    });
+};
+
 /**
  * Adjust the screen to the given post, if that post is in the sheet.
  * Otherwise, display a toast to ask the user to go to that board.
@@ -503,9 +590,7 @@ postile.view.Sheety.prototype.switchToPost = function(postId) {
     var row = this.findRowByPostId(postId);
     if (row) {
         // Is in board -- move the viewport to there
-        var rowEl = row.getElement();
-        var contEl = this.getRootEl_();
-        goog.style.scrollIntoContainerView(rowEl, contEl, true);
+        this.moveViewportToRow(row);
     }
     else {
         // Nope. Display a toast instead.
@@ -968,6 +1053,84 @@ postile.view.Sheety.CETextarea.prototype.setEnabled = function(enable) {
 
 postile.view.Sheety.CETextarea.prototype.setValue = function(x) {
     this.getElement()['innerHTML'] = x;
+};
+
+/**
+ * A list of upper alphabets. Dispatches event with character when
+ * clicked.
+ * @constructor
+ */
+postile.view.Sheety.SkipList = function() {
+    goog.base(this, undefined,
+              goog.ui.ContainerRenderer.getCustomRenderer(
+                  goog.ui.ContainerRenderer, 'sheety-skiplist'));
+
+    this.enabledChars_ = [];
+    this.buttons_ = {};
+};
+goog.inherits(postile.view.Sheety.SkipList, goog.ui.Container);
+
+postile.view.Sheety.SkipList.prototype.createDom = function() {
+    goog.base(this, 'createDom');
+
+    goog.array.forEach(this.enabledChars_, function(ch) {
+        var btn = new goog.ui.Control(ch,
+              goog.ui.ControlRenderer.getCustomRenderer(
+                  goog.ui.ControlRenderer, 'sheety-skiplist-button'));
+        this.buttons_[ch] = btn;
+        this.addChild(btn, true);
+    }, this);
+};
+
+postile.view.Sheety.SkipList.prototype.enterDocument = function() {
+    goog.base(this, 'enterDocument');
+
+    var el = this.getElement();
+    goog.style.setStyle(el, {
+        'opacity': 0.5
+    });
+
+    goog.events.listen(
+        this,
+        [ goog.ui.Component.EventType.ENTER
+        , goog.ui.Component.EventType.LEAVE
+        ], function(e) {
+            if (e.type == goog.ui.Component.EventType.ENTER) {
+                goog.style.setStyle(el, {
+                    'opacity': 1
+                });
+            }
+            else {
+                goog.style.setStyle(el, {
+                    'opacity': 0.5
+                });
+            }
+        }, undefined, this);
+
+
+    goog.object.forEach(this.buttons_, function(btn, ch) {
+        goog.events.listen(
+            btn,
+            goog.ui.Component.EventType.ACTION,
+            function(_) {
+                var e = new goog.events.Event(
+                    postile.view.Sheety.SkipList.EventType.GOTO,
+                    ch);
+                this.dispatchEvent(e);
+            }, undefined, this);
+    }, this);
+};
+
+postile.view.Sheety.SkipList.prototype.setEnabledChars = function(chs) {
+    this.enabledChars_ = chs;
+};
+
+postile.view.Sheety.SkipList.prototype.hideChar = function(ch) {
+    this.buttons_[ch].setVisible(false);
+};
+
+postile.view.Sheety.SkipList.EventType = {
+    GOTO: goog.events.getUniqueId('goto')
 };
 
 /**

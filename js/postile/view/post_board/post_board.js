@@ -310,9 +310,9 @@ postile.view.post_board.PostBoard = function(board_id) {
 
     /**
      * "Max zIndex of posts currently."
-     * @type {number}
+     * @type {postile.view.BasePost}
      */
-    this.maxZIndex = 100; //defined in post_board.js
+    this.currentTopPost = null;
 
     /**
      * Saves the coord of cursor when a mousedown event occurs.
