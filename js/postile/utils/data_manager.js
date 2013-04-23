@@ -80,6 +80,7 @@ postile.data_manager.RequestCollector = function(opt_waitFor) {
             }, this);
         }, this));
 
+
     }, opt_waitFor ? opt_waitFor : 10, this);
 
     this.delay_.start();

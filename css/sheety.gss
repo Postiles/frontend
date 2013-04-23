@@ -55,16 +55,24 @@
 .sheety-post-cell,
 .sheety-comment-cell,
 .sheety-new-comment-cell {
+    position: relative;
     border: CELL_BORDER_SIZE solid CELL_BORDER_GREY;
     display: inline-block;
     width: CELL_ACTUAL_WIDTH;
     height: CELL_ACTUAL_HEIGHT;
-    vertical-align: middle;
+    vertical-align: top;
     padding: CELL_PAD_TOP CELL_PAD_LEFT;
     white-space: normal;
 
     /* XXX deal with it */
     overflow-y: hidden;
+
+    -webkit-transition: height 0.2s;
+}
+
+.sheety-comment-cell-hover {
+    z-index: 1000;
+    height: 200px;
 }
 
 .sheety-new-comment-cell {
@@ -107,7 +115,7 @@
     background: #A7D875;
     color: whitesmoke;
     font-size: 11pt;
-    padding: 2px 13px;
+    padding: 2px 10px;
     margin: 5px;
     cursor: pointer;
 }

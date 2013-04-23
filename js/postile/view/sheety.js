@@ -1112,6 +1112,22 @@ postile.view.Sheety.CommentCell.prototype.createDom = function() {
 postile.view.Sheety.CommentCell.prototype.enterDocument = function() {
     goog.base(this, 'enterDocument');
 
+    var el = this.getElement();
+
+    goog.events.listen(
+        el,
+        goog.events.EventType.MOUSEOVER,
+        function() {
+            goog.dom.classes.add(el, 'sheety-comment-cell-hover');
+        }, undefined, this);
+
+    goog.events.listen(
+        el,
+        goog.events.EventType.MOUSEOUT,
+        function() {
+            goog.dom.classes.remove(el, 'sheety-comment-cell-hover');
+        }, undefined, this);
+
     // On click like/unlike, dispatch corresponding events.
     goog.events.listen(
         this.like_,

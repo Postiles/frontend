@@ -14,7 +14,7 @@ goog.require('postile.dom');
  *@constructor
  */
 postile.view.onlinepeople.OnlinePeople = function(header) {
-    this.BAR_WIDTH = 300;
+    this.BAR_WIDTH = 200;
     var instance = this;
     this.title_bar = header;
     //inherits TipView
