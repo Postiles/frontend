@@ -50,12 +50,12 @@ postile.view.signup.SignupView.prototype.verify_pg1 = function() {
     this.second_name = this.second_name_el.value;
     this.preferred_name = this.preferred_name_el.value;
     if(/^(\s|&nbsp;)*$/.test(this.preferred_name)) {
-            new postile.toast.Toast(5, "Preferred name cannot be empty");
+            new postile.toast.title_bar_toast(5, "Preferred name cannot be empty");
             return;
     }
     postile.ajax(['user','verify_username_unique'],{username:this.preferred_name},this.next.bind(this),
         function(data){
-            new postile.toast.Toast(5, "Preferred Name is already taken");
+            new postile.toast.title_bar_toast(5, "Preferred Name is already taken");
         });
 }
 
@@ -80,15 +80,15 @@ postile.view.signup.SignupView.prototype.verify_pg2 = function() {
     this.passwd_confirm = this.passwd_confirm_el.value;
     var emailre = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\ ".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA -Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     if(!emailre.test(this.email)) {
-       new postile.toast.Toast(5, "Your email address is invalid");
+       new postile.toast.title_bar_toast(5, "Your email address is invalid");
        return;
     }
     if(/^(\s|&nbsp;)*$/.test(this.passwd)) {
-       new postile.toast.Toast(5, "Please input your password");
+       new postile.toast.title_bar_toast(5, "Please input your password");
        return;
     }
     if(this.passwd != this.passwd_confirm) {
-       new postile.toast.Toast(5, "Password confirm is different from the password");
+       new postile.toast.title_bar_toast(5, "Password confirm is different from the password");
        return;
     }
     postile.ajax(['user','new'],
@@ -98,12 +98,12 @@ postile.view.signup.SignupView.prototype.verify_pg2 = function() {
                  first_name:this.first_name,
                  last_name:this.second_name},
                  function(data) {
-                    new postile.toast.Toast(5, "Signup Success, you can [login] now!",[function() {
+                    new postile.toast.title_bar_toast(5, "Signup Success, you can [login] now!",[function() {
                         postile.router.dispatch('login');
                     }])
                  },
                  function(data) {
-                    new postile.toast.Toast(5, "Your mail has been registered");
+                    new postile.toast.title_bar_toast(5, "Your mail has been registered");
 
                  });
 

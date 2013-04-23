@@ -26,18 +26,17 @@ postile.view.change_password.ChangePassword = function(old_pswd) {
         var new_pass = goog.string.trim(this.new_pass.value);
         var con_pass = goog.string.trim(this.con_pass.value);
         if (!new_pass.length || !con_pass.length || !cur_pass.length) {
-            //new postile.toast.Toast(5, postile._('Please fill fields.'), [], 'red');
-            new postile.toast.Toast(5, "Please fill fields");
+            new postile.toast.title_bar_toast("Please fill fields", 3);
             return;
         }
         if(new_pass != con_pass){
-            new postile.toast.Toast(5, "Please type the same password in confirm");
+            new postile.toast.title_bar_toast("Please type the same password in confirm", 3);
             return;
         }
 
         postile.ajax(['user', 'change_password'], { old_password: cur_pass, new_password: new_pass}, function(r) {
             console.log(r);
-            new postile.toast.Toast(5, "Password modification was successful");
+            new postile.toast.title_bar_toast("Password modification was successful", 3);
             this.close();
         }.bind(this));
     }.bind(this));

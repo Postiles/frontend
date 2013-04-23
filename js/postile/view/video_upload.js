@@ -65,7 +65,7 @@ postile.view.video_upload.VideoUpload.prototype.showPreview = function(){
 
 	this.iframe.setAttribute('src', this.embedCode);
 	if(this.embedCode == 'invalid'){
-		var submit_waiting = new postile.toast.Toast(2, "Please provide valid input.");
+		var submit_waiting = new postile.toast.title_bar_toast("Please provide valid input.", 2);
 		return;
 	}
 	goog.dom.classes.add(this.lower_part_el, 'upload_video_lower_animation');
