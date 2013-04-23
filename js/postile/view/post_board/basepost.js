@@ -714,7 +714,7 @@ postile.view.BasePost.prototype.enterCommentMode = function() {
 
     if (!elements.commentInput_el._lc_) {
         elements.commentInput_el._lc_ = 
-            new postile.length_control.LengthController(elements.commentInput_el, 300);
+            new postile.length_control.LengthController(elements.commentInput_el, 1000);
     }
     
     if (this.postData.post.title) { // title exists
