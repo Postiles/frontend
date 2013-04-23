@@ -154,7 +154,7 @@ postile.data_manager.markDataDirty = function(user_id) {
 postile.data_manager.userIsCached = function(user_id) {
     var maybeUser = postile.data_manager.userData[user_id];
     return goog.isDef(maybeUser) &&
-           !(maybeUser instanceof postile.data_manager.RequestCollector());
+           !(maybeUser instanceof postile.data_manager.RequestCollector);
 };
 
 postile.data_manager.getCachedUser = function(user_id) {
