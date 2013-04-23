@@ -30,6 +30,7 @@ postile.view.account.Account = function(opt_boardData) {
     
     if (postile.conf.userLoggedIn()) {
         postile.data_manager.getUserData(localStorage.postile_user_id, function(data) {
+            console.log(data);
             postile.view.account.initComponents.profile(instance, postile.conf.uploadsResource([ data.image_small_url ]));
             postile.view.account.initComponents.user_info(instance, data.username);
         });

@@ -458,9 +458,10 @@ postile.view.post_board.PostBoard.prototype.initView = function() {
     this.viewport.rel_data = this;
     this.canvas.rel_data = this;
 
-    if (!goog.userAgent.MAC) {
+    // for MAC, now also allow mouse drag
+    // if (!goog.userAgent.MAC) {
         new postile.view.post_board.MouseMoveScroll(this);
-    }
+    // }
 }
 
 /**
