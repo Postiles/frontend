@@ -2,6 +2,7 @@ goog.provide('postile.view.Sheety');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
+goog.require('goog.events');
 goog.require('goog.object');
 goog.require('goog.functions');
 goog.require('goog.dom');
@@ -13,6 +14,7 @@ goog.require('goog.ui.Component');
 goog.require('goog.ui.Container');
 goog.require('goog.ui.Control');
 goog.require('goog.ui.Textarea');
+goog.require('goog.math.Size');
 
 goog.require('postile.conf');
 goog.require('postile.faye');
@@ -32,7 +34,7 @@ goog.require('postile.async');
  * @constructor
  */
 postile.view.GoogFSV = function() {
-    postile.view.closeCurrentFullScreenView();
+    postile.view.switchCurrentFullScreenViewTo(this);
     goog.base(this);
 };
 goog.inherits(postile.view.GoogFSV, goog.ui.Component);
@@ -155,6 +157,9 @@ postile.view.Sheety = function(opt_boardId) {
     postile.view.loadCss(['sheety-gen.css']);
 };
 goog.inherits(postile.view.Sheety, postile.view.GoogFSV);
+
+postile.view.Sheety.prototype.CELL_ACTUAL_SIZE =
+    new goog.math.Size(200, 100);
 
 /**
  * Custom event types used by sheety.
@@ -489,6 +494,48 @@ postile.view.Sheety.fetchUserOfComment_ = function(commentWe,
                });
     }
 };
+
+/**
+ * Adjust the screen to the given post, if that post is in the sheet.
+ * Otherwise, display a toast to ask the user to go to that board.
+ */
+postile.view.Sheety.prototype.switchToPost = function(postId) {
+    var row = this.findRowByPostId(postId);
+    if (row) {
+        // Is in board -- move the viewport to there
+        var rowEl = row.getElement();
+        var contEl = this.getRootEl_();
+        goog.style.scrollIntoContainerView(rowEl, contEl, true);
+    }
+    else {
+        // Nope. Display a toast instead.
+        postile.ajax(['post', 'get_post'], {
+            'post_id': postId
+        }, function(response) {
+            var postData = response['message'];
+            var boardId = postData['post']['board_id'];
+            if (boardId == this.board_id_) {
+                // Should never happen, since sheety doesn't really
+                // updates its post.
+            }
+            new postile.toast.Toast(10, "The comment is not in the " +
+                "current board. [Click to go] to another board and " +
+                "view.", [function() {
+                    postile.router.dispatch('board/' +
+                        String(boardId) + '#' + String(postId));
+                }]);
+        });
+    }
+};
+
+postile.view.switchToPost.registry.push(function(postId) {
+    var currView = postile.router.current_view;
+    if (currView instanceof postile.view.Sheety) {
+        // first check if the post is in current board
+        currView.switchToPost(postId);
+        return true;
+    }
+});
 
 /**
  * Called when board data is received.
@@ -1104,7 +1151,6 @@ postile.view.Sheety.CommentCell.prototype.createDom = function() {
 
     // dirty code ends here
 
-
     // Post-process bbcode
     postile.bbcodePostProcess(el);
 };
@@ -1113,18 +1159,25 @@ postile.view.Sheety.CommentCell.prototype.enterDocument = function() {
     goog.base(this, 'enterDocument');
 
     var el = this.getElement();
+    this.maxHeight = Math.max(this.content_el.offsetHeight + 35, 88);
+
+    // To allow text selection
+    goog.style.setUnselectable(this.getElement(), false);
 
     goog.events.listen(
         el,
         goog.events.EventType.MOUSEOVER,
         function() {
-            goog.dom.classes.add(el, 'sheety-comment-cell-hover');
+            el.style.height = this.maxHeight + 'px';
+            el.style.zIndex = '1000';
         }, undefined, this);
 
     goog.events.listen(
         el,
         goog.events.EventType.MOUSEOUT,
         function() {
+            el.style.height = '88px';
+            el.style.zIndex = '1';
             goog.dom.classes.remove(el, 'sheety-comment-cell-hover');
         }, undefined, this);
 

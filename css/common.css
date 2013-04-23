@@ -9,6 +9,7 @@ html, body {
 
 * {
     outline: none !important;
+    word-wrap: break-word;
 }
 
 ::-webkit-scrollbar {

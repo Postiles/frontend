@@ -217,7 +217,7 @@ postile.view.post_board.PostBoard = function(board_id) {
      * The size of the canvas currently.
      * @type {Array.<number>}
      */
-    this.canvasSize = [5000, 4000];
+    this.canvasSize = [10000, 8000];
 
     /**
      * "The animation for the outbound shadow."
