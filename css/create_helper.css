@@ -6,7 +6,7 @@
 	position: absolute;
 	top: 80px;
 	left: 0px;
-	z-index: 101;
+	z-index: 500;
 
 	-webkit-transition: margin-left 0.2s;
 	-moz-transition: margin-left 0.2s;

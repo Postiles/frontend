@@ -14,7 +14,7 @@ html, body {
   height: 40px;
   border-bottom: 5px solid #024d61;
   z-index: 500;
-  min-width: 800px;
+  min-width: 1000px;
 
   /**
    * Sheety board uses real scrolling so this is needed.

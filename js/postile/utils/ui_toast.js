@@ -79,34 +79,50 @@ postile.toast.title_bar_toast_anim = 0;
 postile.toast.title_bar_toast_container = null;
 postile.toast.title_bar_toast_anim_time_left = 0;
 
-postile.toast.title_bar_toast = function(text, duration) {
+postile.toast.title_bar_toast = function(text, duration, callbacks) {
     /*
     postile.toast.title_bar_toast_container = 
         goog.dom.getElement('title_bar_toast_container');
     */
 
-    if (!postile.toast.title_bar_toast_container) {
-        postile.toast.title_bar_toast_container = 
-            goog.dom.createDom('div', 'title_bar_toast_container');
-        goog.dom.appendChild(document.body, postile.toast.title_bar_toast_container);
-
-        // TODO: move to a css file
-        postile.toast.title_bar_toast_container.style.position = 'absolute';
-        postile.toast.title_bar_toast_container.style.top = '-40px';
-        postile.toast.title_bar_toast_container.style.left = '50%';
-        postile.toast.title_bar_toast_container.style.background = 'rgba(0, 0, 0, 0.5)';
-        postile.toast.title_bar_toast_container.style.color = 'whitesmoke';
-        postile.toast.title_bar_toast_container.style.padding = '5px 80px';
-        postile.toast.title_bar_toast_container.style.zIndex = '600';
-        postile.toast.title_bar_toast_container.style.zIndex = '600';
-        postile.toast.title_bar_toast_container.style.zIndex = '600';
-        postile.toast.title_bar_toast_container.style.borderBottomLeftRadius = '10px';
-        postile.toast.title_bar_toast_container.style.borderBottomRightRadius = '10px';
-
-        postile.toast.title_bar_toast_container.innerHTML = text;
-        postile.toast.title_bar_toast_container.style.marginLeft = 
-            - postile.toast.title_bar_toast_container.offsetWidth / 2 + 'px';
+    if (postile.toast.title_bar_toast_container) {
+        goog.dom.removeNode(postile.toast.title_bar_toast_container);
     }
+
+    postile.toast.title_bar_toast_container = 
+        goog.dom.createDom('div', 'title_bar_toast_container');
+    goog.dom.appendChild(document.body, postile.toast.title_bar_toast_container);
+
+    // postile.toast.title_bar_toast_container.innerHTML = text;
+
+    var temp;
+    var section = /\[[^\[\]]+\]/g;
+    var links = text.match(section);
+    var plain = text.split(section);
+
+    if (!callbacks) {
+        callbacks = [];
+    }
+
+    postile.toast.title_bar_toast_container.innerHTML = plain[0];
+
+    if (links) {
+        for (var i = 0; i < links.length; i++) {
+            temp = goog.dom.createDom('span', 'link');
+            temp.innerHTML = links[i].substring(1, links[i].length - 1);
+
+            if (typeof callbacks[i] == 'function') {
+                goog.events.listen(temp, goog.events.EventType.CLICK, callbacks[i]);
+            }
+
+            goog.dom.appendChild(postile.toast.title_bar_toast_container, temp);
+            temp = goog.dom.createTextNode(plain[i+1]);
+            goog.dom.appendChild(postile.toast.title_bar_toast_container, temp);
+        }
+    }
+
+    postile.toast.title_bar_toast_container.style.marginLeft = 
+        - postile.toast.title_bar_toast_container.offsetWidth / 2 + 'px';
 
     var top = -40;
 

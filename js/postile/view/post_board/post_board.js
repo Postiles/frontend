@@ -975,9 +975,14 @@ postile.view.post_board.PostBoard.prototype.renderById = function(pid, callback)
     var instance = this;
     postile.ajax(['post', 'get_post'], { post_id: pid }, function(r) {
         if (r.message.post.board_id != instance.board_id) {
-            new postile.toast.Toast(10, "The post is not in the current board. [Click to go] to another board and view.", [function() {
-                postile.router.dispatch('board/' + r.message.post.board_id + '#' + pid);
-            }]);
+            new postile.toast.title_bar_toast(
+                "The post is not in the current board. [Click to go] to another board and view.", 
+                10, 
+                [
+                    function() {
+                        postile.router.dispatch('board/' + r.message.post.board_id + '#' + pid);
+                    }
+                ]);
             return;
         }
         instance.renderArray([r.message]);
