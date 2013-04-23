@@ -107,7 +107,7 @@ postile.view.tutorial.TutorialView.prototype.endTutorial = function(viewIndex) {
         [ 'user', 'finish_tutorial' ], 
         { target_user_id: localStorage.postile_user_id },
         function(data) {
-            history.back();
+            postile.router.dispatch('topic/1');
         });
 }
 
