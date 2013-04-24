@@ -1,9 +1,9 @@
-html, body {
+﻿html, body {
 	padding: 0;
 	margin: 0;
 	border: 0 none;
     height: 100%;
-    font-family: RobotoRegular;
+    font-family: RobotoRegular, "微软雅黑", "Microsoft Yahei", "WenQuanYi Micro Hei", "wqy-microhei", "文泉驿微米黑", "droid-sans", "Droid Sans", "华文细黑", "文泉驛微米黑", "Adobe 黑体 Std R";
     min-width: 800px;
 }
 
