@@ -31,37 +31,6 @@ goog.require('postile.data_manager');
 goog.require('postile.async');
 
 goog.scope(function() {
-
-var CELL_ACTUAL_SIZE = new goog.math.Size(200, 100);
-
-var CELL_CALCULATED_SIZE = new goog.math.Size(188, 88);
-
-
-/**
- * Get the container element to scroll the whole page within.
- * @return {Element}
- */
-var getPageScrollElement_ = function() {
-    // For firefox it's <html> but for webkit it's <body>
-    return goog.userAgent.GECKO ? document.documentElement
-                                : document.body;
-};
-
-/**
- * Scroll the page to a given coordinate.
- * @param {number=} opt_x
- * @param {number=} opt_y
- */
-var scrollPageTo_ = function(opt_x, opt_y) {
-    var el = getPageScrollElement_();
-    if (goog.isDef(opt_x)) {
-        el.scrollLeft = opt_x;
-    }
-    if (goog.isDef(opt_y)) {
-        el.scrollTop = opt_y;
-    }
-};
-
 /**
  * FullScreenView-compatible goog.ui.Component.
  * Specifically, it has a .close method and closes postile.current_view
@@ -216,6 +185,39 @@ postile.view.Sheety = function(opt_boardId) {
     postile.view.loadCss(['sheety-gen.css']);
 };
 goog.inherits(postile.view.Sheety, postile.view.GoogFSV);
+
+var module = postile.view.Sheety;
+
+module.CELL_ACTUAL_SIZE = new goog.math.Size(200, 100);
+
+module.CELL_CALCULATED_SIZE = new goog.math.Size(188, 88);
+
+
+/**
+ * Get the container element to scroll the whole page within.
+ * @return {Element}
+ */
+module.getPageScrollElement_ = function() {
+    // For firefox it's <html> but for webkit it's <body>
+    return goog.userAgent.GECKO ? document.documentElement
+                                : document.body;
+};
+
+/**
+ * Scroll the page to a given coordinate.
+ * @param {number=} opt_x
+ * @param {number=} opt_y
+ */
+module.scrollPageTo_ = function(opt_x, opt_y) {
+    var el = module.getPageScrollElement_();
+    if (goog.isDef(opt_x)) {
+        el.scrollLeft = opt_x;
+    }
+    if (goog.isDef(opt_y)) {
+        el.scrollTop = opt_y;
+    }
+};
+
 
 /**
  * Custom event types used by sheety.
@@ -598,7 +600,7 @@ postile.view.Sheety.prototype.moveViewportByAlphabet = function(e) {
  */
 postile.view.Sheety.prototype.moveViewportToRow = function(row) {
     var rowEl = row.getElement();
-    var contEl = getPageScrollElement_();
+    var contEl = module.getPageScrollElement_();
     var coordSrc = new goog.math.Coordinate(
         contEl.scrollLeft, contEl.scrollTop);
     var coordDst = 
@@ -610,13 +612,13 @@ postile.view.Sheety.prototype.moveViewportToRow = function(row) {
         coordDst.y - coordSrc.y);
 
     new postile.fx.Animate(function(iter) {
-        scrollPageTo_(
+        module.scrollPageTo_(
              (coordDiff.x - coordSrc.x) * iter + coordSrc.x,
              (coordDiff.y - coordSrc.y) * iter + coordSrc.y);
     }, 300, {
         ease: postile.fx.ease.sin_ease,
         callback: function() {
-            scrollPageTo_(coordDiff.x, coordDiff.y);
+            module.scrollPageTo_(coordDiff.x, coordDiff.y);
         }
     });
 };
@@ -1373,7 +1375,7 @@ postile.view.Sheety.CommentCell.prototype.enterDocument = function() {
 
     var el = this.getElement();
     this.maxHeight = Math.max(this.getContentEl().offsetHeight + 35,
-                              CELL_ACTUAL_SIZE.height);
+                              module.CELL_CALCULATED_SIZE.height);
 
     // To allow text selection
     goog.style.setUnselectable(this.getElement(), false);
