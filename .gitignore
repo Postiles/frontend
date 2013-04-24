@@ -14,3 +14,5 @@ js/goog
 compiled.js
 *.soy.js
 tmp
+
+*.*~
