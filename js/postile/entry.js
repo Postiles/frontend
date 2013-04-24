@@ -26,6 +26,7 @@ goog.require('postile.view.InvitedUserQuickLogin');
 postile.entry.main = function() {
     goog.events.listen(window, goog.events.EventType.LOAD, function() {
         goog.events.listen(window, goog.events.EventType.ERROR, postile.conf.logError);
+        postile.feedback.init();
         postile.conf.useragent.load(postile.entry.router_dispatch);
     });
 };

@@ -21,8 +21,10 @@ postile.feedback.FeedbackData = function(img) {
     window.addEventListener("message", rt, false);
 }
 
-window.addEventListener("message", function(e) {
+postile.feedback.init = function() {
+    window.addEventListener("message", function(e) {
     if (e.data.action == 'SCREENSHOT') {
         new postile.feedback.FeedbackData(e.data.img);
     }
 });
+}
