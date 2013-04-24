@@ -28,6 +28,7 @@ postile.parseBBcode = function(input) {
 postile.bbcodePostProcess = function(el, opt_no_mouseevent) {
     var handleOneAtPerson = function(sel) { 
         postile.data_manager.getUserData(sel.getAttribute("at-user"), function(uData) {
+            sel.setAttribute('at-user-name', uData.username);
             sel.innerHTML = '@' + uData.username;
         });
         sel.style.cursor = "pointer";
