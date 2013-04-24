@@ -949,6 +949,9 @@ postile.view.post_board.PostBoard.prototype.renderPost = function(postData, mode
         // update postData attributes
         for (var i in this.currentPosts[postId].postData.post) {
             if (postData.post[i] && this.currentPosts[postId].postData.post[i] != postData.post[i]) {
+                if (i == 'in_edit' || i == 'updated_at') {
+                    continue;
+                }
                 this.currentPosts[postId].postData.post[i] = postData.post[i];
                 changed = true;
             }
