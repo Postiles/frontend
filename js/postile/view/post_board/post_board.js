@@ -1005,6 +1005,17 @@ postile.view.post_board.PostBoard.prototype.fayeHandler = function(status, data)
     case postile.view.post_board.faye_status.FINISH:
         var currPost = this.currentPosts[data.post.id];
 
+        if (!currPost) {
+            // XXX: currPost can sometimes be undefined. That is,
+            // that post is not currently in the board but it
+            // has just been finished.
+            //
+            // This should really be fixed at here and (case START)
+            // However it's too late here so lets just wait for
+            // tomorrow....
+            break;
+        }
+
         if (!currPost.isSelfPost()) { // not my own post
             this.renderPost(data, postile.view.BasePost.PostMode.DISPLAY);
         }
