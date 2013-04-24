@@ -33,13 +33,17 @@ html, body {
     z-index: 500;
 }
 
-#topic_image_container {
+#topic_image_outer {
   position: absolute;
   left: 5px;
   top: 5px;
+}
+
+#topic_image_container {
   width: 60px;
   height: 60px;
   background: #024d61;
+  cursor: pointer;
 
   box-shadow: 0px 0px 4px #000;
   -webkit-box-shadow: 0px 0px 4px #000;
@@ -63,6 +67,36 @@ html, body {
   border-top: 6px solid transparent;
   border-left: 8px solid #024d61;
   border-bottom: 6px solid transparent; }
+
+#topic_image_tip {
+    position: relative;
+    left: 62px;
+    top: -30px;
+    display: none;
+}
+
+#topic_image_outer:hover #topic_image_tip {
+    display: block;
+}
+
+#topic_image_tip_arrow {
+    position: absolute;
+    top: 5px;
+    left: -8px;
+    width: 0px;
+    height: 0px;
+    border-top: 6px solid transparent;
+    border-right: 8px solid black;
+    border-bottom: 6px solid transparent;
+}
+
+#topic_image_tip_text {
+    white-space: nowrap;
+    background: black;
+    font-size: 10pt;
+    padding: 2px 5px;
+    color: whitesmoke;
+}
 
 #topic_title {
   float: left;

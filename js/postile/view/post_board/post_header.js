@@ -36,6 +36,13 @@ postile.view.post_board.Header = function(boardData) {
     this.topicImgContainer_el = postile.dom.getDescendantById(instance.container, 'topic_image_container');
     this.topicImg_el = postile.dom.getDescendantByClass(this.topicImgContainer_el, 'topic_image');
     this.topicImg_el.src = postile.conf.uploadsResource( [this.boardData.image_small_url] );
+
+    goog.events.listen(
+        this.topicImg_el,
+        goog.events.EventType.CLICK,
+        function(e) {
+            postile.router.dispatch('topic/' + this.boardData.topic_id);
+        }.bind(this));
     
     /**
      * @private
