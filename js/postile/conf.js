@@ -13,11 +13,11 @@ goog.require('goog.events.KeyHandler');
  */
 postile.conf = {
 
-    dhost: 'www.postiles.com',
+    dhost: 'dev.postiles.com',
 
-    dport: 3000,
+    dport: 300,
 
-    fayeLocation: 'http://www.postiles.com:9292/faye',
+    fayeLocation: 'http://dev.postiles.com:9292/faye',
 
     wrapper: null,
 
