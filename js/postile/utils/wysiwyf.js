@@ -12,8 +12,8 @@ Note: content below does not use ANY Google Closure code
 postile.WYSIWYF = {
     /******预加载装置******/
     //定义一些常量, and methods
-    doSpanize: function (cont, a, b, style) { //a is char array, b is breakpoint list
-        style = style || {
+    doSpanize: function (cont, a, b, oStyle) { //a is char array, b is breakpoint list
+        var style = oStyle || {
             Bold: false,
             Italic: false,
             Underline: false
@@ -81,7 +81,7 @@ postile.WYSIWYF = {
                 b[a.length] += '[url]' + cont.href + '[/url]';
                 return; //does not allow "A" to have children
             }
-            if (t == 'P' || t == 'DIV' || t == 'BR') {
+            if ((t == 'P' || t == 'DIV' || t == 'BR') && oStyle) {
                 b[a.length] += "\r\n";
             }
             var n = cont.childNodes;
@@ -262,7 +262,7 @@ postile.WYSIWYF = {
                 }
             }
             tag_stack.push({tag: tag_name, value: value});
-            op += '['+tag_name+(value ? '=' + value : '')+']'
+            op += '['+tag_name+(value ? '=' + value : '')+']';
         };
         for(var i = 0; i < chars.length; i++) {
             if (!chars[i].style.Underline) { pop_stack('u'); }

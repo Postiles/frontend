@@ -188,6 +188,8 @@ postile.view.BoardList.prototype.renderBoardListItem = function(data) {
 }
 
 postile.view.BoardList.prototype.renderRecentPostItem = function(post_info, boardData) {
+    if (!post_info.post.content) { return; }
+
     var post_el = goog.dom.createDom('div', 'one_recent_post');
     goog.dom.appendChild(post_el, goog.dom.createDom('div', 'ball'));
     var subject_el = goog.dom.createDom('div', 'subject');
@@ -206,7 +208,8 @@ postile.view.BoardList.prototype.renderRecentPostItem = function(post_info, boar
     }
 
     var content_el = goog.dom.createDom('div', 'content');
-    content_el.innerHTML = post_info.post.content;
+    content_el.innerHTML = postile.parseBBcode(post_info.post.content);
+    postile.bbcodePostProcess(content_el);
     goog.dom.appendChild(post_el, subject_el);
     goog.dom.appendChild(meta_el, author_el);
     goog.dom.appendChild(meta_el, time_el);
