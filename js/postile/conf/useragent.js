@@ -88,7 +88,7 @@ postile.conf.UserAgent.prototype.checkFeature = function() {
             this.compatHandler_ = this.handleOk;
         }
         else if (goog.userAgent.isVersion(this.browser_.minimumVersion)) {
-            goog.object.update(this.feature_, this.browser_.walkarounds);
+            goog.object.extend(this.feature_, this.browser_.walkarounds);
             this.compatHandler_ = this.handleWarning;
         }
         else {
