@@ -23,8 +23,8 @@ postile.feedback.FeedbackData = function(img) {
 
 postile.feedback.init = function() {
     window.addEventListener("message", function(e) {
-    if (e.data.action == 'SCREENSHOT') {
-        new postile.feedback.FeedbackData(e.data.img);
-    }
-});
+        if (e.data.action == 'SCREENSHOT') {
+            new postile.feedback.FeedbackData(e.data.img);
+        }
+    }, false);
 }

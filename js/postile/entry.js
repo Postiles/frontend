@@ -25,9 +25,7 @@ goog.require('postile.view.InvitedUserQuickLogin');
  */
 postile.entry.main = function() {
     goog.events.listen(window, goog.events.EventType.LOAD, function() {
-        goog.events.listen(window, goog.events.EventType.ERROR, postile.conf.logError);
-        postile.feedback.init();
-        postile.conf.useragent.load(postile.entry.router_dispatch);
+        postile.conf.useragent.load(postile.entry.init);
     });
 };
 
@@ -35,7 +33,9 @@ postile.entry.main = function() {
  * Dispatch the current route.
  * Originally known as postile.init.
  */
-postile.entry.router_dispatch = function() {
+postile.entry.init = function() {
+    goog.events.listen(window, goog.events.EventType.ERROR, postile.conf.logError);
+    postile.feedback.init();
     //postile.conf.initDbgConfiguration();
     postile.router.init();
     postile.entry.init_router_map();
