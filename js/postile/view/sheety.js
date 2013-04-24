@@ -28,8 +28,6 @@ goog.require('postile.templates.sheety');
 goog.require('postile.data_manager');
 goog.require('postile.async');
 
-goog.require('postile.view.onlinepeople');
-
 /**
  * FullScreenView-compatible goog.ui.Component.
  * Specifically, it has a .close method and closes postile.current_view
@@ -173,26 +171,8 @@ postile.view.Sheety = function(opt_boardId) {
 
         this.header_ = new postile.view.post_board.Header(boardData);
         goog.dom.append(this.getRootEl_(), this.header_.container);
-        //prepare for onlinepeople
-        this.onlinepeople = new Object();
-        this.onlinepeople.view = new postile.view.onlinepeople.OnlinePeople(this.header_);
-        this.onlinepeople.count = 0;
-        this.onlinepeople.view.render();
-        this.onlinepeople.is_expended = false;
-
 
         var anony = this.isAnonymous_ = boardData['anonymous'];
-        if (!this.isAnonymous_) { // display online people list only when not anonymous
-            goog.events.listen(this.onlinepeople.view.container, goog.events.EventType.CLICK, function() {
-                if(!instance.onlinepeople.is_expended){
-                    instance.onlinepeople.is_expended = true;
-                    instance.updateOnlinePeople();
-                }else {
-                    instance.onlinepeople.is_expended = false;
-                    instance.onlinepeople.view.online_list.innerHTML = " ";
-                }
-            });
-        }
 
         // and fetches users
         return postile.view.Sheety.fetchUserOfBoardData_(anony, xs[1])
@@ -290,7 +270,6 @@ postile.view.Sheety.prototype.createDom = function() {
 };
 
 postile.view.Sheety.prototype.enterDocument = function() {
-    var instance = this;
     goog.base(this, 'enterDocument');
 
     goog.events.listen(this,
@@ -339,41 +318,8 @@ postile.view.Sheety.prototype.enterDocument = function() {
             default:
                 return;
             }
-        });
-    this.fayeSubscrOnline_  =  postile.faye.subscribe(
-            'status/'+ this.boardId_,
-        function(status, data){
-            instance.onlinepeople.count = data.count;
-            instance.onlinepeople.id = data.users;
-            if(instance.onlinepeople.is_expended) {
-                instance.updateOnlinePeople();
-            }else{
-                instance.updateOnlineCount();
-            }
         }, this);
-    this.fayeSubscrOnlineIndividual_ = postile.faye.subscribe(
-        'status/board/'+this.boardId_+'/user/'+postile.conf.getSelfUserId(),
-        function(status, data) {
-        });
-
-
-
 };
-postile.view.Sheety.prototype.updateOnlinePeople = function() {
-    this.updateOnlineCount();
-    var online_list = this.onlinepeople.view.online_list;
-    online_list.innerHTML="";
-    for(var i = 0; i < this.onlinepeople.id.users.length; i++) {
-        var item = new postile.view.onlinepeople.Item();
-        item.renderItem(this.onlinepeople.view, this.onlinepeople.id.users[i]);
-    }
-}
-postile.view.Sheety.prototype.updateOnlineCount = function() {
-    var thecount = this.onlinepeople.count;
-    var count_container = postile.dom.getDescendantById(this.onlinepeople.view.container
-        ,'count');
-    count_container.innerHTML = thecount;
-}
 
 postile.view.Sheety.prototype.exitDocument = function() {
     this.fayeSubscr_.addCallback(function(subscr) {
@@ -441,7 +387,7 @@ postile.view.Sheety.prototype.submitAlterLike = function(e) {
 };
 
 postile.view.Sheety.prototype.submitDelComment = function(e) {
-    /**
+    /** 
      * @type {
      *   commentCell: postile.view.Sheety.CommentCell,
      *   commentId: number
@@ -545,7 +491,7 @@ postile.view.Sheety.PostEx;
  * Two kind of processed data:
  *   a. <board-data'>
  *   b. <comment'>
- *
+ *   
  *   where board-data' = post-ex*
  *         post-ex = <post> <post-creator> <comment'>*
  *         comment' = <cmt-like> <cmt-liked> <cmt-data> <cmt-creator>?
@@ -624,7 +570,7 @@ postile.view.Sheety.prototype.moveViewportToRow = function(row) {
     var contEl = this.getRootEl_();
     var coordSrc = new goog.math.Coordinate(
         contEl.scrollLeft, contEl.scrollTop);
-    var coordDst =
+    var coordDst = 
         goog.style.getContainerOffsetToScrollInto(rowEl, contEl, true);
     // XXX I actually don't quite get what's going on here
     // but it seems that this is right.
@@ -663,10 +609,10 @@ postile.view.Sheety.prototype.switchToPost = function(postId) {
         }, function(response) {
             var postData = response['message'];
             var boardId = postData['post']['board_id'];
-            //if (boardId == this.boardId_) {
+            if (boardId == this.boardId_) {
                 // Should never happen, since sheety doesn't really
                 // updates its post.
-            //}
+            }
             new postile.toast.Toast(10, "The comment is not in the " +
                 "current board. [Click to go] to another board and " +
                 "view.", [function() {
@@ -811,9 +757,9 @@ postile.view.Sheety.PostList.prototype.startFloating = function(parentEl) {
     var placeholder_ = goog.dom.createDom('div', {
         'style': 'visibility: hidden'
     });
-
-    var originalStyles_ = {};
-
+  
+    var originalStyles_ = {};  
+  
     // Store styles while not floating so we can restore them when the
     // element stops floating.
     goog.object.forEach(STORED_STYLE_PROPS_,
@@ -884,7 +830,7 @@ postile.view.Sheety.PostCell.prototype.createDom = function() {
         who: this.getModel()['post_creator']['username']
     };
     var el = goog.dom.createDom('div', {
-        'className': 'sheety-post-cell',
+        'className': 'sheety-post-cell', 
         'innerHTML': postile.templates.sheety.post(preProcData)
     });
     this.setElementInternal(el);
@@ -974,7 +920,7 @@ postile.view.Sheety.AddCommentPop.prototype.createDom = function() {
     this.addChild(this.cancelButton_, true);
 
     if (!this.textarea_._lc_) {
-        this.textarea_._lc_ =
+        this.textarea_._lc_ = 
             new postile.length_control.LengthController(this.textarea_.getElement(), 1000);
     }
 };
@@ -1357,7 +1303,7 @@ postile.view.Sheety.CommentCell.prototype.createDom = function() {
 
     //console.log(width);
 
-    // TODO get the height and length
+    // TODO get the height and length 
     // Currently we hard code it.
     var wrapper_width = 200;
     var wrapper_height = 60;
@@ -1468,7 +1414,7 @@ postile.view.Sheety.CommentCell.prototype.enterDocument = function() {
 };
 
 postile.view.Sheety.CommentCell.prototype.syncLike = function() {
-    this.like_.getElement()['innerHTML'] =
+    this.like_.getElement()['innerHTML'] = 
         this.like_.getRenderer().createHtml(this.like_);
 };
 
@@ -1482,7 +1428,7 @@ postile.view.Sheety.CommentCell.prototype.getAuthorId = function() {
 
 /** @constructor */
 postile.view.Sheety.CommentAuthor = function(authorId) {
-    goog.base(this, null,
+    goog.base(this, null, 
         goog.ui.ControlRenderer.getCustomRenderer(
             goog.ui.ControlRenderer, 'author'));
 };
