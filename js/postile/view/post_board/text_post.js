@@ -1,5 +1,6 @@
 goog.provide('postile.view.post.text_post');
 
+goog.require('postile.WYSIWYF');
 goog.require('postile.view.BasePost');
 
 postile.view.post.text_post.TextPost = function(postData, board, mode) {
