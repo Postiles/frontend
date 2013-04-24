@@ -27,9 +27,7 @@ goog.require('postile.view.post_board.Header');
 goog.require('postile.templates.sheety');
 goog.require('postile.data_manager');
 goog.require('postile.async');
-
 goog.require('postile.view.onlinepeople');
-
 /**
  * FullScreenView-compatible goog.ui.Component.
  * Specifically, it has a .close method and closes postile.current_view
@@ -173,14 +171,12 @@ postile.view.Sheety = function(opt_boardId) {
 
         this.header_ = new postile.view.post_board.Header(boardData);
         goog.dom.append(this.getRootEl_(), this.header_.container);
-        //prepare for onlinepeople
+  //prepare for onlinepeople
         this.onlinepeople = new Object();
         this.onlinepeople.view = new postile.view.onlinepeople.OnlinePeople(this.header_);
         this.onlinepeople.count = 0;
         this.onlinepeople.view.render();
         this.onlinepeople.is_expended = false;
-
-
         var anony = this.isAnonymous_ = boardData['anonymous'];
         if (!this.isAnonymous_) { // display online people list only when not anonymous
             goog.events.listen(this.onlinepeople.view.container, goog.events.EventType.CLICK, function() {
@@ -193,7 +189,6 @@ postile.view.Sheety = function(opt_boardId) {
                 }
             });
         }
-
         // and fetches users
         return postile.view.Sheety.fetchUserOfBoardData_(anony, xs[1])
             .bind(/* And render the posts */ this.renderPosts_, this);
@@ -290,7 +285,6 @@ postile.view.Sheety.prototype.createDom = function() {
 };
 
 postile.view.Sheety.prototype.enterDocument = function() {
-    var instance = this;
     goog.base(this, 'enterDocument');
 
     goog.events.listen(this,
@@ -339,26 +333,9 @@ postile.view.Sheety.prototype.enterDocument = function() {
             default:
                 return;
             }
-        });
-    this.fayeSubscrOnline_  =  postile.faye.subscribe(
-            'status/'+ this.boardId_,
-        function(status, data){
-            instance.onlinepeople.count = data.count;
-            instance.onlinepeople.id = data.users;
-            if(instance.onlinepeople.is_expended) {
-                instance.updateOnlinePeople();
-            }else{
-                instance.updateOnlineCount();
-            }
         }, this);
-    this.fayeSubscrOnlineIndividual_ = postile.faye.subscribe(
-        'status/board/'+this.boardId_+'/user/'+postile.conf.getSelfUserId(),
-        function(status, data) {
-        });
-
-
-
 };
+
 postile.view.Sheety.prototype.updateOnlinePeople = function() {
     this.updateOnlineCount();
     var online_list = this.onlinepeople.view.online_list;
@@ -663,10 +640,10 @@ postile.view.Sheety.prototype.switchToPost = function(postId) {
         }, function(response) {
             var postData = response['message'];
             var boardId = postData['post']['board_id'];
-            //if (boardId == this.boardId_) {
+            if (boardId == this.boardId_) {
                 // Should never happen, since sheety doesn't really
                 // updates its post.
-            //}
+            }
             new postile.toast.Toast(10, "The comment is not in the " +
                 "current board. [Click to go] to another board and " +
                 "view.", [function() {
