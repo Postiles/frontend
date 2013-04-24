@@ -158,7 +158,7 @@ postile.ajax.exception_handlers = { //exception_string and corresponding handler
         new postile.toast.title_bar_toast("Board not exist.", 3);
     },
     POST_NOT_FOUND: function() {
-        new postile.toast.title_bar_toast("Post not exsit. Maybe it has been deleted", 3);
+        new postile.toast.title_bar_toast("Post not exist. Maybe it has been deleted", 3);
     }
 }
 

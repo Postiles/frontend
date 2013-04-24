@@ -25,7 +25,7 @@ postile.view.profile.ProfileView = function(id) { // constructor
 // Profile is a subclass of PopView
 goog.inherits(postile.view.profile.ProfileView, postile.view.PopView);
 
-postile.view.profile.ProfileView.prototype.unloaded_stylesheets = ['_profile_preview.css', '_close_button.css'];
+postile.view.profile.ProfileView.prototype.unloaded_stylesheets = ['_profile_preview.css' ];
 
 postile.view.profile.ProfileView.prototype.displayableItems = [
     { name: 'location', description: 'Lives in ', icon: 'profile-preview/work-icon.png' }, 
