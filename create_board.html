@@ -1,12 +1,15 @@
 <html>
 <head>
-	<title>Create_User Interface</title>
+	<title>Create_Board Interface</title>
 	<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
 
 	<script type="text/javascript">
 		function submitform(){
 			$.ajax({
 				type: "post",			
+          // XXX: this should be modified to keep in sync with the
+          // currently used backend
+          // possible values: dev:300 | www:3000
 			  	url: "http://www.postiles.com:3000/board/toosimple",
 			  	data: {
 			  		anonymous: $('#anonymous').is(':checked'),
