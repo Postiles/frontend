@@ -28,7 +28,6 @@ goog.require('postile.templates.sheety');
 goog.require('postile.data_manager');
 goog.require('postile.async');
 
-goog.require('postile.view.onlinepeople');
 /**
  * FullScreenView-compatible goog.ui.Component.
  * Specifically, it has a .close method and closes postile.current_view
@@ -175,24 +174,6 @@ postile.view.Sheety = function(opt_boardId) {
 
         var anony = this.isAnonymous_ = boardData['anonymous'];
 
-  //prepare for onlinepeople
-        this.onlinepeople = new Object();
-        this.onlinepeople.view = new postile.view.onlinepeople.OnlinePeople(this.header_);
-        this.onlinepeople.count = 0;
-        this.onlinepeople.view.render();
-        this.onlinepeople.is_expended = false;
-        var anony = this.isAnonymous_ = boardData['anonymous'];
-        if (!this.isAnonymous_) { // display online people list only when not anonymous
-            goog.events.listen(this.onlinepeople.view.container, goog.events.EventType.CLICK, function() {
-                if(!instance.onlinepeople.is_expended){
-                    instance.onlinepeople.is_expended = true;
-                    instance.updateOnlinePeople();
-                }else {
-                    instance.onlinepeople.is_expended = false;
-                    instance.onlinepeople.view.online_list.innerHTML = " ";
-                }
-            });
-        }
         // and fetches users
         return postile.view.Sheety.fetchUserOfBoardData_(anony, xs[1])
             .bind(/* And render the posts */ this.renderPosts_, this);
@@ -339,22 +320,6 @@ postile.view.Sheety.prototype.enterDocument = function() {
             }
         }, this);
 };
-
-postile.view.Sheety.prototype.updateOnlinePeople = function() {
-    this.updateOnlineCount();
-    var online_list = this.onlinepeople.view.online_list;
-    online_list.innerHTML="";
-    for(var i = 0; i < this.onlinepeople.id.users.length; i++) {
-        var item = new postile.view.onlinepeople.Item();
-        item.renderItem(this.onlinepeople.view, this.onlinepeople.id.users[i]);
-    }
-}
-postile.view.Sheety.prototype.updateOnlineCount = function() {
-    var thecount = this.onlinepeople.count;
-    var count_container = postile.dom.getDescendantById(this.onlinepeople.view.container
-        ,'count');
-    count_container.innerHTML = thecount;
-}
 
 postile.view.Sheety.prototype.exitDocument = function() {
     this.fayeSubscr_.addCallback(function(subscr) {
