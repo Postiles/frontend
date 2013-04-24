@@ -36,7 +36,7 @@ postile.entry.main = function() {
 postile.entry.init = function() {
     goog.events.listen(window, goog.events.EventType.ERROR, postile.conf.logError);
     postile.feedback.init();
-    if (window.location.hostname == 'dev.postiles.com'){
+    if (window.location.hostname == 'localhost'){
         postile.conf.initDbgConfiguration();
     }
     postile.router.init();
