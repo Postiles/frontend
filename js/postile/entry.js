@@ -36,7 +36,9 @@ postile.entry.main = function() {
 postile.entry.init = function() {
     goog.events.listen(window, goog.events.EventType.ERROR, postile.conf.logError);
     postile.feedback.init();
-    //postile.conf.initDbgConfiguration();
+    if (window.location.hostname == 'dev.postiles.com'){
+        postile.conf.initDbgConfiguration();
+    }
     postile.router.init();
     postile.entry.init_router_map();
     if (!goog.userAgent.WEBKIT) {

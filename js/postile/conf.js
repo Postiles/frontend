@@ -13,11 +13,11 @@ goog.require('goog.events.KeyHandler');
  */
 postile.conf = {
 
-    dhost: 'dev.postiles.com',
+    dhost: 'postiles.com',
 
     dport: 300,
 
-    fayeLocation: 'http://dev.postiles.com:9292/faye',
+    fayeLocation: 'http://postiles.com:9292/faye',
 
     wrapper: null,
 
@@ -32,7 +32,7 @@ postile.conf = {
     },
 
     uploadsResource: function(input) {
-        return "http://"+postile.conf.dhost.replace('www', 'static-uploads')+"/"+input.join("/"); // kind of hack
+        return "http://static-uploads.postiles.com/"+input.join("/"); // kind of hack
     },
 
     /**
