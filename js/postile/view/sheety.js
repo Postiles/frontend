@@ -9,6 +9,7 @@ goog.require('goog.dom');
 goog.require('goog.dom.classes');
 goog.require('goog.date');
 goog.require('goog.style');
+goog.require('goog.userAgent');
 goog.require('goog.ui.Button');
 goog.require('goog.ui.Component');
 goog.require('goog.ui.Container');
@@ -18,6 +19,7 @@ goog.require('goog.math.Size');
 goog.require('goog.math.Coordinate');
 
 goog.require('postile.conf');
+goog.require('postile.i18n');
 goog.require('postile.faye');
 goog.require('postile.view');
 goog.require('postile.view.At');
@@ -27,6 +29,38 @@ goog.require('postile.view.post_board.Header');
 goog.require('postile.templates.sheety');
 goog.require('postile.data_manager');
 goog.require('postile.async');
+
+goog.scope(function() {
+
+var CELL_ACTUAL_SIZE = new goog.math.Size(200, 100);
+
+var CELL_CALCULATED_SIZE = new goog.math.Size(188, 88);
+
+
+/**
+ * Get the container element to scroll the whole page within.
+ * @return {Element}
+ */
+var getPageScrollElement_ = function() {
+    // For firefox it's <html> but for webkit it's <body>
+    return goog.userAgent.GECKO ? document.documentElement
+                                : document.body;
+};
+
+/**
+ * Scroll the page to a given coordinate.
+ * @param {number=} opt_x
+ * @param {number=} opt_y
+ */
+var scrollPageTo_ = function(opt_x, opt_y) {
+    var el = getPageScrollElement_();
+    if (goog.isDef(opt_x)) {
+        el.scrollLeft = opt_x;
+    }
+    if (goog.isDef(opt_y)) {
+        el.scrollTop = opt_y;
+    }
+};
 
 /**
  * FullScreenView-compatible goog.ui.Component.
@@ -183,9 +217,6 @@ postile.view.Sheety = function(opt_boardId) {
 };
 goog.inherits(postile.view.Sheety, postile.view.GoogFSV);
 
-postile.view.Sheety.prototype.CELL_ACTUAL_SIZE =
-    new goog.math.Size(200, 100);
-
 /**
  * Custom event types used by sheety.
  * @enum {string}
@@ -326,7 +357,7 @@ postile.view.Sheety.prototype.exitDocument = function() {
         subscr.cancel();
     });
 
-    this.header_.container.remove();
+    goog.dom.removeNode(this.header_.container);
 
     goog.base(this, 'exitDocument');
 };
@@ -567,7 +598,7 @@ postile.view.Sheety.prototype.moveViewportByAlphabet = function(e) {
  */
 postile.view.Sheety.prototype.moveViewportToRow = function(row) {
     var rowEl = row.getElement();
-    var contEl = this.getRootEl_();
+    var contEl = getPageScrollElement_();
     var coordSrc = new goog.math.Coordinate(
         contEl.scrollLeft, contEl.scrollTop);
     var coordDst = 
@@ -575,19 +606,17 @@ postile.view.Sheety.prototype.moveViewportToRow = function(row) {
     // XXX I actually don't quite get what's going on here
     // but it seems that this is right.
     var coordDiff = new goog.math.Coordinate(
-        coordDst.x - contEl.scrollLeft,
-        coordDst.y - contEl.scrollTop);
+        coordDst.x - coordSrc.x,
+        coordDst.y - coordSrc.y);
 
     new postile.fx.Animate(function(iter) {
-        contEl.scrollLeft = (coordDiff.x - coordSrc.x) * iter +
-          coordSrc.x;
-        contEl.scrollTop = (coordDiff.y - coordSrc.y) * iter +
-          coordSrc.y;
+        scrollPageTo_(
+             (coordDiff.x - coordSrc.x) * iter + coordSrc.x,
+             (coordDiff.y - coordSrc.y) * iter + coordSrc.y);
     }, 300, {
         ease: postile.fx.ease.sin_ease,
         callback: function() {
-            contEl.scrollLeft = coordDiff.x;
-            contEl.scrollTop = coordDiff.y;
+            scrollPageTo_(coordDiff.x, coordDiff.y);
         }
     });
 };
@@ -1250,13 +1279,12 @@ postile.view.Sheety.CommentCell.prototype.createDom = function() {
     var el = this.getElement();
 
     var model = this.getModel();
-    var ctime = goog.date.DateTime.fromRfc822String(
-        model['cmt_data']['created_at']);
+    var ctimeStr = model['cmt_data']['created_at'];
 
     var preProcData = {
         author: this.isAnonymous_ ? ''
                                   : model['cmt_creator']['username'],
-        ctime: ctime.toUsTimeString(),
+        ctime: postile.date(ctimeStr, 'inline'),
         likeCount: model['cmt_likeCount'],
         liked: model['cmt_liked'],
         canDelete: model['cmt_canDel'],
@@ -1287,13 +1315,13 @@ postile.view.Sheety.CommentCell.prototype.createDom = function() {
 
     //console.log(preProcData.content);
 
-    this.wrapper = goog.dom.getElement('title_bar');
-    this.content_el = goog.dom.getElementByClass('content', el);
+    var wrapper = goog.dom.getElement('title_bar');
+    var contentEl = this.getContentEl();
     // create a span to get the length
     var dummy_span = goog.dom.createDom('div', 'dummy_span');
     dummy_span.style.display = 'table-cell';
     dummy_span.innerHTML = preProcData.content;
-    goog.dom.appendChild(this.wrapper, dummy_span);
+    goog.dom.appendChild(wrapper, dummy_span);
 
     //console.log(dummy_span);
 
@@ -1322,15 +1350,15 @@ postile.view.Sheety.CommentCell.prototype.createDom = function() {
         else{
             marginTop = wrapper_height / 2 - height / 2 -10; // number get by seeing the board....
         }
-        this.content_el.style.textAlign = 'center';
-        this.content_el.style.marginTop = marginTop + 'px';
-        this.content_el.style.fontSize = '20px';
+        contentEl.style.textAlign = 'center';
+        contentEl.style.marginTop = marginTop + 'px';
+        contentEl.style.fontSize = '20px';
     }
     else {
         marginTop = 0;
-        this.content_el.style.textAlign = '';
-        this.content_el.style.marginTop = marginTop + 'px';
-        this.content_el.style.fontSize = '10pt';
+        contentEl.style.textAlign = '';
+        contentEl.style.marginTop = marginTop + 'px';
+        contentEl.style.fontSize = '10pt';
     }
 
 
@@ -1344,7 +1372,8 @@ postile.view.Sheety.CommentCell.prototype.enterDocument = function() {
     goog.base(this, 'enterDocument');
 
     var el = this.getElement();
-    this.maxHeight = Math.max(this.content_el.offsetHeight + 35, 88);
+    this.maxHeight = Math.max(this.getContentEl().offsetHeight + 35,
+                              CELL_ACTUAL_SIZE.height);
 
     // To allow text selection
     goog.style.setUnselectable(this.getElement(), false);
@@ -1354,7 +1383,9 @@ postile.view.Sheety.CommentCell.prototype.enterDocument = function() {
         goog.events.EventType.MOUSEOVER,
         function() {
             el.style.height = this.maxHeight + 'px';
-            el.style.zIndex = '1000';
+            // Higher than other comment-cells, but not higher
+            // than post-cells and skiplsts.
+            el.style.zIndex = '2';
         }, undefined, this);
 
     goog.events.listen(
@@ -1413,6 +1444,13 @@ postile.view.Sheety.CommentCell.prototype.enterDocument = function() {
         }, undefined, this);
 };
 
+postile.view.Sheety.CommentCell.prototype.tryEnlargeComment = function() {
+};
+
+postile.view.Sheety.CommentCell.prototype.getContentEl = function() {
+    return goog.dom.getElementByClass('content', this.getElement());
+};
+
 postile.view.Sheety.CommentCell.prototype.syncLike = function() {
     this.like_.getElement()['innerHTML'] = 
         this.like_.getRenderer().createHtml(this.like_);
@@ -1446,6 +1484,23 @@ function() {
         goog.ui.Component.EventType.ACTION,
         goog.bind(profileView.open, profileView, 710));
 };
+
+postile.view.Sheety.CommentContent = function() {
+    goog.base(this);
+};
+goog.inherits(postile.view.Sheety.CommentContent, goog.ui.Component);
+
+postile.view.Sheety.CommentContent.prototype.createDom = function() {
+    goog.base(this, 'createDom');
+};
+
+postile.view.Sheety.CommentContent.prototype.enterDocument = function() {
+    goog.base(this, 'enterDocument');
+};
+
+postile.view.Sheety.CommentContent.prototype.tryEnlarge = function() {
+};
+
 
 /**
  * @constructor
@@ -1491,4 +1546,6 @@ postile.view.Sheety.DelCommentRenderer.prototype.createDom = function(x) {
     el['innerHTML'] = postile.templates.sheety.commentDel(x.getModel());
     return el;
 };
+
+});  // !goog.scope
 

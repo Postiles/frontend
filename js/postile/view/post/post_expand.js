@@ -2,6 +2,7 @@ goog.provide('postile.view.PostExpand');
 
 goog.require('goog.dom');
 goog.require('goog.events');
+goog.require('postile.WYSIWYF');
 goog.require('postile.view');
 goog.require('postile.conf');
 

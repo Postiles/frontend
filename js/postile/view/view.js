@@ -71,7 +71,7 @@ postile.view.loadCss = function(css_files) {
             var css_elem = goog.dom.createDom('link', {
                 type: 'text/css',
                 rel: 'stylesheet',
-                href: postile.conf.cssResource([path])
+                href: postile.conf.cssResource([path+'?updated=20130424'])
             });
             goog.dom.appendChild(
                 document.getElementsByTagName('head')[0], css_elem);
