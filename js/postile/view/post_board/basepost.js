@@ -432,7 +432,7 @@ postile.view.BasePost.prototype.initEditModeListener = function() {
         elements.postTitle_el, 
         goog.events.EventType.KEYDOWN, 
         function(e) {
-            if (e.keyCode == 13) {
+            if (e.keyCode == goog.events.KeyCodes.ENTER) {
                 this.submitChange();
             }
         }.bind(this));
@@ -442,7 +442,7 @@ postile.view.BasePost.prototype.initEditModeListener = function() {
         elements.postContent_el, 
         goog.events.EventType.KEYDOWN, 
         function(e) {
-            if (e.keyCode == 13 && (e.ctrlKey || e.shiftKey)) {
+            if (e.keyCode == goog.events.KeyCodes.ENTER && (e.ctrlKey || e.shiftKey)) {
                 e.preventDefault();
                 this.submitChange();
             }

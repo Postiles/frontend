@@ -15,7 +15,7 @@ goog.require("postile.view.post_board.InternalLink");
  */
 
 postile.parseBBcode = function(input) {
-    //input = goog.string.htmlEscape(input + '');
+    input = goog.string.htmlEscape(input + '');
     input = input.replace(/\[(\/?(b|i|u))\]/g, "<$1>");
     input = input.replace(/\[url\]/g, "<span class=\"external_link\">");
     input = input.replace(/\[link\](\d+)\[\/link\]/g, "<img class=\"internal_link\" link-to-post-id=\"$1\" />");
@@ -28,6 +28,7 @@ postile.parseBBcode = function(input) {
 postile.bbcodePostProcess = function(el, opt_no_mouseevent) {
     var handleOneAtPerson = function(sel) { 
         postile.data_manager.getUserData(sel.getAttribute("at-user"), function(uData) {
+            sel.setAttribute('at-user-name', uData.username);
             sel.innerHTML = '@' + uData.username;
         });
         sel.style.cursor = "pointer";
