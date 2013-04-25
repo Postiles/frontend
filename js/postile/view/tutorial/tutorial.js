@@ -30,15 +30,20 @@ postile.view.tutorial.TutorialView = function(change_password) {
     // dot indicators at the bottom
     this.dots = postile.dom.getDescendantsByClass(this.container, 'dot');
 
+    var ev; // event id
+
     for (var i in this.dots) {
         var bindDotClickEvent = function(i) {
             var index = parseInt(i);
-            goog.events.listen(
-                this.dots[index],
-                goog.events.EventType.CLICK,
-                function(e) {
-                    this.switchToView(index);
-                }.bind(this));
+
+            this.eventListeners.push(
+                ev = goog.events.listen(
+                    this.dots[index],
+                    goog.events.EventType.CLICK,
+                    function(e) {
+                        this.switchToView(index);
+                    }.bind(this)));
+            this.eventListeners.push(ev);
         }.bind(this);
 
         bindDotClickEvent(i);
@@ -46,51 +51,55 @@ postile.view.tutorial.TutorialView = function(change_password) {
 
     this.numItems = this.dots.length;
 
-    goog.events.listen(
-        document.body, 
-        goog.events.EventType.KEYDOWN,
-        function(e) {
-            var key = e.keyCode;
-            if (e.keyCode == 37) {
+    this.eventListeners.push(
+        goog.events.listen(
+            document.body, 
+            goog.events.EventType.KEYDOWN,
+            function(e) {
+                var key = e.keyCode;
+                if (e.keyCode == 37) {
+                    if (this.currView > 0) {
+                        this.switchToView(this.currView - 1);
+                    }
+                } else if (e.keyCode == 39 || e.keyCode == 13 || e.keyCode == 32) {
+                    if (this.currView < this.numItems - 1) {
+                        this.switchToView(this.currView + 1);
+                        e.preventDefault();
+                    } else if (this.currView == this.numItems - 1) {
+                        this.endTutorial();
+                    }
+                }
+            }.bind(this)));
+
+    this.eventListeners.push(
+        goog.events.listen(
+            this.elements.leftArrow_el,
+            goog.events.EventType.CLICK,
+            function(e) {
                 if (this.currView > 0) {
                     this.switchToView(this.currView - 1);
                 }
-            } else if (e.keyCode == 39 || e.keyCode == 13 || e.keyCode == 32) {
+            }.bind(this)));
+
+    this.eventListeners.push(
+        goog.events.listen(
+            this.elements.rightArrow_el,
+            goog.events.EventType.CLICK,
+            function(e) {
                 if (this.currView < this.numItems - 1) {
                     this.switchToView(this.currView + 1);
-                    e.preventDefault();
                 } else if (this.currView == this.numItems - 1) {
                     this.endTutorial();
                 }
-            }
-        }.bind(this));
+            }.bind(this)));
 
-    goog.events.listen(
-        this.elements.leftArrow_el,
-        goog.events.EventType.CLICK,
-        function(e) {
-            if (this.currView > 0) {
-                this.switchToView(this.currView - 1);
-            }
-        }.bind(this));
-
-    goog.events.listen(
-        this.elements.rightArrow_el,
-        goog.events.EventType.CLICK,
-        function(e) {
-            if (this.currView < this.numItems - 1) {
-                this.switchToView(this.currView + 1);
-            } else if (this.currView == this.numItems - 1) {
+    this.eventListeners.push(
+        goog.events.listen(
+            this.elements.skipButton_el,
+            goog.events.EventType.CLICK,
+            function(e) {
                 this.endTutorial();
-            }
-        }.bind(this));
-
-    goog.events.listen(
-        this.elements.skipButton_el,
-        goog.events.EventType.CLICK,
-        function(e) {
-            this.endTutorial();
-        }.bind(this));
+            }.bind(this)));
         
     if (change_password) {
         new postile.view.change_password.ChangePassword(change_password).open(500);
@@ -148,4 +157,8 @@ postile.view.tutorial.TutorialView.prototype.switchToView = function(viewIndex) 
             }
         }.bind(this), 5);
     }
+}
+
+postile.view.tutorial.TutorialView.prototype.close = function(viewIndex) {
+    goog.base(this, 'close');
 }
