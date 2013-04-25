@@ -234,16 +234,19 @@ postile.view.at.At.prototype.asBBCode = function() {
  * @return {string} The converted BBCode.
  */
 postile.view.at.asBBCode = function(html) {
+    var i;
     // Deep copy
     var el = goog.dom.createDom('div', {
         'innerHTML': goog.string.trim(html)
     });
+    // replace Ats
     var ats = postile.dom.getDescendantsByCondition(el, function(cel) {
         return cel.tagName && cel.getAttribute('at-user');
     });
-    for (var i in ats) {
+    for (i in ats) {
         goog.dom.replaceNode(goog.dom.createTextNode('[at]' + ats[i].getAttribute('at-user') + '[/at]'), ats[i]);
     }
-    return el.innerHTML;
+    // replace other tags
+    return el.textContent;
 };
 
