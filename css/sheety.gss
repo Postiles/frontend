@@ -9,7 +9,7 @@
     mult(add(CELL_PAD_TOP, CELL_BORDER_SIZE), 2));
 @def NUM_WCELL 3;
 @def NUM_HCELL 3;
-@def TABLE_BG #F5F9FA;
+@def TABLE_BG white;
 @def TABLE_BG_DARKER #DFE8EB;
 @def CELL_BORDER_GREY rgb(195,207,194);
 @def LIGHT_CELL_BG rgb(224,237,221);

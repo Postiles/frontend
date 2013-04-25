@@ -131,9 +131,8 @@ postile.view.account.initComponents = {
     },
     profile: function(instance, img_src) {
         var profileImageContainer_el = instance.createAccountItem('profile_image_container');
-        profileImageContainer_el.innerHTML = '<img class="image" /><div id="profile_image_left_caret"></div>';
-        profileImageContainer_el.firstChild.src = img_src;  
-        // profileImageContainer_el.firstChild.style.background = 'url(' + img_src + ')';
+        profileImageContainer_el.innerHTML = '<div class="image"></div><div id="profile_image_left_caret"></div>';
+        profileImageContainer_el.firstChild.style.backgroundImage = 'url(' + img_src + ')';
         goog.events.listen(profileImageContainer_el, goog.events.EventType.CLICK, function(){
             var profileView = new postile.view.profile.ProfileView(localStorage.postile_user_id);
             profileView.open(710);

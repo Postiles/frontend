@@ -79,8 +79,15 @@ postile.view.BoardList.prototype.html_segment = postile.conf.staticResource(['bo
 postile.view.BoardList.prototype.renderBoardListItem = function(data) {
     var instance = this;
     var item_el = goog.dom.createDom('div', 'single');
+    /*
     var img_el = goog.dom.createDom('img');
     img_el.src = postile.conf.uploadsResource([data.board.image_small_url]);
+    */
+    var img_el = goog.dom.createDom('div', 'image');
+    img_el.style.backgroundImage = 
+        'url(' + postile.conf.uploadsResource([data.board.image_small_url]) + ')';
+    // img_el.src = postile.conf.uploadsResource([data.board.image_small_url]);
+
     var meta_el = goog.dom.createDom('div', 'meta');
     var title_el = goog.dom.createDom('div', 'subject');
     title_el.innerHTML = data.board.name;

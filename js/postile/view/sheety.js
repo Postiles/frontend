@@ -837,7 +837,7 @@ postile.view.Sheety.PostCell = function() {
         goog.ui.ControlRenderer.getCustomRenderer(
             goog.ui.ControlRenderer, 'who'));
 
-    this.addButton_ = new goog.ui.Control('Add Comment',
+    this.addButton_ = new goog.ui.Control('对TA说',
         goog.ui.ControlRenderer.getCustomRenderer(
             goog.ui.ControlRenderer, 'mkcomment'));
     this.commentPop_ = new postile.view.Sheety.AddCommentPop(this);

@@ -32,18 +32,18 @@
         -moz-transform: skewY(20deg);
         -webkit-transform: skewY(20deg);
         box-shadow: 0px 0px 6px black; }
-    .profile-preview .image-container .picture {
+    .profile-preview .image-container .profile-picture {
       position: relative;
       width: 200px;
       height: 200px;
       border-radius: 10px;
       border: 5px #024d61 solid;
       box-shadow: 0px 0px 8px #024d61; }
-      .profile-preview .image-container .picture img {
+      .profile-preview .image-container .profile-picture .image {
         width: inherit;
         height: inherit;
         border-radius: 5px; }
-      .profile-preview .image-container .picture .edit {
+      .profile-preview .image-container .profile-picture .edit {
         position: absolute;
         width: 100%;
         background: black;
@@ -58,9 +58,9 @@
         transition: opacity 0.3s;
         -moz-transition: opacity 0.3s;
         -webkit-transition: opacity 0.3s; }
-        .profile-preview .image-container .picture .edit:hover {
+        .profile-preview .image-container .profile-picture .edit:hover {
           text-decoration: underline; }
-      .profile-preview .image-container .picture:hover .edit {
+      .profile-preview .image-container .profile-picture:hover .edit {
         opacity: 0.7; }
   .profile-preview .info-container {
     width: 500px;

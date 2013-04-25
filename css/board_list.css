@@ -76,11 +76,13 @@
     width: 200px;
 }
 
-.gateway .single img {
+.gateway .single .image {
     width: 50px;
     height: 50px;
     float: left;
     margin: 15px;
+    background-size: cover;
+    background-position: center;
 }
 
 .gateway .single .subject {

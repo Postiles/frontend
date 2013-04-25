@@ -35,7 +35,9 @@ postile.view.post_board.Header = function(boardData) {
     // create a create post helper
     this.topicImgContainer_el = postile.dom.getDescendantById(instance.container, 'topic_image_container');
     this.topicImg_el = postile.dom.getDescendantByClass(this.topicImgContainer_el, 'topic_image');
-    this.topicImg_el.src = postile.conf.uploadsResource( [this.boardData.image_small_url] );
+    // this.topicImg_el.src = postile.conf.uploadsResource( [this.boardData.image_small_url] );
+    this.topicImg_el.style.backgroundImage = 
+        'url(' + postile.conf.uploadsResource( [this.boardData.image_small_url] ) + ')';
 
     goog.events.listen(
         this.topicImg_el,

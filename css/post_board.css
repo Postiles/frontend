@@ -40,8 +40,9 @@ html, body {
 }
 
 #topic_image_container {
-  width: 60px;
-  height: 60px;
+  width: 50px;
+  height: 50px;
+  padding: 5px;
   background: #024d61;
   cursor: pointer;
 
@@ -52,16 +53,18 @@ html, body {
   -ms-box-shadow: 0px 0px 4px #000;
 }
 
-#topic_image_container img {
+#topic_image_container .topic_image {
   float: left;
-  padding: 5px;
   width: 50px;
-  height: 50px; }
+  height: 50px; 
+  background-size: cover;
+  background-position: center;
+}
 
 #topic_image_right_caret {
   position: relative;
-  left: 60px;
-  top: 12px;
+  left: 55px;
+  top: 8px;
   width: 0;
   height: 0;
   border-top: 6px solid transparent;
@@ -180,22 +183,25 @@ html, body {
 
 #profile_image_container {
   margin-top: 2px;
-  width: 36px;
-  height: 36px;
+  width: 30px;
+  height: 30px;
+  padding: 3px;
   background: #024d61;
   cursor: pointer;
 }
 
-#profile_image_container img {
+#profile_image_container .image {
   float: right;
-  padding: 3px;
   width: 30px;
-  height: 30px; }
+  height: 30px; 
+  background-size: cover;
+  background-position: center;
+}
 
 #profile_image_left_caret {
   position: relative;
-  left: -5px;
-  top: 10px;
+  left: -8px;
+  top: 5px;
   width: 0;
   height: 0;
   border-top: 4px solid transparent;
