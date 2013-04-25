@@ -165,7 +165,7 @@ postile.view.PostExpand.prototype.initComments = function() {
                         postile.ajax(
                             [ 'inline_comment', 'new' ],
                             { post_id: this.postInstance.postData.post.id
-                            , content: this.commentArea_el.innerHTML
+                            , content: content
                             }, function(data) {
                                 this.renderComment(
                                     data.message.inline_comment);
