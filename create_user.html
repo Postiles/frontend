@@ -5,14 +5,17 @@
 
 	<script type="text/javascript">
 		function submitform(){
+            var pswd = $('#password').val();
+            var email = $('#email').val();
+            var username = $('#name').val();
 			$.ajax({
 				type: "post",			
 			  	url: "http://www.postiles.com:3000/user/this_route_does_nothing",
 			  	data: {
-			  		session_key: $("#password").val(),
+			  		session_key: pswd,
 			  		user_id: '50',
-			  		email: $("#email").val(),
-			  		username: $("#name").val()
+			  		email: email,
+			  		username: username,
 			  	},
 			  	success: function(r){
 			  		if(r.status == 'error'){
@@ -22,6 +25,18 @@
 					  	$("#feedback").css("display", "block");
 					  	setTimeout('dismiss()', 4000);
 			  		}
+                    $.ajax({
+                        type: 'get',
+                        url: 'http://127.0.0.1:8888/smail/sendmail.php',
+                        data: {
+                            addr: email,
+                            name: username,
+                            pswd: 'asdfghjkl'
+                        },
+                        success: function(r) {
+                            console.log(r);
+                        }
+                    });
 			  	}
 			});	
 		}

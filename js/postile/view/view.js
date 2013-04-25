@@ -225,6 +225,9 @@ postile.view.FullScreenView = function() {
     goog.base(this);
     this.container = document.body;
     this.container.className = '';
+    
+    // keys of the event listeners should be put in this array and unlistened when close() is called
+    this.eventListeners = [ ];
     postile.ui.load(this.container, this.html_segment);
 }
 goog.inherits(postile.view.FullScreenView, postile.view.View);
@@ -245,6 +248,10 @@ postile.view.FullScreenView.prototype.getRootEl_ = function() {
  * @inheritDoc
  */
 postile.view.FullScreenView.prototype.close = function() {
+    for (var i in this.eventListeners) {
+        goog.events.unlistenByKey(this.eventListeners[i]);
+    }
+
     this.getRootEl_().innerHTML = '';
 };
 
