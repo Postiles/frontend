@@ -24,22 +24,26 @@ postile.ajax = function(url, data, onsuccess, onfail, notifier_text) {
         postile.ajax.notifier.show(notifier_text);
     }
 
-    if (postile.conf.useragent.features.xdr) {
-        xhr = new XDomainRequest();
-        xhr.onload = function() { postile.ajax.fetchedHandler(onsuccess, onfail, xhr.responseText); }
-        xhr.onerror = function() { postile.ajax.notifier.networkError("XDR unknwon error"); }
-    } else {
-        xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState == 4) {
-                if (xhr.status == 200) {
-                    postile.ajax.fetchedHandler(onsuccess, onfail, xhr.responseText);
-                } else {
-                    postile.ajax.notifier.networkError("XHR unknown error"); //TODO
+    //if (postile.conf.useragent.features.xdr) {
+    //    xhr = new XDomainRequest();
+    //    xhr.onload = function() { postile.ajax.fetchedHandler(onsuccess, onfail, xhr.responseText); }
+    //    xhr.onerror = function() { postile.ajax.notifier.networkError("XDR unknwon error"); }
+    //} else {
+        try {
+            xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    if (xhr.status == 200) {
+                        postile.ajax.fetchedHandler(onsuccess, onfail, xhr.responseText);
+                    } else {
+                        postile.ajax.notifier.networkError("XHR unknown error"); //TODO
+                    }
                 }
-            }
-        };
-    }
+            };
+        } catch (e) {
+            postile.conf.logErrorByException(e);
+        }
+    //}
 
     xhr.timeout = 10000;
     xhr.ontimeout = function() {
@@ -81,7 +85,7 @@ postile.ajax.upload = function(url, formData, onsuccess, onfail, notifier_text) 
     //} else {
         xhr = new XMLHttpRequest();
     　  xhr.onreadystatechange = function(){
-            //try {
+            try {
         　　　　if (xhr.readyState == 4) {
                     if (xhr.status == 200) {
                         postile.ajax.fetchedHandler(onsuccess, onfail, xhr.responseText);
@@ -89,9 +93,9 @@ postile.ajax.upload = function(url, formData, onsuccess, onfail, notifier_text) 
         　　　　　　    postile.ajax.notifier.networkError("XHR unknown error"); //TODO
         　　　　    }
                 }
-            //} catch (e) {
-            //    postile.conf.logErrorByException(e);
-            //}           
+            } catch (e) {
+                postile.conf.logErrorByException(e);
+            }           
     　　};
     //}
     xhr.timeout = 10000;
