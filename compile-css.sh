@@ -2,6 +2,8 @@
 
 OUT=css/compiled-gen.css
 
+rm -f $OUT
+
 echo "scss compiling..."
 scss --update css/:css/
 
@@ -12,5 +14,5 @@ java -jar tmp/closure-stylesheets.jar \
     --allowed-non-standard-function radial-gradient \
     --allowed-non-standard-function -webkit-radial-gradient \
     --allowed-non-standard-function -moz-radial-gradient \
-    > $OUT
+    --output-file $OUT
 
