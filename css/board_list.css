@@ -280,6 +280,16 @@
     word-break: break-word;
 }
 
+.gateway .right .one_recent_post .link {
+    color: #777;
+    margin-top: 4px;
+    cursor: pointer;
+}
+
+.gateway .right .one_recent_post .link:hover {
+    color: #555;
+}
+
 .gateway .left .subtitle_incognito, .gateway .left .subtitle_public {
     color: #FFF;
     font-size: 15pt;
