@@ -1,3 +1,5 @@
+#!/bin/bash
+
 if [ "$1" = "-O2" ]; then
 	CFLAGS="--compilation_level=ADVANCED_OPTIMIZATIONS"
 else

@@ -23,6 +23,9 @@ if (!(Test-PAth "$(pwd)\closure-stylesheets.jar")) {
     (new-object System.Net.WebClient).DownloadFile("https://closure-stylesheets.googlecode.com/files/closure-stylesheets-20111230.jar", "$(pwd)\closure-stylesheets.jar")
 }
 
+echo "Install sass (please make sure you have gem in your PATH) ..."
+gem install sass
+
 echo "Unzipping google closure library..."
 # Do unzip
 $shell_app = new-object -com shell.application
