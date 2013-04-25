@@ -9,11 +9,13 @@ $lower-background: #b5b5b5;
 	0%:{top: -10px;}
 	100%:{top: 0px;}
 }
-@keyframes slideDown /* Safari and Chrome */
+/* XXX goog-stylesheet
+@keyframes slideDown
 {
 	0%:{top: -10px;}
 	100%:{top: 0px;}
 }
+ */
 @-moz-keyframes slideDown /* Safari and Chrome */
 {
 	0%:{top: -10px;}
@@ -24,11 +26,13 @@ $lower-background: #b5b5b5;
 	0%:{top: 130px;}
 	100%:{top: 0px;}
 }
-@keyframes slideUp /* Safari and Chrome */
+/* XXX goog-stylesheet
+@keyframes slideUp
 {
 	0%:{top: 130px;}
 	100%:{top: 0px;}
 }
+ */
 @-moz-keyframes slideUp /* Safari and Chrome */
 {
 	0%:{top: 130px;}

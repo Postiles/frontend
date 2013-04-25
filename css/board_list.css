@@ -1,8 +1,13 @@
 .gateway {
+    /* @alternate */
     background: -moz-linear-gradient(left, rgb(3,76,97) 0%, rgb(3,76,97) 50%, rgb(202,219,184) 50%, rgb(202,219,184) 100%); /* FF3.6+ */
+    /* @alternate */
     background: -webkit-linear-gradient(left, rgb(3,76,97) 0%,rgb(3,76,97) 50%,rgb(202,219,184) 50%,rgb(202,219,184) 100%); /* Chrome10+,Safari5.1+ */
+    /* @alternate */
     background: -o-linear-gradient(left, rgb(3,76,97) 0%,rgb(3,76,97) 50%,rgb(202,219,184) 50%,rgb(202,219,184) 100%); /* Opera 11.10+ */
+    /* @alternate */
     background: -ms-linear-gradient(left, rgb(3,76,97) 0%,rgb(3,76,97) 50%,rgb(202,219,184) 50%,rgb(202,219,184) 100%); /* IE10+ */
+    /* @alternate */
     background: linear-gradient(to right, rgb(3,76,97) 0%,rgb(3,76,97) 50%,rgb(202,219,184) 50%,rgb(202,219,184) 100%); /* W3C */
 }
 

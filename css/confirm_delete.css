@@ -4,7 +4,7 @@
   height: 68px;
   background: #d4dcde;
   line-height: 100%;
- }
+  z-index: 998; }
   .confirm_delete .confirm_delete_title {
     width: 200px;
     height: 22px;
@@ -54,5 +54,4 @@
     border-right: 10px solid #024d61;
     position: absolute;
     top: 1px;
-    left: -8px;
-    z-index: 0 !important; }
+    left: -8px; }

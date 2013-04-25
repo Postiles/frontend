@@ -100,8 +100,9 @@
                 border-radius: 6px;
                 -webkit-border-radius: 6px;
                 -moz-border-radius: 6px;
-                -o-border-radius: 6px;
-                -ms-border-radius: 6px;
+ 		// XXX: goog-stylesheet
+                //-o-border-radius: 6px;
+                //-ms-border-radius: 6px;
                 cursor: pointer;
 
                 &:first-child {

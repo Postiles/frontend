@@ -110,3 +110,9 @@ postile.conf.getGlobalKeyHandler.handler = null;
  */
 postile.conf.ENABLE_DEBUG = false;
 
+/**
+ * If true, view.loadCss will do nothing.
+ * @define {boolean}
+ */
+postile.conf.USING_COMPILED_CSS = false;
+
