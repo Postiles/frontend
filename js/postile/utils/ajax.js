@@ -74,22 +74,26 @@ postile.ajax.upload = function(url, formData, onsuccess, onfail, notifier_text) 
     if (url instanceof Array) {
         url = postile.conf.dynamicResource(url);
     }
-    if (postile.conf.useragent.features.xdr) {
-        xhr = new XDomainRequest();
-        xhr.onload = function() { postile.ajax.fetchedHandler(onsuccess, onfail, xhr.responseText); }
-        xhr.onerror = function() { postile.ajax.notifier.networkError("XDR unknwon error"); }
-    } else {
+    //if (postile.conf.useragent.features.xdr) {
+    //    xhr = new XDomainRequest();
+    //    xhr.onload = function() { postile.ajax.fetchedHandler(onsuccess, onfail, xhr.responseText); }
+    //    xhr.onerror = function() { postile.ajax.notifier.networkError("XDR unknown error"); }
+    //} else {
         xhr = new XMLHttpRequest();
     　  xhr.onreadystatechange = function(){
-    　　　　if (xhr.readyState == 4) {
-                if (xhr.status == 200) {
-                    postile.ajax.fetchedHandler(onsuccess, onfail, xhr.responseText);
-    　　　　    } else {
-    　　　　　　    postile.ajax.notifier.networkError("XHR unknown error"); //TODO
-    　　　　    }
-            }
+            //try {
+        　　　　if (xhr.readyState == 4) {
+                    if (xhr.status == 200) {
+                        postile.ajax.fetchedHandler(onsuccess, onfail, xhr.responseText);
+        　　　　    } else {
+        　　　　　　    postile.ajax.notifier.networkError("XHR unknown error"); //TODO
+        　　　　    }
+                }
+            //} catch (e) {
+            //    postile.conf.logErrorByException(e);
+            //}           
     　　};
-    }
+    //}
     xhr.timeout = 10000;
     xhr.ontimeout = function(){ postile.ajax.notifier.networkError("request timeout"); };
     if (postile.conf.useragent.features.xhr >= 2) {
