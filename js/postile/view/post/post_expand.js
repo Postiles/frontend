@@ -5,6 +5,7 @@ goog.require('goog.events');
 goog.require('postile.WYSIWYF');
 goog.require('postile.view');
 goog.require('postile.conf');
+goog.require('postile.view.at');
 
 /**
  * @constructor
@@ -149,7 +150,7 @@ postile.view.PostExpand.prototype.initComments = function() {
         this.commentArea_el = postile.dom.getDescendantByClass(this.commentBox_el, 'input');
 
         if (!this.commentArea_el._at_) {
-            this.commentArea_el._at_ = new postile.view.At(this.commentArea_el);
+            this.commentArea_el._at_ = new postile.view.at.At(this.commentArea_el);
         }
 
         if (!this.commentArea_el._lc_) {
@@ -160,10 +161,7 @@ postile.view.PostExpand.prototype.initComments = function() {
         postile.ui.makeLabeledInput(this.commentArea_el, 'Enter your comments here',
                 'half_opaque', function() {
                     if (!this.commentArea_el.lengthOverflow) {
-                        this.commentArea_el._at_.toBBcode();
-                        var content = 
-                            goog.string.trim(
-                                this.commentArea_el.innerHTML);
+                        var content = this.commentArea_el._at_.asBBCode();
                         postile.ajax(
                             [ 'inline_comment', 'new' ],
                             { post_id: this.postInstance.postData.post.id

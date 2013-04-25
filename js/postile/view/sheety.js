@@ -22,7 +22,7 @@ goog.require('postile.conf');
 goog.require('postile.i18n');
 goog.require('postile.faye');
 goog.require('postile.view');
-goog.require('postile.view.At');
+goog.require('postile.view.at');
 goog.require('postile.debbcode');
 goog.require('postile.view.post_board.handlers');
 goog.require('postile.view.post_board.Header');
@@ -959,7 +959,7 @@ postile.view.Sheety.AddCommentPop.prototype.createDom = function() {
 postile.view.Sheety.AddCommentPop.prototype.submit = function() {
     // Preprocess the value of the textarea.
     // XXX: check for emptiness.
-    var content = postile.view.At.asBBCode(
+    var content = postile.view.at.At.asBBCode(
         this.textarea_.getValue());
     if (content && !this.textarea_.getElement().lengthOverflow) {
         var e = new goog.events.Event(
@@ -1023,7 +1023,7 @@ postile.view.Sheety.AddCommentPop.prototype.enterDocument = function() {
     // XXX: On timeout?
 
     // Attach an `At` view to be able to @someone.
-    this.atAddOn_ = new postile.view.At(this.textarea_.getElement());
+    this.atAddOn_ = new postile.view.at.At(this.textarea_.getElement());
 };
 
 postile.view.Sheety.AddCommentPop.prototype.exitDocument = function() {
@@ -1060,7 +1060,7 @@ postile.view.Sheety.AddCommentPop.prototype.slideToHide = function() {
 };
 
 /**
- * Content-editable textarea. Normally used with postile.view.At.
+ * Content-editable textarea. Normally used with postile.view.at.At.
  * @constructor
  */
 postile.view.Sheety.CETextarea = function(opt_content, opt_renderer) {

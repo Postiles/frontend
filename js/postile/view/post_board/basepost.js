@@ -16,7 +16,7 @@ goog.require('postile.ui');
 goog.require('postile.WYSIWYF');
 goog.require('postile.debbcode');
 goog.require('postile.fx');
-goog.require('postile.view.At');
+goog.require('postile.view.at');
 goog.require('postile.fx.effects');
 goog.require('postile.length_control');
 
@@ -379,11 +379,7 @@ postile.view.BasePost.prototype.initCommentModeListener = function() {
             this.bringToFront();
 
             if (e.keyCode == goog.events.KeyCodes.ENTER) { // enter pressed
-                this.commentModeElements.commentInput_el._at_.toBBcode();
-
-                var content = 
-                    goog.string.trim(
-                        this.commentModeElements.commentInput_el.innerHTML);
+                var content = this.commentModeElements.commentInput_el._at_.asBBCode();
 
                 if (content && !this.commentModeElements.commentInput_el.lengthOverflow) {
                     postile.ajax([ 'inline_comment', 'new' ], {
@@ -709,7 +705,7 @@ postile.view.BasePost.prototype.enterCommentMode = function() {
     }
 
     if (!elements.commentInput_el._at_) {
-        elements.commentInput_el._at_ = new postile.view.At(elements.commentInput_el);
+        elements.commentInput_el._at_ = new postile.view.at.At(elements.commentInput_el);
     }
 
     if (!elements.commentInput_el._lc_) {

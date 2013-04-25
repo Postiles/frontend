@@ -1,4 +1,4 @@
-goog.provide('postile.view.At');
+goog.provide('postile.view.at');
 
 goog.require('goog.string');
 goog.require('goog.dom');
@@ -12,7 +12,7 @@ goog.require('postile.events');
  *
  * Usecase:
  * - When decorating a comment textarea
- *   at = new postile.view.At(el)
+ *   at = new postile.view.at.At(el)
  *   at.toBBcode()  // pre-process the innerhtml
  *   // And submit el.inerHTML to backend
  *
@@ -25,7 +25,7 @@ goog.require('postile.events');
  * @param {Element} el A div element that has its contentEditable
  * set to true.
  */
-postile.view.At = function(el) {
+postile.view.at.At = function(el) {
     postile.view.TipView.call(this);
 
     var instance = this;
@@ -44,11 +44,11 @@ postile.view.At = function(el) {
             }, true);
 }
 
-goog.inherits(postile.view.At, postile.view.TipView);
+goog.inherits(postile.view.at.At, postile.view.TipView);
 
-postile.view.At.prototype.unloaded_stylesheets = ['_at.css'];
+postile.view.at.At.prototype.unloaded_stylesheets = ['_at.css'];
 
-postile.view.At.prototype.keyUpHandler = function(e) {
+postile.view.at.At.prototype.keyUpHandler = function(e) {
     if (!this.opened) {
         if (e.keyCode == goog.events.KeyCodes.TWO && e.shiftKey) {
             this.open();
@@ -62,11 +62,11 @@ postile.view.At.prototype.keyUpHandler = function(e) {
     this.lastEvent = e;
 }
 
-postile.view.At.prototype.keyDownHandler = function(e) {
+postile.view.at.At.prototype.keyDownHandler = function(e) {
     this.lastEvent = e;
 }
 
-postile.view.At.prototype.realPress = function() {
+postile.view.at.At.prototype.realPress = function() {
     this.range.setEndAfter(this.range.startContainer);
     var tmpVal = this.range.toString();
     if(tmpVal.charAt(0)!='@') {
@@ -80,7 +80,7 @@ postile.view.At.prototype.realPress = function() {
     this.fetchAndRender(goog.string.trim(tmpVal).substr(1));
 }
 
-postile.view.At.prototype.renderUser = function(profile) {
+postile.view.at.At.prototype.renderUser = function(profile) {
     var instance = this;
 
     var tmpDiv = goog.dom.createDom('div', 'at_single');
@@ -108,7 +108,7 @@ postile.view.At.prototype.renderUser = function(profile) {
     return tmpDiv;
 }
 
-postile.view.At.prototype.choose = function(profile) {
+postile.view.at.At.prototype.choose = function(profile) {
     var instance = this;
     var atNode = goog.dom.createDom('span', 'at_tag');
     atNode.contentEditable = true;
@@ -162,7 +162,7 @@ postile.view.At.prototype.choose = function(profile) {
     }
 }
 
-postile.view.At.prototype.setCurrent = function(current) {
+postile.view.at.At.prototype.setCurrent = function(current) {
     if (!current) { return; }
     if (this.current_person) {
         goog.dom.classes.remove(this.current_person, 'hover');
@@ -171,7 +171,7 @@ postile.view.At.prototype.setCurrent = function(current) {
     this.current_person = current;
 }
 
-postile.view.At.prototype.fetchAndRender = function(keyword) {
+postile.view.at.At.prototype.fetchAndRender = function(keyword) {
     var instance = this;
     postile.ajax(['search','search_user'], { keyword: keyword }, function(r) {
         var usr = r.message.users.slice(0, 5);
@@ -188,7 +188,7 @@ postile.view.At.prototype.fetchAndRender = function(keyword) {
     });
 }
 
-postile.view.At.prototype.keypress = function(e) {
+postile.view.at.At.prototype.keypress = function(e) {
     if (!this.current_person) { return; }
     switch (e.keyCode) {
         case goog.events.KeyCodes.UP:
@@ -204,7 +204,7 @@ postile.view.At.prototype.keypress = function(e) {
     }
 }
 
-postile.view.At.prototype.open = function() {
+postile.view.at.At.prototype.open = function() {
     var sel = window.getSelection();
     if (!sel.rangeCount) { return; }
     this.oRange = sel.getRangeAt(0);
@@ -217,39 +217,27 @@ postile.view.At.prototype.open = function() {
     this.keyboard_event_handler.listen();
 }
 
-postile.view.At.prototype.close = function() {
+postile.view.at.At.prototype.close = function() {
     this.editlsnr.unlisten();
     this.keyboard_event_handler.unlisten();
     postile.view.TipView.prototype.close.call(this);
 }
 
-/**
- * Preprocess the containing div's innerHTML.
- * This function is used for inline commenting.
- * For posting, a similar function in postile.WYSIWYF is used.
- */
-postile.view.At.prototype.toBBcode = function() {
-    var ats = postile.dom.getDescendantsByCondition(this.ipel, function(cel) {
-        return cel.tagName && cel.getAttribute('at-user');
-    });
-    for (var i in ats) {
-        goog.dom.replaceNode(goog.dom.createTextNode('[at]' + ats[i].getAttribute('at-user') + '[/at]'), ats[i]);
-    }
+postile.view.at.At.prototype.asBBCode = function() {
+    return postile.view.at.asBBCode(this.ipel.innerHTML);
 }
 
 /**
  * The same as toBBcode, but rather than modifying the element inplace,
  * this function returns the bbcode instead.
  * XXX: keep in sync with toBBcode.
- * @param {string} html The innerHTML of the original element to read from
  * @return {string} The converted BBCode.
  */
-postile.view.At.asBBCode = function(html) {
+postile.view.at.asBBCode = function(html) {
     // Deep copy
     var el = goog.dom.createDom('div', {
-        'innerHTML': html
+        'innerHTML': goog.string.trim(html)
     });
-
     var ats = postile.dom.getDescendantsByCondition(el, function(cel) {
         return cel.tagName && cel.getAttribute('at-user');
     });

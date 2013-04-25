@@ -25,6 +25,7 @@ postile.view.signup.SignupView = function() {
             var email = this.email_el.value;
             var reason = this.reason_el.value;
             if (username && email) {
+                this.btn.style.display = 'none';
                 postile.ajax(
                     [ 'user', 'request_invitation' ],
                     { username: username, email: email, reason: reason },
