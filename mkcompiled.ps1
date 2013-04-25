@@ -7,4 +7,5 @@ tmp\closure\bin\build\closurebuilder.py `
 	--output_mode=compiled `
 	--compiler_jar="$(pwd)\tmp\compiler.jar" `
 	--compiler_flags="$cflags" `
-	> compiled.js
+	--output_file=compiled.js
+

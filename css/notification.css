@@ -2,9 +2,10 @@
 #notifications_pop_up {
   width: 280px;
   line-height: 100%;
-  position: absolute !important;
+  position: fixed !important;
   top: 46px !important;
-  left: -230px !important;
+  right: 70px !important;
+  left: auto !important;
   background: #f2f7f7;
   box-shadow: 3px 3px 20px 1px #888888; }
   #notifications_pop_up p {

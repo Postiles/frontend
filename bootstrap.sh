@@ -26,7 +26,13 @@ if [ ! -f closure-stylesheets.jar ]; then
     -O closure-stylesheets.jar
 fi
 
+if [ ! `which scss` ]; then
+    echo "Installing scss..."
+    sudo gem install scss
+fi
+
 if [ ! `which unzip` ]; then
+    echo "Installing unzip..."
     sudo apt-get install unzip
 fi
 

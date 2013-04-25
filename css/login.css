@@ -14,10 +14,15 @@ html, body {
   margin: 0 auto;
   height: 100%;
   width: 450px;
+  /* @alternate */
   background: linear-gradient(left, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.15));
+  /* @alternate */
   background: -moz-linear-gradient(left, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.15));
+  /* @alternate */
   background: -o-linear-gradient(left, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.15));
+  /* @alternate */
   background: -ms-linear-gradient(left, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.15));
+  /* @alternate */
   background: -webkit-linear-gradient(left, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.15));
   z-index: 0;
 }
@@ -149,10 +154,15 @@ html, body {
   position: absolute;
   width: 430px;
   height: 160px;
+  /* @alternate */
   background: linear-gradient(left, #024d61, #007580, #024d61);
+  /* @alternate */
   background: -moz-linear-gradient(left, #024d61, #007580, #024d61);
+  /* @alternate */
   background: -o-linear-gradient(left, #024d61, #007580, #024d61);
+  /* @alternate */
   background: -ms-linear-gradient(left, #024d61, #007580, #024d61);
+  /* @alternate */
   background: -webkit-linear-gradient(left, #024d61, #007580, #024d61);
   padding: 20px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.8);
