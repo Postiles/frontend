@@ -37,11 +37,20 @@
 {/template}
 
 /**
- * @param canDelete
+ * @param canDel
  */
 {template .commentDel}
-  {if $canDelete}
+  {if $canDel}
   Delete
+  {/if}
+{/template}
+
+/**
+ * @param canReport
+ */
+{template .commentReport}
+  {if $canReport}
+  Report
   {/if}
 {/template}
 
@@ -63,3 +72,4 @@
 {template .newCommentPop}
   <div class="new-comment-input"></div>
 {/template}
+
