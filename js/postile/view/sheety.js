@@ -16,6 +16,7 @@ goog.require('goog.ui.Component');
 goog.require('goog.ui.Container');
 goog.require('goog.ui.Control');
 goog.require('goog.ui.Textarea');
+goog.require('goog.ui.Dialog');
 goog.require('goog.math.Size');
 goog.require('goog.math.Coordinate');
 
@@ -1495,11 +1496,14 @@ postile.view.Sheety.CommentCell.prototype.enterDocument = function() {
                 commentCell: this,
                 commentId: this.getCommentId()
             };
+            if (!confirm('Report this comment?')) {
+                return;
+            }
             this.report_.setReportState(
                 module.CommentReport.State.REPORTING);
             this.dispatchEvent(
                 new goog.events.Event(
-                    postile.view.Sheety.EventType.LOCAL_REPORT_COMMENT,
+                    module.EventType.LOCAL_REPORT_COMMENT,
                     target));
         }, undefined, this);
 
@@ -1601,9 +1605,6 @@ module.CommentDel.prototype.createDom = function() {
 module.CommentReport = function() {
     goog.base(this, null, goog.ui.ControlRenderer.getCustomRenderer(
         goog.ui.ControlRenderer, 'report'));
-
-    this.animeTimer_ = new goog.Timer(500);
-    this.registerDisposable(this.animeTimer_);
 };
 goog.inherits(module.CommentReport, goog.ui.Control);
 
@@ -1611,16 +1612,6 @@ module.CommentReport.prototype.createDom = function() {
     goog.base(this, 'createDom');
     this.getElement()['innerHTML'] = template.commentReport(
         this.getModel());
-};
-
-module.CommentReport.prototype.enterDocument = function() {
-    goog.base(this, 'enterDocument');
-
-    goog.events.listen(
-        this.animeTimer_,
-        goog.Timer.TICK,
-        function() {
-        }, undefined, this);
 };
 
 module.CommentReport.prototype.setReportState = function(st) {
