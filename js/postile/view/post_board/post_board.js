@@ -402,12 +402,13 @@ postile.view.post_board.PostBoard = function(board_id) {
             }
 
         }
+        
+        if (!localStorage.postile_alert_shown) {
+	        new postile.view.Alert().open();
+	        localStorage.postile_alert_shown = true;
+	    }
     });
 
-    if (!localStorage.postile_alert_shown) {
-        new postile.view.Alert().open();
-        localStorage.postile_alert_shown = true;
-    }
 }
 goog.inherits(postile.view.post_board.PostBoard, postile.view.FullScreenView);
 
