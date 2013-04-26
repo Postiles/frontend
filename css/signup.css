@@ -1,62 +1,60 @@
-html, body {
-  margin: 0px;
+html #signup_wrapper, body #signup_wrapper {
+  height: 100%;
   background: #024d61;
-  height: 100%; }
-  html a:link, body a:link {
+  color: #eeeeee;
+  font-family: HelveticaNeue; }
+  html #signup_wrapper a:link, body #signup_wrapper a:link {
     color: whitesmoke; }
-  html a:visited, body a:visited {
+  html #signup_wrapper a:visited, body #signup_wrapper a:visited {
     color: whitesmoke; }
-  html #signup_wrapper, body #signup_wrapper {
-    color: #eeeeee;
-    font-family: HelveticaNeue; }
-    html #signup_wrapper #banner, body #signup_wrapper #banner {
-      margin-left: 70px;
-      padding-top: 60px; }
-      html #signup_wrapper #banner #ln1, body #signup_wrapper #banner #ln1 {
-        margin: 0px;
-        font-size: 32px; }
-        html #signup_wrapper #banner #ln1 .emph, body #signup_wrapper #banner #ln1 .emph {
-          font-weight: bold; }
-      html #signup_wrapper #banner #ln2, body #signup_wrapper #banner #ln2 {
-        margin: 0px;
-        margin-top: 5px;
-        font-size: 24px; }
-    html #signup_wrapper #input_field, body #signup_wrapper #input_field {
-      float: left;
-      margin-left: 245px;
-      margin-top: 45px; }
-      html #signup_wrapper #input_field p, body #signup_wrapper #input_field p {
-        margin-top: 20px;
-        margin-bottom: 15px;
-        font-size: 24px; }
-      html #signup_wrapper #input_field input, body #signup_wrapper #input_field input {
-        padding: 0px 8px;
-        padding-top: 3px;
-        font-size: 25px;
-        background: #bad1d7;
-        border: 0px;
-        width: 725px;
-        height: 36px;
-        font-family: HelveticaNeue; }
-      html #signup_wrapper #input_field #sent_text, body #signup_wrapper #input_field #sent_text {
-        margin-top: 40px;
-        margin-left: 160px;
-        display: none; }
-        html #signup_wrapper #input_field #sent_text #back, body #signup_wrapper #input_field #sent_text #back {
-          text-decoration: underline;
-          cursor: pointer; }
-    html #signup_wrapper #btn, body #signup_wrapper #btn {
-      position: absolute;
-      margin-top: 210px;
-      right: 0px;
-      color: #024d61;
-      background: #cbdcb8;
-      height: 210px;
-      width: 210px;
-      cursor: pointer;
-      font-size: 36px;
-      font-weight: bold; }
-    html #signup_wrapper #contact, body #signup_wrapper #contact {
-      position: absolute;
-      right: 10px;
-      bottom: 5px; }
+  html #signup_wrapper #banner, body #signup_wrapper #banner {
+    margin-left: 70px;
+    padding-top: 60px; }
+    html #signup_wrapper #banner #ln1, body #signup_wrapper #banner #ln1 {
+      margin: 0px;
+      font-size: 32px; }
+      html #signup_wrapper #banner #ln1 .emph, body #signup_wrapper #banner #ln1 .emph {
+        font-weight: bold; }
+    html #signup_wrapper #banner #ln2, body #signup_wrapper #banner #ln2 {
+      margin: 0px;
+      margin-top: 5px;
+      font-size: 24px; }
+  html #signup_wrapper #input_field, body #signup_wrapper #input_field {
+    float: left;
+    margin-left: 245px;
+    margin-top: 45px; }
+    html #signup_wrapper #input_field p, body #signup_wrapper #input_field p {
+      margin-top: 20px;
+      margin-bottom: 15px;
+      font-size: 24px; }
+    html #signup_wrapper #input_field input, body #signup_wrapper #input_field input {
+      padding: 0px 8px;
+      padding-top: 3px;
+      font-size: 25px;
+      background: #bad1d7;
+      border: 0px;
+      width: 725px;
+      height: 36px;
+      font-family: HelveticaNeue; }
+    html #signup_wrapper #input_field #sent_text, body #signup_wrapper #input_field #sent_text {
+      margin-top: 40px;
+      margin-left: 160px;
+      display: none; }
+      html #signup_wrapper #input_field #sent_text #back, body #signup_wrapper #input_field #sent_text #back {
+        text-decoration: underline;
+        cursor: pointer; }
+  html #signup_wrapper #btn, body #signup_wrapper #btn {
+    position: absolute;
+    margin-top: 210px;
+    right: 0px;
+    color: #024d61;
+    background: #cbdcb8;
+    height: 210px;
+    width: 210px;
+    cursor: pointer;
+    font-size: 36px;
+    font-weight: bold; }
+  html #signup_wrapper #contact, body #signup_wrapper #contact {
+    position: absolute;
+    right: 10px;
+    bottom: 5px; }

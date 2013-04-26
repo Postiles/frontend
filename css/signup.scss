@@ -3,21 +3,19 @@ $text-color: #eeeeee;
 $input-background: #bad1d7;
 
 html, body {
-    margin:0px;
-    background:$main-color;
-    height:100%;
-
-    a:link {
-        color: whitesmoke;
-    }
-
-    a:visited {
-        color: whitesmoke;
-    }
-
     #signup_wrapper {
+        height: 100%;
+        background: #024d61;
         color: $text-color;
         font-family:HelveticaNeue;
+
+        a:link {
+            color: whitesmoke;
+        }
+
+        a:visited {
+            color: whitesmoke;
+        }
 
         #banner {
             margin-left: 70px;
