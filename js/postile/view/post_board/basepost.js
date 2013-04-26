@@ -156,6 +156,7 @@ postile.view.BasePost.prototype.loadDisplayModeUIComponents = function() {
         postContent_el: $('post_content'),
         postGradientMask_el: $('post_gradient_mask'),
         postEditButton_el: $('post_edit_button'),
+        postFlagButton_el: $('post_flag_button'),
         postLikeContainer_el: $('post_like_container'),
         postLikeCount_el: $('post_like_count'),
         postLikeButton_el: $('post_like_button'),
@@ -336,6 +337,20 @@ postile.view.BasePost.prototype.initDisplayModeListener = function() {
         goog.events.EventType.CLICK, 
         function(e) {
             this.changeCurrentMode(postile.view.BasePost.PostMode.EDIT);
+        }.bind(this));
+
+    // flag as inappropriate
+    goog.events.listen(
+        elements.postFlagButton_el,
+        goog.events.EventType.CLICK,
+        function(e) {
+            if (confirm("Are you sure you're going to flag this post as inappropriate?")) {
+                postile.ajax(
+                    [ 'post', 'report_post_abuse' ],
+                    { post_id: this.postData.post.id },
+                    function(data) {
+                    });
+            }
         }.bind(this));
 
     // comment preview clicked, enter comment mode
@@ -606,6 +621,7 @@ postile.view.BasePost.prototype.enterDisplayMode = function() {
 
     if (this.isSelfPost()) { // my own post
         // elements.postContent_el.style.cursor = 'auto';
+        elements.postFlagButton_el.style.display = 'none';
     } else {
         elements.postEditButton_el.style.display = 'none';
         // elements.postContent_el.style.cursor = 'default';

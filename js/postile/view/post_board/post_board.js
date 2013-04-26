@@ -404,7 +404,6 @@ postile.view.post_board.PostBoard = function(board_id) {
         }
     });
 
-        new postile.view.Alert().open();
     if (!localStorage.postile_alert_shown) {
         new postile.view.Alert().open();
         localStorage.postile_alert_shown = true;

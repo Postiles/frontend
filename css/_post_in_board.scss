@@ -28,6 +28,21 @@
             visibility: visible;
         }
 
+        .post_flag_button {
+            float: right;
+            color: #aaa;
+            cursor: pointer;
+            visibility: hidden;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+
+        &:hover .post_flag_button {
+            visibility: visible;
+        }
+
         .post_content {
             overflow: hidden;
         }
@@ -131,6 +146,17 @@
                                         float: right;
                                         visibility: hidden;
                                         display: none;
+                                        cursor: pointer;
+
+                                        &:hover {
+                                            text-decoration: underline;
+                                        }
+                                    }
+
+                                    .comment_flag_button {
+                                        float: right;
+                                        visibility: hidden;
+                                        display: none;
 
                                         &:hover {
                                             text-decoration: underline;
@@ -141,7 +167,10 @@
                                 &:hover {
                                     .comment_delete_button {
                                         visibility: visible;
-                                        cursor: pointer;
+                                    }
+
+                                    .comment_flag_button {
+                                        visibility: visible;
                                     }
                                 }
 

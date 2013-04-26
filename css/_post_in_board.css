@@ -17,6 +17,15 @@
       text-decoration: underline; }
   .post_wrap .display_mode_post:hover .post_edit_button {
     visibility: visible; }
+  .post_wrap .display_mode_post .post_flag_button {
+    float: right;
+    color: #aaa;
+    cursor: pointer;
+    visibility: hidden; }
+    .post_wrap .display_mode_post .post_flag_button:hover {
+      text-decoration: underline; }
+  .post_wrap .display_mode_post:hover .post_flag_button {
+    visibility: visible; }
   .post_wrap .display_mode_post .post_content {
     overflow: hidden; }
   .post_wrap .display_mode_post .post_quote_mark {
@@ -80,12 +89,20 @@
           .post_wrap .comment_mode_post .post_bottom .comment_container .comment_list .comment_container_items .post_comment .comment_inner_container .lower_container .comment_delete_button {
             float: right;
             visibility: hidden;
-            display: none; }
+            display: none;
+            cursor: pointer; }
             .post_wrap .comment_mode_post .post_bottom .comment_container .comment_list .comment_container_items .post_comment .comment_inner_container .lower_container .comment_delete_button:hover {
               text-decoration: underline; }
+          .post_wrap .comment_mode_post .post_bottom .comment_container .comment_list .comment_container_items .post_comment .comment_inner_container .lower_container .comment_flag_button {
+            float: right;
+            visibility: hidden;
+            display: none; }
+            .post_wrap .comment_mode_post .post_bottom .comment_container .comment_list .comment_container_items .post_comment .comment_inner_container .lower_container .comment_flag_button:hover {
+              text-decoration: underline; }
         .post_wrap .comment_mode_post .post_bottom .comment_container .comment_list .comment_container_items .post_comment .comment_inner_container:hover .comment_delete_button {
-          visibility: visible;
-          cursor: pointer; }
+          visibility: visible; }
+        .post_wrap .comment_mode_post .post_bottom .comment_container .comment_list .comment_container_items .post_comment .comment_inner_container:hover .comment_flag_button {
+          visibility: visible; }
         .post_wrap .comment_mode_post .post_bottom .comment_container .comment_list .comment_container_items .post_comment .confirm_delete_container {
           position: absolute;
           top: 0px;
