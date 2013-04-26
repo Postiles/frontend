@@ -20,20 +20,25 @@
 {/template}
 
 /**
+ * @param canLike
  * @param likeCount
  * @param liked
  */
 {template .commentLike}
   ♡ +{$likeCount}
   <span> · </span>
-  <span class="like-button">
-  {if $liked}
-   Unlike
+  {if $canLike}
+    <span class="like-button">
+    {if $liked}
+     Unlike
+    {else}
+     Like
+    {/if}
+    </span>
+    <span> · </span>
   {else}
-   Like
+    Like
   {/if}
-  </span>
-  <span> · </span>
 {/template}
 
 /**

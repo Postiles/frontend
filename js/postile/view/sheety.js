@@ -16,6 +16,7 @@ goog.require('goog.ui.Component');
 goog.require('goog.ui.Container');
 goog.require('goog.ui.Control');
 goog.require('goog.ui.Textarea');
+goog.require('goog.ui.Dialog');
 goog.require('goog.math.Size');
 goog.require('goog.math.Coordinate');
 
@@ -602,6 +603,7 @@ postile.view.Sheety.fetchUserOfComment_ = function(commentWe,
     var fetcher = goog.partial(postile.data_manager.getUserData, cid);
     var skeleton = {
         'cmt_data': inlCmt,
+        'cmt_canLike': postile.conf.userLoggedIn(),
         'cmt_likeCount': likes.length,
         'cmt_liked': liked,
         // Either (even if when the board is anonymous)
@@ -610,8 +612,10 @@ postile.view.Sheety.fetchUserOfComment_ = function(commentWe,
         'cmt_canDel': cid == selfId || postCid == selfId
     };
 
-    // You can only report abuse on others' post
-    skeleton['cmt_canReport'] = !skeleton['cmt_canDel'];
+    // You can only report abuse post that is not yours
+    // and only while you are logged in.
+    skeleton['cmt_canReport'] = !skeleton['cmt_canDel'] &&
+                                postile.conf.userLoggedIn();
 
     if (anony) {
         // Just don't fetch user.
@@ -1324,6 +1328,7 @@ postile.view.Sheety.CommentCell.prototype.createDom = function() {
         author: this.isAnonymous_ ? ''
                                   : model['cmt_creator']['username'],
         ctime: postile.date(ctimeStr, 'inline'),
+        canLike: model['cmt_canLike'],
         likeCount: model['cmt_likeCount'],
         liked: model['cmt_liked'],
         canDel: model['cmt_canDel'],
@@ -1441,23 +1446,25 @@ postile.view.Sheety.CommentCell.prototype.enterDocument = function() {
         }, undefined, this);
 
     // On click like/unlike, dispatch corresponding events.
-    goog.events.listen(
-        this.like_,
-        goog.ui.Component.EventType.ACTION,
-        function() {
-            var target = {
-                commentId: this.getCommentId(),
-                commentCell: this,
-                likeCount: this.like_.getModel().likeCount
-            };
-            var type = this.like_.getModel()['liked'] ?
-                postile.view.Sheety.EventType.LOCAL_SUBMIT_UNLIKE :
-                postile.view.Sheety.EventType.LOCAL_SUBMIT_LIKE;
+    if (this.like_.canLike()) {
+        goog.events.listen(
+            this.like_,
+            goog.ui.Component.EventType.ACTION,
+            function() {
+                var target = {
+                    commentId: this.getCommentId(),
+                    commentCell: this,
+                    likeCount: this.like_.getModel().likeCount
+                };
+                var type = this.like_.getModel()['liked'] ?
+                    postile.view.Sheety.EventType.LOCAL_SUBMIT_UNLIKE :
+                    postile.view.Sheety.EventType.LOCAL_SUBMIT_LIKE;
 
-            this.like_.setEnabled(false);
-            this.dispatchEvent(
-                new goog.events.Event(type, target));
-        }, undefined, this);
+                this.like_.setEnabled(false);
+                this.dispatchEvent(
+                    new goog.events.Event(type, target));
+            }, undefined, this);
+    }
 
     // On like response, re-enable like button and refresh like count.
     goog.events.listen(
@@ -1495,11 +1502,14 @@ postile.view.Sheety.CommentCell.prototype.enterDocument = function() {
                 commentCell: this,
                 commentId: this.getCommentId()
             };
+            if (!confirm('Report this comment?')) {
+                return;
+            }
             this.report_.setReportState(
                 module.CommentReport.State.REPORTING);
             this.dispatchEvent(
                 new goog.events.Event(
-                    postile.view.Sheety.EventType.LOCAL_REPORT_COMMENT,
+                    module.EventType.LOCAL_REPORT_COMMENT,
                     target));
         }, undefined, this);
 
@@ -1576,6 +1586,10 @@ module.CommentLike.prototype.createDom = function() {
     this.syncWithModel();
 };
 
+module.CommentLike.prototype.canLike = function() {
+    return this.getModel()['canLike'];
+};
+
 module.CommentLike.prototype.syncWithModel = function() {
     this.getElement()['innerHTML'] = template.commentLike(this.getModel());
 };
@@ -1601,9 +1615,6 @@ module.CommentDel.prototype.createDom = function() {
 module.CommentReport = function() {
     goog.base(this, null, goog.ui.ControlRenderer.getCustomRenderer(
         goog.ui.ControlRenderer, 'report'));
-
-    this.animeTimer_ = new goog.Timer(500);
-    this.registerDisposable(this.animeTimer_);
 };
 goog.inherits(module.CommentReport, goog.ui.Control);
 
@@ -1611,16 +1622,6 @@ module.CommentReport.prototype.createDom = function() {
     goog.base(this, 'createDom');
     this.getElement()['innerHTML'] = template.commentReport(
         this.getModel());
-};
-
-module.CommentReport.prototype.enterDocument = function() {
-    goog.base(this, 'enterDocument');
-
-    goog.events.listen(
-        this.animeTimer_,
-        goog.Timer.TICK,
-        function() {
-        }, undefined, this);
 };
 
 module.CommentReport.prototype.setReportState = function(st) {
