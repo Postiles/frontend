@@ -627,6 +627,10 @@ postile.view.BasePost.prototype.enterDisplayMode = function() {
         // elements.postContent_el.style.cursor = 'default';
     }
 
+    if (!postile.conf.userLoggedIn()) {
+        elements.postFlagButton_el.style.display = 'none';
+    }
+
     // latest inline comment
     this.latestComment = 
         this.postData.inline_comments[ 

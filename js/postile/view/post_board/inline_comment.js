@@ -12,6 +12,8 @@ postile.view.post.InlineComment = function(commentContainer, commentData, parent
 
     this.parentInstance = parentInstance;
 
+    this.commentData = commentData;
+
     commentData.dom = this.wrap_el;
 
     postile.ui.load(this.wrap_el, 
@@ -30,6 +32,7 @@ postile.view.post.InlineComment = function(commentContainer, commentData, parent
         likeDot2_el: $('comment_like_dot_2'),
         time_el: $('comment_time'),
         deleteButton_el: $('comment_delete_button'),
+        flagButton_el: $('comment_flag_button'),
         confirmDeleteContainer_el: $('confirm_delete_container'),
         confirmOk_el: $('confirm_delete_ok'),
         confirmCancel_el: $('confirm_delete_cancel')
@@ -107,6 +110,19 @@ postile.view.post.InlineComment = function(commentContainer, commentData, parent
         }.bind(this));
 
     goog.events.listen(
+        this.elements.flagButton_el,
+        goog.events.EventType.CLICK,
+        function(e) {
+            if (confirm("Are you sure you're going to flag this comment as inappropriate?")) {
+                postile.ajax(
+                    [ 'inline_comment', 'report_comment_abuse' ],
+                    { comment_id: this.commentData.inline_comment.id },
+                    function(data) {
+                    });
+            }
+        }.bind(this));
+
+    goog.events.listen(
         this.elements.confirmOk_el, 
         goog.events.EventType.CLICK,
         function(e) {
@@ -125,11 +141,15 @@ postile.view.post.InlineComment = function(commentContainer, commentData, parent
             this.elements.confirmDeleteContainer_el.style.display = 'none';
         }.bind(this));
 
-    var currUserId = parseInt(localStorage.postile_user_id);
-    if (commentData.inline_comment.creator_id == currUserId ||
-        this.parentInstance.postData.post.creator_id == currUserId) { // comment in my post, can delete
+    if (postile.conf.userLoggedIn()) {
+        var currUserId = parseInt(localStorage.postile_user_id);
+        if (commentData.inline_comment.creator_id == currUserId ||
+                this.parentInstance.postData.post.creator_id == currUserId) { // comment in my post, can delete
             this.elements.deleteButton_el.style.display = 'inline';
+        } else {
+            this.elements.flagButton_el.style.display = 'inline';
         }
+    }
 
     goog.dom.appendChild(commentContainer, this.wrap_el);
 }

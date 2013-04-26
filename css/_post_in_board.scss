@@ -33,6 +33,7 @@
             color: #aaa;
             cursor: pointer;
             visibility: hidden;
+            color: #BA6C6C;
 
             &:hover {
                 text-decoration: underline;
@@ -157,6 +158,8 @@
                                         float: right;
                                         visibility: hidden;
                                         display: none;
+                                        cursor: pointer;
+                                        color: #BA6C6C;
 
                                         &:hover {
                                             text-decoration: underline;

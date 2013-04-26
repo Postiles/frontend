@@ -21,7 +21,8 @@
     float: right;
     color: #aaa;
     cursor: pointer;
-    visibility: hidden; }
+    visibility: hidden;
+    color: #BA6C6C; }
     .post_wrap .display_mode_post .post_flag_button:hover {
       text-decoration: underline; }
   .post_wrap .display_mode_post:hover .post_flag_button {
@@ -96,7 +97,9 @@
           .post_wrap .comment_mode_post .post_bottom .comment_container .comment_list .comment_container_items .post_comment .comment_inner_container .lower_container .comment_flag_button {
             float: right;
             visibility: hidden;
-            display: none; }
+            display: none;
+            cursor: pointer;
+            color: #BA6C6C; }
             .post_wrap .comment_mode_post .post_bottom .comment_container .comment_list .comment_container_items .post_comment .comment_inner_container .lower_container .comment_flag_button:hover {
               text-decoration: underline; }
         .post_wrap .comment_mode_post .post_bottom .comment_container .comment_list .comment_container_items .post_comment .comment_inner_container:hover .comment_delete_button {
