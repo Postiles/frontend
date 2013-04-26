@@ -183,6 +183,11 @@ postile.view.Sheety = function(opt_boardId) {
     }, this);
 
     postile.view.loadCss(['sheety-gen.css']);
+
+    if (!localStorage.postile_alert_shown) {
+        new postile.view.Alert().open();
+        localStorage.postile_alert_shown = true;
+    }
 };
 goog.inherits(postile.view.Sheety, postile.view.GoogFSV);
 

@@ -1,0 +1,22 @@
+#alert_pop {
+    position: relative;
+    display: table-cell;
+    width: 500px;
+}
+
+#alert_pop .alert_title {
+    background: #024d61;
+    color: white;
+    padding: 5px 40px;
+    font-size: 15pt;
+}
+
+#alert_pop .alert_text {
+    padding: 20px 40px;
+    background: #e7f3da;
+    color: #024d61;
+}
+
+#alert_pop .alert_text .right {
+    text-align: right;
+}
