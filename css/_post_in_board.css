@@ -19,10 +19,9 @@
     visibility: visible; }
   .post_wrap .display_mode_post .post_flag_button {
     float: right;
-    color: #aaa;
+    color: #BA6C6C;
     cursor: pointer;
-    visibility: hidden;
-    color: #BA6C6C; }
+    visibility: hidden; }
     .post_wrap .display_mode_post .post_flag_button:hover {
       text-decoration: underline; }
   .post_wrap .display_mode_post:hover .post_flag_button {
