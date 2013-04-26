@@ -64,16 +64,26 @@ postile.conf = {
         return postile.conf.getGlobalKeyHandler.handler;
     },
 
-    logError: function(e) {
-        var err = e.getBrowserEvent();
-        if (postile.conf.error_log.length > 40) {
-            postile.conf.error_log.splice(0, 20);
+    logError: function(obj) {
+        if (postile.conf.error_log.length > 50) {
+            postile.conf.error_log.splice(0, 25);
         }
-        postile.conf.error_log.push({
+        postile.conf.error_log.push(obj);
+    },
+    
+    logErrorByEvent: function(e) {
+        var err = e.getBrowserEvent();
+        postile.conf.logError({
             lineno: err.lineno,
             filename: err.filename,
             message: err.message
         });
+    },
+    
+    logErrorByException: function(e) {
+        if (e.stack) {
+            postile.conf.logError({ stacktrace: e.stack });
+        }
     },
 
     initDbgConfiguration: function() {
@@ -99,4 +109,10 @@ postile.conf.getGlobalKeyHandler.handler = null;
  * @define {boolean}
  */
 postile.conf.ENABLE_DEBUG = false;
+
+/**
+ * If true, view.loadCss will do nothing.
+ * @define {boolean}
+ */
+postile.conf.USING_COMPILED_CSS = false;
 

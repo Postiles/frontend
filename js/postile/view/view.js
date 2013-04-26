@@ -60,6 +60,7 @@ goog.require('postile.fx.effects');
  */
 postile.loaded_stylesheets = {};
 
+if (!postile.conf.USING_COMPILED_CSS) {
 /**
  * Loads some css files if not being previously loaded.
  * @param {Array.<string>} css_files Css files to be loaded
@@ -71,13 +72,21 @@ postile.view.loadCss = function(css_files) {
             var css_elem = goog.dom.createDom('link', {
                 type: 'text/css',
                 rel: 'stylesheet',
-                href: postile.conf.cssResource([path+'?updated=20130424'])
+                href: postile.conf.cssResource([
+                    path+'?updated=20130424'])
             });
             goog.dom.appendChild(
                 document.getElementsByTagName('head')[0], css_elem);
         }
     });
 };
+
+}
+else {
+
+postile.view.loadCss = goog.nullFunction;
+
+}  // !USING_COMPILED_CSS
 
 /**
  * "Do not use this class directly."
@@ -216,6 +225,9 @@ postile.view.FullScreenView = function() {
     goog.base(this);
     this.container = document.body;
     this.container.className = '';
+    
+    // keys of the event listeners should be put in this array and unlistened when close() is called
+    this.eventListeners = [ ];
     postile.ui.load(this.container, this.html_segment);
 }
 goog.inherits(postile.view.FullScreenView, postile.view.View);
@@ -236,6 +248,10 @@ postile.view.FullScreenView.prototype.getRootEl_ = function() {
  * @inheritDoc
  */
 postile.view.FullScreenView.prototype.close = function() {
+    for (var i in this.eventListeners) {
+        goog.events.unlistenByKey(this.eventListeners[i]);
+    }
+
     this.getRootEl_().innerHTML = '';
 };
 

@@ -13,6 +13,7 @@ Use `postile.ajax(api_dir, data, callback)` to interact with backend api.
   * `data` = `{board_id: XXX, number: XXX}`
     + set `number` = 0 to get all posts for a board.
   * `callback` is called with `message` = `[PostWE]`.
+  * For anonymous board, inline_comment.creator_id will be null instead.
 
 ### Data types
 

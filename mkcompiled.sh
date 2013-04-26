@@ -1,3 +1,5 @@
+#!/bin/bash
+
 if [ "$1" = "-O2" ]; then
 	CFLAGS="--compilation_level=ADVANCED_OPTIMIZATIONS"
 else
@@ -11,4 +13,5 @@ python tmp/closure/bin/build/closurebuilder.py \
 	--output_mode=compiled \
 	--compiler_jar=tmp/compiler.jar \
 	--compiler_flags="$CFLAGS" \
+	--compiler_flags="--define=postile.conf.USING_COMPILED_CSS" \
 	--output_file=compiled.js

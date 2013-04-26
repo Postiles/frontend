@@ -9,7 +9,7 @@
     mult(add(CELL_PAD_TOP, CELL_BORDER_SIZE), 2));
 @def NUM_WCELL 3;
 @def NUM_HCELL 3;
-@def TABLE_BG #F5F9FA;
+@def TABLE_BG white;
 @def TABLE_BG_DARKER #DFE8EB;
 @def CELL_BORDER_GREY rgb(195,207,194);
 @def LIGHT_CELL_BG rgb(224,237,221);
@@ -17,6 +17,8 @@
 @def DARK_CELL_BG #024d61;
 @def DARK_CELL_BG_LIGHTER #10586c;
 @def TITLE_BLUE rgb(66,105,189);
+@def FLAG_LIGHT_RED #BA6C6C;
+@def FLAG_LIGHT_RED_DARKER #BA4343;
 @def LIGHTER_GREY #a7a7a7;
 
 @defmixin CELL_ACTUAL_HEIGHT_N(N) {
@@ -205,28 +207,37 @@
     color: TITLE_BLUE;
 }
 
+.sheety-comment-cell .report {
+    color: FLAG_LIGHT_RED;
+}
+
 .sheety-comment-cell .author,
 .sheety-comment-cell .likes,
-.sheety-comment-cell .del {
+.sheety-comment-cell .del,
+.sheety-comment-cell .report {
     cursor: pointer;
 }
 
-.sheety-comment-cell .del {
+.sheety-comment-cell .del,
+.sheety-comment-cell .report {
     visibility: hidden;
 }
 
-.sheety-comment-cell:hover .del {
+.sheety-comment-cell:hover .del,
+.sheety-comment-cell:hover .report {
     visibility: visible;
 }
 
 .sheety-comment-cell .author-hover,
 .sheety-comment-cell .likes-hover .like-button,
-.sheety-comment-cell .del-hover {
+.sheety-comment-cell .del-hover,
+.sheety-comment-cell .report-hover {
     text-decoration: underline;
 }
 
 .sheety-comment-cell .likes-disabled,
-.sheety-comment-cell .likes-disabled .like-button {
+.sheety-comment-cell .likes-disabled .like-button,
+.sheety-comment-cell .report-disabled {
     cursor: default;
     color: grey;
 }
@@ -241,9 +252,10 @@
 }
 
 .sheety-comment-cell .author,
+.sheety-comment-cell .ctime,
 .sheety-comment-cell .likes,
 .sheety-comment-cell .del,
-.sheety-comment-cell .ctime {
+.sheety-comment-cell .report {
     display: inline;
     font-size: 0.9em;
 }
@@ -251,5 +263,4 @@
 .sheety.comment-cell .content {
     margin-top: 3px;
 }
-
 

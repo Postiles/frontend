@@ -47,9 +47,11 @@ postile.view.profile.ProfileView.prototype.initItems = function() {
     /* init a container for all the editable profile items */
     this.profileItems = [ ];
 
-    this.picture_el = goog.dom.getElementByClass('picture', this.container);
-    this.pictureImg_el = goog.dom.getElementsByTagNameAndClass('img', null, this.picture_el)[0];
-    this.pictureImg_el.src = postile.conf.uploadsResource([ this.userData.image_url ]);
+    this.picture_el = goog.dom.getElementByClass('profile-picture', this.container);
+    this.pictureImg_el = postile.dom.getDescendantByClass(this.picture_el, 'image');
+    // this.pictureImg_el.src = postile.conf.uploadsResource([ this.userData.image_url ]);
+    this.pictureImg_el.style.backgroundImage = 
+        'url(' + postile.conf.uploadsResource([ this.userData.image_url ]) + ')';
 
     this.name_el = goog.dom.getElementByClass('username', this.container);
     goog.dom.classes.add(this.name_el, 'item');
@@ -161,7 +163,9 @@ postile.view.profile.ProfileView.prototype.initItems = function() {
 }
 
 postile.view.profile.ProfileView.prototype.changePicture = function(image_link){
-    this.pictureImg_el.src = postile.conf.uploadsResource([ this.userData.image_url ]);
+    // this.pictureImg_el.src = postile.conf.uploadsResource([ this.userData.image_url ]);
+    this.pictureImg_el.style.backgroundImage = 
+        'url(' + postile.conf.uploadsResource([ this.userData.image_url ]) + ')';
 }
 
 postile.view.profile.ProfileView.prototype.isSelfProfile = function() {

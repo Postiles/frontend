@@ -3,7 +3,7 @@ goog.provide('postile.WYSIWYF');
 goog.require('goog.dom');
 goog.require('postile.conf');
 goog.require('postile.dom');
-goog.require('postile.view.At');
+goog.require('postile.view.at');
 
 /*******************************************************
 Note: content below does not use ANY Google Closure code
@@ -139,7 +139,7 @@ postile.WYSIWYF = {
             editor.onEditListener.listen();
         }
         */
-        editor.at = new postile.view.At(this.editor_el);
+        editor.at = new postile.view.at.At(this.editor_el);
     },
     /******Define buttons and corresponding operations******/
     editButtons: new Array(/*

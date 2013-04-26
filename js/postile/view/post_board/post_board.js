@@ -409,7 +409,6 @@ postile.view.post_board.PostBoard = function(board_id) {
 	    }
     });
 
-
 }
 goog.inherits(postile.view.post_board.PostBoard, postile.view.FullScreenView);
 

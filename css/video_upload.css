@@ -6,13 +6,13 @@
   100% {
     top: 0px; } }
 
-@keyframes slideDown {
-  0% {
-    top: -10px; }
-
-  100% {
-    top: 0px; } }
-
+/* XXX goog-stylesheet
+@keyframes slideDown
+{
+	0%:{top: -10px;}
+	100%:{top: 0px;}
+}
+ */
 @-moz-keyframes slideDown {
   0% {
     top: -10px; }
@@ -27,13 +27,13 @@
   100% {
     top: 0px; } }
 
-@keyframes slideUp {
-  0% {
-    top: 130px; }
-
-  100% {
-    top: 0px; } }
-
+/* XXX goog-stylesheet
+@keyframes slideUp
+{
+	0%:{top: 130px;}
+	100%:{top: 0px;}
+}
+ */
 @-moz-keyframes slideUp {
   0% {
     top: 130px; }

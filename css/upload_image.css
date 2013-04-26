@@ -4,8 +4,8 @@
   height: 240px;
   width: 300px;
   border: 4px solid #aaaaaa;
-  border-radius: 4px;
- }
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px; }
   #upload_image_pop .upload_drag_board {
     width: 300px;
     height: 240px; }
@@ -22,7 +22,6 @@
         background: url(../images/upload_pic.png) no-repeat;
         margin-top: 30px; }
       #upload_image_pop .upload_drag_board .upload_content span.upload_drag_here {
-        font-family: playbold;
         width: 125px;
         font-size: 25px;
         margin: 10px auto;
@@ -45,6 +44,8 @@
         font-size: 20px;
         position: relative;
         text-align: right;
+        -moz-opacity: 0;
+        -webkit-opacity: 0;
         opacity: 0; }
       #upload_image_pop .upload_drag_board .upload_content #upload_target {
         width: 0px;

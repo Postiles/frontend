@@ -15,6 +15,13 @@ postile.events.EventHandler = function(subject, action, handler, usecapture) {
     this.subject = subject;
     this.action = action;
     this.handler = handler;
+    this.handler = function(param) {
+        try {
+            (handler.bind(this))(param);
+        } catch (e) {
+            postile.conf.logErrorByException(e);
+        }
+    };
     this.usecapture = usecapture ? true : false;
 }
 

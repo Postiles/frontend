@@ -79,8 +79,15 @@ postile.view.BoardList.prototype.html_segment = postile.conf.staticResource(['bo
 postile.view.BoardList.prototype.renderBoardListItem = function(data) {
     var instance = this;
     var item_el = goog.dom.createDom('div', 'single');
+    /*
     var img_el = goog.dom.createDom('img');
     img_el.src = postile.conf.uploadsResource([data.board.image_small_url]);
+    */
+    var img_el = goog.dom.createDom('div', 'image');
+    img_el.style.backgroundImage = 
+        'url(' + postile.conf.uploadsResource([data.board.image_small_url]) + ')';
+    // img_el.src = postile.conf.uploadsResource([data.board.image_small_url]);
+
     var meta_el = goog.dom.createDom('div', 'meta');
     var title_el = goog.dom.createDom('div', 'subject');
     title_el.innerHTML = data.board.name;
@@ -131,11 +138,15 @@ postile.view.BoardList.prototype.renderBoardListItem = function(data) {
         instance.like_button.innerHTML = data.likes.length + " liked it";
 
         if (data.board.default_view != 'sheet') {
-            instance.recent_posts_title.style.display = 'block';
-            postile.ajax(['board', 'get_recent_posts'], { board_id: data.board.id }, function(new_data) {
+            postile.ajax(['board', 'get_recent_posts'], { board_id: data.board.id, number: 5 }, function(new_data) {
+                instance.recent_posts_title.style.display = 'block';
                 goog.dom.removeChildren(instance.right_posts);
+                var effective = 0;
                 for (i in new_data.message) {
+                    if (!new_data.message[i].post.content) { continue; }
                     instance.renderRecentPostItem(new_data.message[i], data);
+                    effective++;
+                    if (effective >= 3) { break; }
                 }
             });
         } else {
@@ -188,8 +199,6 @@ postile.view.BoardList.prototype.renderBoardListItem = function(data) {
 }
 
 postile.view.BoardList.prototype.renderRecentPostItem = function(post_info, boardData) {
-    if (!post_info.post.content) { return; }
-
     var post_el = goog.dom.createDom('div', 'one_recent_post');
     goog.dom.appendChild(post_el, goog.dom.createDom('div', 'ball'));
     var subject_el = goog.dom.createDom('div', 'subject');
@@ -210,10 +219,18 @@ postile.view.BoardList.prototype.renderRecentPostItem = function(post_info, boar
     var content_el = goog.dom.createDom('div', 'content');
     content_el.innerHTML = postile.parseBBcode(post_info.post.content);
     postile.bbcodePostProcess(content_el);
+    
+    var link_el = goog.dom.createDom('div', 'link');
+    link_el.innerHTML = 'Go to this post >>';
+    goog.events.listen(link_el, goog.events.EventType.CLICK, function() {
+        postile.view.switchToPost(post_info.post.id);
+    });
+    
     goog.dom.appendChild(post_el, subject_el);
     goog.dom.appendChild(meta_el, author_el);
     goog.dom.appendChild(meta_el, time_el);
     goog.dom.appendChild(post_el, meta_el);
     goog.dom.appendChild(post_el, content_el);
+    goog.dom.appendChild(post_el, link_el);
     goog.dom.appendChild(this.right_posts, post_el);
 }

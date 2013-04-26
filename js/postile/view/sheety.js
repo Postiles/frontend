@@ -9,12 +9,14 @@ goog.require('goog.dom');
 goog.require('goog.dom.classes');
 goog.require('goog.date');
 goog.require('goog.style');
+goog.require('goog.Timer');
 goog.require('goog.userAgent');
 goog.require('goog.ui.Button');
 goog.require('goog.ui.Component');
 goog.require('goog.ui.Container');
 goog.require('goog.ui.Control');
 goog.require('goog.ui.Textarea');
+goog.require('goog.ui.Dialog');
 goog.require('goog.math.Size');
 goog.require('goog.math.Coordinate');
 
@@ -22,7 +24,7 @@ goog.require('postile.conf');
 goog.require('postile.i18n');
 goog.require('postile.faye');
 goog.require('postile.view');
-goog.require('postile.view.At');
+goog.require('postile.view.at');
 goog.require('postile.debbcode');
 goog.require('postile.view.post_board.handlers');
 goog.require('postile.view.post_board.Header');
@@ -183,7 +185,6 @@ postile.view.Sheety = function(opt_boardId) {
     }, this);
 
     postile.view.loadCss(['sheety-gen.css']);
-    
     if (!localStorage.postile_alert_shown) {
         new postile.view.Alert().open();
         localStorage.postile_alert_shown = true;
@@ -192,7 +193,9 @@ postile.view.Sheety = function(opt_boardId) {
 
 goog.inherits(postile.view.Sheety, postile.view.GoogFSV);
 
+// Module shorthands
 var module = postile.view.Sheety;
+var template = postile.templates.sheety;
 
 module.CELL_ACTUAL_SIZE = new goog.math.Size(200, 100);
 
@@ -244,6 +247,11 @@ postile.view.Sheety.EventType = {
 
     LOCAL_DEL_COMMENT:
         goog.events.getUniqueId('del-cmt'),
+
+    LOCAL_REPORT_COMMENT:
+        goog.events.getUniqueId('report-cmt'),
+    LOCAL_REPORT_COMMENT_OK:
+        goog.events.getUniqueId('report-cmt-ok'),
 
     REMOTE_NEW_COMMENT: goog.events.getUniqueId('faye-new-cmt'),
     REMOTE_DEL_COMMENT: goog.events.getUniqueId('faye-del-cmt')
@@ -323,6 +331,10 @@ postile.view.Sheety.prototype.enterDocument = function() {
     goog.events.listen(this,
         postile.view.Sheety.EventType.LOCAL_DEL_COMMENT,
         goog.bind(this.submitDelComment, this));
+
+    goog.events.listen(this,
+        postile.view.Sheety.EventType.LOCAL_REPORT_COMMENT,
+        goog.bind(this.submitReportComment, this));
 
     goog.events.listen(this,
         postile.view.Sheety.EventType.REMOTE_NEW_COMMENT,
@@ -439,6 +451,25 @@ postile.view.Sheety.prototype.submitDelComment = function(e) {
     }, function() {
         // Not handled here (instead in faye)
         // See receivedDelComment
+    });
+};
+
+postile.view.Sheety.prototype.submitReportComment = function(e) {
+    /** 
+     * @type {
+     *   commentCell: postile.view.Sheety.CommentCell,
+     *   commentId: number
+     * }
+     */
+    var target = e.target;
+
+    postile.ajax(['inline_comment', 'report_comment_abuse'], {
+        'comment_id': target.commentId
+    }, function() {
+        var cell = target.commentCell;
+        var newE = new goog.events.Event(
+            postile.view.Sheety.EventType.LOCAL_REPORT_COMMENT_OK);
+        cell.dispatchEvent(newE);
     });
 };
 
@@ -572,6 +603,7 @@ postile.view.Sheety.fetchUserOfComment_ = function(commentWe,
     var fetcher = goog.partial(postile.data_manager.getUserData, cid);
     var skeleton = {
         'cmt_data': inlCmt,
+        'cmt_canLike': postile.conf.userLoggedIn(),
         'cmt_likeCount': likes.length,
         'cmt_liked': liked,
         // Either (even if when the board is anonymous)
@@ -579,6 +611,11 @@ postile.view.Sheety.fetchUserOfComment_ = function(commentWe,
         // Or the post is created by this user
         'cmt_canDel': cid == selfId || postCid == selfId
     };
+
+    // You can only report abuse post that is not yours
+    // and only while you are logged in.
+    skeleton['cmt_canReport'] = !skeleton['cmt_canDel'] &&
+                                postile.conf.userLoggedIn();
 
     if (anony) {
         // Just don't fetch user.
@@ -843,7 +880,7 @@ postile.view.Sheety.PostCell = function() {
         goog.ui.ControlRenderer.getCustomRenderer(
             goog.ui.ControlRenderer, 'who'));
 
-    this.addButton_ = new goog.ui.Control('Add Comment',
+    this.addButton_ = new goog.ui.Control('对TA说',
         goog.ui.ControlRenderer.getCustomRenderer(
             goog.ui.ControlRenderer, 'mkcomment'));
     this.commentPop_ = new postile.view.Sheety.AddCommentPop(this);
@@ -868,7 +905,7 @@ postile.view.Sheety.PostCell.prototype.createDom = function() {
     };
     var el = goog.dom.createDom('div', {
         'className': 'sheety-post-cell', 
-        'innerHTML': postile.templates.sheety.post(preProcData)
+        'innerHTML': template.post(preProcData)
     });
     this.setElementInternal(el);
 
@@ -965,8 +1002,7 @@ postile.view.Sheety.AddCommentPop.prototype.createDom = function() {
 postile.view.Sheety.AddCommentPop.prototype.submit = function() {
     // Preprocess the value of the textarea.
     // XXX: check for emptiness.
-    var content = postile.view.At.asBBCode(
-        this.textarea_.getValue());
+    var content = postile.view.at.asBBCode(this.textarea_.getValue());
     if (content && !this.textarea_.getElement().lengthOverflow) {
         var e = new goog.events.Event(
             postile.view.Sheety.EventType.LOCAL_SUBMIT_COMMENT, {
@@ -1029,7 +1065,7 @@ postile.view.Sheety.AddCommentPop.prototype.enterDocument = function() {
     // XXX: On timeout?
 
     // Attach an `At` view to be able to @someone.
-    this.atAddOn_ = new postile.view.At(this.textarea_.getElement());
+    this.atAddOn_ = new postile.view.at.At(this.textarea_.getElement());
 };
 
 postile.view.Sheety.AddCommentPop.prototype.exitDocument = function() {
@@ -1066,7 +1102,7 @@ postile.view.Sheety.AddCommentPop.prototype.slideToHide = function() {
 };
 
 /**
- * Content-editable textarea. Normally used with postile.view.At.
+ * Content-editable textarea. Normally used with postile.view.at.At.
  * @constructor
  */
 postile.view.Sheety.CETextarea = function(opt_content, opt_renderer) {
@@ -1275,10 +1311,9 @@ postile.view.Sheety.CommentCell = function(anony) {
     if (!anony) {
         this.author_ = new postile.view.Sheety.CommentAuthor();
     }
-    this.like_ = new goog.ui.Control(null,
-        postile.view.Sheety.LikeRenderer.getInstance());
-    this.del_ = new goog.ui.Control(null,
-        postile.view.Sheety.DelCommentRenderer.getInstance());
+    this.like_   = new module.CommentLike();
+    this.del_    = new module.CommentDel();
+    this.report_ = new module.CommentReport();
 };
 goog.inherits(postile.view.Sheety.CommentCell, goog.ui.Container);
 
@@ -1293,9 +1328,11 @@ postile.view.Sheety.CommentCell.prototype.createDom = function() {
         author: this.isAnonymous_ ? ''
                                   : model['cmt_creator']['username'],
         ctime: postile.date(ctimeStr, 'inline'),
+        canLike: model['cmt_canLike'],
         likeCount: model['cmt_likeCount'],
         liked: model['cmt_liked'],
-        canDelete: model['cmt_canDel'],
+        canDel: model['cmt_canDel'],
+        canReport: model['cmt_canReport'],
         content: postile.parseBBcode(model['cmt_data']['content']),
         isAnonymous: this.isAnonymous_
     };
@@ -1315,6 +1352,9 @@ postile.view.Sheety.CommentCell.prototype.createDom = function() {
 
     this.del_.setModel(preProcData);
     this.addChild(this.del_, true);
+
+    this.report_.setModel(preProcData);
+    this.addChild(this.report_, true);
 
     // Append content
     var contentFragment = soy.renderAsFragment(
@@ -1406,23 +1446,25 @@ postile.view.Sheety.CommentCell.prototype.enterDocument = function() {
         }, undefined, this);
 
     // On click like/unlike, dispatch corresponding events.
-    goog.events.listen(
-        this.like_,
-        goog.ui.Component.EventType.ACTION,
-        function() {
-            var target = {
-                commentId: this.getCommentId(),
-                commentCell: this,
-                likeCount: this.like_.getModel().likeCount
-            };
-            var type = this.like_.getModel()['liked'] ?
-                postile.view.Sheety.EventType.LOCAL_SUBMIT_UNLIKE :
-                postile.view.Sheety.EventType.LOCAL_SUBMIT_LIKE;
+    if (this.like_.canLike()) {
+        goog.events.listen(
+            this.like_,
+            goog.ui.Component.EventType.ACTION,
+            function() {
+                var target = {
+                    commentId: this.getCommentId(),
+                    commentCell: this,
+                    likeCount: this.like_.getModel().likeCount
+                };
+                var type = this.like_.getModel()['liked'] ?
+                    postile.view.Sheety.EventType.LOCAL_SUBMIT_UNLIKE :
+                    postile.view.Sheety.EventType.LOCAL_SUBMIT_LIKE;
 
-            this.like_.setEnabled(false);
-            this.dispatchEvent(
-                new goog.events.Event(type, target));
-        }, undefined, this);
+                this.like_.setEnabled(false);
+                this.dispatchEvent(
+                    new goog.events.Event(type, target));
+            }, undefined, this);
+    }
 
     // On like response, re-enable like button and refresh like count.
     goog.events.listen(
@@ -1431,7 +1473,7 @@ postile.view.Sheety.CommentCell.prototype.enterDocument = function() {
         function(e) {
             this.like_.getModel().liked = e.target.liked;
             this.like_.getModel().likeCount = e.target.likeCount;
-            this.syncLike();
+            this.like_.syncWithModel();
             this.like_.setEnabled(true);
         }, undefined, this);
 
@@ -1450,6 +1492,32 @@ postile.view.Sheety.CommentCell.prototype.enterDocument = function() {
                     postile.view.Sheety.EventType.LOCAL_DEL_COMMENT,
                     target));
         }, undefined, this);
+
+    // On click report
+    goog.events.listen(
+        this.report_,
+        goog.ui.Component.EventType.ACTION,
+        function() {
+            var target = {
+                commentCell: this,
+                commentId: this.getCommentId()
+            };
+            if (!confirm('Report this comment?')) {
+                return;
+            }
+            this.report_.setReportState(
+                module.CommentReport.State.REPORTING);
+            this.dispatchEvent(
+                new goog.events.Event(
+                    module.EventType.LOCAL_REPORT_COMMENT,
+                    target));
+        }, undefined, this);
+
+    goog.events.listen(
+        this,
+        module.EventType.LOCAL_REPORT_COMMENT_OK,
+        goog.bind(this.report_.setReportState, this.report_,
+            module.CommentReport.State.REPORTED));
 };
 
 postile.view.Sheety.CommentCell.prototype.tryEnlargeComment = function() {
@@ -1457,11 +1525,6 @@ postile.view.Sheety.CommentCell.prototype.tryEnlargeComment = function() {
 
 postile.view.Sheety.CommentCell.prototype.getContentEl = function() {
     return goog.dom.getElementByClass('content', this.getElement());
-};
-
-postile.view.Sheety.CommentCell.prototype.syncLike = function() {
-    this.like_.getElement()['innerHTML'] = 
-        this.like_.getRenderer().createHtml(this.like_);
 };
 
 postile.view.Sheety.CommentCell.prototype.getCommentId = function() {
@@ -1473,14 +1536,13 @@ postile.view.Sheety.CommentCell.prototype.getAuthorId = function() {
 };
 
 /** @constructor */
-postile.view.Sheety.CommentAuthor = function(authorId) {
-    goog.base(this, null, 
-        goog.ui.ControlRenderer.getCustomRenderer(
+module.CommentAuthor = function(authorId) {
+    goog.base(this, null, goog.ui.ControlRenderer.getCustomRenderer(
             goog.ui.ControlRenderer, 'author'));
 };
-goog.inherits(postile.view.Sheety.CommentAuthor, goog.ui.Control);
+goog.inherits(module.CommentAuthor, goog.ui.Control);
 
-postile.view.Sheety.CommentAuthor.prototype.enterDocument =
+module.CommentAuthor.prototype.enterDocument =
 function() {
     goog.base(this, 'enterDocument');
 
@@ -1493,66 +1555,93 @@ function() {
         goog.bind(profileView.open, profileView, 710));
 };
 
-postile.view.Sheety.CommentContent = function() {
+module.CommentContent = function() {
     goog.base(this);
 };
-goog.inherits(postile.view.Sheety.CommentContent, goog.ui.Component);
+goog.inherits(module.CommentContent, goog.ui.Component);
 
-postile.view.Sheety.CommentContent.prototype.createDom = function() {
+module.CommentContent.prototype.createDom = function() {
     goog.base(this, 'createDom');
 };
 
-postile.view.Sheety.CommentContent.prototype.enterDocument = function() {
+module.CommentContent.prototype.enterDocument = function() {
     goog.base(this, 'enterDocument');
 };
 
-postile.view.Sheety.CommentContent.prototype.tryEnlarge = function() {
+module.CommentContent.prototype.tryEnlarge = function() {
 };
 
 
 /**
  * @constructor
  */
-postile.view.Sheety.LikeRenderer = function() {
-    goog.base(this);
+module.CommentLike = function() {
+    goog.base(this, null, goog.ui.ControlRenderer.getCustomRenderer(
+        goog.ui.ControlRenderer, 'likes'));
 };
-goog.inherits(postile.view.Sheety.LikeRenderer, goog.ui.ControlRenderer);
-goog.addSingletonGetter(postile.view.Sheety.LikeRenderer);
+goog.inherits(module.CommentLike, goog.ui.Control);
 
-postile.view.Sheety.LikeRenderer.prototype.getCssClass = function() {
-    return 'likes';
-};
-
-postile.view.Sheety.LikeRenderer.prototype.createDom = function(like) {
-    var el = goog.base(this, 'createDom', like);
-
-    el['innerHTML'] = this.createHtml(like);
-    return el;
+module.CommentLike.prototype.createDom = function() {
+    goog.base(this, 'createDom');
+    this.syncWithModel();
 };
 
-postile.view.Sheety.LikeRenderer.prototype.createHtml = function(like) {
-    return postile.templates.sheety.commentLike(like.getModel());
+module.CommentLike.prototype.canLike = function() {
+    return this.getModel()['canLike'];
+};
+
+module.CommentLike.prototype.syncWithModel = function() {
+    this.getElement()['innerHTML'] = template.commentLike(this.getModel());
 };
 
 /**
  * @constructor
  */
-postile.view.Sheety.DelCommentRenderer = function() {
-    goog.base(this);
+module.CommentDel = function() {
+    goog.base(this, null, goog.ui.ControlRenderer.getCustomRenderer(
+        goog.ui.ControlRenderer, 'del'));
 };
-goog.inherits(postile.view.Sheety.DelCommentRenderer,
-              goog.ui.ControlRenderer);
-goog.addSingletonGetter(postile.view.Sheety.DelCommentRenderer);
+goog.inherits(module.CommentDel, goog.ui.Control);
 
-postile.view.Sheety.DelCommentRenderer.prototype.getCssClass = function() {
-    return 'del';
+module.CommentDel.prototype.createDom = function() {
+    goog.base(this, 'createDom');
+    this.getElement()['innerHTML'] = template.commentDel(this.getModel());
 };
 
-postile.view.Sheety.DelCommentRenderer.prototype.createDom = function(x) {
-    var el = goog.base(this, 'createDom', x);
+/**
+ * Report disturbing contents.
+ * @constructor
+ */
+module.CommentReport = function() {
+    goog.base(this, null, goog.ui.ControlRenderer.getCustomRenderer(
+        goog.ui.ControlRenderer, 'report'));
+};
+goog.inherits(module.CommentReport, goog.ui.Control);
 
-    el['innerHTML'] = postile.templates.sheety.commentDel(x.getModel());
-    return el;
+module.CommentReport.prototype.createDom = function() {
+    goog.base(this, 'createDom');
+    this.getElement()['innerHTML'] = template.commentReport(
+        this.getModel());
+};
+
+module.CommentReport.prototype.setReportState = function(st) {
+    switch (st) {
+    case module.CommentReport.State.REPORTING:
+        this.setEnabled(false);
+        this.setCaption('Reporting');
+        break;
+    case module.CommentReport.State.REPORTED:
+        this.setCaption('Reported');
+        break;
+    }
+};
+
+/**
+ * @enum {string}
+ */
+module.CommentReport.State = {
+    REPORTING: goog.events.getUniqueId('reporting'),
+    REPORTED: goog.events.getUniqueId('reported')
 };
 
 });  // !goog.scope

@@ -25,7 +25,11 @@ goog.require('postile.view.InvitedUserQuickLogin');
  */
 postile.entry.main = function() {
     goog.events.listen(window, goog.events.EventType.LOAD, function() {
-        postile.conf.useragent.load(postile.entry.init);
+        try {
+            postile.conf.useragent.load(postile.entry.init);
+        } catch (e) {
+            postile.conf.logErrorByException(e);
+        }
     });
 };
 
@@ -34,7 +38,7 @@ postile.entry.main = function() {
  * Originally known as postile.init.
  */
 postile.entry.init = function() {
-    goog.events.listen(window, goog.events.EventType.ERROR, postile.conf.logError);
+    goog.events.listen(window, goog.events.EventType.ERROR, postile.conf.logErrorByEvent);
     postile.feedback.init();
     if (window.location.hostname == 'localhost'){
         postile.conf.initDbgConfiguration();
