@@ -2,8 +2,8 @@ $out = "css\compiled-gen.css"
 
 rm $out
 
-echo "scss compiling..."
-scss --update css/:css/
+echo "sass compiling..."
+sass --update css/*.scss
 
 echo "Combining css using closure-stylesheets..."
 java -jar tmp\closure-stylesheets.jar `

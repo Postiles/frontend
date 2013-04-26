@@ -2,10 +2,14 @@
 
 OUT=css/compiled-gen.css
 
+echo "Cleaning up generated css..."
 rm -f $OUT
+for name in $(find css/ -name "*.scss"); do
+    rm $(echo $name | sed "s/scss/css/")
+done
 
-echo "scss compiling..."
-scss --update css/:css/
+echo "sass compiling..."
+sass --update css/*.scss
 
 echo "combining css using closure-stylesheets..."
 java -jar tmp/closure-stylesheets.jar \
