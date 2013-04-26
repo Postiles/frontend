@@ -42,6 +42,8 @@
       .profile-preview .image-container .profile-picture .image {
         width: inherit;
         height: inherit;
+        background-size: cover;
+        background-position: center;
         border-radius: 5px; }
       .profile-preview .image-container .profile-picture .edit {
         position: absolute;
