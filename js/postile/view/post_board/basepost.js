@@ -4,6 +4,7 @@ goog.require('goog.dom');
 goog.require('goog.style');
 goog.require('goog.string');
 goog.require('goog.events');
+goog.require('goog.events.EventType');
 goog.require('goog.object');
 goog.require('goog.string');
 goog.require('goog.dom.classes');
