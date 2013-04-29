@@ -1,6 +1,10 @@
 import os
 import urllib2
 import shutil
+from fnmatch import fnmatch
+
+import logging
+logger = logging.getLogger('util')
 
 class FilePath(str):
     """ Represents a subclass of string that has its '/' operator
@@ -16,13 +20,16 @@ class FilePath(str):
         return FilePath(os.path.normpath(os.path.join(self, path)))
 
 def download_url_to(url, out_path):
-    with urllib2.urlopen(url) as fin:
-        with open(out_path, 'w') as fout:
-            shutil.copyfileobj(fin, fout)
+    logger.info('Downloading %s to %s', url, out_path)
+    fin = urllib2.urlopen(url)
+    with open(out_path, 'w') as fout:
+        shutil.copyfileobj(fin, fout)
 
 def download_if_not_exist(url, out_path):
     if not os.path.isfile(out_path):
         download_url_to(url, out_path)
+    else:
+        logger.info('Skip downloading of %s (cached)', url)
 
 def which(program):
     """ Find full path of an executable, or None if not found.
@@ -50,4 +57,33 @@ def maybe_add_sudo(cmds):
         return ['sudo'] + cmds
     else:
         return cmds
+
+def find(basedir, matcher):
+    """ Recursive generate matched filename inside a given base directory.
+    """
+    for (dirpath, _, filenames) in os.walk(basedir):
+        for filename in filenames:
+            filepath = FilePath(dirpath) / filename
+            if fnmatch(filepath, matcher):
+                yield filepath
+
+color_dict = {
+    'black':  (30, 40),
+    'red':    (31, 41),
+    'green':  (32, 42),
+    'yellow': (33, 43),
+    'blue':   (34, 44),
+    'magenta':(35, 45),
+    'cyan':   (36, 46),
+    'white':  (37, 47),
+}
+
+def colorize(s, color_name='red', fg=True):
+    if os.name != 'posix':
+        return s
+    fgc, bgc = color_dict[color_name]
+    if fg:
+        return '\033[%dm' % fgc + s + '\033[0m'
+    else:
+        return '\033[%dm' % bgc + s + '\033[0m'
 
