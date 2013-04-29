@@ -4,6 +4,7 @@ js/postile/deps.js
 third_party
 *.swp
 *.orig
+*.pyc
 
 *.sass*
 
