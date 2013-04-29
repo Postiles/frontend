@@ -82,7 +82,7 @@ def fetch_tools():
     for filename in glob(tmp / 'soy*.js'):
         shutil.copy2(filename, soyutilroot)
 
-    logger.info('Done')
+    logger.info(util.colorize('Done', 'green'))
 
 @reg_task
 def build_css():
@@ -95,7 +95,7 @@ def build_css():
         except OSError:
             pass
     logger.info('Building up css from sass')
-    subprocess.call(['sass', '--update'] + glob(scss_glob))
+    subprocess.call(['ruby', util.which('sass'), '--update'] + glob(scss_glob))
 
     logger.info('Building up css from gss')
     gss_glob = PROJ_ROOT / 'css' / '*.gss'
@@ -103,7 +103,7 @@ def build_css():
         subprocess.call(['java', '-jar', PROJ_ROOT / 'tmp' / CSS_COMPILER,
             '--pretty-print', name,
             '--output-file', name.replace('.gss', '-gen.css')])
-    logger.info('Done')
+    logger.info(util.colorize('Done', 'green'))
 
 @reg_task
 def build_js():
@@ -124,7 +124,9 @@ def build_js():
     with open(JS_POSTILE / 'deps.js', 'a') as fout:
         with open(PROJ_ROOT / 'hacks' / 'soyutil-deps.js') as fin:
             fout.write(fin.read())
-    logger.info('Done')
+    
+    logger.info(util.colorize('Done', 'green'))
+
 
 @reg_task
 def compile_css_js():
@@ -165,7 +167,7 @@ def compile_css_js():
         logger.error(util.colorize('JS compilation failed', 'yellow'))
         sys.exit(1)
 
-    logger.info('Done')
+    logger.info(util.colorize('Done', 'green'))
 
 @reg_task
 def use_production():
