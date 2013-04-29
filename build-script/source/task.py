@@ -165,3 +165,10 @@ def compile_css_js():
 
     logger.info('Done')
 
+@reg_task
+def all():
+    bootstrap()
+    build_css()
+    build_js()
+    compile_css_js()
+
