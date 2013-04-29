@@ -35,9 +35,10 @@ CSS_COMPILER = 'closure-stylesheets.jar'
 tasks = {}
 def reg_task(f):
     tasks[f.__name__] = f
+    return f
 
 @reg_task
-def bootstrap():
+def fetch_tools():
     tmp = PROJ_ROOT / 'tmp'
     logger.info('Creating temporary directory at %s', tmp)
     try:
@@ -166,8 +167,16 @@ def compile_css_js():
     logger.info('Done')
 
 @reg_task
-def all():
-    bootstrap()
+def use_production():
+    shutil.copy2(PROJ_ROOT / 'index-prod.html', PROJ_ROOT / 'index.html')
+
+@reg_task
+def use_development():
+    shutil.copy2(PROJ_ROOT / 'index-dev.html', PROJ_ROOT / 'index.html')
+
+@reg_task
+def bootstrap():
+    fetch_tools()
     build_css()
     build_js()
     compile_css_js()

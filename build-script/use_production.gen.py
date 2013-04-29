@@ -4,4 +4,4 @@
 import sys
 sys.path.insert(0, '/home/overmind/ref/postile-dev/frontend/build-script/source')
 from task import tasks
-tasks['all']()
+tasks['use_production']()
