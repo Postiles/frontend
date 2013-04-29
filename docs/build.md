@@ -1,3 +1,18 @@
+### TLDR: Building the project
+
+- If you are building from the scratch for development:
+  Run `build-script/dev_bootstrap.gen.py`
+
+- If you are deploying from the scratch:
+  Run `build-script/deploy.gen.py`
+
+- If you have already bootstrapped and did some modification (scss/gss/soy/js)
+  to the project:
+  Run `build-script/dev_build_all.gen.py`
+
+- If you have already bootstrapped and want to compile the project:
+  Run `build-script/prod_build_all.gen.py`
+
 ### Layout of the project
 
 css/
@@ -17,26 +32,9 @@ js/
 templates/
   * Html templates, to be loaded by project js files
 
+build-script/
+  * Executable build scripts
+
 others
   * Remain undocumented...
-
-### TLDR: Building the project
-
-`mkdep` then `compile-css` and finally `mkcompiled`.
-After then, run `flip-compiled-js` to switch the `index.html` to use
-compiled code.
-
-### Building scripts, detailed
-  - bootstrap.(sh|ps1)
-    * Downloads essential tools
-  - mkdep.(sh|ps1)
-    * Compiles js/*.soy to js/*.soy.js, using closure-templates compiler.
-    * Compiles css/*.gss to css/*.css, using closure-stylesheets compiler.
-    * Resolves dependencies for js/postile/*.js and builds js/postile/deps.hs
-      so that non-compiled version of the index.html can be run.
-  - compile-css
-    * Compiles css/*.scss to css/*.css, using sass.
-    * Combines css/*.css to css/compiled-gen.css, using closure-stylesheets.
-  - mkcompiled
-    * Compiles js/*.js to compiled.js, using closure-compiler
 

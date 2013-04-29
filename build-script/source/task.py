@@ -180,15 +180,22 @@ def use_development():
 @reg_task
 def prod_deploy():
     fetch_tools()
-    build_css()
-    build_js()
-    compile_css_js()
-    use_production()
+    prod_build_all()
 
 @reg_task
 def dev_bootstrap():
     fetch_tools()
+    def_build_all()
+
+@reg_task
+def dev_build_all():
     build_css()
     build_js()
     use_development()
 
+@reg_task
+def prod_build_all():
+    build_css()
+    build_js()
+    compile_css_js()
+    use_production()

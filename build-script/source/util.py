@@ -15,8 +15,6 @@ class FilePath(str):
         return s
 
     def __div__(self, path):
-        if isinstance(path, FilePath):
-            path = path.path
         return FilePath(os.path.normpath(os.path.join(self, path)))
 
 def download_url_to(url, out_path):
