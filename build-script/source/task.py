@@ -1,4 +1,5 @@
 import os
+import sys
 import shutil
 import subprocess
 from zipfile import ZipFile
@@ -162,22 +163,32 @@ def compile_css_js():
     except subprocess.CalledProcessError as e:
         logger.error(e.output)
         logger.error(util.colorize('JS compilation failed', 'yellow'))
-        return
+        sys.exit(1)
 
     logger.info('Done')
 
 @reg_task
 def use_production():
+    logger.info('Using production mode')
     shutil.copy2(PROJ_ROOT / 'index-prod.html', PROJ_ROOT / 'index.html')
 
 @reg_task
 def use_development():
+    logger.info('Using development mode')
     shutil.copy2(PROJ_ROOT / 'index-dev.html', PROJ_ROOT / 'index.html')
 
 @reg_task
-def bootstrap():
+def prod_deploy():
     fetch_tools()
     build_css()
     build_js()
     compile_css_js()
+    use_production()
+
+@reg_task
+def dev_bootstrap():
+    fetch_tools()
+    build_css()
+    build_js()
+    use_development()
 
