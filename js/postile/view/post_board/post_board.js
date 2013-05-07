@@ -402,7 +402,7 @@ postile.view.post_board.PostBoard = function(board_id) {
             }
 
         }
-        
+
         if (!localStorage.postile_alert_shown) {
 	        new postile.view.Alert().open();
 	        localStorage.postile_alert_shown = true;
@@ -1080,6 +1080,7 @@ postile.view.post_board.PostBoard.prototype.updateOnlinePeople = function() {
     this.updateOnlineCount();
     var online_list = this.onlinepeople.view.online_list;
     online_list.innerHTML="";
+
     for(var i = 0; i < this.onlinepeople.id.users.length; i++) {
         var item = new postile.view.onlinepeople.Item();
         item.renderItem(this.onlinepeople.view, this.onlinepeople.id.users[i]);

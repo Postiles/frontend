@@ -92,11 +92,11 @@ postile.view.post.text_post.TextPost.prototype.enterEditMode = function(req) {
         elements.postContentPlaceHolder_el.style.display = 'none';
     }
 
-    this.y_editor = new postile.WYSIWYF.Editor(elements.postContent_el, 
+    this.y_editor = new postile.WYSIWYF.Editor(elements.postContent_el,
             elements.postWysiwyfIconContainer, this);
 
     if (!elements.postContent_el._lc_) {
-        elements.postContent_el._lc_ = 
+        elements.postContent_el._lc_ =
             new postile.length_control.LengthController(elements.postContent_el, 5000);
     }
 }
@@ -112,12 +112,12 @@ postile.view.post.text_post.TextPost.prototype.submitChange = function() {
             return;
         }
 
-        postile.ajax([ 'post', 'submit_change' ], 
+        postile.ajax([ 'post', 'submit_change' ],
                 {
                     post_id: this.postData.post.id,
                     title: title,
                     content: content
-                }, 
+                },
                 function(data) {
                     this.postData.post.title = title;
                     this.postData.post.content = content;
