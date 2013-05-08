@@ -40,6 +40,8 @@ goog.require('postile.view.onlinepeople');
 goog.require('postile.view.Alert');
 goog.require('postile.user');
 
+goog.require('postile.analysis');
+
 /**
  * Smallest unit size for a post, in pixel.
  * @const
@@ -340,6 +342,7 @@ postile.view.post_board.PostBoard = function(board_id) {
 
     // Initialize according to board_id
     postile.ajax([ 'board', 'enter_board' ], { board_id: board_id }, function(data) {
+        postile.analysis.gaq_push(['_trackEvent', 'board', 'enter_board']);
         instance.boardData = data.message.board;
 
         if (instance.boardData.default_view == 'sheet') { // go to sheety view
