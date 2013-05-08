@@ -1078,6 +1078,9 @@ postile.view.post_board.PostBoard.prototype.fayeHandler = function(status, data)
 
 postile.view.post_board.PostBoard.prototype.updateOnlinePeople = function() {
     this.updateOnlineCount();
+    if(this.onlinepeople.id == undefined) {
+        return;
+    }
     var online_list = this.onlinepeople.view.online_list;
     online_list.innerHTML="";
 
