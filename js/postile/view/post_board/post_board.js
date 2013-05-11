@@ -18,6 +18,7 @@ goog.require('postile.fx.effects');
 goog.require('postile.ajax');
 goog.require('postile.faye');
 goog.require('goog.dom');
+goog.require('postile.view.Share');
 goog.require('goog.style');
 goog.require('goog.events');
 goog.require('goog.events.KeyCodes');

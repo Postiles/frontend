@@ -34,8 +34,7 @@ postile.view.BoardList = function(topic) {
 
     var new_board = new postile.view.new_board.NewBoard();
     goog.events.listen(instance.add, goog.events.EventType.CLICK, function() {
-        alert("This function is temporarily disabled by the administrator.");
-        //new_board.open(500);
+        new_board.open(500);
     });
     goog.events.listen(instance.right_button, goog.events.EventType.CLICK, function() {
         postile.router.dispatch(instance.currentTarget);

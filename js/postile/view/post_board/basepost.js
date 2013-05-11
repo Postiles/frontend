@@ -162,6 +162,7 @@ postile.view.BasePost.prototype.loadDisplayModeUIComponents = function() {
         postLikeCount_el: $('post_like_count'),
         postLikeButton_el: $('post_like_button'),
         postLikeMiddle2_el: $('post_like_middle_2'),
+        postShare_el: $('post_share'),
         postCommentCount_el: $('post_comment_count'),
         commentPreview_el: $('comment_preview'),
         commentPreviewNoComment_el: $('comment_preview_no_comment'),
@@ -323,6 +324,13 @@ postile.view.BasePost.prototype.initDisplayModeListener = function() {
                         elements.postLikeButton_el.innerHTML = 'Like';
                     }
                 }.bind(this));
+        }.bind(this));
+        
+    goog.events.listen(
+        elements.postShare_el,
+        goog.events.EventType.CLICK,
+        function() {
+            (new postile.view.Share('http://' + window.location.host + '/board/' +  this.postData.post.board_id + '#' + this.postData.post.id, "Share this post")).open();
         }.bind(this));
 
     // comment count clicked, enter comment mode

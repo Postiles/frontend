@@ -1,0 +1,56 @@
+.share {
+    width: 500px;
+    background: #ccc;
+    box-shadow: 0 2px 7px #000;
+}
+
+.share .header {
+    height: 48px;
+    line-height: 48px;
+    font-size: 16pt;
+    color: #FFF;
+    background: #024d61;
+    padding-left: 28px;
+}
+
+.share .content {
+    padding: 20px 28px;
+}
+
+.share p {
+    margin: 0;
+    padding: 0;
+    font-size: 12pt;
+    line-height: 14px;
+    height: 14px;
+}
+
+.share input {
+    display: block;
+    background: rgba(255, 255, 255, 0.6);
+    border: 0;
+    padding: 6px 8px;
+    box-sizing: border-box;
+    font-size: 12pt;
+    line-height: 14px;
+    height: 26px;
+    width: 320px;
+    margin-top: 10px;
+}
+
+.share input:focus {
+    background: rgba(255, 255, 255, 0.8);
+}
+
+.share .addthis_postile_outer {
+    border-top: 15px solid transparent;
+}
+
+.share .addthis_postile_prompt {
+    float: left;
+    margin-right: 12px;
+}
+
+.share .addthis_postile {
+    float: left;
+}
