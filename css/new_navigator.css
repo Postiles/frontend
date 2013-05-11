@@ -1,0 +1,50 @@
+#new_navigator_wrapper {
+	position: absolute;
+	height: 39px;
+	top: 230px;
+	left: 0px;
+	z-index: 200;
+	font-size: 12px;
+}
+
+#new_navigator_wrapper .new_navigator_pop{
+	width: 250px;
+	float: left;
+}
+
+#new_navigator_wrapper  .new_navigator_button {
+	background: #3a3a3a;
+	padding: 10px;
+	cursor: pointer;
+	position: relative;
+	float: left;
+	color: #fff;
+	z-index: 100px;
+}
+#new_navigator_wrapper  .new_navigator_button:hover {
+	background: #333333;
+}
+
+#new_navigator_wrapper .new_navigator_next {
+	background: #3a3a3a;
+	padding: 10px;
+	padding-top: 10px;
+	display: inline-block;
+	color: #fff;
+	cursor: pointer;
+	margin-left: -40px;
+	-webkit-transition: margin-left 0.2s;
+	-moz-transition: margin-left 0.2s;
+	transition: margin-left 0.2s;
+	z-index: 99px;
+}
+#new_navigator_wrapper .new_navigator_next:hover {
+	background: #666666;
+}
+
+#new_navigator_wrapper .next_navigate_out {
+	margin-left: 0px;
+}
+#new_navigator_wrapper .next_navigate_in {
+	margin-left: -40px;
+}
