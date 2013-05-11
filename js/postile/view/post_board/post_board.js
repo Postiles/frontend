@@ -40,6 +40,8 @@ goog.require('postile.view.onlinepeople');
 goog.require('postile.view.Alert');
 goog.require('postile.user');
 
+goog.require('postile.analysis');
+
 /**
  * Smallest unit size for a post, in pixel.
  * @const
@@ -340,6 +342,7 @@ postile.view.post_board.PostBoard = function(board_id) {
 
     // Initialize according to board_id
     postile.ajax([ 'board', 'enter_board' ], { board_id: board_id }, function(data) {
+        _gaq.push(['_trackEvent', 'board', 'enter_board']);
         instance.boardData = data.message.board;
 
         if (instance.boardData.default_view == 'sheet') { // go to sheety view
@@ -402,7 +405,7 @@ postile.view.post_board.PostBoard = function(board_id) {
             }
 
         }
-        
+
         if (!localStorage.postile_alert_shown) {
 	        new postile.view.Alert().open();
 	        localStorage.postile_alert_shown = true;
@@ -1078,8 +1081,12 @@ postile.view.post_board.PostBoard.prototype.fayeHandler = function(status, data)
 
 postile.view.post_board.PostBoard.prototype.updateOnlinePeople = function() {
     this.updateOnlineCount();
+    if(this.onlinepeople.id == undefined) {
+        return;
+    }
     var online_list = this.onlinepeople.view.online_list;
     online_list.innerHTML="";
+
     for(var i = 0; i < this.onlinepeople.id.users.length; i++) {
         var item = new postile.view.onlinepeople.Item();
         item.renderItem(this.onlinepeople.view, this.onlinepeople.id.users[i]);
