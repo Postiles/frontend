@@ -342,7 +342,8 @@ postile.view.post_board.PostBoard = function(board_id) {
 
     // Initialize according to board_id
     postile.ajax([ 'board', 'enter_board' ], { board_id: board_id }, function(data) {
-        _gaq.push(['_trackEvent', 'board', 'enter_board']);
+        //category, action, label, value
+        _gaq.push(['_trackEvent', 'board', 'enter_board', board_id]);
         instance.boardData = data.message.board;
 
         if (instance.boardData.default_view == 'sheet') { // go to sheety view
@@ -901,6 +902,7 @@ postile.view.post_board.PostBoard.prototype.updateSubscribeArea = function() {
     }
     */
     to_subscribe.board_id = instance.board_id;
+    _gaq.push(['_trackEvent', 'board', 'move_to']);
     postile.ajax(['board', 'move_to'], to_subscribe, function(data) {
         // postile.toast.title_bar_toast_dismiss();
         instance.subscribedArea = to_subscribe;
@@ -1108,6 +1110,7 @@ postile.view.post_board.PostBoard.prototype.createPost = function(info) {
     req.board_id = this.board_id;
     ret.text_content = '';
 
+    _gaq.push(['_trackEvent', 'post', 'new', 'text']);
     postile.ajax(['post', 'new'], req, function(data) {
         instance.renderPost(data.message, postile.view.BasePost.PostMode.EDIT);
     });
@@ -1121,6 +1124,7 @@ postile.view.post_board.PostBoard.prototype.createImagePost = function(info, ima
     var instance = this;
     req.board_id = this.board_id;
 
+    _gaq.push(['_trackEvent', 'post', 'new', 'image']);
     postile.ajax(['post', 'new'], req, function(data) {
         instance.renderPost(data.message, postile.view.BasePost.PostMode.EDIT);
     });
@@ -1134,6 +1138,7 @@ postile.view.post_board.PostBoard.prototype.createVideoPost = function(info, vid
     var instance = this;
     req.board_id = this.board_id;
 
+    _gaq.push(['_trackEvent', 'post', 'new', 'vide']);
     postile.ajax(['post', 'new'], req, function(data) {
         instance.renderPost(data.message, postile.view.BasePost.PostMode.EDIT);
     });

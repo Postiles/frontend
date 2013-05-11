@@ -2,7 +2,7 @@
 goog.provide('postile.analysis');
 
 // globally run this code since google require to do so.
-var _gaq = this._gaq||[];
+var _gaq = _gaq||[];
 _gaq.push(['_setAccount', 'UA-40741449-1']);
 _gaq.push(['_trackPageview']);
 (function() {

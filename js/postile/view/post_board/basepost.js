@@ -44,18 +44,18 @@ postile.view.BasePost = function(postData, board, mode) {
     this.confirmDeleteModePost_el.style.display = 'none';
 
     // precalculate this two so that future intersect test will be faster
-    this.postData.post.coord_x_end = 
+    this.postData.post.coord_x_end =
         this.postData.post.pos_x + this.postData.post.span_x;
-    this.postData.post.coord_y_end = 
+    this.postData.post.coord_y_end =
         this.postData.post.pos_y + this.postData.post.span_y;
 
-    this.wrap_el.style.left = 
+    this.wrap_el.style.left =
         this.board.xPosTo(this.postData.post.pos_x) + 'px';
-    this.wrap_el.style.top = 
+    this.wrap_el.style.top =
         this.board.yPosTo(this.postData.post.pos_y) + 'px';
-    this.wrap_el.style.width = 
+    this.wrap_el.style.width =
         this.board.widthTo(this.postData.post.span_x) + 'px';
-    this.wrap_el.style.height = 
+    this.wrap_el.style.height =
         this.board.heightTo(this.postData.post.span_y) + 'px';
 
     goog.dom.appendChild(this.board.canvas, this.wrap_el);
@@ -64,8 +64,8 @@ postile.view.BasePost = function(postData, board, mode) {
 
     // disable double click entering mask mode
     goog.events.listen(
-        this.wrap_el, 
-        goog.events.EventType.DBLCLICK, 
+        this.wrap_el,
+        goog.events.EventType.DBLCLICK,
         function(e) {
             e.stopPropagation();
         });
@@ -84,8 +84,8 @@ postile.view.BasePost.prototype.changeCurrentMode = function(mode) {
     case postile.view.BasePost.PostMode.EDIT:
         if (this.isSelfPost()) {
             postile.ajax(
-                [ 'post', 'start_edit' ], 
-                { post_id: this.postData.post.id }, 
+                [ 'post', 'start_edit' ],
+                { post_id: this.postData.post.id },
                 function(data) {
                     this.enterEditMode(true);
                 }.bind(this));
@@ -124,7 +124,7 @@ postile.view.BasePost.prototype.loadUIComponents = function() {
     this.wrap_el = goog.dom.createDom('div', 'post_wrap');
 
     // load static html template
-    postile.ui.load(this.wrap_el, 
+    postile.ui.load(this.wrap_el,
         postile.conf.staticResource([ '_post_in_board.html' ]));
 
     // load different post modes
@@ -137,7 +137,7 @@ postile.view.BasePost.prototype.loadUIComponents = function() {
 };
 
 postile.view.BasePost.prototype.loadDisplayModeUIComponents = function() {
-    this.displayModePost_el = 
+    this.displayModePost_el =
         postile.dom.getDescendantByClass(this.wrap_el, 'display_mode_post');
 
     // This function is just a shortcut for the getDescendantByClass function
@@ -173,7 +173,7 @@ postile.view.BasePost.prototype.loadDisplayModeUIComponents = function() {
 }
 
 postile.view.BasePost.prototype.loadCommentModeUIComponents = function() {
-    this.commentModePost_el = 
+    this.commentModePost_el =
         postile.dom.getDescendantByClass(this.wrap_el, 'comment_mode_post');
 
     // This function is just a shortcut for the getDescendantByClass function
@@ -200,7 +200,7 @@ postile.view.BasePost.prototype.loadCommentModeUIComponents = function() {
 }
 
 postile.view.BasePost.prototype.loadEditModeUIComponents = function() {
-    this.editModePost_el = 
+    this.editModePost_el =
         postile.dom.getDescendantByClass(this.wrap_el, 'edit_mode_post');
 
     var $ = function(nodeCls) {
@@ -220,7 +220,7 @@ postile.view.BasePost.prototype.loadEditModeUIComponents = function() {
 }
 
 postile.view.BasePost.prototype.loadLockedModeUIComponents = function() {
-    this.lockedModePost_el = 
+    this.lockedModePost_el =
         postile.dom.getDescendantByClass(this.wrap_el, 'locked_mode_post');
 
     var $ = function(nodeCls) {
@@ -234,7 +234,7 @@ postile.view.BasePost.prototype.loadLockedModeUIComponents = function() {
 }
 
 postile.view.BasePost.prototype.loadNewModeUIComponents = function() {
-    this.newModePost_el = 
+    this.newModePost_el =
         postile.dom.getDescendantByClass(this.wrap_el, 'new_mode_post');
 
     var $ = function(nodeCls) {
@@ -248,7 +248,7 @@ postile.view.BasePost.prototype.loadNewModeUIComponents = function() {
 }
 
 postile.view.BasePost.prototype.loadConfirmDeleteModeUIComponents = function() {
-    this.confirmDeleteModePost_el = 
+    this.confirmDeleteModePost_el =
         postile.dom.getDescendantByClass(
             this.wrap_el, 'confirm_delete_mode_post');
 
@@ -281,20 +281,20 @@ postile.view.BasePost.prototype.initDisplayModeListener = function() {
 
     // expand post
     goog.events.listen(
-        elements.postTitleContainer_el, 
-        goog.events.EventType.CLICK, 
+        elements.postTitleContainer_el,
+        goog.events.EventType.CLICK,
         function(e) {
-            var postExpand = 
+            var postExpand =
                 new postile.view.PostExpand(this);
             postExpand.open();
         }.bind(this));
 
     // display user profile
     goog.events.listen(
-        elements.postAuthor_el, 
-        goog.events.EventType.CLICK, 
+        elements.postAuthor_el,
+        goog.events.EventType.CLICK,
         function(e) {
-            var profileView = 
+            var profileView =
                 new postile.view.profile.ProfileView(
                     this.postData.creator.id);
             profileView.open(710);
@@ -302,22 +302,23 @@ postile.view.BasePost.prototype.initDisplayModeListener = function() {
 
     // like clicked
     goog.events.listen(
-        elements.postLikeButton_el, 
-        goog.events.EventType.CLICK, 
+        elements.postLikeButton_el,
+        goog.events.EventType.CLICK,
         function(e) {
+            _gaq.push(['_trackEvent', 'post', 'like']);
             var elements = this.displayModeElements;
             var action = elements.postLikeButton_el.innerHTML.toLowerCase();
 
             postile.ajax(
-                [ 'post', action ], 
-                { post_id: this.postData.post.id }, 
+                [ 'post', action ],
+                { post_id: this.postData.post.id },
                 function(data) {
                     if (action == 'like') { // like
-                        elements.postLikeCount_el.innerHTML = 
+                        elements.postLikeCount_el.innerHTML =
                             (++this.postData.likes.length);
                         elements.postLikeButton_el.innerHTML = 'Unlike';
                     } else { // unlike
-                        elements.postLikeCount_el.innerHTML = 
+                        elements.postLikeCount_el.innerHTML =
                             (--this.postData.likes.length);
                         elements.postLikeButton_el.innerHTML = 'Like';
                     }
@@ -326,16 +327,16 @@ postile.view.BasePost.prototype.initDisplayModeListener = function() {
 
     // comment count clicked, enter comment mode
     goog.events.listen(
-        elements.postCommentCount_el, 
-        goog.events.EventType.CLICK, 
+        elements.postCommentCount_el,
+        goog.events.EventType.CLICK,
         function(e) {
             this.changeCurrentMode(postile.view.BasePost.PostMode.COMMENT);
         }.bind(this));
 
     // enter edit mode by clicking on edit button
     goog.events.listen(
-        elements.postEditButton_el, 
-        goog.events.EventType.CLICK, 
+        elements.postEditButton_el,
+        goog.events.EventType.CLICK,
         function(e) {
             this.changeCurrentMode(postile.view.BasePost.PostMode.EDIT);
         }.bind(this));
@@ -356,18 +357,18 @@ postile.view.BasePost.prototype.initDisplayModeListener = function() {
 
     // comment preview clicked, enter comment mode
     goog.events.listen(
-        elements.commentPreview_el, 
+        elements.commentPreview_el,
         goog.events.EventType.CLICK, function(e) {
             this.changeCurrentMode(postile.view.BasePost.PostMode.COMMENT);
         }.bind(this));
 
     // comment preview author name clicked
     goog.events.listen(
-        elements.commentPreviewAuthor_el, 
-        goog.events.EventType.CLICK, 
+        elements.commentPreviewAuthor_el,
+        goog.events.EventType.CLICK,
         function(e) {
             e.stopPropagation();
-            var profileView = 
+            var profileView =
                 new postile.view.profile.ProfileView(
                     this.latestComment.creator.id);
             profileView.open(710);
@@ -379,18 +380,18 @@ postile.view.BasePost.prototype.initCommentModeListener = function() {
 
     // expand post
     goog.events.listen(
-        elements.postTitleContainer_el, 
-        goog.events.EventType.CLICK, 
+        elements.postTitleContainer_el,
+        goog.events.EventType.CLICK,
         function(e) {
-            var postExpand = 
+            var postExpand =
                 new postile.view.PostExpand(this);
             postExpand.open();
         }.bind(this));
 
     // enter pressed for comment input
     goog.events.listen(
-        elements.commentInput_el, 
-        goog.events.EventType.KEYDOWN, 
+        elements.commentInput_el,
+        goog.events.EventType.KEYDOWN,
         function(e) {
             this.bringToFront();
 
@@ -413,8 +414,8 @@ postile.view.BasePost.prototype.initCommentModeListener = function() {
 
     // close clicked in comment mode
     goog.events.listen(
-        elements.commentCloseButton_el, 
-        goog.events.EventType.CLICK, 
+        elements.commentCloseButton_el,
+        goog.events.EventType.CLICK,
         function(e) {
             this.changeCurrentMode(postile.view.BasePost.PostMode.DISPLAY);
         }.bind(this));
@@ -441,8 +442,8 @@ postile.view.BasePost.prototype.initEditModeListener = function() {
 
     // enter pressed when editing title
     goog.events.listen(
-        elements.postTitle_el, 
-        goog.events.EventType.KEYDOWN, 
+        elements.postTitle_el,
+        goog.events.EventType.KEYDOWN,
         function(e) {
             if (e.keyCode == goog.events.KeyCodes.ENTER) {
                 this.submitChange();
@@ -451,8 +452,8 @@ postile.view.BasePost.prototype.initEditModeListener = function() {
 
     // ctrl + enter or shift + enter pressed for post content
     goog.events.listen(
-        elements.postContent_el, 
-        goog.events.EventType.KEYDOWN, 
+        elements.postContent_el,
+        goog.events.EventType.KEYDOWN,
         function(e) {
             if (e.keyCode == goog.events.KeyCodes.ENTER && (e.ctrlKey || e.shiftKey)) {
                 e.preventDefault();
@@ -462,8 +463,8 @@ postile.view.BasePost.prototype.initEditModeListener = function() {
 
     // content key up, deals with placeholder
     goog.events.listen(
-        elements.postContent_el, 
-        goog.events.EventType.KEYUP, 
+        elements.postContent_el,
+        goog.events.EventType.KEYUP,
         function(e) {
             var elements = this.editModeElements;
 
@@ -486,8 +487,8 @@ postile.view.BasePost.prototype.initEditModeListener = function() {
 
     // delete icon clicked
     goog.events.listen(
-        elements.deleteIcon_el, 
-        goog.events.EventType.CLICK, 
+        elements.deleteIcon_el,
+        goog.events.EventType.CLICK,
         function(e) {
             this.changeCurrentMode(
                 postile.view.BasePost.PostMode.CONFIRM_DELETE);
@@ -495,8 +496,8 @@ postile.view.BasePost.prototype.initEditModeListener = function() {
 
     // body clicked, submit change
     goog.events.listen(
-        document.body, 
-        goog.events.EventType.CLICK, 
+        document.body,
+        goog.events.EventType.CLICK,
         function(e) {
             if (this.currMode == postile.view.BasePost.PostMode.EDIT) {
                 this.submitChange();
@@ -505,8 +506,8 @@ postile.view.BasePost.prototype.initEditModeListener = function() {
 
     // stop body click propagation
     goog.events.listen(
-        this.wrap_el, 
-        goog.events.EventType.CLICK, 
+        this.wrap_el,
+        goog.events.EventType.CLICK,
         function(e) {
             if (this.currMode == postile.view.BasePost.PostMode.EDIT) {
                 e.stopPropagation();
@@ -520,10 +521,10 @@ postile.view.BasePost.prototype.initLockedModeListener = function() {
     if (!this.isInAnonymousBoard()) {
         // author's name clicked
         goog.events.listen(
-            elements.lockUsername_el, 
-            goog.events.EventType.CLICK, 
+            elements.lockUsername_el,
+            goog.events.EventType.CLICK,
             function (e) {
-                var profileView = 
+                var profileView =
                     new postile.view.profile.ProfileView(this.postData.creator.id);
                 profileView.open(710);
             }.bind(this));
@@ -536,8 +537,8 @@ postile.view.BasePost.prototype.initNewModeListener = function() {
     if (!this.isInAnonymousBoard()) {
         // author's name clicked
         goog.events.listen(
-            elements.newUsername_el, 
-            goog.events.EventType.CLICK, 
+            elements.newUsername_el,
+            goog.events.EventType.CLICK,
             function (e) {
                 var profileView = new postile.view.profile.ProfileView(
                     this.postData.creator.id);
@@ -551,8 +552,8 @@ postile.view.BasePost.prototype.initConfirmDeleteModeListener = function() {
 
     // ok clicked
     goog.events.listen(
-        elements.confirmOk_el, 
-        goog.events.EventType.CLICK, 
+        elements.confirmOk_el,
+        goog.events.EventType.CLICK,
         function(e) {
             var id = this.postData.post.id;
             postile.ajax(['post','delete'], { post_id: id }, function(data) {
@@ -563,8 +564,8 @@ postile.view.BasePost.prototype.initConfirmDeleteModeListener = function() {
 
     // cancel clicked
     goog.events.listen(
-        elements.confirmCancel_el, 
-        goog.events.EventType.CLICK, 
+        elements.confirmCancel_el,
+        goog.events.EventType.CLICK,
         function(e) {
             this.enterEditMode(false);
         }.bind(this));
@@ -588,12 +589,12 @@ postile.view.BasePost.prototype.enterDisplayMode = function() {
 
     if (!this.isInAnonymousBoard()) {
         postile.data_manager.getUserData(
-            this.postData.post.creator_id, 
+            this.postData.post.creator_id,
             function(data) {
                 this.postData.creator = data;
                 elements.postAuthor_el.innerHTML = data.username;
 
-                elements.postTitle_el.style.width = this.wrap_el.offsetWidth - 
+                elements.postTitle_el.style.width = this.wrap_el.offsetWidth -
                         elements.postAuthor_el.offsetWidth - 40 + 'px';
             }.bind(this));
     }
@@ -633,47 +634,47 @@ postile.view.BasePost.prototype.enterDisplayMode = function() {
     }
 
     // latest inline comment
-    this.latestComment = 
-        this.postData.inline_comments[ 
+    this.latestComment =
+        this.postData.inline_comments[
             this.postData.inline_comments.length - 1 ];
 
     if (this.latestComment) { // at least one comment
 
         if (!this.isInAnonymousBoard()) { // not anonymous
             postile.data_manager.getUserData(
-                this.latestComment.inline_comment.creator_id, 
+                this.latestComment.inline_comment.creator_id,
                 function(data) {
                     this.latestComment.creator = data;
 
-                    elements.commentPreviewAuthor_el.innerHTML = 
+                    elements.commentPreviewAuthor_el.innerHTML =
                         this.latestComment.creator.username;
-                    elements.commentPreviewContent_el.innerHTML = 
+                    elements.commentPreviewContent_el.innerHTML =
                         postile.parseBBcode(this.latestComment.inline_comment.content);
                     postile.bbcodePostProcess(elements.commentPreviewContent_el, true);
 
                     elements.commentPreviewNoComment_el.style.display = 'none';
                     elements.commentPreview_el.style.display = 'block';
 
-                    elements.commentPreviewContent_el.style.width = 
-                        this.wrap_el.offsetWidth - 
+                    elements.commentPreviewContent_el.style.width =
+                        this.wrap_el.offsetWidth -
                             elements.commentPreviewAuthor_el.offsetWidth - 36 + 'px';
                 }.bind(this));
         } else {
             elements.commentPreviewAuthor_el.innerHTML = '';
             elements.commentPreviewMiddle_el.style.display = 'none';
-            elements.commentPreviewContent_el.style.width = 
-                this.wrap_el.offsetWidth - 
+            elements.commentPreviewContent_el.style.width =
+                this.wrap_el.offsetWidth -
                     elements.commentPreviewAuthor_el.offsetWidth - 36 + 'px';
 
-            elements.commentPreviewContent_el.innerHTML = 
+            elements.commentPreviewContent_el.innerHTML =
                 postile.parseBBcode(this.latestComment.inline_comment.content);
             postile.bbcodePostProcess(elements.commentPreviewContent_el, true);
 
             elements.commentPreviewNoComment_el.style.display = 'none';
             elements.commentPreview_el.style.display = 'block';
 
-            elements.commentPreviewContent_el.style.width = 
-                this.wrap_el.offsetWidth - 
+            elements.commentPreviewContent_el.style.width =
+                this.wrap_el.offsetWidth -
                     elements.commentPreviewAuthor_el.offsetWidth - 36 + 'px';
         }
     } else { // no comment
@@ -699,25 +700,25 @@ postile.view.BasePost.prototype.enterCommentMode = function() {
 
     if (!this.isInAnonymousBoard()) {
         postile.data_manager.getUserData(
-            this.postData.post.creator_id, 
+            this.postData.post.creator_id,
             function(data) {
                 this.postData.creator = data;
 
                 elements.postAuthor_el.innerHTML = this.postData.creator.username;
-                elements.postTitle_el.style.width = this.wrap_el.offsetWidth - 
+                elements.postTitle_el.style.width = this.wrap_el.offsetWidth -
                         elements.postAuthor_el.offsetWidth - 40 + 'px';
             }.bind(this));
     }
 
-    elements.commentContainer_el.style.height = 
-        this.wrap_el.offsetHeight - 
+    elements.commentContainer_el.style.height =
+        this.wrap_el.offsetHeight -
         elements.postInnerContainer_el.offsetHeight - 3 + 'px'; // 3 is padding
 
-    elements.commentList_el.style.height = 
+    elements.commentList_el.style.height =
         parseInt(elements.commentContainer_el.style.height) - 34 + 'px'
 
     if (postile.conf.userLoggedIn()) {
-        elements.commentInput_el.style.width = 
+        elements.commentInput_el.style.width =
             this.wrap_el.offsetWidth - 65 + 'px';
 
         elements.commentInput_el.focus();
@@ -730,10 +731,10 @@ postile.view.BasePost.prototype.enterCommentMode = function() {
     }
 
     if (!elements.commentInput_el._lc_) {
-        elements.commentInput_el._lc_ = 
+        elements.commentInput_el._lc_ =
             new postile.length_control.LengthController(elements.commentInput_el, 1000);
     }
-    
+
     if (this.postData.post.title) { // title exists
         elements.postNoTitle_el.style.display = 'none';
     }
@@ -767,7 +768,7 @@ postile.view.BasePost.prototype.enterEditMode = function(req) {
     if (!this.isSelfPost()) { // not my own post, cannot edit
         return;
     }
-    
+
     this.bringToFront();
 
     this.board.disableMovingCanvas = true;
@@ -807,7 +808,7 @@ postile.view.BasePost.prototype.enterLockedMode = function() {
 
     if (!this.isInAnonymousBoard()) {
         postile.data_manager.getUserData(
-            this.postData.post.creator_id, 
+            this.postData.post.creator_id,
             function(data) {
                 this.postData.creator = data;
                 elements.lockUsername_el.innerHTML = data.username;
@@ -832,7 +833,7 @@ postile.view.BasePost.prototype.enterNewMode = function() {
 
     if (!this.isInAnonymousBoard()) {
         postile.data_manager.getUserData(
-            this.postData.post.creator_id, 
+            this.postData.post.creator_id,
             function(data) {
                 this.postData.creator = data;
                 elements.newUsername_el.innerHTML = data.username;
@@ -880,19 +881,19 @@ postile.view.BasePost.prototype.resetCommentPreview = function(data) {
 
         if (!this.isInAnonymousBoard()) {
             postile.data_manager.getUserData(
-                data.inline_comment.creator_id, 
+                data.inline_comment.creator_id,
                 function(userData) {
                     elements.commentPreviewNoComment_el.style.display = 'none';
                     elements.commentPreviewDisplay_el.style.display = 'table-cell';
-                    elements.commentPreviewAuthor_el.innerHTML = 
+                    elements.commentPreviewAuthor_el.innerHTML =
                         userData.username;
-                    elements.commentPreviewContent_el.innerHTML = 
+                    elements.commentPreviewContent_el.innerHTML =
                         postile.parseBBcode(data.inline_comment.content);
                     postile.bbcodePostProcess(elements.commentPreviewContent_el);
 
                     // reset width since length of different usernames are different
-                    elements.commentPreviewContent_el.style.width = 
-                        this.wrap_el.offsetWidth - 
+                    elements.commentPreviewContent_el.style.width =
+                        this.wrap_el.offsetWidth -
                             elements.commentPreviewAuthor_el.offsetWidth - 36 + 'px';
 
                     fadein = setInterval(function() {
@@ -906,13 +907,13 @@ postile.view.BasePost.prototype.resetCommentPreview = function(data) {
             elements.commentPreviewContent_el.innerHTML = '';
             elements.commentPreviewMiddle_el.style.display = 'none';
 
-            elements.commentPreviewContent_el.innerHTML = 
+            elements.commentPreviewContent_el.innerHTML =
                 postile.parseBBcode(data.inline_comment.content);
             postile.bbcodePostProcess(elements.commentPreviewContent_el);
 
             // reset width since length of different usernames are different
-            elements.commentPreviewContent_el.style.width = 
-                this.wrap_el.offsetWidth - 
+            elements.commentPreviewContent_el.style.width =
+                this.wrap_el.offsetWidth -
                     elements.commentPreviewAuthor_el.offsetWidth - 36 + 'px';
 
             fadein = setInterval(function() {
@@ -940,7 +941,7 @@ postile.view.BasePost.prototype.resetCommentCount = function() {
     } else {
         commentCountText = commentCount + ' comments';
     }
-    
+
     this.displayModeElements.postCommentCount_el.innerHTML = commentCountText;
 }
 
